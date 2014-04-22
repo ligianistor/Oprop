@@ -1,0 +1,76 @@
+package testcases.cager.jexpr;
+
+class Cell {
+	int in1, in2, out;
+	Dependency dep1, dep2;
+
+	predicate Input(int x1, int x2, int i, int x) =
+   		(i == 1 && x1 == x) || (i == 2 && x2 == x)
+	
+	predicate OK() = 
+		exists int x1, int x2, int o, Dependency d1, Dependency d2:
+		this.in1 -> x1 && this.in2 -> x2 && 
+		this.out -> o && this.dep1 -> d1 && this.dep2 -> d2 && x1+x2==o &&
+		(d1#1 OKdep(o)) && (d2#1 OKdep(o))
+
+	Cell(int i1, int i2, Dependency d1, Dependency d2){
+		in1 = i1;
+		in2 = i2;
+		out = in1 + in2;
+		dep1 = d1;
+		dep2 = d2;		
+	}
+			
+	void setInputDep(int newInput) {
+		if (dep1 != null){
+			if (dep1.input == 1) dep1.ce.setInput1(newInput);
+			else dep1.ce.setInput2(newInput);
+		}
+		if (dep2 != null){
+			if (dep2.input == 1) dep2.ce.setInput1(newInput);
+			else dep2.ce.setInput2(newInput);
+		}
+	}
+
+	void setInput1(int x)
+	int k:
+	requires this#k OK()
+	ensures this#k OK()
+	{
+		this.in1 = x;
+		this.out = this.in1 + this.in2;
+		this.setInputDep(out);
+	}
+	
+	void setInput2(int x)
+	int k:
+	requires this#k OK()
+	ensures this#k OK()
+	{
+		this.in2 = x;
+		this.out = this.in1 + this.in2;
+		this.setInputDep(out);
+	}
+
+	void print(){
+		if (this!=null) {
+			System.out.println(in1 + " + " + in2 + "=" + out);
+			if (dep1!=null) dep1.ce.print();
+			if (dep2!=null) dep2.ce.print();
+		}
+	}
+	
+	void main(){
+		Cell a6 = new Cell(14,2, null, null);
+		Cell a3 = new Cell(3,11, new Dependency(a6,1), null);
+		Cell a4 = new Cell(3, 2, null, null);
+		//Cell a5 = new Cell(11,2, null, null);
+		Cell a1 = new Cell(1,2, new Dependency(a4,1), new Dependency(a3,1));
+		//Cell a2 = new Cell(5,6, new Dependency(a3,2), new Dependency(a5,1));
+		a1.print();
+		System.out.println("---------------");
+		a1.setInput1(10);
+		a1.print();
+	}
+
+}

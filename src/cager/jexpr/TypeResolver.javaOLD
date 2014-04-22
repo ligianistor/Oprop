@@ -1,0 +1,16 @@
+package cager.jexpr;
+
+import org.apache.bcel.generic.Type;
+
+public abstract class TypeResolver
+{
+    public Type binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    {
+        return null;
+    }
+
+    public Type unaryOperatorType(Operator op, Type t1) throws ParseException
+    {
+        return null;
+    }
+}

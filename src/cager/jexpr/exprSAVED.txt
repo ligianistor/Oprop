@@ -1,0 +1,19 @@
+(java.lang.String x) = (x + "Hello")
+(int param1, int param2) = (param1 == param2)
+(int param1, long param2) = (param1 > param2)
+(short param1, byte param2) = (param1 > param2)
+(int param1, int param2) = (param1 == 5 || param1 == param2)
+
+(boolean p) = (!p)
+
+(int param1, int param2) = (1 + 2 + 12)
+(int param1, long param2) = (param1 + param2 + 1)
+(int param1) = ("String1" + "String\"2")
+
+12 + 2
+true || false
+12 + 5 * 2 | 17 + -2
+16++ + 4
+Thing.a.b + 12 * 2
+java.lang.Object + java.util.Vector
+someid + someother

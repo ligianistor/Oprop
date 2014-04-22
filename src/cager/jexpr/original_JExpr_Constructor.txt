@@ -1,0 +1,47 @@
+public static void main(String [] args) throws Throwable {
+        JExpr parser;
+        String filename = null;
+        String outputDirectory = null;
+        long initTime = 0;
+        long parseTime = 0;
+        long startTime = 0;
+        long stopTime = 0;
+
+        if (args.length == 2)
+        {
+            filename = args[0];
+            System.out.println("Java Parser Version 1.1 (for Java1.2 code):  Reading from file " + filename + " . . .");
+            try
+            {
+                startTime = System.currentTimeMillis();
+                parser = new JExpr(new java.io.FileInputStream(filename));
+                stopTime = System.currentTimeMillis();
+                initTime = stopTime - startTime;
+            } catch (java.io.FileNotFoundException e)
+            {
+                System.out.println("Java Parser Version 1.1 (for Java1.2 code):  File " + filename + " not found.");
+                return;
+            }
+
+            parser = new JExpr(new java.io.FileReader(args[0]));
+            CompilationUnit ast = parser.CompilationUnit();
+            setParents(ast);
+
+            ast.dump(0);
+
+            Visitor v = new ContextVisitor();
+            ast.visit(v, null);
+            ast.dump(0);
+
+		//v = new CodeGenVisitor(args[1]);
+            //ast.visit(v, null);
+
+            
+        }
+        else
+        {
+            System.out.println("Java Parser Version 1.1 (for Java1.2 code):  Usage:");
+            System.out.println("         java JExpr inputfile outputDirectory");
+            return;
+        }
+    }

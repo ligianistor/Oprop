@@ -1,0 +1,56 @@
+package testcases.cager.jexpr;
+
+class Link {
+
+	int val;
+    Link next;
+ 
+ 	predicate Range(int x, int y) =
+    	exists int v, Link o, frac k: val -> v && next -> o 
+    	&& v >= x && v <= y &&
+    	((o#k Range(x,y)) || o == null) 
+ 
+    predicate UniRange(int x, int y) =
+    	exists int v, Link o: val ->v && next -> o 
+    	&& v >= x && v <= y &&
+    	((o#1 UniRange(x,y)) || o == null)
+    
+    Link(int v,Link n){
+    	val=v;
+    	next=n;
+    }
+   
+    void add(int z)
+    int x, int y: //SpecExpression with list of declaration
+    requires x < y && (this#1 UniRange(x,y))
+    ensures (this#1 UniRange(x+z,y+z))
+    {
+    	val = val +z;
+    	if (next != null) {next.add(z);}
+    }
+  
+    void addModulo11(int x)
+    frac k: //int k 
+    requires (this#k Range(0,10))
+    ensures (this#k Range(0,10))
+    {
+    	val = (val + x)%11;
+    	if (next != null) {next.addModulo11(x);}
+    }
+    
+    void print() {
+    	System.out.print(val+" ");
+    	if (next != null) {next.print();}
+    }
+    
+    
+    void main() {
+		Link l1 = new Link(3, null);
+		Link l2 = new Link(4, l1);
+		Link l3 = new Link(5, l2);
+		l3.print();
+		System.out.println();
+		l3.addModulo11(20);
+		l3.print();
+	}
+}

@@ -1,0 +1,17 @@
+package testcases.cager.jexpr;
+
+class Dependency {
+	Cell ce;
+	int input;
+	
+	predicate OKdep(int o) =
+    	exists int k1, int y1, int y2, Cell c, int i:
+    	this.ce -> c && this.input -> i &&
+    	(c#k1 OK()) && (c#1 Input(y1,y2,i,o))
+	
+	Dependency(Cell c, int i){
+		ce = c;
+		input = i;
+	}
+
+}

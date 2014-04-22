@@ -1,0 +1,76 @@
+package testcases.cager.jexpr;
+
+class TestRequire2
+{
+	TestRequire tr;
+	
+	void test2 () {
+		//if (tr.val1 == 1) {}
+		tr.val1 = 1;
+	}
+	
+ /*		
+	int test1 (int c) {
+		v = test0(c);
+		return test0(c);
+	}
+	
+	
+	predicate Range(int x, int y){
+    	exists v,o,k . val -> v && next -> o 
+    	&& v >= x && v <= y &&
+    	[o#k Range(x,y) || o == null] 
+    }
+	
+	predicate Range(int x, int y) =
+    	exists int v, Link o, frac k:
+    	val -> v && next -> o 
+    	&& v >= x && v <= y &&
+    	(o#k Range(x,y) || o == null)
+
+	predicate Range(int x, int y) =
+		exists int v: exists Link o: exists frac k: val -> v && next -> o 
+    	&& v >= x && v <= y && (o == null)
+    	
+	int test0 (String a) {
+		return a;
+	}
+	
+	void voidtest () {
+	}
+	
+	int test1 (int c) 
+	requires c > 9 || c < 1
+	ensures c < 10
+	{
+		test0();
+		return voidtest();
+	}
+	
+	int test2 (int a, int b) {
+		if (a > b)
+			return a;
+		else 
+			return b;
+	}
+	
+	int test3 (int a, int b) 
+	requires a > 3 && b < 2 {
+		if (a > b)
+			return a;
+		else 
+			return b;
+	}
+	
+	int test4 (int a)
+	ensures a < 3 {
+		return a;
+	}
+	
+	int test5 (int b)
+	requires b < 2
+	ensures b > 0 {
+		return b - 1;
+	}
+*/
+}

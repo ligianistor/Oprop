@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>
+Package <I>cager.jexpr</I>
+</TITLE>
+</HEAD>
+<BODY>
+<P>
+JExpr - a parser for a <I>very</I> small subset of Java. It was created to
+help me understand what would be necessary to develop a full compiler starting
+from a JavaCC-generated parser - in effect to answer the FAQ "<EM>TODO</EM>".
+</P>
+<P>
+Only a very small subset of Java can be compiled -
+see <A HREF="cager/jexpr/doc-files/expr.txt"><code>expr.txt</code></A> as
+an example.
+</P>
+<P>
+This system consists of the following components:
+<UL>
+<LI>A JavaCC parser, JExpr.jj - see {@linkplain cager.jexpr.JExpr}
+<LI>A set of {@linkplain cager.jexpr.ast Abstract Syntax Tree} classes.
+<LI>A {@linkplain  cager.jexpr.visitor.ContextVisitor  Contextual (semantic) Analsys visitor}.
+<LI>An {@linkplain cager.jexpr.Operator} type resolution class used by the Contextual Visitor.
+</UL>
+</P>
+</BODY>
+</HTML>
