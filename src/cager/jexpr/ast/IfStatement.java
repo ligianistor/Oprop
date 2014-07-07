@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
@@ -47,16 +49,21 @@ public class IfStatement extends Statement
     		return new AST[] { e, thenClause };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitIfStatement(this, o);
+        return v.visitIfStatement(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "IfStatement");
-        if (e != null) e.dump(level + 1);
-        if (thenClause != null) thenClause.dump(level + 1);
-        if (elseClause != null) elseClause.dump(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "IfStatement\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (e != null) e.dump(level + 1, out);
+        if (thenClause != null) thenClause.dump(level + 1, out);
+        if (elseClause != null) elseClause.dump(level + 1, out);
     }
 }

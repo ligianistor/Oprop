@@ -1,5 +1,6 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,15 +57,19 @@ public class ArgumentList extends Expression
         return children;
     }    
     
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitArgumentList(this, o);
+        return v.visitArgumentList(this, o, out);
     }
 
-    public void dump(int level)
-    {
-        System.out.println(dumpPrefix(level) + "ArgumentList: ");
-        dumpChildren(level + 1);
+    public void dump(int level, BufferedWriter out)
+    { try {
+        out.write(dumpPrefix(level) + "ArgumentList: \n");
+    }
+    catch(Exception e){
+    	System.err.println("Error: " + e.getMessage());
+    }
+        dumpChildren(level + 1, out);
     }
 	
 

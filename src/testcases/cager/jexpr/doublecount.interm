@@ -1,0 +1,236 @@
+Java Parser Version 1.1 (for Java1.2 code):  Reading from file DoubleCount.java...
+before dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: DoubleCount
+      FieldDeclaration: int val
+      FieldDeclaration: int dbl
+      PredicateDeclaration: OK
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+            QuantifierVariable: d type: int
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator &&
+              BinaryExpression
+                Operator ->
+                PrimaryExpression (Type: )
+                  FieldSelection (Type: )
+                    ID=val
+                PrimaryExpression (Type: )
+                  Identifier: v
+              BinaryExpression
+                Operator ->
+                PrimaryExpression (Type: )
+                  FieldSelection (Type: )
+                    ID=dbl
+                PrimaryExpression (Type: )
+                  Identifier: d
+            BinaryExpression
+              Operator ==
+              PrimaryExpression (Type: )
+                Identifier: d
+              BinaryExpression
+                Operator *
+                PrimaryExpression (Type: )
+                  Literal: 2 (Type: : int)
+                PrimaryExpression (Type: )
+                  Identifier: d
+      MethodDeclaration: increment(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecVariables:
+            MethodSpecVariable: k type: int
+          ObjectProposition: 
+            PrimaryExpression (Type: )
+            PrimaryExpression (Type: )
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: OK
+              ArgumentList: 
+          ObjectProposition: 
+            PrimaryExpression (Type: )
+            PrimaryExpression (Type: )
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: OK
+              ArgumentList: 
+        Block
+          StatementExpression
+            BinaryExpression
+              Operator =
+              PrimaryExpression (Type: )
+                Identifier: val
+              BinaryExpression
+                Operator +
+                PrimaryExpression (Type: )
+                  Identifier: val
+                PrimaryExpression (Type: )
+                  Literal: 1 (Type: : int)
+          StatementExpression
+            BinaryExpression
+              Operator =
+              PrimaryExpression (Type: )
+                Identifier: dbl
+              BinaryExpression
+                Operator +
+                PrimaryExpression (Type: )
+                  Identifier: dbl
+                PrimaryExpression (Type: )
+                  Literal: 2 (Type: : int)
+before visitor v
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@892539 is FS and type: int
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eacdc4 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@892539 cager.jexpr.ast.PrimaryExpression@1eacdc4
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dbl
+FS name: dbl, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b29e6 is FS and type: int
+Evaluating type of IdentifierExpression: d d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18bea70 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6b29e6 cager.jexpr.ast.PrimaryExpression@18bea70
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@cca07b cager.jexpr.ast.BinaryExpression@3c0965
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: d d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18cef0a type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a18493 type: int
+Evaluating type of IdentifierExpression: d d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@106fbd7 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a18493 cager.jexpr.ast.PrimaryExpression@106fbd7
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@18cef0a cager.jexpr.ast.BinaryExpression@17ff759
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@48074a cager.jexpr.ast.BinaryExpression@d6c6ea
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Visiting Method increment
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9d3f8b type: DoubleCount
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b6c732 type: int
+Evaluating type of IdentifierExpression: OK OK
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@cfc659 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e707bb type: DoubleCount
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1acb189 type: int
+Evaluating type of IdentifierExpression: OK OK
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bb9f5b type: null
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: val val
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1db4c43 type: int
+Evaluating type of IdentifierExpression: val val
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6bcef1 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1df503b type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6bcef1 cager.jexpr.ast.PrimaryExpression@1df503b
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1db4c43 cager.jexpr.ast.BinaryExpression@c5dbb
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: dbl dbl
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ddc3ea type: int
+Evaluating type of IdentifierExpression: dbl dbl
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6963b0 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10fe215 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6963b0 cager.jexpr.ast.PrimaryExpression@10fe215
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1ddc3ea cager.jexpr.ast.BinaryExpression@1c3d34b
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+before second dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: DoubleCount
+      FieldDeclaration: int val
+      FieldDeclaration: int dbl
+      PredicateDeclaration: OK
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+            QuantifierVariable: d type: int
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator &&
+              BinaryExpression: boolean
+                Operator ->
+                PrimaryExpression (Type: int)
+                  class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
+                  FieldSelection (Type: int)
+                    ID=val
+                PrimaryExpression (Type: int)
+                  Identifier: v
+              BinaryExpression: boolean
+                Operator ->
+                PrimaryExpression (Type: int)
+                  class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
+                  FieldSelection (Type: int)
+                    ID=dbl
+                PrimaryExpression (Type: int)
+                  Identifier: d
+            BinaryExpression: boolean
+              Operator ==
+              PrimaryExpression (Type: int)
+                Identifier: d
+              BinaryExpression: int
+                Operator *
+                PrimaryExpression (Type: int)
+                  Literal: 2 (Type: : int)
+                PrimaryExpression (Type: int)
+                  Identifier: d
+      MethodDeclaration: increment(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecVariables:
+            MethodSpecVariable: k type: int
+          ObjectProposition: 
+            PrimaryExpression (Type: DoubleCount)
+              class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
+            PrimaryExpression (Type: int)
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: OK
+              ArgumentList: 
+          ObjectProposition: 
+            PrimaryExpression (Type: DoubleCount)
+              class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
+            PrimaryExpression (Type: int)
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: OK
+              ArgumentList: 
+        Block
+          StatementExpression
+            BinaryExpression: boolean
+              Operator =
+              PrimaryExpression (Type: int)
+                Identifier: val
+              BinaryExpression: int
+                Operator +
+                PrimaryExpression (Type: int)
+                  Identifier: val
+                PrimaryExpression (Type: int)
+                  Literal: 1 (Type: : int)
+          StatementExpression
+            BinaryExpression: boolean
+              Operator =
+              PrimaryExpression (Type: int)
+                Identifier: dbl
+              BinaryExpression: int
+                Operator +
+                PrimaryExpression (Type: int)
+                  Identifier: dbl
+                PrimaryExpression (Type: int)
+                  Literal: 2 (Type: : int)

@@ -4,6 +4,8 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.*;
@@ -20,15 +22,20 @@ public class LocalVariableDeclaration extends VariableDeclaration
         return new AST[] { };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitLocalVariableDeclaration(this, o);
+        return v.visitLocalVariableDeclaration(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "LocalVariableDeclaration: " + getType() + " " + getName());
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "LocalVariableDeclaration: " + getType() + " " + getName()+"\n");
+    	}
+    	catch(Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }
 

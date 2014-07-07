@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
@@ -37,17 +39,22 @@ public abstract class AST
     /**
     *   Dump this node and all children to System.out.
     */
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + getClass().toString());
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + getClass().toString() + "\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 
-    protected void dumpChildren(int level)
+    protected void dumpChildren(int level, BufferedWriter out)
     {
         AST[] children = getChildren();
         for (int i = 0; i < children.length; i++)
-            children[i].dump(level);
+            children[i].dump(level, out);
     }
 
     static protected String dumpPrefix(int level)
@@ -62,6 +69,6 @@ public abstract class AST
     /**
     *   Provided to implement the visitor pattern.
     */
-    public abstract Object visit(Visitor v, Object o) throws ParseException;
+    public abstract Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException;
 
 }

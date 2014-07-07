@@ -4,6 +4,8 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
@@ -53,16 +55,21 @@ public class DeclarationStatement extends Statement
             return new AST[] { vd, exp };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitDeclarationStatement(this, o);
+        return v.visitDeclarationStatement(this, o, out);
     }
 
-    public void dump(int level)
-    {
-        System.out.println(dumpPrefix(level) + "DeclarationStatement");
-        if (vd != null) vd.dump(level + 1);
-        if (op != null) op.dump(level + 1);
-        if (exp != null) exp.dump(level + 1);
+    public void dump(int level, BufferedWriter out)
+    {   
+    	try {
+        out.write(dumpPrefix(level) + "DeclarationStatement\n");
+    	}
+    	catch(Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (vd != null) vd.dump(level + 1, out);
+        if (op != null) op.dump(level + 1, out);
+        if (exp != null) exp.dump(level + 1, out);
     }
 }

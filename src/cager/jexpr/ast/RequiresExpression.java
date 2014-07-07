@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.ParseException;
 import cager.jexpr.visitor.Visitor;
 
@@ -33,14 +35,19 @@ public class RequiresExpression extends Expression {
             return new AST[] { e };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitRequiresExpression(this, o);
+        return v.visitRequiresExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "RequiresExpression");
-        if (e != null) e.dump(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "RequiresExpression\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (e != null) e.dump(level + 1, out);
     }
 }

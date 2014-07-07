@@ -85,6 +85,8 @@ public class MethodDeclaration extends TypedAST
 package cager.jexpr.ast;
 
 import org.apache.bcel.generic.Type;
+
+import java.io.BufferedWriter;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Vector;
@@ -180,15 +182,20 @@ public class MethodDeclaration extends TypedAST
         return new AST[] { parameters, msexp, block };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitMethodDeclaration(this, o);
+        return v.visitMethodDeclaration(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "MethodDeclaration: " + identifier + "(" + getType() + ")");
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "MethodDeclaration: " + identifier + "(" + getType() + ")\n");
+    	}
+    	catch(Exception e){
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }
 

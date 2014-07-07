@@ -1,6 +1,8 @@
 package cager.jexpr.ast;
 
 import org.apache.bcel.generic.Type;
+
+import java.io.BufferedWriter;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Vector;
@@ -18,7 +20,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class Block extends Statement
 {
-    private List statements = new java.util.ArrayList();
+    private List<Statement> statements = new java.util.ArrayList<Statement>();
 
     /**
     *   Add a statement to this block's list.
@@ -49,14 +51,18 @@ public class Block extends Statement
         return (Statement[])(statements.toArray(new Statement[statements.size()]));
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitBlock(this, o);
+        return v.visitBlock(this, o, out);
     }
 
-    public void dump(int level)
-    {
-        System.out.println(dumpPrefix(level) + "Block");
-        dumpChildren(level + 1);
+    public void dump(int level, BufferedWriter out)
+    {   try {
+        out.write(dumpPrefix(level) + "Block\n");
+    }
+    catch (Exception e) {
+    	System.err.println("Error: " + e.getMessage());
+    }
+        dumpChildren(level + 1, out);
     }
 }

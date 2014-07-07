@@ -4,8 +4,7 @@
 
 package cager.jexpr.ast;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedWriter;
 
 import org.apache.bcel.generic.Type;
 
@@ -23,15 +22,20 @@ public class FieldDeclaration extends VariableDeclaration
         return new AST[] { };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitFieldDeclaration(this, o);
+        return v.visitFieldDeclaration(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "FieldDeclaration: " + getType() + " " + getName());
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "FieldDeclaration: " + getType() + " " + getName() + "\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }
 

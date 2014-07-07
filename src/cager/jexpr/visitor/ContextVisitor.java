@@ -1,6 +1,6 @@
 package cager.jexpr.visitor;
 
-import java.awt.peer.ComponentPeer;
+import java.io.BufferedWriter;
 
 import cager.jexpr.OperatorTypeInfo;
 import cager.jexpr.ParseException;
@@ -41,55 +41,68 @@ import cager.jexpr.ast.VariableDeclaration;
 import cager.jexpr.ast.WhileStatement;
 
 import org.apache.bcel.generic.Type;
-
+/*
+ * This class traverses the AST to 
+ * add types.?
+ */
 public class ContextVisitor extends NullVisitor
 {
     //CompilationUnit cu;
 
-    public Object visitCompilationUnits(CompilationUnits ast, Object o) throws ParseException
+    public Object visitCompilationUnits(CompilationUnits ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
         return null;
     }
     
-    public Object visitCompilationUnit(CompilationUnit ast, Object o) throws ParseException
+    public Object visitCompilationUnit(CompilationUnit ast, Object o, BufferedWriter out) throws ParseException
     {
         //cu = ast;
 
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
         return null;
     }
 
-    public Object visitClassDeclaration(ClassDeclaration ast, Object o) throws ParseException
+    public Object visitClassDeclaration(ClassDeclaration ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
-
-        return null;
-    }
-
-    public Object visitMethodDeclaration(MethodDeclaration ast, Object o) throws ParseException
-    {
-        System.out.println("Visiting Method " + ast.getIdentifier());
-
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         return null;
     }
 
-    public Object visitReturnStatement(ReturnStatement ast, Object o) throws ParseException
+    public Object visitMethodDeclaration(MethodDeclaration ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+    	try {
+        out.write("Visiting Method " + ast.getIdentifier()+"\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+
+        visitChildren(ast, o, out);
 
         return null;
     }
 
-    public Object visitFieldSelection(FieldSelection ast, Object o) throws ParseException
+    public Object visitReturnStatement(ReturnStatement ast, Object o, BufferedWriter out) throws ParseException
     {
-    	visitChildren(ast, o);
+        visitChildren(ast, o, out);
+
+        return null;
+    }
+
+    public Object visitFieldSelection(FieldSelection ast, Object o, BufferedWriter out) throws ParseException
+    {
+    	visitChildren(ast, o, out);
     	
     	if (ast.getType() == null)
         {
-            System.out.println("Evaluating type of FieldSelection: " + ast.getIdentifier().name);
+    		try {
+            out.write("Evaluating type of FieldSelection: " + ast.getIdentifier().name+"\n");
+    		}
+    		catch (Exception e) {
+    			System.err.println("Error: " + e.getMessage());
+    		}
             
             AST parent = ast;
             
@@ -134,15 +147,30 @@ public class ContextVisitor extends NullVisitor
             	if (fd != null) {
             		Type t = fd.getType();
             		ast.setType(t);
-            		System.out.println("FS name: " + ast.getIdentifier().name + ", type: " + t);
+            		try {
+            		out.write("FS name: " + ast.getIdentifier().name + ", type: " + t + "\n");
+            		}
+            		catch (Exception e) {
+            			System.err.println("Error: " + e.getMessage());
+            		}
             	} else {
             		MethodDeclaration md = cd.getMethod(ast.getIdentifier().name);
             		if (md != null) {
             			Type t = md.getType();
             			ast.setType(t);
-            			System.out.println("FS name: " + ast.getIdentifier().name + ", type: " + t);
+            			try {
+            			out.write("FS name: " + ast.getIdentifier().name + ", type: " + t+"\n");
+            			}
+            			catch (Exception e) {
+            				System.err.println("Error: " + e.getMessage());
+            			}
             		}
-            		System.out.println("FS name: " + ast.getIdentifier().name + ", type: ???" );
+            		try {
+            		out.write("FS name: " + ast.getIdentifier().name + ", type: ???\n" );
+            		}
+            		catch (Exception e) {
+            			System.err.println("Error: " + e.getMessage());
+            		}
             	}
             }
         }
@@ -150,20 +178,30 @@ public class ContextVisitor extends NullVisitor
         return null;
     }
 
-    public Object visitBinaryExpression(BinaryExpression ast, Object o) throws ParseException
+    public Object visitBinaryExpression(BinaryExpression ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         if (ast.getType() == null)
         {
             try
             {
-                System.out.println("Evaluating type of Binary " + ast.E1.toString() + " " + ast.E2.toString());
+            	try {
+                out.write("Evaluating type of Binary " + ast.E1.toString() + " " + ast.E2.toString()+"\n");
+            	}
+            	catch (Exception e) {
+            		System.err.println("Error: " + e.getMessage());
+            	}
                 Type t1 = ast.E1.getType();
                 Type t2 = ast.E2.getType();
 
-                OperatorTypeInfo ti = ast.op.getTypeInfo(t1, t2);
-                System.out.println("Type Info is " + ti);
+                OperatorTypeInfo ti = ast.op.getTypeInfo(t1, t2, out);
+                try {
+                out.write("Type Info is " + ti+ "\n");
+                }
+                catch (Exception e) {
+                	System.err.println("Error: " + e.getMessage());
+                }
 
                 ast.setType(ti.getResultType());
 
@@ -181,20 +219,30 @@ public class ContextVisitor extends NullVisitor
             }
             catch (ParseException pe)
             {
-                System.out.println("TODO: visitBinaryExpression exception: " + pe);
+            	try {
+                out.write("TODO: visitBinaryExpression exception: " + pe + "\n");
+            	}
+            	catch (Exception e) {
+            		System.err.println("Error: " + e.getMessage());
+            	}
             }
         }
 
         return null;
     }
     
-    public Object visitObjectProposition(ObjectProposition ast, Object o) throws ParseException
+    public Object visitObjectProposition(ObjectProposition ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         if (ast.getType() == null)
         {
-            System.out.println("Setting type of Object Prop ");
+        	try {
+            out.write("Setting type of Object Prop \n");
+        	}
+        	catch (Exception e) {
+        		System.err.println("Error: " + e.getMessage());
+        	}
             ast.setType(Type.BOOLEAN);
         }
 
@@ -217,9 +265,9 @@ public class ContextVisitor extends NullVisitor
 
     }
 
-    public Object visitUnaryExpression(UnaryExpression ast, Object o) throws ParseException
+    public Object visitUnaryExpression(UnaryExpression ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         if (ast.getType() == null)
         {
@@ -243,9 +291,9 @@ public class ContextVisitor extends NullVisitor
         return null;
     }
 */
-    public Object visitPrimaryExpression(PrimaryExpression ast, Object o) throws ParseException
+    public Object visitPrimaryExpression(PrimaryExpression ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         Expression[] components = (Expression[])ast.getChildren();
         Expression component;
@@ -253,7 +301,12 @@ public class ContextVisitor extends NullVisitor
         	component = components[i];
         	if (component instanceof FieldSelection) {
             	ast.setType(component.getType());
-            	System.out.println("PrimaryExpression " + ast + " is FS and type: " + component.getType());
+            	try {
+            	out.write("PrimaryExpression " + ast + " is FS and type: " + component.getType()+"\n");
+            	}
+            	catch (Exception e) {
+            		System.err.println("Error: " + e.getMessage());
+            	}
             	return null;
             }
         }
@@ -261,22 +314,27 @@ public class ContextVisitor extends NullVisitor
         Expression e1 = (Expression)(ast.getChildren()[0]);
         ast.setType(e1.getType());
 
-        System.out.println("PrimaryExpression " + ast + " type: " + e1.getType());
+        try {
+        out.write("PrimaryExpression " + ast + " type: " + e1.getType()+"\n");
+        }
+        catch (Exception e) {
+        	System.err.println("Error: " + e.getMessage());
+        }
         return null;
     }
     
-    public Object visitFormalParameter(FormalParameter ast, Object o) throws ParseException
+    public Object visitFormalParameter(FormalParameter ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         ast.setType(ast.getType());
 
         return null;
     }
     
-    public Object visitLocalVariableDeclaration(LocalVariableDeclaration ast, Object o) throws ParseException
+    public Object visitLocalVariableDeclaration(LocalVariableDeclaration ast, Object o, BufferedWriter out) throws ParseException
     {
-    	visitChildren(ast, o);
+    	visitChildren(ast, o, out);
 
         ast.setType(ast.getType());
 
@@ -286,13 +344,18 @@ public class ContextVisitor extends NullVisitor
     /**
      * jhlee
      */
-    public Object visitKeywordExpression(KeywordExpression ast, Object o) throws ParseException
+    public Object visitKeywordExpression(KeywordExpression ast, Object o, BufferedWriter out) throws ParseException
     { 
-    	visitChildren(ast, o);
+    	visitChildren(ast, o, out);
     	
     	if (ast.getType() == null)
         {
-            System.out.println("Evaluating type of Keyword " + ast.getValue());
+    		try {
+            out.write("Evaluating type of Keyword " + ast.getValue() + "\n");
+    		}
+    		catch (Exception e) {
+    			System.err.println("Error: " + e.getMessage());
+    		}
             
 	        AST parent = ast;
 	        while (parent != null && !(parent instanceof ClassDeclaration))
@@ -402,11 +465,17 @@ public class ContextVisitor extends NullVisitor
     */
 
     //jhlee
-    public Object visitIdentifierExpression(IdentifierExpression ast, Object o) throws ParseException
+    public Object visitIdentifierExpression(IdentifierExpression ast, Object o, BufferedWriter out) throws ParseException
     {
         if (ast.getType() == null)
         {
-            System.out.println("Evaluating type of " + ast.toString() + " " + ast.getName());
+        	try {
+            out.write("Evaluating type of " + ast.toString() + " " + ast.getName()+ "\n");
+        	}
+        	catch (Exception e) {
+        		System.err.println("Error: " + e.getMessage());
+        	}
+        	
             //cu.parameters.dump(4);
 
             // Find owning Class.
@@ -594,9 +663,9 @@ public class ContextVisitor extends NullVisitor
         return null;
     }
     
-    public Object visitIfStatement(IfStatement ast, Object o) throws ParseException
+    public Object visitIfStatement(IfStatement ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         if (!ast.getExpression().getType().equals(Type.BOOLEAN))
         {
@@ -606,9 +675,9 @@ public class ContextVisitor extends NullVisitor
         return null;
     }
     
-    public Object visitWhileStatement(WhileStatement ast, Object o) throws ParseException
+    public Object visitWhileStatement(WhileStatement ast, Object o, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o);
+        visitChildren(ast, o, out);
 
         if (!ast.getExpression().getType().equals(Type.BOOLEAN))
         {

@@ -84,6 +84,8 @@ public class MethodDeclaration extends TypedAST
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
@@ -128,15 +130,19 @@ public class ConstructorDeclaration extends AST
         return new AST[] { parameters, block };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitConstructorDeclaration(this, o);
+        return v.visitConstructorDeclaration(this, o, out);
     }
 
-    public void dump(int level)
-    {
-        System.out.println(dumpPrefix(level) + "ConstructorDeclaration: " + identifier);
-        dumpChildren(level + 1);
+    public void dump(int level, BufferedWriter out)
+    {  try {
+        out.write(dumpPrefix(level) + "ConstructorDeclaration: " + identifier + "\n");
+    }
+    catch(Exception e) {
+    	System.err.println("Error: " + e.getMessage());
+    }
+        dumpChildren(level + 1, out);
     }
 }
 

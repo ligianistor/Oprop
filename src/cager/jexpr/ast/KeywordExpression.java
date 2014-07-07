@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.*;
@@ -30,9 +32,9 @@ public class KeywordExpression extends Expression
         return new AST[] { };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitKeywordExpression(this, o);
+        return v.visitKeywordExpression(this, o, out);
     }
 
     public void dump(int level)

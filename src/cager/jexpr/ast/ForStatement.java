@@ -1,5 +1,6 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 
 import cager.jexpr.*;
@@ -69,17 +70,22 @@ public class ForStatement extends Statement
     	return (AST[])result.toArray(new AST[0]);
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitForStatement(this, o);
+        return v.visitForStatement(this, o, out);
     }
 
-    public void dump(int level)
-    {
-        System.out.println(dumpPrefix(level) + "ForStatement");
-        if (initClause != null) initClause.dump(level + 1);
-        if (exp != null) exp.dump(level + 1);
-        if (updateClause != null) updateClause.dump(level + 1);
-        if (doClause != null) doClause.dump(level + 1);
+    public void dump(int level, BufferedWriter out)
+    {   
+    	try {
+        out.write(dumpPrefix(level) + "ForStatement\n"); 
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (initClause != null) initClause.dump(level + 1, out);
+        if (exp != null) exp.dump(level + 1, out);
+        if (updateClause != null) updateClause.dump(level + 1, out);
+        if (doClause != null) doClause.dump(level + 1, out);
     }
 }

@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.*;
@@ -58,14 +60,20 @@ public class LiteralExpression extends Expression
         return value;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitLiteralExpression(this, o);
+        return v.visitLiteralExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
+    { try {
+        out.write(dumpPrefix(level) + "Literal: " + value + " (Type: " + 
+                 ( type == null ? "" : ": " + type.toString()) + ")\n");
+    }
+    catch(Exception e)
     {
-        System.out.println(dumpPrefix(level) + "Literal: " + value + " (Type: " + ( type == null ? "" : ": " + type.toString()) + ")");
-        dumpChildren(level + 1);
+    	System.err.println("Error: " + e.getMessage());
+    }
+    dumpChildren(level + 1, out);
     }
 }

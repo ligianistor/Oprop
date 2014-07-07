@@ -4,6 +4,7 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class CompilationUnits extends AST
 {
-	private List units = new ArrayList();
+	private List<CompilationUnit> units = new ArrayList();
     private CompilationUnit[] children = null;
 
     public CompilationUnits()
@@ -57,15 +58,20 @@ public class CompilationUnits extends AST
         return children;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitCompilationUnits(this, o);
+        return v.visitCompilationUnits(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "CompilationUnits:");
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "CompilationUnits:\n");
+    	}
+    	catch(Exception e){
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 	
 }

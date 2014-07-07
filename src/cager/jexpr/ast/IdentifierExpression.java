@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.*;
@@ -36,9 +38,9 @@ public class IdentifierExpression extends Expression
         return new AST[] { };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitIdentifierExpression(this, o);
+        return v.visitIdentifierExpression(this, o, out);
     }
 
     public String toString()
@@ -46,9 +48,14 @@ public class IdentifierExpression extends Expression
         return "IdentifierExpression: " + name;
     }
 
-    public void dump(int level)
-    {
-    	System.out.println(dumpPrefix(level) + "Identifier: " + name);
+    public void dump(int level, BufferedWriter out)
+    {  
+    	try {
+    	out.write(dumpPrefix(level) + "Identifier: " + name + "\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
     			//+ " (Type: " + ( type == null ? "" : type.toString()) + ")");
         
     }

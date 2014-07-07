@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.*;
@@ -29,14 +31,18 @@ public class CastExpression extends Expression
         return expression;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitCastExpression(this, o);
+        return v.visitCastExpression(this, o, out);
     }
 
-    public void dump(int level)
-    {
-        System.out.println(dumpPrefix(level) + "Cast: " + type);
-        if (expression != null) expression.dump(level + 1);
+    public void dump(int level, BufferedWriter out)
+    {  try {
+        out.write(dumpPrefix(level) + "Cast: " + type + "\n");
+    }
+    catch (Exception e) {
+    	System.err.println("Error: " + e.getMessage());
+    }
+        if (expression != null) expression.dump(level + 1, out);
     }
 }

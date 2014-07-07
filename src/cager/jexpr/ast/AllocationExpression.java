@@ -1,5 +1,6 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +23,19 @@ public class AllocationExpression extends Expression
         return new AST[] { body };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitAllocationExpression(this, o);
+        return v.visitAllocationExpression(this, o, out);
     }
 
-    public void dump(int level)
-    {
-        System.out.println(dumpPrefix(level) + "AllocationExpression: new " + alloc_func);
-        dumpChildren(level + 1);
+    public void dump(int level, BufferedWriter out)
+    {  try {
+        out.write(dumpPrefix(level) + "AllocationExpression: new " + alloc_func + "\n");
+    }
+    catch(Exception e){
+    	System.err.println("Error: " + e.getMessage());
+    }
+        dumpChildren(level + 1, out);
     }
 }
 

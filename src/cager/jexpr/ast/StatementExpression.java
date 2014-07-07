@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
@@ -30,14 +32,19 @@ public class StatementExpression extends Statement
             return new AST[] { e };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitStatementExpression(this, o);
+        return v.visitStatementExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "StatementExpression");
-        if (e != null) e.dump(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "StatementExpression\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (e != null) e.dump(level + 1, out);
     }
 }

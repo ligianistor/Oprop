@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
@@ -38,16 +40,21 @@ public class BinaryExpression extends Expression
         return children;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitBinaryExpression(this, o);
+        return v.visitBinaryExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "BinaryExpression" + ( type == null ? "" : ": " + type.toString()));
-        if (op != null) op.dump(level + 1);
-        if (E1 != null) E1.dump(level + 1);
-        if (E2 != null) E2.dump(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "BinaryExpression" + ( type == null ? "" : ": " + type.toString())+"\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (op != null) op.dump(level + 1, out);
+        if (E1 != null) E1.dump(level + 1, out);
+        if (E2 != null) E2.dump(level + 1, out);
     }
 }

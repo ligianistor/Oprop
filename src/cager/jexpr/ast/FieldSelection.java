@@ -1,6 +1,6 @@
 package cager.jexpr.ast;
 
-import org.apache.bcel.generic.Type;
+import java.io.BufferedWriter;
 
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
@@ -41,15 +41,19 @@ public class FieldSelection extends Expression
         return children;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitFieldSelection(this, o);
+        return v.visitFieldSelection(this, o, out);
         //return "TODO";
     }
 
-    public void dump(int level)    
+    public void dump(int level, BufferedWriter out)    
     {
-        System.out.println(dumpPrefix(level) + "FieldSelection (Type: " + ( type == null ? "" : type.toString()) + ")");
-        System.out.println(dumpPrefix(level + 1) + "ID=" + id);
+    	try {
+        out.write(dumpPrefix(level) + "FieldSelection (Type: " + ( type == null ? "" : type.toString()) + ")\n");
+        out.write(dumpPrefix(level + 1) + "ID=" + id+"\n");}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
     }
 }

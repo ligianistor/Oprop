@@ -4,6 +4,8 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.ParseException;
 import cager.jexpr.visitor.Visitor;
 
@@ -53,14 +55,19 @@ public class ObjectProposition extends Expression {
     	return new AST[] { obj, frac, pd };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitObjectProposition(this, o);
+        return v.visitObjectProposition(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "ObjectProposition: " );
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "ObjectProposition: \n" );
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }

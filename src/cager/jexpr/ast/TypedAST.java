@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 public abstract class TypedAST extends AST
@@ -25,9 +27,14 @@ public abstract class TypedAST extends AST
 		return type;
 	}
 
-    public void dump(int level)
-    {
-		System.out.println(dumpPrefix(level) + getClass().toString() + " [Type: " + type.toString() + "]");
-		dumpChildren(level + 1);
+    public void dump(int level, BufferedWriter out)
+    {   
+    	try {
+		out.write(dumpPrefix(level) + getClass().toString() + " [Type: " + type.toString() + "]\n");
+    	}
+    	catch(Exception e){
+    		System.err.println("Error: " + e.getMessage());
+    	}
+		dumpChildren(level + 1, out);
 	}
 }

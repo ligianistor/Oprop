@@ -1,5 +1,6 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.List;
 
 import cager.jexpr.*;
@@ -9,7 +10,7 @@ public class PrimaryExpression extends Expression
 {
     private Expression[] children;
 
-    private List components = new java.util.ArrayList(8);
+    private List<Expression> components = new java.util.ArrayList<Expression>(8);
 
     public PrimaryExpression()
     {
@@ -32,14 +33,19 @@ public class PrimaryExpression extends Expression
         return children;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitPrimaryExpression(this, o);
+        return v.visitPrimaryExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "PrimaryExpression (Type: " + ( type == null ? "" : type.toString()) + ")");
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "PrimaryExpression (Type: " + ( type == null ? "" : type.toString()) + ")\n");
+    	}
+    	catch(Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }

@@ -4,6 +4,8 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.*;
@@ -26,13 +28,18 @@ public class MethodSpecVariable extends VariableDeclaration
         return new AST[0];
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitMethodSpecVariable(this, o);
+        return v.visitMethodSpecVariable(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "MethodSpecVariable: " + getName() + " type: " + type);
+    	try {
+        out.write(dumpPrefix(level) + "MethodSpecVariable: " + getName() + " type: " + type + "\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
     }
 }

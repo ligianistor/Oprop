@@ -4,6 +4,7 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,15 +58,21 @@ public class QuantificationExpression extends Expression
         return new AST[] { qvs, body };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitQuantificationExpression(this, o);
+        return v.visitQuantificationExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "QuantificationExpression: " + quantifier);
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "QuantificationExpression: " + quantifier + "\n");
+    	}
+    	catch (Exception e){
+    		System.err.println("Error: " + e.getMessage());
+    	}
+    	
+        dumpChildren(level + 1, out);
     }
 }
 

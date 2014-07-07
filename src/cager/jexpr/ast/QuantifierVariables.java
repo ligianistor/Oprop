@@ -1,5 +1,6 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class QuantifierVariables extends AST   // implements some Map
 {
-    private List qvari = new ArrayList();
+    private List<QuantifierVariable> qvari = new ArrayList<QuantifierVariable>();
     private QuantifierVariable[] children = null;
 
     public QuantifierVariables()
@@ -51,14 +52,19 @@ public class QuantifierVariables extends AST   // implements some Map
         return children;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitQuantifierVariables(this, o);
+        return v.visitQuantifierVariables(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "QuantifierVariables:");
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "QuantifierVariables:\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }

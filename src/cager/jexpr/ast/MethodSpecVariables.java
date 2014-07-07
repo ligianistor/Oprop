@@ -5,6 +5,8 @@
 package cager.jexpr.ast;
 
 import org.apache.bcel.generic.Type;
+
+import java.io.BufferedWriter;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class MethodSpecVariables extends AST   // implements some Map
 {
-    private List msvariables = new ArrayList();
+    private List<MethodSpecVariable> msvariables = new ArrayList<MethodSpecVariable>();
     private MethodSpecVariable[] children = null;
 
     public MethodSpecVariables()
@@ -58,14 +60,19 @@ public class MethodSpecVariables extends AST   // implements some Map
         return children;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitMethodSpecVariables(this, o);
+        return v.visitMethodSpecVariables(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "MethodSpecVariables:");
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "MethodSpecVariables:\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }

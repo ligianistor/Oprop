@@ -1,8 +1,6 @@
 package cager.jexpr.ast;
 
-import org.apache.bcel.generic.Type;
-import java.util.Map;
-import java.util.HashMap;
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class FormalParameters extends AST   // implements some Map
 {
-    private List parameters = new ArrayList();
+    private List<FormalParameter> parameters = new ArrayList<FormalParameter>();
     private FormalParameter[] children = null;
 
     public FormalParameters()
@@ -54,14 +52,19 @@ public class FormalParameters extends AST   // implements some Map
         return children;
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitFormalParameters(this, o);
+        return v.visitFormalParameters(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "FormalParameters:");
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "FormalParameters:\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 }

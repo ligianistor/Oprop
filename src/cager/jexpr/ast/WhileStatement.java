@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
@@ -33,15 +35,21 @@ public class WhileStatement extends Statement
     	return new AST[] { e, doClause };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitWhileStatement(this, o);
+        return v.visitWhileStatement(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "WhileStatement");
-        if (e != null) e.dump(level + 1);
-        if (doClause != null) doClause.dump(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "WhileStatement\n");
+    	}
+    	catch (Exception e)
+    	{
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (e != null) e.dump(level + 1, out);
+        if (doClause != null) doClause.dump(level + 1, out);
     }
 }

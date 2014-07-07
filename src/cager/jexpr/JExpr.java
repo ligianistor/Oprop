@@ -6,6 +6,8 @@ import org.apache.bcel.generic.Type;
 import cager.jexpr.ast.*;
 import cager.jexpr.visitor.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 /*
@@ -35,6 +37,10 @@ import java.util.ArrayList;
  * @author  Paul Cager.
  * @version 2
  */
+/*
+ * Class JExpr is the lexer, it converts a sequence of characters into 
+ * a sequence of tokens.
+ */
 
 public class JExpr implements JExprConstants {
     public static void main(String [] args) throws Throwable {
@@ -45,45 +51,58 @@ public class JExpr implements JExprConstants {
         long parseTime = 0;
         long startTime = 0;
         long stopTime = 0;
-
-        if (args.length >= 2)
-        {
-                        for (int i = 0; i < args.length - 1; i++)
-                        {
-                                filename = args[i];
-                System.out.println("Java Parser Version 1.1 (for Java1.2 code):  Reading from file " + filename + " . . .");
-                try
-                {
-                        startTime = System.currentTimeMillis();
-                        parser = new JExpr(new java.io.FileInputStream(filename));
-                        stopTime = System.currentTimeMillis();
-                        initTime = stopTime - startTime;
-                } catch (java.io.FileNotFoundException e)
-                {
-                        System.out.println("Java Parser Version 1.1 (for Java1.2 code):  File " + filename + " not found.");
-                        return;
+        BufferedWriter out, outBoogie;
+        if (args.length >= 2) {
+        		filename = args[0];
+                int extensionStart = filename.indexOf('.');
+                String fileNoExtension = (filename.substring(0, extensionStart)).toLowerCase();
+                String intermFile = fileNoExtension.concat(".interm");
+                String boogieFile = fileNoExtension.concat(".bpl");
+                // Create file 
+                FileWriter fstream = new FileWriter(intermFile);
+                out = new BufferedWriter(fstream);
+                FileWriter fstreamBoogie = new FileWriter(boogieFile);
+                outBoogie = new BufferedWriter(fstreamBoogie);
+                try {
+                	out.write("Java Parser Version 1.1 (for Java1.2 code):  Reading from file " + filename + "...\n");
+                    	try {
+                    		startTime = System.currentTimeMillis();
+                            parser = new JExpr(new java.io.FileInputStream(filename));
+                            stopTime = System.currentTimeMillis();
+                            initTime = stopTime - startTime;
+                        } 
+                    	catch (java.io.FileNotFoundException e) {
+                    		System.out.println("Java Parser Version 1.1 (for Java1.2 code):  File " + filename + " not found.");
+                    		return;
+                    	}
                 }
-                        }
+                catch(Exception e) {//Catch exception if any
+                	System.err.println("Error: " + e.getMessage());
+                }
+            
 
                         CompilationUnits ast_top = new CompilationUnits();
                         setParents(ast_top);
 
-                        for (int i = 0; i < args.length - 1; i++)
-                        {
-                                parser = new JExpr(new java.io.FileReader(args[i]));
+
+                parser = new JExpr(new java.io.FileReader(args[0]));
                 CompilationUnit ast = parser.CompilationUnit();
                 ast_top.add(ast);
                 setParents(ast, ast_top);
-                }
-
-            ast_top.dump(0);
-
+     
+            out.write("before dump 0\n");
+            ast_top.dump(0, out);
+            out.write("before visitor v\n");
             Visitor v = new ContextVisitor();
-            ast_top.visit(v, null);
-            ast_top.dump(0);
-
-                        //v = new CodeGenVisitor(args[1]);
-            //ast.visit(v, null);
+            ast_top.visit(v, null, out);
+            out.write("before second dump 0\n");
+            ast_top.dump(0, out);
+            Visitor bv = new BoogieVisitor();
+            ast_top.visit(bv, null, outBoogie);
+            ast_top.dump(0, outBoogie);
+            //Close the output streams
+            out.close();
+            outBoogie.close();
 
         }
         else

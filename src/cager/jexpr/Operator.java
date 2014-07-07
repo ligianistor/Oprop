@@ -1,5 +1,6 @@
 package cager.jexpr;
 
+import java.io.BufferedWriter;
 import java.util.*;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.generic.BasicType;
@@ -101,18 +102,18 @@ public class Operator
     }
     
 
-    public OperatorTypeInfo getTypeInfo(Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo getTypeInfo(Type t1, Type t2, BufferedWriter out) throws ParseException
     {
-        return typeResolver.binaryOperatorType(this, t1, t2);
+        return typeResolver.binaryOperatorType(this, t1, t2, out);
     }
 
-    public OperatorTypeInfo getTypeInfo(Type t1) throws ParseException
+    public OperatorTypeInfo getTypeInfo(Type t1, BufferedWriter out) throws ParseException
     {
-        return typeResolver.unaryOperatorType(this, t1);
+        return typeResolver.unaryOperatorType(this, t1, out);
     }
     
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
         StringBuffer sb = new StringBuffer(level);
         for (int i = 0; i < level * 2; i++)
@@ -120,8 +121,13 @@ public class Operator
 
         sb.append("Operator ");
         sb.append(name);
-
-        System.out.println(sb.toString());
+       try {
+        out.write(sb.toString()+ "\n");
+       }
+       catch (Exception e) {
+    	   System.err.println("Error: " + e.getMessage());
+       }
+      
     }
 }
 
@@ -133,12 +139,12 @@ abstract class TypeResolver
 {
     protected OperatorTypeInfo info = new OperatorTypeInfo();
 
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
         throw new ParseException("Invalid operator: " + t1 + ", " + t2 + " for op " + op.getName());
     }
 
-    public OperatorTypeInfo unaryOperatorType(Operator op, Type t1) throws ParseException
+    public OperatorTypeInfo unaryOperatorType(Operator op, Type t1, BufferedWriter out) throws ParseException
     {
         throw new ParseException("Invalid operator: " + t1 + " for op " + op.getName());
     }
@@ -158,7 +164,7 @@ abstract class TypeResolver
 */
 class NumericTypeResolver extends TypeResolver
 {
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
         int typeId1 = t1.getType();
         int typeId2 = t2.getType();
@@ -203,7 +209,7 @@ class NumericTypeResolver extends TypeResolver
         return info;
     }
 
-    public OperatorTypeInfo unaryOperatorType(Operator op, Type t) throws ParseException
+    public OperatorTypeInfo unaryOperatorType(Operator op, Type t, BufferedWriter out) throws ParseException
     {
         if (Types.isNumericType(t))
         {
@@ -223,9 +229,14 @@ The binary "+" operator is a special case, in that it can handle strings / objec
 */
 class AddTypeResolver extends NumericTypeResolver
 {
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
-        System.out.println("AddTypeResolver: " + t1 + " + " + t2);
+    	try {
+        out.write("AddTypeResolver: " + t1 + " + " + t2+"\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
 
         if (t1.equals(Type.STRING) || t2.equals(Type.STRING))
         {
@@ -235,16 +246,21 @@ class AddTypeResolver extends NumericTypeResolver
         }
         else
         {
-            return super.binaryOperatorType(op, t1, t2);
+            return super.binaryOperatorType(op, t1, t2, out);
         }
     }
 }
 
 class BooleanTypeResolver extends TypeResolver
 {
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
-    	System.out.println(t1 + " " + op.getName() + " " + t2);
+    	try {
+    	out.write(t1 + " " + op.getName() + " " + t2+ "\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
         if (t1.getType() != Constants.T_BOOLEAN || t2.getType() != Constants.T_BOOLEAN)
             throw new ParseException("Non-boolean Types: " + t1 + ", " + t2 + " for op " + op.getName());
 
@@ -264,11 +280,11 @@ class BooleanTypeResolver extends TypeResolver
 
 class ComparatorTypeResolver extends NumericTypeResolver
 {
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
         if (Types.isNumericType(t1) && Types.isNumericType(t2))
         {
-            OperatorTypeInfo opInfo = super.binaryOperatorType(op, t1, t2);
+            OperatorTypeInfo opInfo = super.binaryOperatorType(op, t1, t2, out);
             opInfo.resultType = Type.BOOLEAN;
 
             return opInfo;
@@ -290,7 +306,7 @@ class ComparatorTypeResolver extends NumericTypeResolver
 
 class DotTypeResolver extends TypeResolver
 {
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
         // TODO - a tricky one this. For now...
 
@@ -303,7 +319,7 @@ class DotTypeResolver extends TypeResolver
  */
 class KeyAccessTypeResolver extends TypeResolver
 {
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
     	if (t1.equals(t2))
         {
@@ -322,7 +338,7 @@ class KeyAccessTypeResolver extends TypeResolver
  */
 class AssignTypeResolver extends TypeResolver
 {
-    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2) throws ParseException
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
     	if (t1.equals(t2))
         {

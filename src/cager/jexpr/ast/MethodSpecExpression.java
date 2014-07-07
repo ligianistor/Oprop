@@ -4,6 +4,7 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,15 +55,21 @@ public class MethodSpecExpression extends Expression
     	return result.toArray(new AST[0]);
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitMethodSpecExpression(this, o);
+        return v.visitMethodSpecExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "MethodSpecExpression: " );
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "MethodSpecExpression: \n" );
+    	}
+    	catch (Exception e){
+    		System.err.println("Error: " + e.getMessage());
+    	}
+    	
+        dumpChildren(level + 1, out);
     }
 }
 

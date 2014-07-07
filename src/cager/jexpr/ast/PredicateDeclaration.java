@@ -4,6 +4,8 @@
 
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
@@ -55,15 +57,20 @@ public class PredicateDeclaration extends AST
         return new AST[] { parameters, exp };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitPredicateDeclaration(this, o);
+        return v.visitPredicateDeclaration(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "PredicateDeclaration: " + identifier );
-        dumpChildren(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "PredicateDeclaration: " + identifier +"\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        dumpChildren(level + 1, out);
     }
 
 }

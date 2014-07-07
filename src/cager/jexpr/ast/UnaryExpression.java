@@ -1,5 +1,7 @@
 package cager.jexpr.ast;
 
+import java.io.BufferedWriter;
+
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.*;
@@ -39,15 +41,20 @@ public class UnaryExpression extends Expression
         return new AST[] { E };
     }
 
-    public Object visit(Visitor v, Object o) throws ParseException
+    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
     {
-        return v.visitUnaryExpression(this, o);
+        return v.visitUnaryExpression(this, o, out);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "UnaryExpression" + (postfix ? " (postfix)" : " (not postfix)"));
-        if (op != null) op.dump(level + 1);
-        if (E != null) E.dump(level + 1);
+    	try {
+        out.write(dumpPrefix(level) + "UnaryExpression" + (postfix ? " (postfix)" : " (not postfix)\n"));
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+        if (op != null) op.dump(level + 1, out);
+        if (E != null) E.dump(level + 1, out);
     }
 }
