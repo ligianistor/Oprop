@@ -57,6 +57,13 @@ public class BoogieVisitor extends NullVisitor {
     {
     	try {
         out.write("type Ref;\n");
+        out.write("type PredicateTypes;\n");
+        out.write("type FractionType = [Ref, PredicateTypes] int;\n");
+        out.write("type PackedType = [Ref, PredicateTypes] bool;\n");
+        out.write("var packed: PackedType;\n");
+        out.write("var frac: FractionType;\n");
+        out.write("const null: Ref;\n");
+        out.write("\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
@@ -64,6 +71,32 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast, o, out);
         return null;
     }
+    
+    public Object visitFieldDeclaration(FieldDeclaration ast, Object o, BufferedWriter out) throws ParseException 
+    { 
+    	try {
+    		out.write("var "+ ast.getName()+" [Ref]"+ast.getType()+";\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+    	visitChildren(ast, o, out); 
+    	return null; 
+    	}
+    
+    public Object visitPredicateDeclaration(PredicateDeclaration ast, Object o, BufferedWriter out) throws ParseException
+    { 
+    	try {
+    		out.write("const unique "+ast.getIdentifier().getName().toLowerCase() +"P: PredicateTypes;\n"); 
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+    	
+    	visitChildren(ast, o, out); 
+    	return null; 
+    }
+    
     
 
     public Object visitMethodDeclaration(MethodDeclaration ast, Object o, BufferedWriter out) throws ParseException
