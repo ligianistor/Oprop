@@ -69,6 +69,6 @@ public abstract class AST
     /**
     *   Provided to implement the visitor pattern.
     */
-    public abstract Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException;
+    public abstract void visit(Visitor v, BufferedWriter out) throws ParseException;
 
 }

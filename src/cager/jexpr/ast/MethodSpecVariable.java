@@ -28,9 +28,9 @@ public class MethodSpecVariable extends VariableDeclaration
         return new AST[0];
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitMethodSpecVariable(this, o, out);
+        v.visitMethodSpecVariable(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

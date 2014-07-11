@@ -58,9 +58,9 @@ public class QuantificationExpression extends Expression
         return new AST[] { qvs, body };
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitQuantificationExpression(this, o, out);
+        v.visitQuantificationExpression(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

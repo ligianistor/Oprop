@@ -55,9 +55,9 @@ public class ObjectProposition extends Expression {
     	return new AST[] { obj, frac, pd };
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitObjectProposition(this, o, out);
+        v.visitObjectProposition(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

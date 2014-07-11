@@ -70,9 +70,9 @@ public class ForStatement extends Statement
     	return (AST[])result.toArray(new AST[0]);
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitForStatement(this, o, out);
+        v.visitForStatement(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

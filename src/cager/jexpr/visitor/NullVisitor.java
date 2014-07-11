@@ -45,55 +45,55 @@ import cager.jexpr.ast.WhileStatement;
 public class NullVisitor implements Visitor
 {
 
-  public Object visitBinaryExpression(BinaryExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitFieldSelection(FieldSelection ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitCastExpression(CastExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitFormalParameter(FormalParameter ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitFormalParameters(FormalParameters ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitIdentifierExpression(IdentifierExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitKeywordExpression(KeywordExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitLiteralExpression(LiteralExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitUnaryExpression(UnaryExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitVariableDeclaration(VariableDeclaration ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitCompilationUnit(CompilationUnit ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitClassDeclaration(ClassDeclaration ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitMethodDeclaration(MethodDeclaration ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitReturnStatement(ReturnStatement ast, Object o, BufferedWriter out) throws ParseException  { visitChildren(ast, o, out); return null; }
-  public Object visitIfStatement(IfStatement ast, Object o, BufferedWriter out) throws ParseException  { visitChildren(ast, o, out); return null; }
-  public Object visitBlock(Block ast, Object o, BufferedWriter out) throws ParseException  { visitChildren(ast, o, out); return null; }
-  public Object visitArgumentList(ArgumentList ast, Object o, BufferedWriter out) throws ParseException  { visitChildren(ast, o, out); return null; }
+  public void visitBinaryExpression(BinaryExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitFieldSelection(FieldSelection ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitCastExpression(CastExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitFormalParameter(FormalParameter ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitFormalParameters(FormalParameters ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitKeywordExpression(KeywordExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitLiteralExpression(LiteralExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitUnaryExpression(UnaryExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitVariableDeclaration(VariableDeclaration ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitCompilationUnit(CompilationUnit ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitClassDeclaration(ClassDeclaration ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitMethodDeclaration(MethodDeclaration ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitReturnStatement(ReturnStatement ast, BufferedWriter out) throws ParseException  { visitChildren(ast, out); }
+  public void visitIfStatement(IfStatement ast, BufferedWriter out) throws ParseException  { visitChildren(ast, out); }
+  public void visitBlock(Block ast, BufferedWriter out) throws ParseException  { visitChildren(ast, out); }
+  public void visitArgumentList(ArgumentList ast, BufferedWriter out) throws ParseException  { visitChildren(ast, out); }
   
-  public Object visitPrimaryExpression(PrimaryExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitRequiresExpression(RequiresExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitEnsuresExpression(EnsuresExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
+  public void visitPrimaryExpression(PrimaryExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitRequiresExpression(RequiresExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitEnsuresExpression(EnsuresExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
   
-  public Object visitFieldDeclaration(FieldDeclaration ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
+  public void visitFieldDeclaration(FieldDeclaration ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
   
   //  public abstract Object visit( ast, Object o);
 
-  public void visitChildren(AST ast, Object o, BufferedWriter out) throws ParseException
+  public void visitChildren(AST ast, BufferedWriter out) throws ParseException
   {
 	  AST[] children = ast.getChildren();
 	  for (int i = 0; i < children.length; i++) {
-		  children[i].visit(this, o, out);
+		  children[i].visit(this, out);
 	  }
   }
 
-  public Object visitPredicateDeclaration(PredicateDeclaration ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitQuantifierVariable(QuantifierVariable ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitObjectProposition(ObjectProposition ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitConstructorDeclaration(ConstructorDeclaration ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitStatementExpression(StatementExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitQuantificationExpression(QuantificationExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitMethodSpecVariable(MethodSpecVariable ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitMethodSpecVariables(MethodSpecVariables ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitMethodSpecExpression(MethodSpecExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitAllocationExpression(AllocationExpression ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitCompilationUnits(CompilationUnits ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitLocalVariableDeclaration(LocalVariableDeclaration ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitDeclarationStatement(DeclarationStatement ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitQuantifierVariables(QuantifierVariables ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitWhileStatement(WhileStatement ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
-  public Object visitForStatement(ForStatement ast, Object o, BufferedWriter out) throws ParseException { visitChildren(ast, o, out); return null; }
+  public void visitPredicateDeclaration(PredicateDeclaration ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitQuantifierVariable(QuantifierVariable ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitObjectProposition(ObjectProposition ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitConstructorDeclaration(ConstructorDeclaration ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitStatementExpression(StatementExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitQuantificationExpression(QuantificationExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitMethodSpecVariable(MethodSpecVariable ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitMethodSpecVariables(MethodSpecVariables ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitMethodSpecExpression(MethodSpecExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitAllocationExpression(AllocationExpression ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitCompilationUnits(CompilationUnits ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitLocalVariableDeclaration(LocalVariableDeclaration ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitDeclarationStatement(DeclarationStatement ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitQuantifierVariables(QuantifierVariables ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitWhileStatement(WhileStatement ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
+  public void visitForStatement(ForStatement ast, BufferedWriter out) throws ParseException { visitChildren(ast, out); }
 
 }

@@ -15,7 +15,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class CompilationUnits extends AST
 {
-	private List<CompilationUnit> units = new ArrayList();
+	private List<CompilationUnit> units = new ArrayList<CompilationUnit>();
     private CompilationUnit[] children = null;
 
     public CompilationUnits()
@@ -58,9 +58,9 @@ public class CompilationUnits extends AST
         return children;
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitCompilationUnits(this, o, out);
+        v.visitCompilationUnits(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

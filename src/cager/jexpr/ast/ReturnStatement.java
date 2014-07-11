@@ -32,9 +32,9 @@ public class ReturnStatement extends Statement
             return new AST[] { e };
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitReturnStatement(this, o, out);
+        v.visitReturnStatement(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

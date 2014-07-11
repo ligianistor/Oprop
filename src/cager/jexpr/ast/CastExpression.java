@@ -31,9 +31,9 @@ public class CastExpression extends Expression
         return expression;
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitCastExpression(this, o, out);
+        v.visitCastExpression(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

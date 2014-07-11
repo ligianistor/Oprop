@@ -49,9 +49,9 @@ public class IfStatement extends Statement
     		return new AST[] { e, thenClause };
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitIfStatement(this, o, out);
+        v.visitIfStatement(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

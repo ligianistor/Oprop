@@ -57,9 +57,9 @@ public class ArgumentList extends Expression
         return children;
     }    
     
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitArgumentList(this, o, out);
+       v.visitArgumentList(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

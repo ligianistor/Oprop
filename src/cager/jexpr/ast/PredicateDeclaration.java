@@ -57,9 +57,9 @@ public class PredicateDeclaration extends AST
         return new AST[] { parameters, exp };
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitPredicateDeclaration(this, o, out);
+        v.visitPredicateDeclaration(this, out);
     }
 
     public void dump(int level, BufferedWriter out)

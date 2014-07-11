@@ -49,28 +49,26 @@ public class ContextVisitor extends NullVisitor
 {
     //CompilationUnit cu;
 
-    public Object visitCompilationUnits(CompilationUnits ast, Object o, BufferedWriter out) throws ParseException
+    public void visitCompilationUnits(CompilationUnits ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
-        return null;
+        visitChildren(ast, out);
     }
     
-    public Object visitCompilationUnit(CompilationUnit ast, Object o, BufferedWriter out) throws ParseException
+    public void visitCompilationUnit(CompilationUnit ast, BufferedWriter out) throws ParseException
     {
         //cu = ast;
 
-        visitChildren(ast, o, out);
-        return null;
+        visitChildren(ast, out);
+
     }
 
-    public Object visitClassDeclaration(ClassDeclaration ast, Object o, BufferedWriter out) throws ParseException
+    public void visitClassDeclaration(ClassDeclaration ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
-        return null;
     }
 
-    public Object visitMethodDeclaration(MethodDeclaration ast, Object o, BufferedWriter out) throws ParseException
+    public void visitMethodDeclaration(MethodDeclaration ast, BufferedWriter out) throws ParseException
     {
     	try {
         out.write("Visiting Method " + ast.getIdentifier()+"\n");
@@ -79,21 +77,19 @@ public class ContextVisitor extends NullVisitor
     		System.err.println("Error: " + e.getMessage());
     	}
 
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
-        return null;
     }
 
-    public Object visitReturnStatement(ReturnStatement ast, Object o, BufferedWriter out) throws ParseException
+    public void visitReturnStatement(ReturnStatement ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
-        return null;
     }
 
-    public Object visitFieldSelection(FieldSelection ast, Object o, BufferedWriter out) throws ParseException
+    public void visitFieldSelection(FieldSelection ast, BufferedWriter out) throws ParseException
     {
-    	visitChildren(ast, o, out);
+    	visitChildren(ast, out);
     	
     	if (ast.getType() == null)
         {
@@ -127,7 +123,7 @@ public class ContextVisitor extends NullVisitor
             
             e1 = components[i-1];
             if (e1.getType() == null) {
-            	return null; // This is for cases like System.out.print
+                return; // This is for cases like System.out.print
             }
             
             String className = e1.getType().toString();
@@ -174,13 +170,12 @@ public class ContextVisitor extends NullVisitor
             	}
             }
         }
-    	
-        return null;
+
     }
 
-    public Object visitBinaryExpression(BinaryExpression ast, Object o, BufferedWriter out) throws ParseException
+    public void visitBinaryExpression(BinaryExpression ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
         if (ast.getType() == null)
         {
@@ -227,13 +222,11 @@ public class ContextVisitor extends NullVisitor
             	}
             }
         }
-
-        return null;
     }
     
-    public Object visitObjectProposition(ObjectProposition ast, Object o, BufferedWriter out) throws ParseException
+    public void visitObjectProposition(ObjectProposition ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
         if (ast.getType() == null)
         {
@@ -246,7 +239,6 @@ public class ContextVisitor extends NullVisitor
             ast.setType(Type.BOOLEAN);
         }
 
-        return null;
     }
 
     private void tempDebug(BinaryExpression ast)
@@ -265,9 +257,9 @@ public class ContextVisitor extends NullVisitor
 
     }
 
-    public Object visitUnaryExpression(UnaryExpression ast, Object o, BufferedWriter out) throws ParseException
+    public void visitUnaryExpression(UnaryExpression ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
         if (ast.getType() == null)
         {
@@ -276,7 +268,6 @@ public class ContextVisitor extends NullVisitor
 
         // Should never need to cast??
 
-        return null;
     }
 /*
     public Object visitPrimaryExpression(PrimaryExpression ast, Object o) throws ParseException
@@ -291,9 +282,9 @@ public class ContextVisitor extends NullVisitor
         return null;
     }
 */
-    public Object visitPrimaryExpression(PrimaryExpression ast, Object o, BufferedWriter out) throws ParseException
+    public void visitPrimaryExpression(PrimaryExpression ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
         Expression[] components = (Expression[])ast.getChildren();
         Expression component;
@@ -307,7 +298,7 @@ public class ContextVisitor extends NullVisitor
             	catch (Exception e) {
             		System.err.println("Error: " + e.getMessage());
             	}
-            	return null;
+            	return;
             }
         }
         
@@ -320,33 +311,30 @@ public class ContextVisitor extends NullVisitor
         catch (Exception e) {
         	System.err.println("Error: " + e.getMessage());
         }
-        return null;
     }
     
-    public Object visitFormalParameter(FormalParameter ast, Object o, BufferedWriter out) throws ParseException
+    public void visitFormalParameter(FormalParameter ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
         ast.setType(ast.getType());
 
-        return null;
     }
     
-    public Object visitLocalVariableDeclaration(LocalVariableDeclaration ast, Object o, BufferedWriter out) throws ParseException
+    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast, BufferedWriter out) throws ParseException
     {
-    	visitChildren(ast, o, out);
+    	visitChildren(ast, out);
 
         ast.setType(ast.getType());
-
-        return null;
+        
     }
     
     /**
      * jhlee
      */
-    public Object visitKeywordExpression(KeywordExpression ast, Object o, BufferedWriter out) throws ParseException
+    public void visitKeywordExpression(KeywordExpression ast, BufferedWriter out) throws ParseException
     { 
-    	visitChildren(ast, o, out);
+    	visitChildren(ast, out);
     	
     	if (ast.getType() == null)
         {
@@ -367,8 +355,7 @@ public class ContextVisitor extends NullVisitor
 	        ClassDeclaration cd = (ClassDeclaration) parent;
 	        ast.setType(Types.getType(cd.getIdentifier().name));
         }
-        
-    	return null;
+
     }
     
     /*
@@ -465,7 +452,7 @@ public class ContextVisitor extends NullVisitor
     */
 
     //jhlee
-    public Object visitIdentifierExpression(IdentifierExpression ast, Object o, BufferedWriter out) throws ParseException
+    public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out) throws ParseException
     {
         if (ast.getType() == null)
         {
@@ -494,7 +481,7 @@ public class ContextVisitor extends NullVisitor
             			ast.setDeclaration(vd);
             			Type t = vd.getType();
             			ast.setType(t);
-            			return null;
+            			return;
             		}
             	}
             }
@@ -517,7 +504,7 @@ public class ContextVisitor extends NullVisitor
                 			ast.setDeclaration(vd);
                 			Type t = vd.getType();
                 			ast.setType(t);
-                			return null;
+                			return;
                 		}
                 	}
                 }
@@ -542,7 +529,7 @@ public class ContextVisitor extends NullVisitor
                 	ast.setDeclaration(param);
                 	Type t = param.getType();
                 	ast.setType(t);
-                	return null;
+                	return;
                 }
                           
                 Block block = md.getBlock();
@@ -555,7 +542,7 @@ public class ContextVisitor extends NullVisitor
                 			ast.setDeclaration(vd);
                 			Type t = vd.getType();
                 			ast.setType(t);
-                			return null;
+                			return;
                 		}
                 	}
                 }
@@ -581,7 +568,7 @@ public class ContextVisitor extends NullVisitor
                 		ast.setDeclaration(msv);
                 		Type t = msv.getType();
                 		ast.setType(t);
-                		return null;
+                		return;
                 	}
                 }
             } else if (parent instanceof PredicateDeclaration) {
@@ -593,7 +580,7 @@ public class ContextVisitor extends NullVisitor
                 	ast.setDeclaration(param);
                 	Type t = param.getType();
                 	ast.setType(t);
-                	return null;
+                	return;
                 }
   /*              
                 ExistentialQuantification eq = pd.getExistentialQuantification();
@@ -615,7 +602,7 @@ public class ContextVisitor extends NullVisitor
                 		ast.setDeclaration(qv);
                 		Type t = qv.getType();
                 		ast.setType(t);
-                		return null;
+                		return;
                 	}
                 	exp = ((QuantificationExpression) exp).getBody();
                 }
@@ -629,7 +616,7 @@ public class ContextVisitor extends NullVisitor
                 	ast.setDeclaration(param);
                 	Type t = param.getType();
                 	ast.setType(t);
-                	return null;
+                	return;
                 }
             }
             
@@ -652,39 +639,36 @@ public class ContextVisitor extends NullVisitor
             	if (fd != null) {
             		ast.setDeclaration(fd);
             		t = fd.getType();
+            		 
             	} else { ////given Identifier ast was a predicate
-            		return null;
+            		return;
             	}
             }
-
             ast.setType(t);
+           
         }
 
-        return null;
     }
     
-    public Object visitIfStatement(IfStatement ast, Object o, BufferedWriter out) throws ParseException
+    public void visitIfStatement(IfStatement ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
         if (!ast.getExpression().getType().equals(Type.BOOLEAN))
         {
             throw new ParseException("Invalid Type of expression in If Statement");
         }
-
-        return null;
     }
     
-    public Object visitWhileStatement(WhileStatement ast, Object o, BufferedWriter out) throws ParseException
+    public void visitWhileStatement(WhileStatement ast, BufferedWriter out) throws ParseException
     {
-        visitChildren(ast, o, out);
+        visitChildren(ast, out);
 
         if (!ast.getExpression().getType().equals(Type.BOOLEAN))
         {
             throw new ParseException("Invalid Type of expression in While Statement");
         }
 
-        return null;
     }
 
 /*

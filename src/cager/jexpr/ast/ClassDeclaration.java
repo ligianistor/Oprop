@@ -202,16 +202,17 @@ package cager.jexpr.ast;
 
 import java.io.BufferedWriter;
 import java.util.List;
+import java.util.ArrayList;
 
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
 public class ClassDeclaration extends AST
 {
-	private List fields = new java.util.ArrayList(); //jhlee
-	private List constructors = new java.util.ArrayList(); //jhlee
-	private List predicates = new java.util.ArrayList(); //jhlee 
-    private List methods = new java.util.ArrayList();
+	private List<FieldDeclaration> fields = new ArrayList<FieldDeclaration>(); //jhlee
+	private List<ConstructorDeclaration> constructors = new ArrayList<ConstructorDeclaration>(); //jhlee
+	private List<PredicateDeclaration> predicates = new ArrayList<PredicateDeclaration>(); //jhlee 
+    private List<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
     //private MethodDeclaration[] children = null;
     private AST[] children = null; //jhlee
     
@@ -318,9 +319,9 @@ public class ClassDeclaration extends AST
     	return children;
     }
 
-    public Object visit(Visitor v, Object o, BufferedWriter out) throws ParseException
+    public void visit(Visitor v, BufferedWriter out) throws ParseException
     {
-        return v.visitClassDeclaration(this, o, out);
+        v.visitClassDeclaration(this, out);
     }
 
     public void dump(int level, BufferedWriter out)
