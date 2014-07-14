@@ -28,9 +28,9 @@ public class QuantifierVariable extends VariableDeclaration
         return new AST[0];
     }
 
-    public void visit(Visitor v, BufferedWriter out) throws ParseException
+    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
     {
-        v.visitQuantifierVariable(this, out);
+        v.visitQuantifierVariable(this, out, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

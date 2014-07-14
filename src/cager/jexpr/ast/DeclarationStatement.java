@@ -55,9 +55,9 @@ public class DeclarationStatement extends Statement
             return new AST[] { vd, exp };
     }
 
-    public void visit(Visitor v, BufferedWriter out) throws ParseException
+    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
     {
-         v.visitDeclarationStatement(this, out);
+         v.visitDeclarationStatement(this, out, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

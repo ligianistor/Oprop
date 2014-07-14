@@ -22,9 +22,9 @@ public class LocalVariableDeclaration extends VariableDeclaration
         return new AST[] { };
     }
 
-    public void visit(Visitor v, BufferedWriter out) throws ParseException
+    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
     {
-         v.visitLocalVariableDeclaration(this, out);
+         v.visitLocalVariableDeclaration(this, out, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

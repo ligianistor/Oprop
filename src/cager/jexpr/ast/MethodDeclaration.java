@@ -182,9 +182,9 @@ public class MethodDeclaration extends TypedAST
         return new AST[] { parameters, msexp, block };
     }
 
-    public void visit(Visitor v, BufferedWriter out) throws ParseException
+    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
     {
-        v.visitMethodDeclaration(this, out);
+        v.visitMethodDeclaration(this, out, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

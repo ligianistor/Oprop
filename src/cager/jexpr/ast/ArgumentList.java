@@ -14,7 +14,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class ArgumentList extends Expression
 {
-	private List arguments = new ArrayList();
+	private List<Expression> arguments = new ArrayList<Expression>();
     private Expression[] children = null;
 
     public ArgumentList()
@@ -57,9 +57,9 @@ public class ArgumentList extends Expression
         return children;
     }    
     
-    public void visit(Visitor v, BufferedWriter out) throws ParseException
+    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
     {
-       v.visitArgumentList(this, out);
+       v.visitArgumentList(this, out, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

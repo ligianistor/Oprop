@@ -94,15 +94,16 @@ public class JExpr implements JExprConstants {
             ast_top.dump(0, out);
             out.write("before visitor v\n");
             Visitor v = new ContextVisitor();
-            ast_top.visit(v, out);
+            ast_top.accept(v, out, "");
             out.write("before second dump 0\n");
             ast_top.dump(0, out);
-            Visitor bv = new BoogieVisitor();
-            ast_top.visit(bv, outBoogie);
+            BoogieVisitor bv = new BoogieVisitor();
+            ast_top.accept(bv, outBoogie, "");
             ast_top.dump(0, outBoogie);
             //Close the output streams
-            out.close();
             outBoogie.close();
+            out.close();
+           
 
         }
         else

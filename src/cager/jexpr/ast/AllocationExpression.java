@@ -23,9 +23,9 @@ public class AllocationExpression extends Expression
         return new AST[] { body };
     }
 
-    public void visit(Visitor v, BufferedWriter out) throws ParseException
+    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
     {
-        v.visitAllocationExpression(this, out);
+        v.visitAllocationExpression(this, out, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)
