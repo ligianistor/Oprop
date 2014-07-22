@@ -61,8 +61,7 @@ public class JExpr implements JExprConstants {
                 // Create file 
                 FileWriter fstream = new FileWriter(intermFile);
                 out = new BufferedWriter(fstream);
-                FileWriter fstreamBoogie = new FileWriter(boogieFile);
-                outBoogie = new BufferedWriter(fstreamBoogie);
+                
                 try {
                 	out.write("Java Parser Version 1.1 (for Java1.2 code):  Reading from file " + filename + "...\n");
                     	try {
@@ -97,12 +96,14 @@ public class JExpr implements JExprConstants {
             ast_top.accept(v, out, "");
             out.write("before second dump 0\n");
             ast_top.dump(0, out);
+            out.close();
+            FileWriter fstreamBoogie = new FileWriter(boogieFile);
+            outBoogie = new BufferedWriter(fstreamBoogie);
             BoogieVisitor bv = new BoogieVisitor();
             ast_top.accept(bv, outBoogie, "");
-            ast_top.dump(0, outBoogie);
             //Close the output streams
             outBoogie.close();
-            out.close();
+            
            
 
         }
