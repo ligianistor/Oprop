@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.bcel.generic.Type;
 
+import cager.jexpr.JExprConstants;
 import cager.jexpr.OperatorTypeInfo;
 import cager.jexpr.ParseException;
 import cager.jexpr.Types;
@@ -52,7 +53,7 @@ public class BoogieVisitor extends NullVisitor {
 		
     public void visitCompilationUnits(CompilationUnits ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
     }
     
     public void visitCompilationUnit(CompilationUnit ast, BufferedWriter out, String namePredicate) throws ParseException
@@ -70,7 +71,7 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
     }
     
     public void visitFieldDeclaration(FieldDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException 
@@ -81,7 +82,7 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-    	visitChildren(ast, out, "");  
+    	visitChildren(ast, out, namePredicate);  
     	}
     
     public void visitPredicateDeclaration(PredicateDeclaration ast, BufferedWriter out, String namePredicate1) throws ParseException
@@ -99,78 +100,130 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast, out, namePredicate); 
     }
     
+    public void visitQuantifierVariable(QuantifierVariable ast, BufferedWriter out, String namePredicate) throws ParseException
+  	{ 
+    	HashMap<String,String> params = new HashMap<String,String>();
+    	params.put(ast.getName(), "");
+    	quantifiedVars.put(namePredicate, params);
+    	
+    	visitChildren(ast, out, namePredicate); 
+    }
+    
     
 
     public void visitMethodDeclaration(MethodDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-    	visitChildren(ast, out, "");
+    	visitChildren(ast, out, namePredicate);
     }
 
     public void visitReturnStatement(ReturnStatement ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
 
     }
 
     public void visitFieldSelection(FieldSelection ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-    	visitChildren(ast, out, "");
+    	visitChildren(ast, out, namePredicate);
     }
 
     public void visitBinaryExpression(BinaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");    
+    	if (ast.op.getId() == JExprConstants.KEYACCESS){
+    		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
+    		PrimaryExpression e2 = (PrimaryExpression)ast.E2;
+    		FieldSelection f = (FieldSelection)(e1.getChildren()[1]);
+    		String nameField = f.getIdentifier().name;
+    		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
+    		String fieldValue = i.getName();
+    		
+    		HashMap<String,String> params = new HashMap<String,String>();
+        	params.put(fieldValue, nameField);
+        	quantifiedVars.put(namePredicate, params);
+        	try{
+        	 out.write(" true ");
+        	}
+        	 catch (Exception e) {
+		    		System.err.println("Error: " + e.getMessage());
+		      }
+    		return;
+    	}
+    	
+    	if (ast.op.getId() == JExprConstants.SC_AND){
+    		
+    		  AST[] children = ast.getChildren();
+    		
+    			  children[0].accept(this, out, namePredicate);
+    			
+    			  
+    			  try{
+    			  out.write(" && ");
+    			  }
+    		      catch (Exception e) {
+    		    		System.err.println("Error: " + e.getMessage());
+    		      }
+    			  
+    			  children[1].accept(this, out, namePredicate);
+    		  
+    		return;
+    	}
+    	
+    	
+    	
+    	
+    	
+           
 
     }
     
     public void visitObjectProposition(ObjectProposition ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
     }
 
    
     public void visitUnaryExpression(UnaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
     }
 
     public void visitPrimaryExpression(PrimaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
     }
     
     public void visitFormalParameter(FormalParameter ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
 
     }
     
     public void visitLocalVariableDeclaration(LocalVariableDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-    	visitChildren(ast, out, "");
+    	visitChildren(ast, out, namePredicate);
     }
     
     public void visitKeywordExpression(KeywordExpression ast, BufferedWriter out, String namePredicate) throws ParseException
     { 
-    	visitChildren(ast, out, "");
+    	visitChildren(ast, out, namePredicate);
 
     }
  
     public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out, String namePredicate) throws ParseException
     {
        
-    	visitChildren(ast, out, "");
+    	visitChildren(ast, out, namePredicate);
     }
     
     public void visitIfStatement(IfStatement ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
 
     }
     
     public void visitWhileStatement(WhileStatement ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast, out, namePredicate);
 
     }
 
