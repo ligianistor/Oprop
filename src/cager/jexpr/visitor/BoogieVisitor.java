@@ -28,6 +28,7 @@ import cager.jexpr.ast.FormalParameters;
 import cager.jexpr.ast.IdentifierExpression;
 import cager.jexpr.ast.IfStatement;
 import cager.jexpr.ast.KeywordExpression;
+import cager.jexpr.ast.LiteralExpression;
 import cager.jexpr.ast.LocalVariableDeclaration;
 import cager.jexpr.ast.MethodDeclaration;
 import cager.jexpr.ast.MethodSpecExpression;
@@ -103,6 +104,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitQuantifierVariable(QuantifierVariable ast, BufferedWriter out, String namePredicate) throws ParseException
   	{ 
     	HashMap<String,String> params = new HashMap<String,String>();
+    	System.out.println(ast.getName()+"XXX namePredicate="+ namePredicate );
     	params.put(ast.getName(), "");
     	quantifiedVars.put(namePredicate, params);
     	
@@ -139,6 +141,7 @@ public class BoogieVisitor extends NullVisitor {
     		
     		HashMap<String,String> params = new HashMap<String,String>();
         	params.put(fieldValue, nameField);
+        	System.out.println("fieldValue= " + fieldValue + "nameField=" +nameField+ "namePredicate=" + namePredicate);
         	quantifiedVars.put(namePredicate, params);
         	try{
         	 out.write(" true ");
@@ -149,32 +152,43 @@ public class BoogieVisitor extends NullVisitor {
     		return;
     	}
     	
-    	if (ast.op.getId() == JExprConstants.SC_AND){
-    		
-    		  AST[] children = ast.getChildren();
-    		
-    			  children[0].accept(this, out, namePredicate);
-    			
-    			  
-    			  try{
-    			  out.write(" && ");
-    			  }
-    		      catch (Exception e) {
-    		    		System.err.println("Error: " + e.getMessage());
-    		      }
-    			  
-    			  children[1].accept(this, out, namePredicate);
-    		  
-    		return;
+    	if (ast.op.getId() == JExprConstants.ASSIGN){
+    		helperBinaryExpression(ast, out, namePredicate, ":=");
     	}
-    	
-    	
-    	
-    	
-    	
-           
-
+    	else {
+    		helperBinaryExpression(ast, out, namePredicate, ast.op.getName());
     }
+    }
+    
+    public void helperBinaryExpression(BinaryExpression ast, BufferedWriter out, 
+    		     String namePredicate, String operatorSymbol) throws ParseException
+    {
+    	AST[] children = ast.getChildren();
+		
+		  children[0].accept(this, out, namePredicate);
+		  try{
+		  out.write(operatorSymbol);
+		  }
+	      catch (Exception e) {
+	    		System.err.println("Error: " + e.getMessage());
+	      }
+		  
+		  children[1].accept(this, out, namePredicate);
+		  
+		  return;
+    }
+        
+    public void visitLiteralExpression(LiteralExpression ast, BufferedWriter out, String namePredicate)
+  		  throws ParseException
+  		  { 
+    	 try{
+			  out.write(ast.value.toString());
+			  }
+		      catch (Exception e) {
+		    		System.err.println("Error: " + e.getMessage());
+		      }
+    	
+    	visitChildren(ast, out, namePredicate); }
     
     public void visitObjectProposition(ObjectProposition ast, BufferedWriter out, String namePredicate) throws ParseException
     {
@@ -211,7 +225,31 @@ public class BoogieVisitor extends NullVisitor {
  
     public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out, String namePredicate) throws ParseException
     {
-       
+       String identifierName = ast.name;
+       System.out.println("identifierName=" + identifierName);
+       HashMap<String,String> params = quantifiedVars.get(namePredicate);
+       System.out.println("namePredicate=" + namePredicate);
+       if (params!=null){
+    	   System.out.println("im here");
+       String fieldName = params.get(identifierName);
+       if (!(fieldName==null)){
+       if (!fieldName.equals(""))
+    	   try{
+ 			  out.write(fieldName+ "[this]");
+ 			  }
+ 		      catch (Exception e) {
+ 		    		System.err.println("Error: " + e.getMessage());
+ 		      }
+       }
+       }
+       else {
+    	   try{
+  			  out.write(identifierName);
+  			  }
+  		      catch (Exception e) {
+  		    		System.err.println("Error: " + e.getMessage());
+  		      };
+       }
     	visitChildren(ast, out, namePredicate);
     }
     
@@ -221,11 +259,7 @@ public class BoogieVisitor extends NullVisitor {
 
     }
     
-    public void visitWhileStatement(WhileStatement ast, BufferedWriter out, String namePredicate) throws ParseException
-    {
-        visitChildren(ast, out, namePredicate);
-
-    }
+   
 
 
 }
