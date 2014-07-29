@@ -45,6 +45,7 @@ import cager.jexpr.ast.QuantifierVariable;
 import cager.jexpr.ast.QuantifierVariables;
 import cager.jexpr.ast.ReturnStatement;
 import cager.jexpr.ast.Statement;
+import cager.jexpr.ast.StatementExpression;
 import cager.jexpr.ast.UnaryExpression;
 import cager.jexpr.ast.VariableDeclaration;
 import cager.jexpr.ast.WhileStatement;
@@ -258,6 +259,18 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast, out, namePredicate);
 
     }
+    
+    public void visitStatementExpression(StatementExpression ast, BufferedWriter out, String namePredicate)
+  		  throws ParseException
+  		  { 
+    		visitChildren(ast, out, namePredicate);
+    		try {
+        		out.write(";\n");
+        	}
+        	catch (Exception e) {
+        		System.err.println("Error: " + e.getMessage());
+        	}
+  		  }
     
    
 
