@@ -2,13 +2,16 @@ package cager.jexpr.visitor;
 
 import java.io.BufferedWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.bcel.generic.Type;
 
 import cager.jexpr.JExprConstants;
 import cager.jexpr.OperatorTypeInfo;
 import cager.jexpr.ParseException;
+import cager.jexpr.PredicateAndFieldValue;
 import cager.jexpr.Types;
 import cager.jexpr.ast.AST;
 import cager.jexpr.ast.BinaryExpression;
@@ -50,7 +53,7 @@ import cager.jexpr.ast.WhileStatement;
  * This class visits the AST to generate the Boogie code.
  */
 public class BoogieVisitor extends NullVisitor {
-	HashMap<String, HashMap<String, String>> quantifiedVars= new HashMap<String, HashMap<String, String>> ();
+	HashMap<PredicateAndFieldValue, String> quantifiedVars= new HashMap<PredicateAndFieldValue, String> ();
 		
     public void visitCompilationUnits(CompilationUnits ast, BufferedWriter out, String namePredicate) throws ParseException
     {
@@ -95,19 +98,13 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-    	HashMap<String,String> emptyParams = new HashMap<String,String>();
-    	quantifiedVars.put(namePredicate, emptyParams);
     	
     	visitChildren(ast, out, namePredicate); 
     }
     
     public void visitQuantifierVariable(QuantifierVariable ast, BufferedWriter out, String namePredicate) throws ParseException
   	{ 
-    	HashMap<String,String> params = new HashMap<String,String>();
-    	System.out.println(ast.getName()+"XXX namePredicate="+ namePredicate );
-    	params.put(ast.getName(), "");
-    	quantifiedVars.put(namePredicate, params);
-    	
+    	   	    	
     	visitChildren(ast, out, namePredicate); 
     }
     
@@ -139,10 +136,9 @@ public class BoogieVisitor extends NullVisitor {
     		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
     		String fieldValue = i.getName();
     		
-    		HashMap<String,String> params = new HashMap<String,String>();
-        	params.put(fieldValue, nameField);
-        	System.out.println("fieldValue= " + fieldValue + "nameField=" +nameField+ "namePredicate=" + namePredicate);
-        	quantifiedVars.put(namePredicate, params);
+        	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, fieldValue);
+        	quantifiedVars.put(pv, nameField);
+
         	try{
         	 out.write(" true ");
         	}
@@ -226,22 +222,26 @@ public class BoogieVisitor extends NullVisitor {
     public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out, String namePredicate) throws ParseException
     {
        String identifierName = ast.name;
-       System.out.println("identifierName=" + identifierName);
-       HashMap<String,String> params = quantifiedVars.get(namePredicate);
-       System.out.println("namePredicate=" + namePredicate);
-       if (params!=null){
-    	   System.out.println("im here");
-       String fieldName = params.get(identifierName);
-       if (!(fieldName==null)){
-       if (!fieldName.equals(""))
+       
+       PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
+
+       String fieldName = "";
+       Iterator<Entry<PredicateAndFieldValue, String>> j = quantifiedVars.entrySet().iterator(); 
+       while(j.hasNext()){
+    	   PredicateAndFieldValue key = j.next().getKey();
+           if (key.equals(pv))
+           {
+        	   fieldName = quantifiedVars.get(key);
+           }
+       }
+       
+       if (!(fieldName.equals("")))
     	   try{
  			  out.write(fieldName+ "[this]");
  			  }
  		      catch (Exception e) {
  		    		System.err.println("Error: " + e.getMessage());
  		      }
-       }
-       }
        else {
     	   try{
   			  out.write(identifierName);
