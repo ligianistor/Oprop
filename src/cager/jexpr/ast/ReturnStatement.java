@@ -32,9 +32,9 @@ public class ReturnStatement extends Statement
             return new AST[] { e };
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitReturnStatement(this, out, namePredicate);
+        v.visitReturnStatement(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

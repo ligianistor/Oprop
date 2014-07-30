@@ -35,9 +35,9 @@ public class RequiresExpression extends Expression {
             return new AST[] { e };
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitRequiresExpression(this, out, namePredicate);
+        v.visitRequiresExpression(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

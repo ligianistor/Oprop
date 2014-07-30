@@ -41,9 +41,9 @@ public class FieldSelection extends Expression
         return children;
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitFieldSelection(this, out, namePredicate);
+        v.visitFieldSelection(this, namePredicate);
         //return "TODO";
     }
 

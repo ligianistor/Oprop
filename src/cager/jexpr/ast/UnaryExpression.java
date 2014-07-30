@@ -41,9 +41,9 @@ public class UnaryExpression extends Expression
         return new AST[] { E };
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitUnaryExpression(this, out, namePredicate);
+        v.visitUnaryExpression(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

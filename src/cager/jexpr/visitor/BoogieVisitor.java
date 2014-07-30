@@ -56,13 +56,18 @@ import cager.jexpr.ast.WhileStatement;
 public class BoogieVisitor extends NullVisitor {
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = new HashMap<PredicateAndFieldValue, String> ();
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
+	BufferedWriter out;
+	
+	public BoogieVisitor(BufferedWriter boogieFile) {
+		out = boogieFile;
+	}
 		
-    public void visitCompilationUnits(CompilationUnits ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitCompilationUnits(CompilationUnits ast, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
     }
     
-    public void visitCompilationUnit(CompilationUnit ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitCompilationUnit(CompilationUnit ast, String namePredicate) throws ParseException
     {
     	try {
         out.write("type Ref;\n");
@@ -77,10 +82,10 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
     }
     
-    public void visitFieldDeclaration(FieldDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException 
+    public void visitFieldDeclaration(FieldDeclaration ast, String namePredicate) throws ParseException 
     { 
     	try {
     		out.write("var "+ ast.getName()+" [Ref]"+ast.getType()+";\n");
@@ -88,10 +93,10 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-    	visitChildren(ast, out, namePredicate);  
+    	visitChildren(ast, namePredicate);  
     	}
     
-    public void visitPredicateDeclaration(PredicateDeclaration ast, BufferedWriter out, String namePredicate1) throws ParseException
+    public void visitPredicateDeclaration(PredicateDeclaration ast, String namePredicate1) throws ParseException
     { 
     	String namePredicate = ast.getIdentifier().getName().toLowerCase();
     	
@@ -105,19 +110,19 @@ public class BoogieVisitor extends NullVisitor {
     	predicateBody.put(namePredicate, "");
     	
     	
-    	visitChildren(ast, out, namePredicate); 
+    	visitChildren(ast, namePredicate); 
     }
     
-    public void visitQuantifierVariable(QuantifierVariable ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitQuantifierVariable(QuantifierVariable ast, String namePredicate) throws ParseException
   	{ 
     	   	    	
-    	visitChildren(ast, out, namePredicate); 
+    	visitChildren(ast, namePredicate); 
     }
     
     
  //Since methods are not children of 
  //Predicate, we might not need namePredicate here
-    public void visitMethodDeclaration(MethodDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitMethodDeclaration(MethodDeclaration ast, String namePredicate) throws ParseException
     {
     	
     	Iterator<Entry<String, String>> j = predicateBody.entrySet().iterator(); 
@@ -149,21 +154,21 @@ public class BoogieVisitor extends NullVisitor {
         }
         
          
-    	visitChildren(ast, out, namePredicate);
+    	visitChildren(ast, namePredicate);
     }
 
-    public void visitReturnStatement(ReturnStatement ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitReturnStatement(ReturnStatement ast, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
 
     }
 
-    public void visitFieldSelection(FieldSelection ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitFieldSelection(FieldSelection ast, String namePredicate) throws ParseException
     {
-    	visitChildren(ast, out, namePredicate);
+    	visitChildren(ast, namePredicate);
     }
 
-    public void visitBinaryExpression(BinaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitBinaryExpression(BinaryExpression ast, String namePredicate) throws ParseException
     {
     	if (ast.op.getId() == JExprConstants.KEYACCESS){
     		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
@@ -180,21 +185,21 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	
     	if (ast.op.getId() == JExprConstants.ASSIGN){
-    		helperBinaryExpression(ast, out, namePredicate, ":=");
+    		helperBinaryExpression(ast, namePredicate, ":=");
     		return;
     	}
     	    		
-    			helperBinaryExpression(ast, out, namePredicate, ast.op.getName());
+    			helperBinaryExpression(ast, namePredicate, ast.op.getName());
     			return;
     		
     }
     
-    public void helperBinaryExpression(BinaryExpression ast, BufferedWriter out, 
+    public void helperBinaryExpression(BinaryExpression ast, 
     		     String namePredicate, String operatorSymbol) throws ParseException
     {
     	AST[] children = ast.getChildren();
 		
-		  children[0].accept(this, out, namePredicate);
+		  children[0].accept(this, namePredicate);
 		  if (namePredicate.equals("")){
 		  try{
 		  out.write(operatorSymbol);
@@ -210,10 +215,10 @@ public class BoogieVisitor extends NullVisitor {
 		  }
 		  
 		  
-		  children[1].accept(this, out, namePredicate);
+		  children[1].accept(this, namePredicate);
     }
         
-    public void visitLiteralExpression(LiteralExpression ast, BufferedWriter out, String namePredicate)
+    public void visitLiteralExpression(LiteralExpression ast, String namePredicate)
   		  throws ParseException
   		  { 
     	String astvalue = ast.value.toString();
@@ -231,12 +236,12 @@ public class BoogieVisitor extends NullVisitor {
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(astvalue));
     	}
     	
-    	visitChildren(ast, out, namePredicate); }
+    	visitChildren(ast, namePredicate); }
     
-    public void visitObjectProposition(ObjectProposition ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitObjectProposition(ObjectProposition ast, String namePredicate) throws ParseException
     {
    
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
         try {
     		out.write(";\n");
     	}
@@ -246,19 +251,19 @@ public class BoogieVisitor extends NullVisitor {
     }
 
    
-    public void visitUnaryExpression(UnaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitUnaryExpression(UnaryExpression ast, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
     }
 
-    public void visitPrimaryExpression(PrimaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitPrimaryExpression(PrimaryExpression ast, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
     }
     
-    public void visitFormalParameters(FormalParameters ast, BufferedWriter out, String namePredicate) throws ParseException 
+    public void visitFormalParameters(FormalParameters ast, String namePredicate) throws ParseException 
   		  { 
-    	visitChildren(ast, out, namePredicate); 
+    	visitChildren(ast, namePredicate); 
     	 try{
 			  out.write(")\n");
 			  }
@@ -267,24 +272,24 @@ public class BoogieVisitor extends NullVisitor {
 		      }
     	}
     
-    public void visitFormalParameter(FormalParameter ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitFormalParameter(FormalParameter ast, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
 
     }
     
-    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast, String namePredicate) throws ParseException
     {
-    	visitChildren(ast, out, namePredicate);
+    	visitChildren(ast, namePredicate);
     }
     
-    public void visitKeywordExpression(KeywordExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitKeywordExpression(KeywordExpression ast, String namePredicate) throws ParseException
     { 
-    	visitChildren(ast, out, namePredicate);
+    	visitChildren(ast, namePredicate);
 
     }
  
-    public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitIdentifierExpression(IdentifierExpression ast, String namePredicate) throws ParseException
     {
        String identifierName = ast.name;
        
@@ -327,19 +332,19 @@ public class BoogieVisitor extends NullVisitor {
     	   predicateBody.put(namePredicate, currentPredicateBody.concat(identifierName));
        }
        }
-    	visitChildren(ast, out, namePredicate);
+    	visitChildren(ast, namePredicate);
     }
     
-    public void visitIfStatement(IfStatement ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitIfStatement(IfStatement ast, String namePredicate) throws ParseException
     {
-        visitChildren(ast, out, namePredicate);
+        visitChildren(ast, namePredicate);
 
     }
     
-    public void visitStatementExpression(StatementExpression ast, BufferedWriter out, String namePredicate)
+    public void visitStatementExpression(StatementExpression ast, String namePredicate)
   		  throws ParseException
   		  { 
-    		visitChildren(ast, out, namePredicate);
+    		visitChildren(ast, namePredicate);
     		try {
         		out.write(";\n");
         	}
@@ -348,19 +353,19 @@ public class BoogieVisitor extends NullVisitor {
         	}
   		  }
     
-    public void visitMethodSpecVariable(MethodSpecVariable ast, BufferedWriter out, String namePredicate) 
+    public void visitMethodSpecVariable(MethodSpecVariable ast, String namePredicate) 
   		  throws ParseException 
   		  {
-    	visitChildren(ast, out, namePredicate); 
+    	visitChildren(ast, namePredicate); 
     	}
     
-    public void visitMethodSpecVariables(MethodSpecVariables ast, BufferedWriter out, String namePredicate)
+    public void visitMethodSpecVariables(MethodSpecVariables ast, String namePredicate)
   		  throws ParseException 
   		  { 
-    	visitChildren(ast, out, namePredicate); 
+    	visitChildren(ast, namePredicate); 
     	}
     
-    public void visitMethodSpecExpression(MethodSpecExpression ast, BufferedWriter out, String namePredicate) 
+    public void visitMethodSpecExpression(MethodSpecExpression ast, String namePredicate) 
   		  throws ParseException 
   		  { 
     	Expression precondition = ast.getPrecondition();
@@ -372,7 +377,7 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-    	precondition.accept(this, out, namePredicate);
+    	precondition.accept(this, namePredicate);
     	
     	try {
     		out.write("ensures ");
@@ -380,16 +385,16 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-    	postcondition.accept(this, out, namePredicate);
+    	postcondition.accept(this, namePredicate);
     	}
     
-    public void visitBlock(Block ast, BufferedWriter out, String namePredicate) 
+    public void visitBlock(Block ast,  String namePredicate) 
   		  throws ParseException 
   		  { 
     	
     	try {
     		out.write("{\n");
-    		visitChildren(ast, out, namePredicate);
+    		visitChildren(ast, namePredicate);
     		out.write("}\n ");
     	}
     	catch (Exception e) {

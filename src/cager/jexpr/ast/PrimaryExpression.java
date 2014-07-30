@@ -33,9 +33,9 @@ public class PrimaryExpression extends Expression
         return children;
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitPrimaryExpression(this, out, namePredicate);
+        v.visitPrimaryExpression(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

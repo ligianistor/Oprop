@@ -319,9 +319,9 @@ public class ClassDeclaration extends AST
     	return children;
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitClassDeclaration(this, out, namePredicate);
+        v.visitClassDeclaration(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

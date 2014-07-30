@@ -51,9 +51,9 @@ public class Block extends Statement
         return (Statement[])(statements.toArray(new Statement[statements.size()]));
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-         v.visitBlock(this, out, namePredicate);
+         v.visitBlock(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

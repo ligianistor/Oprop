@@ -45,163 +45,163 @@ import cager.jexpr.ast.WhileStatement;
 public class NullVisitor implements Visitor
 {
 
-  public void visitBinaryExpression(BinaryExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitBinaryExpression(BinaryExpression ast, String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitFieldSelection(FieldSelection ast, BufferedWriter out, String namePredicate) 
+  public void visitFieldSelection(FieldSelection ast, String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitCastExpression(CastExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitCastExpression(CastExpression ast,   String namePredicate) 
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitFormalParameter(FormalParameter ast, BufferedWriter out, String namePredicate) 
+  public void visitFormalParameter(FormalParameter ast,   String namePredicate) 
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitFormalParameters(FormalParameters ast, BufferedWriter out, String namePredicate) 
+  public void visitFormalParameters(FormalParameters ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitIdentifierExpression(IdentifierExpression ast,   String namePredicate) 
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitKeywordExpression(KeywordExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitKeywordExpression(KeywordExpression ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitLiteralExpression(LiteralExpression ast, BufferedWriter out, String namePredicate)
+  public void visitLiteralExpression(LiteralExpression ast,   String namePredicate)
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitUnaryExpression(UnaryExpression ast, BufferedWriter out, String namePredicate)
+  public void visitUnaryExpression(UnaryExpression ast,   String namePredicate)
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitVariableDeclaration(VariableDeclaration ast, BufferedWriter out, String namePredicate) 
+  public void visitVariableDeclaration(VariableDeclaration ast,   String namePredicate) 
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitCompilationUnit(CompilationUnit ast, BufferedWriter out, String namePredicate) 
+  public void visitCompilationUnit(CompilationUnit ast,   String namePredicate) 
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitClassDeclaration(ClassDeclaration ast, BufferedWriter out, String namePredicate)
+  public void visitClassDeclaration(ClassDeclaration ast,   String namePredicate)
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitMethodDeclaration(MethodDeclaration ast, BufferedWriter out, String namePredicate) 
+  public void visitMethodDeclaration(MethodDeclaration ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitReturnStatement(ReturnStatement ast, BufferedWriter out, String namePredicate)
+  public void visitReturnStatement(ReturnStatement ast,   String namePredicate)
           throws ParseException 
-          { visitChildren(ast, out, namePredicate); }
+          { visitChildren(ast,  namePredicate); }
   
-  public void visitIfStatement(IfStatement ast, BufferedWriter out, String namePredicate) 
+  public void visitIfStatement(IfStatement ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitBlock(Block ast, BufferedWriter out, String namePredicate) 
+  public void visitBlock(Block ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitArgumentList(ArgumentList ast, BufferedWriter out, String namePredicate)
+  public void visitArgumentList(ArgumentList ast,   String namePredicate)
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitPrimaryExpression(PrimaryExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitPrimaryExpression(PrimaryExpression ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitRequiresExpression(RequiresExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitRequiresExpression(RequiresExpression ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitEnsuresExpression(EnsuresExpression ast, BufferedWriter out, String namePredicate)
+  public void visitEnsuresExpression(EnsuresExpression ast,   String namePredicate)
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitFieldDeclaration(FieldDeclaration ast, BufferedWriter out, String namePredicate) 
+  public void visitFieldDeclaration(FieldDeclaration ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
   //  public abstract Object visit( ast, Object o);
 
-  public void visitChildren(AST ast, BufferedWriter out, String namePredicate) 
+  public void visitChildren(AST ast,   String namePredicate) 
 		  throws ParseException
   {
 	  AST[] children = ast.getChildren();
 	  for (int i = 0; i < children.length; i++) {
-		  children[i].accept(this, out, namePredicate);
+		  children[i].accept(this,  namePredicate);
 	  }
   }
 
-  public void visitPredicateDeclaration(PredicateDeclaration ast, BufferedWriter out, String namePredicate) 
+  public void visitPredicateDeclaration(PredicateDeclaration ast,   String namePredicate) 
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitQuantifierVariable(QuantifierVariable ast, BufferedWriter out, String namePredicate)
+  public void visitQuantifierVariable(QuantifierVariable ast,   String namePredicate)
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitObjectProposition(ObjectProposition ast, BufferedWriter out, String namePredicate)
+  public void visitObjectProposition(ObjectProposition ast,   String namePredicate)
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitConstructorDeclaration(ConstructorDeclaration ast, BufferedWriter out, String namePredicate)
+  public void visitConstructorDeclaration(ConstructorDeclaration ast,   String namePredicate)
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitStatementExpression(StatementExpression ast, BufferedWriter out, String namePredicate)
+  public void visitStatementExpression(StatementExpression ast,   String namePredicate)
 		  throws ParseException
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitQuantificationExpression(QuantificationExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitQuantificationExpression(QuantificationExpression ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitMethodSpecVariable(MethodSpecVariable ast, BufferedWriter out, String namePredicate) 
+  public void visitMethodSpecVariable(MethodSpecVariable ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitMethodSpecVariables(MethodSpecVariables ast, BufferedWriter out, String namePredicate)
+  public void visitMethodSpecVariables(MethodSpecVariables ast,   String namePredicate)
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitMethodSpecExpression(MethodSpecExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitMethodSpecExpression(MethodSpecExpression ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitAllocationExpression(AllocationExpression ast, BufferedWriter out, String namePredicate) 
+  public void visitAllocationExpression(AllocationExpression ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitCompilationUnits(CompilationUnits ast, BufferedWriter out, String namePredicate) 
+  public void visitCompilationUnits(CompilationUnits ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitLocalVariableDeclaration(LocalVariableDeclaration ast, BufferedWriter out, String namePredicate) 
+  public void visitLocalVariableDeclaration(LocalVariableDeclaration ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitDeclarationStatement(DeclarationStatement ast, BufferedWriter out, String namePredicate) 
+  public void visitDeclarationStatement(DeclarationStatement ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitQuantifierVariables(QuantifierVariables ast, BufferedWriter out, String namePredicate) 
+  public void visitQuantifierVariables(QuantifierVariables ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast,  namePredicate); }
   
-  public void visitWhileStatement(WhileStatement ast, BufferedWriter out, String namePredicate) 
+  public void visitWhileStatement(WhileStatement ast,   String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast, namePredicate); }
   
-  public void visitForStatement(ForStatement ast, BufferedWriter out, String namePredicate) 
+  public void visitForStatement(ForStatement ast, String namePredicate) 
 		  throws ParseException 
-		  { visitChildren(ast, out, namePredicate); }
+		  { visitChildren(ast, namePredicate); }
 
 }

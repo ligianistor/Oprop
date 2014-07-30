@@ -32,9 +32,9 @@ public class KeywordExpression extends Expression
         return new AST[] { };
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitKeywordExpression(this, out, namePredicate);
+        v.visitKeywordExpression(this, namePredicate);
     }
 
     public void dump(int level)

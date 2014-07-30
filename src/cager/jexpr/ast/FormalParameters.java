@@ -52,9 +52,9 @@ public class FormalParameters extends AST   // implements some Map
         return children;
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitFormalParameters(this, out, namePredicate);
+        v.visitFormalParameters(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

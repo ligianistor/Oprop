@@ -32,9 +32,9 @@ public class StatementExpression extends Statement
             return new AST[] { e };
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitStatementExpression(this, out, namePredicate);
+        v.visitStatementExpression(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

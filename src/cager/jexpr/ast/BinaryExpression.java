@@ -40,9 +40,9 @@ public class BinaryExpression extends Expression
         return children;
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitBinaryExpression(this, out, namePredicate);
+        v.visitBinaryExpression(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

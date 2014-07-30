@@ -28,9 +28,9 @@ public class MethodSpecVariable extends VariableDeclaration
         return new AST[0];
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitMethodSpecVariable(this, out, namePredicate);
+        v.visitMethodSpecVariable(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)

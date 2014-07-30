@@ -70,6 +70,6 @@ public abstract class AST
     *   Provided to implement the visitor pattern.
     *   This should be called accept
     */
-    public abstract void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException;
+    public abstract void accept(Visitor v, String namePredicate) throws ParseException;
 
 }

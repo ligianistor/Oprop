@@ -60,9 +60,9 @@ public class MethodSpecVariables extends AST   // implements some Map
         return children;
     }
 
-    public void accept(Visitor v, BufferedWriter out, String namePredicate) throws ParseException
+    public void accept(Visitor v, String namePredicate) throws ParseException
     {
-        v.visitMethodSpecVariables(this, out, namePredicate);
+        v.visitMethodSpecVariables(this, namePredicate);
     }
 
     public void dump(int level, BufferedWriter out)
