@@ -55,26 +55,26 @@ BufferedWriter out;
 	
     //CompilationUnit cu;
 
-    public void visitCompilationUnits(CompilationUnits ast, String namePredicate) throws ParseException
+    public void visitCompilationUnits(CompilationUnits ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
     }
     
-    public void visitCompilationUnit(CompilationUnit ast, String namePredicate) throws ParseException
+    public void visitCompilationUnit(CompilationUnit ast) throws ParseException
     {
         //cu = ast;
 
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
     }
 
-    public void visitClassDeclaration(ClassDeclaration ast, String namePredicate) throws ParseException
+    public void visitClassDeclaration(ClassDeclaration ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
     }
 
-    public void visitMethodDeclaration(MethodDeclaration ast, String namePredicate) throws ParseException
+    public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
     {
     	try {
         out.write("Visiting Method " + ast.getIdentifier()+"\n");
@@ -83,19 +83,19 @@ BufferedWriter out;
     		System.err.println("Error: " + e.getMessage());
     	}
 
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
     }
 
-    public void visitReturnStatement(ReturnStatement ast, String namePredicate) throws ParseException
+    public void visitReturnStatement(ReturnStatement ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
     }
 
-    public void visitFieldSelection(FieldSelection ast, String namePredicate) throws ParseException
+    public void visitFieldSelection(FieldSelection ast) throws ParseException
     {
-    	visitChildren(ast, namePredicate);
+    	visitChildren(ast);
     	
     	if (ast.getType() == null)
         {
@@ -179,9 +179,9 @@ BufferedWriter out;
 
     }
 
-    public void visitBinaryExpression(BinaryExpression ast, String namePredicate) throws ParseException
+    public void visitBinaryExpression(BinaryExpression ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
         if (ast.getType() == null)
         {
@@ -230,9 +230,9 @@ BufferedWriter out;
         }
     }
     
-    public void visitObjectProposition(ObjectProposition ast, String namePredicate) throws ParseException
+    public void visitObjectProposition(ObjectProposition ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
         if (ast.getType() == null)
         {
@@ -263,9 +263,9 @@ BufferedWriter out;
 
     }
 
-    public void visitUnaryExpression(UnaryExpression ast, String namePredicate) throws ParseException
+    public void visitUnaryExpression(UnaryExpression ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
         if (ast.getType() == null)
         {
@@ -288,9 +288,9 @@ BufferedWriter out;
         return null;
     }
 */
-    public void visitPrimaryExpression(PrimaryExpression ast, String namePredicate) throws ParseException
+    public void visitPrimaryExpression(PrimaryExpression ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
         Expression[] components = (Expression[])ast.getChildren();
         Expression component;
@@ -319,17 +319,17 @@ BufferedWriter out;
         }
     }
     
-    public void visitFormalParameter(FormalParameter ast, String namePredicate) throws ParseException
+    public void visitFormalParameter(FormalParameter ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
         ast.setType(ast.getType());
 
     }
     
-    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast, String namePredicate) throws ParseException
+    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast) throws ParseException
     {
-    	visitChildren(ast, namePredicate);
+    	visitChildren(ast);
 
         ast.setType(ast.getType());
         
@@ -338,9 +338,9 @@ BufferedWriter out;
     /**
      * jhlee
      */
-    public void visitKeywordExpression(KeywordExpression ast, String namePredicate) throws ParseException
+    public void visitKeywordExpression(KeywordExpression ast) throws ParseException
     { 
-    	visitChildren(ast, namePredicate);
+    	visitChildren(ast);
     	
     	if (ast.getType() == null)
         {
@@ -458,7 +458,7 @@ BufferedWriter out;
     */
 
     //jhlee
-    public void visitIdentifierExpression(IdentifierExpression ast, String namePredicate) throws ParseException
+    public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {
         if (ast.getType() == null)
         {
@@ -656,9 +656,9 @@ BufferedWriter out;
 
     }
     
-    public void visitIfStatement(IfStatement ast, String namePredicate) throws ParseException
+    public void visitIfStatement(IfStatement ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
         if (!ast.getExpression().getType().equals(Type.BOOLEAN))
         {
@@ -666,9 +666,9 @@ BufferedWriter out;
         }
     }
     
-    public void visitWhileStatement(WhileStatement ast, String namePredicate) throws ParseException
+    public void visitWhileStatement(WhileStatement ast) throws ParseException
     {
-        visitChildren(ast, namePredicate);
+        visitChildren(ast);
 
         if (!ast.getExpression().getType().equals(Type.BOOLEAN))
         {

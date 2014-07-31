@@ -58,9 +58,9 @@ public class CompilationUnits extends AST
         return children;
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitCompilationUnits(this, namePredicate);
+        v.visitCompilationUnits(this);
     }
 
     public void dump(int level, BufferedWriter out)

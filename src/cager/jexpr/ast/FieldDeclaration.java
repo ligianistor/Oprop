@@ -22,9 +22,9 @@ public class FieldDeclaration extends VariableDeclaration
         return new AST[] { };
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitFieldDeclaration(this, namePredicate);
+        v.visitFieldDeclaration(this);
     }
 
     public void dump(int level, BufferedWriter out)

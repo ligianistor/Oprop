@@ -34,9 +34,9 @@ public class EnsuresExpression extends Expression {
             return new AST[] { e };
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-         v.visitEnsuresExpression(this, namePredicate);
+         v.visitEnsuresExpression(this);
     }
 
     public void dump(int level, BufferedWriter out)

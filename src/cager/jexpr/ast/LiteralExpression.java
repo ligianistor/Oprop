@@ -60,9 +60,9 @@ public class LiteralExpression extends Expression
         return value;
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitLiteralExpression(this, namePredicate);
+        v.visitLiteralExpression(this);
     }
 
     public void dump(int level, BufferedWriter out)

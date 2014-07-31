@@ -24,9 +24,9 @@ public class FormalParameter extends VariableDeclaration
         return new AST[0];
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitFormalParameter(this, namePredicate);
+        v.visitFormalParameter(this);
     }
 
     public void dump(int level, BufferedWriter out)

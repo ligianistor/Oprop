@@ -55,9 +55,9 @@ public class MethodSpecExpression extends Expression
     	return result.toArray(new AST[0]);
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitMethodSpecExpression(this, namePredicate);
+        v.visitMethodSpecExpression(this);
     }
 
     public void dump(int level, BufferedWriter out)

@@ -38,9 +38,9 @@ public class IdentifierExpression extends Expression
         return new AST[] { };
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-         v.visitIdentifierExpression(this, namePredicate);
+         v.visitIdentifierExpression(this);
     }
 
     public String toString()

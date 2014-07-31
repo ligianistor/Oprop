@@ -33,9 +33,9 @@ public class CompilationUnit extends AST
         return new AST[] { classDeclaration };
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-         v.visitCompilationUnit(this, namePredicate);
+         v.visitCompilationUnit(this);
     }
 
     public void dump(int level, BufferedWriter out)

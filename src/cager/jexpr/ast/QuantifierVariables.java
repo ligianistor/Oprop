@@ -52,9 +52,9 @@ public class QuantifierVariables extends AST   // implements some Map
         return children;
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitQuantifierVariables(this, namePredicate);
+        v.visitQuantifierVariables(this);
     }
 
     public void dump(int level, BufferedWriter out)

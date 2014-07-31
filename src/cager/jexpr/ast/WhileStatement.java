@@ -35,9 +35,9 @@ public class WhileStatement extends Statement
     	return new AST[] { e, doClause };
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitWhileStatement(this, namePredicate);
+        v.visitWhileStatement(this);
     }
 
     public void dump(int level, BufferedWriter out)

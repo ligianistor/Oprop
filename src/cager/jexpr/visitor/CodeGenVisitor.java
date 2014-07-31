@@ -43,52 +43,52 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
         this.outputDirectory = new File(outputDirectory);
     }
 
-    public void visitCompilationUnit(CompilationUnit ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitCompilationUnit(CompilationUnit ast) throws ParseException
     {
         cu = ast;
 
         packageName = ast.packageName;
 
-        visitChildren(ast, out, "");
+        visitChildren(ast);
     }
 
-    public void visitClassDeclaration(ClassDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitClassDeclaration(ClassDeclaration ast) throws ParseException
     {
         className = ast.getIdentifier().getName();
 
         createClass();
 
-        visitChildren(ast, out, "");
+        visitChildren(ast);
 
         closeClass();
 
     }
 
-    public void visitMethodDeclaration(MethodDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
     {
         createMethod(ast.getIdentifier().getName(), ast.getType(), ast.getParameters());
 
-        visitChildren(ast, out, "");
+        visitChildren(ast);
 
         closeMethod(ast.getType());
     }
 
-    public void visitBinaryExpression(BinaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitBinaryExpression(BinaryExpression ast) throws ParseException
     {
         System.out.println("CodeGen visit BinOp " + ast.toString());
 
         if (ast.getType().equals(Type.STRING))
         {
-            generateStringConcat(ast, out);
+            generateStringConcat(ast);
         }
 
         if (ast.op.getId() == JExprConstants.SC_OR || ast.op.getId() == JExprConstants.SC_AND)
         {
-            generateConditionalOp(ast, out);
+            generateConditionalOp(ast);
         }
 
-        ast.E1.accept(this, out, "");
-        ast.E2.accept(this, out, "");
+        ast.E1.accept(this);
+        ast.E2.accept(this);
 
         if (ast.getType() instanceof ReferenceType)
         {
@@ -104,7 +104,7 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
 
     }
 
-    private void generateStringConcat(BinaryExpression ast, BufferedWriter out) throws ParseException
+    private void generateStringConcat(BinaryExpression ast) throws ParseException
     {
         assert ast.op.getId() == JExprConstants.PLUS;
 
@@ -113,11 +113,11 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
         il.append(InstructionConstants.DUP);
         il.append(factory.createInvoke("java.lang.StringBuffer", "<init>", Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL));
 
-        ast.E1.accept(this, out, "");
+        ast.E1.accept(this);
         appendToString(ast.E1.getType());
 
 
-        ast.E2.accept(this, out, "");
+        ast.E2.accept(this);
         appendToString(ast.E2.getType());
 
         il.append(factory.createInvoke("java.lang.StringBuffer", "toString", Type.STRING, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
@@ -129,12 +129,12 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
 
     }
 
-    private void generateConditionalOp(BinaryExpression ast, BufferedWriter out) throws ParseException
+    private void generateConditionalOp(BinaryExpression ast) throws ParseException
     {
         assert ast.getType().equals(Type.BOOLEAN) && ast.E1.getType().equals(Type.BOOLEAN) && ast.E2.getType().equals(Type.BOOLEAN);
 
         // Visit the first operand, which will leave a 1 or 0 on TOS.
-        ast.E1.accept(this, out, "");
+        ast.E1.accept(this);
 
         il.append(InstructionConstants.DUP);
 
@@ -149,27 +149,27 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
 
         il.append(InstructionConstants.POP);
 
-        ast.E2.accept(this, out, "");
+        ast.E2.accept(this);
 
         bi.setTarget(il.append(InstructionConstants.NOP));
 
     }
 
-    public void visitUnaryExpression(UnaryExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitUnaryExpression(UnaryExpression ast) throws ParseException
     {
-        ast.E.accept(this, out, "");
+        ast.E.accept(this);
 
         il.append(factory.createUnaryOp(ast.op, ast.getType()));
         
     }
 
-    public void visitCastExpression(CastExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitCastExpression(CastExpression ast) throws ParseException
     {
         Type type = ast.getExpression().getType();
         Type targetType = ast.getType();
 
 
-        ast.getExpression().accept(this, out, "");
+        ast.getExpression().accept(this);
 
         if (targetType.equals(type) || (targetType.equals(Type.INT) && (
                                             type.equals(Type.BYTE) ||
@@ -183,16 +183,16 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
 
     }
 
-    public void visitIfStatement(IfStatement ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitIfStatement(IfStatement ast) throws ParseException
     {
         // Visit the expression, which will leave a 1 or 0 on TOS.
-        ast.getExpression().accept(this, out, "");
+        ast.getExpression().accept(this);
 
         BranchInstruction bi = new IFEQ(null);
 
         il.append(bi);
 
-        ast.getThenClause().accept(this, out, "");
+        ast.getThenClause().accept(this);
 
         GOTO g = new GOTO(null);
         il.append(g);
@@ -200,7 +200,7 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
         bi.setTarget(il.append(InstructionConstants.NOP));
         if (ast.getElseClause() != null)
         {
-            ast.getElseClause().accept(this, out, "");
+            ast.getElseClause().accept(this);
         }
 
         g.setTarget(il.append(InstructionConstants.NOP));
@@ -208,28 +208,28 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
     }
     
     
-    public void visitFormalParameters(FormalParameters ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitFormalParameters(FormalParameters ast) throws ParseException
     {
         //System.out.println("Formal Params: parameters: " + ast.parameters);
 
-        visitChildren(ast, out, "");
+        visitChildren(ast);
 
     }
 
-    public void visitFormalParameter(FormalParameter ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitFormalParameter(FormalParameter ast) throws ParseException
     {
-        visitChildren(ast, out, "");
+        visitChildren(ast);
 
     }
     
     //jhlee
-    public void visitFieldDeclaration(FieldDeclaration ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitFieldDeclaration(FieldDeclaration ast) throws ParseException
     {
     	System.out.println("Field Gen: " + ast.getName());
-    	visitChildren(ast, out, "");
+    	visitChildren(ast);
     }
 
-    public void visitIdentifierExpression(IdentifierExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {
         System.out.println("Code Gen ID: " + ast.getName());
 
@@ -244,7 +244,7 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
 
     }
 
-    public void visitLiteralExpression(LiteralExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitLiteralExpression(LiteralExpression ast) throws ParseException
     {
         Object v = ast.getValue();
         Type t = ast.getType();
@@ -271,7 +271,7 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
 
     }
 
-    public void visitKeywordExpression(KeywordExpression ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitKeywordExpression(KeywordExpression ast) throws ParseException
     {
         // this, super and null.
 
@@ -288,7 +288,7 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
         
     }
 
-    public void visitReturnStatement(ReturnStatement ast, BufferedWriter out, String namePredicate) throws ParseException
+    public void visitReturnStatement(ReturnStatement ast) throws ParseException
     {
         if (ast.getExpression() == null)
         {
@@ -297,7 +297,7 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
         }
 
         // Generate the code to leave the expression's value on-stack
-        visitChildren(ast, out, "");
+        visitChildren(ast);
 
         // Need to handle implicit casts, such as
         //long x() { byte b = 0; return b; }

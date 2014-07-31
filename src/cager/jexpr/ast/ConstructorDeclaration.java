@@ -130,9 +130,9 @@ public class ConstructorDeclaration extends AST
         return new AST[] { parameters, block };
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitConstructorDeclaration(this, namePredicate);
+        v.visitConstructorDeclaration(this);
     }
 
     public void dump(int level, BufferedWriter out)

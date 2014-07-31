@@ -31,9 +31,9 @@ public class CastExpression extends Expression
         return expression;
     }
 
-    public void accept(Visitor v, String namePredicate) throws ParseException
+    public void accept(Visitor v) throws ParseException
     {
-        v.visitCastExpression(this, namePredicate);
+        v.visitCastExpression(this);
     }
 
     public void dump(int level, BufferedWriter out)
