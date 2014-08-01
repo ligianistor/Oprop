@@ -265,12 +265,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitFormalParameters(FormalParameters ast ) throws ParseException 
   		  { 
     	visitChildren(ast ); 
-    	 try{
-			  out.write(")\n");
-			  }
-		 catch (Exception e) {
-		    		System.err.println("Error: " + e.getMessage());
-		      }
+    
     	}
     
     public void visitFormalParameter(FormalParameter ast ) throws ParseException
@@ -373,7 +368,7 @@ public class BoogieVisitor extends NullVisitor {
     	Expression postcondition = ast.getPostcondition();
     	
     	try {
-    		out.write("requires ");
+    		out.write(")\n requires ");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
@@ -381,7 +376,7 @@ public class BoogieVisitor extends NullVisitor {
     	precondition.accept(this );
     	
     	try {
-    		out.write("ensures ");
+    		out.write(" ensures ");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
