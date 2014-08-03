@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.bcel.generic.Type;
 
@@ -56,12 +58,19 @@ import cager.jexpr.ast.WhileStatement;
 public class BoogieVisitor extends NullVisitor {
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = new HashMap<PredicateAndFieldValue, String> ();
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
+	HashMap<String, String> methodBody = new HashMap<String, String>();
+	HashMap<String, String> methodSpec = new HashMap<String, String>();
+	HashMap<String, String> methodParams = new HashMap<String, String>();
 	BufferedWriter out;
 	String namePredicate;
+	String currentMethod;
+	Set<String> fields = new TreeSet<String>();
+	HashMap<String, Boolean> fieldsInMethod = new HashMap<String, Boolean> (); 
 	
 	public BoogieVisitor(BufferedWriter boogieFile, String namePredicate_) {
 		out = boogieFile;
 		namePredicate = namePredicate_;
+		currentMethod = ""; 
 	}
 		
     public void visitCompilationUnits(CompilationUnits ast) throws ParseException
@@ -89,8 +98,11 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitFieldDeclaration(FieldDeclaration ast ) throws ParseException 
     { 
+    	String fieldName = ast.getName();
+    	fields.add(fieldName);
+    	
     	try {
-    		out.write("var "+ ast.getName()+" [Ref]"+ast.getType()+";\n");
+    		out.write("var "+ fieldName +": [Ref]"+ast.getType()+";\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
@@ -126,7 +138,18 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
     {
+    	fieldsInMethod = new HashMap<String, Boolean> (); 
+    	for (String s : fields) {
+    		fieldsInMethod.put(s, new Boolean(false));
+    	}
+    	
     	namePredicate = "";
+    	String methodName = ast.getIdentifier().name;
+    	methodBody.put(methodName, "");
+    	methodSpec.put(methodName, "");
+    	methodParams.put(methodName, "");
+    	currentMethod = methodName;
+    	
     	Iterator<Entry<String, String>> j = predicateBody.entrySet().iterator(); 
         while(j.hasNext()){
      	   String currentNamePred = j.next().getKey();
@@ -148,6 +171,17 @@ public class BoogieVisitor extends NullVisitor {
 				out.write("ensures ("+predBody+");\n");
 				out.write("\n");
 				out.write("procedure "+ast.getIdentifier().getName()+"(this:Ref");
+				
+				visitChildren(ast);
+				
+				out.write(methodParams.get(currentMethod));
+				
+				//do the modifies thing
+				
+				
+				out.write(methodSpec.get(currentMethod));
+				
+				out.write(methodBody.get(currentMethod));
 							
 			}
 		catch (Exception e) {
@@ -156,7 +190,8 @@ public class BoogieVisitor extends NullVisitor {
         }
         
          
-    	visitChildren(ast );
+    	
+    	
     }
 
     public void visitReturnStatement(ReturnStatement ast ) throws ParseException
@@ -264,7 +299,14 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitFormalParameters(FormalParameters ast ) throws ParseException 
   		  { 
+    	   	
     	visitChildren(ast ); 
+    	
+    	if (currentMethod != "") {
+        	String currentMethodParams = methodParams.get(currentMethod); 
+        	currentMethodParams = currentMethodParams.concat(")\n");
+        	methodParams.put(currentMethod, currentMethodParams); 
+        	}
     
     	}
     
@@ -286,8 +328,16 @@ public class BoogieVisitor extends NullVisitor {
     }
  
     public void visitIdentifierExpression(IdentifierExpression ast ) throws ParseException
-    {
+    {    	
        String identifierName = ast.name;
+       
+       if (currentMethod != "") {
+    	   if (fieldsInMethod.get(identifierName) != null)
+    	   {
+    		   fieldsInMethod.put(identifierName, new Boolean(true));
+    	   }
+    	   
+       }
        
        PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
 
@@ -366,22 +416,15 @@ public class BoogieVisitor extends NullVisitor {
   		  { 
     	Expression precondition = ast.getPrecondition();
     	Expression postcondition = ast.getPostcondition();
-    	
-    	try {
-    		out.write(")\n requires ");
-    	}
-    	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
-    	}
+
+    	String currentMethodSpec = methodSpec.get(currentMethod); 
+    	currentMethodSpec = currentMethodSpec.concat("requires ");
     	precondition.accept(this );
-    	
-    	try {
-    		out.write(" ensures ");
-    	}
-    	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
-    	}
+
+    	currentMethodSpec = currentMethodSpec.concat("ensures ");
+
     	postcondition.accept(this );
+    	methodSpec.put(currentMethod, currentMethodSpec); 
     	}
     
     public void visitBlock(Block ast ) 
