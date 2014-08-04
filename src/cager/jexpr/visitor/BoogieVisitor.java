@@ -48,6 +48,7 @@ import cager.jexpr.ast.QuantifierVariables;
 import cager.jexpr.ast.ReturnStatement;
 import cager.jexpr.ast.Statement;
 import cager.jexpr.ast.StatementExpression;
+import cager.jexpr.ast.TypedAST;
 import cager.jexpr.ast.UnaryExpression;
 import cager.jexpr.ast.VariableDeclaration;
 import cager.jexpr.ast.WhileStatement;
@@ -66,11 +67,15 @@ public class BoogieVisitor extends NullVisitor {
 	String currentMethod;
 	Set<String> fields = new TreeSet<String>();
 	HashMap<String, Boolean> fieldsInMethod = new HashMap<String, Boolean> (); 
+	boolean insideObjectProposition;
+	String objectPropString;
 	
 	public BoogieVisitor(BufferedWriter boogieFile, String namePredicate_) {
 		out = boogieFile;
 		namePredicate = namePredicate_;
 		currentMethod = ""; 
+		insideObjectProposition = false;
+		objectPropString = "";
 	}
 		
     public void visitCompilationUnits(CompilationUnits ast) throws ParseException
@@ -177,6 +182,18 @@ public class BoogieVisitor extends NullVisitor {
 				out.write(methodParams.get(currentMethod));
 				
 				//do the modifies thing
+				String modifies = "modifies ";
+							
+				Iterator<Entry<String, Boolean>> iter = fieldsInMethod.entrySet().iterator(); 
+			       while(iter.hasNext()){
+			    	   String key = iter.next().getKey();
+			           if (fieldsInMethod.get(key).booleanValue())
+			           {
+			        	   modifies = modifies.concat(key+ ", ");
+			           }		   
+			       }
+			       modifies = modifies.concat("packed, frac;");
+			     out.write(modifies+"\n");
 				
 				
 				out.write(methodSpec.get(currentMethod));
@@ -236,9 +253,19 @@ public class BoogieVisitor extends NullVisitor {
     	AST[] children = ast.getChildren();
 		
 		  children[0].accept(this );
-		  if (namePredicate.equals("")){
+		  if (namePredicate.equals("")) {
 		  try{
-		  out.write(operatorSymbol);
+			  if (currentMethod != "") {
+				  modifyMethodBody(operatorSymbol);
+			  }
+			  else {
+				  if (insideObjectProposition) {
+					  objectPropString = objectPropString.concat(operatorSymbol);
+				  }
+				  else {
+				  out.write(operatorSymbol);
+				  }
+			  }
 		  }
 	      catch (Exception e) {
 	    		System.err.println("Error: " + e.getMessage());
@@ -260,7 +287,19 @@ public class BoogieVisitor extends NullVisitor {
     	String astvalue = ast.value.toString();
     	if (namePredicate.equals("")){
     	 try{
-			  out.write(astvalue);
+			  if (currentMethod != "") {
+				  modifyMethodBody(astvalue);
+			  }
+			  else {
+				  if (insideObjectProposition) {
+					  objectPropString = objectPropString.concat(astvalue);
+				  }
+				  else {
+					  out.write(astvalue);
+				  }
+				  
+			  }
+			  
 			  }
 		      catch (Exception e) {
 		    		System.err.println("Error: " + e.getMessage());
@@ -276,14 +315,37 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitObjectProposition(ObjectProposition ast ) throws ParseException
     {
-   
-        visitChildren(ast );
-        try {
-    		out.write(";\n");
-    	}
-    	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
-    	}
+    	insideObjectProposition = true;
+    	
+    	TypedAST object  = ast.getObject();
+    	
+    	object.accept(this);
+    	String objectString = objectPropString;
+
+    	objectPropString = "";
+    	
+    	
+    	Expression frac = ast.getFraction();
+    	
+    	frac.accept(this);
+
+    	String fracString = objectPropString;
+
+    	objectPropString = "";
+    	
+    	Expression predDecl = ast.getPredicateDeclaration();
+    	
+    	predDecl.accept(this);
+
+    	String predDeclString = objectPropString;
+
+    	objectPropString = "";
+    	String predName = predDeclString.toLowerCase();
+    	
+
+    	modifyMethodSpec("packed[" + objectString+","+ 
+    			         predName +"P] && (frac["+ objectString+ ","+ predName+"] > 0);\n");
+    	insideObjectProposition = false;
     }
 
    
@@ -303,9 +365,7 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast ); 
     	
     	if (currentMethod != "") {
-        	String currentMethodParams = methodParams.get(currentMethod); 
-        	currentMethodParams = currentMethodParams.concat(")\n");
-        	methodParams.put(currentMethod, currentMethodParams); 
+    		modifyMethodParams(")\n"); 
         	}
     
     	}
@@ -323,6 +383,18 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitKeywordExpression(KeywordExpression ast ) throws ParseException
     { 
+    	if (insideObjectProposition) {
+			  objectPropString = objectPropString.concat(ast.getValue() + "");
+		  }
+		  else {
+			  try {
+			  out.write(ast.getValue() + "");
+			  }
+			  catch (Exception e) {
+		    		System.err.println("Error: " + e.getMessage());
+		      }
+			  
+		  }
     	visitChildren(ast );
 
     }
@@ -336,7 +408,6 @@ public class BoogieVisitor extends NullVisitor {
     	   {
     		   fieldsInMethod.put(identifierName, new Boolean(true));
     	   }
-    	   
        }
        
        PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
@@ -354,7 +425,7 @@ public class BoogieVisitor extends NullVisitor {
        if (!(fieldName.equals(""))) {
     	   if (namePredicate.equals("")){
     	   try{
- 			  out.write(fieldName+ "[this]");
+ 			  modifyMethodBody(fieldName+ "[this]");
  			  }
  		      catch (Exception e) {
  		    		System.err.println("Error: " + e.getMessage());
@@ -368,7 +439,18 @@ public class BoogieVisitor extends NullVisitor {
        else {
     	   if (namePredicate.equals("")){
     	   try {
-  			  out.write(identifierName);
+    		   if ((currentMethod != "")  && (fieldsInMethod.get(identifierName) != null)){
+    			   modifyMethodBody(identifierName+"[this]");
+    	       }
+    		   else {
+    			   
+    			   //modify object proposition parts
+    			   if (insideObjectProposition) {
+    					  objectPropString = objectPropString.concat(identifierName);
+    				  }
+
+    		   }
+    		   
   			  }
   		      catch (Exception e) {
   		    		System.err.println("Error: " + e.getMessage());
@@ -392,7 +474,12 @@ public class BoogieVisitor extends NullVisitor {
   		  { 
     		visitChildren(ast );
     		try {
-        		out.write(";\n");
+    			if (currentMethod != "") {
+    				modifyMethodBody(";\n");
+    			}
+  			  else {
+  				  out.write(";\n");
+  			  }
         	}
         	catch (Exception e) {
         		System.err.println("Error: " + e.getMessage());
@@ -417,31 +504,40 @@ public class BoogieVisitor extends NullVisitor {
     	Expression precondition = ast.getPrecondition();
     	Expression postcondition = ast.getPostcondition();
 
-    	String currentMethodSpec = methodSpec.get(currentMethod); 
-    	currentMethodSpec = currentMethodSpec.concat("requires ");
-    	precondition.accept(this );
+    	modifyMethodSpec("requires ");
 
-    	currentMethodSpec = currentMethodSpec.concat("ensures ");
+    	precondition.accept(this );
+    	modifyMethodSpec("ensures ");
 
     	postcondition.accept(this );
-    	methodSpec.put(currentMethod, currentMethodSpec); 
     	}
     
     public void visitBlock(Block ast ) 
   		  throws ParseException 
   		  { 
-    	
-    	try {
-    		out.write("{\n");
-    		visitChildren(ast );
-    		out.write("}\n ");
-    	}
-    	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
-    	}
-    	
-    	
+    	modifyMethodBody("{\n");
+    	visitChildren(ast );
+    	modifyMethodBody("}\n ");
+     	
   		  }
+    
+    public void modifyMethodBody(String s) {
+    	String currentMethodBody = methodBody.get(currentMethod);
+		currentMethodBody = currentMethodBody.concat(s);
+		methodBody.put(currentMethod, currentMethodBody);
+    }
+    
+    public void modifyMethodSpec(String s) {
+    	String currentMethodSpec = methodSpec.get(currentMethod);
+		currentMethodSpec = currentMethodSpec.concat(s);
+		methodSpec.put(currentMethod, currentMethodSpec);
+    }
+    
+    public void modifyMethodParams(String s) {
+    	String currentMethodParams = methodParams.get(currentMethod);
+		currentMethodParams = currentMethodParams.concat(s);
+		methodParams.put(currentMethod, currentMethodParams);
+    }
     
     
 }
