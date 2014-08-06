@@ -3,6 +3,7 @@ package cager.jexpr.visitor;
 import java.io.BufferedWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -62,6 +63,8 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, String> methodBody = new HashMap<String, String>();
 	HashMap<String, String> methodSpec = new HashMap<String, String>();
 	HashMap<String, String> methodParams = new HashMap<String, String>();
+	HashMap<String, String> fieldWhichPredicate = new HashMap<String, String>();
+	LinkedList<String> fieldsInStatement = new LinkedList<String>();
 	BufferedWriter out;
 	String namePredicate;
 	String currentMethod;
@@ -229,6 +232,7 @@ public class BoogieVisitor extends NullVisitor {
     		PrimaryExpression e2 = (PrimaryExpression)ast.E2;
     		FieldSelection f = (FieldSelection)(e1.getChildren()[1]);
     		String nameField = f.getIdentifier().name;
+    		fieldWhichPredicate.put(nameField, namePredicate);
     		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
     		String fieldValue = i.getName();
     		
@@ -402,6 +406,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitIdentifierExpression(IdentifierExpression ast ) throws ParseException
     {    	
        String identifierName = ast.name;
+       fieldsInStatement.add(identifierName);
        
        if (currentMethod != "") {
     	   if (fieldsInMethod.get(identifierName) != null)
@@ -516,7 +521,14 @@ public class BoogieVisitor extends NullVisitor {
   		  throws ParseException 
   		  { 
     	modifyMethodBody("{\n");
-    	visitChildren(ast );
+    	
+    	AST[] children = ast.getChildren();
+    	for (int i = 0; i < children.length; i++) {
+    		fieldsInStatement.clear();
+    	   children[i].accept(this);
+    		  
+    	  }
+    	
     	modifyMethodBody("}\n ");
      	
   		  }
