@@ -65,6 +65,8 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, String> methodParams = new HashMap<String, String>();
 	HashMap<String, String> fieldWhichPredicate = new HashMap<String, String>();
 	LinkedList<String> fieldsInStatement = new LinkedList<String>();
+	LinkedList<ObjPropString> Gamma = new LinkedList<ObjPropString>();
+	String statementContent;
 	BufferedWriter out;
 	String namePredicate;
 	String currentMethod;
@@ -79,6 +81,7 @@ public class BoogieVisitor extends NullVisitor {
 		currentMethod = ""; 
 		insideObjectProposition = false;
 		objectPropString = "";
+		statementContent = "";
 	}
 		
     public void visitCompilationUnits(CompilationUnits ast) throws ParseException
@@ -147,6 +150,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
     {
     	fieldsInMethod = new HashMap<String, Boolean> (); 
+    	Gamma.clear();
     	for (String s : fields) {
     		fieldsInMethod.put(s, new Boolean(false));
     	}
@@ -260,7 +264,7 @@ public class BoogieVisitor extends NullVisitor {
 		  if (namePredicate.equals("")) {
 		  try{
 			  if (currentMethod != "") {
-				  modifyMethodBody(operatorSymbol);
+				  statementContent = statementContent.concat(operatorSymbol);
 			  }
 			  else {
 				  if (insideObjectProposition) {
@@ -292,7 +296,7 @@ public class BoogieVisitor extends NullVisitor {
     	if (namePredicate.equals("")){
     	 try{
 			  if (currentMethod != "") {
-				  modifyMethodBody(astvalue);
+				  statementContent = statementContent.concat(astvalue);
 			  }
 			  else {
 				  if (insideObjectProposition) {
@@ -319,6 +323,7 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitObjectProposition(ObjectProposition ast ) throws ParseException
     {
+    	//TODO create ObjPropString
     	insideObjectProposition = true;
     	
     	TypedAST object  = ast.getObject();
@@ -348,7 +353,7 @@ public class BoogieVisitor extends NullVisitor {
     	
 
     	modifyMethodSpec("packed[" + objectString+","+ 
-    			         predName +"P] && (frac["+ objectString+ ","+ predName+"] > 0);\n");
+    			         predName +"P] && (frac["+ objectString+ ","+ predName+"P] > 0);\n");
     	insideObjectProposition = false;
     }
 
@@ -445,7 +450,7 @@ public class BoogieVisitor extends NullVisitor {
     	   if (namePredicate.equals("")){
     	   try {
     		   if ((currentMethod != "")  && (fieldsInMethod.get(identifierName) != null)){
-    			   modifyMethodBody(identifierName+"[this]");
+    			   statementContent = statementContent.concat(identifierName+"[this]");
     	       }
     		   else {
     			   
@@ -480,7 +485,7 @@ public class BoogieVisitor extends NullVisitor {
     		visitChildren(ast );
     		try {
     			if (currentMethod != "") {
-    				modifyMethodBody(";\n");
+    				statementContent = statementContent.concat(";\n");
     			}
   			  else {
   				  out.write(";\n");
@@ -512,9 +517,13 @@ public class BoogieVisitor extends NullVisitor {
     	modifyMethodSpec("requires ");
 
     	precondition.accept(this );
+    	
+    	//need to createObjPropString and add it to Gamma
+    	
     	modifyMethodSpec("ensures ");
 
     	postcondition.accept(this );
+    	
     	}
     
     public void visitBlock(Block ast ) 
@@ -525,7 +534,10 @@ public class BoogieVisitor extends NullVisitor {
     	AST[] children = ast.getChildren();
     	for (int i = 0; i < children.length; i++) {
     		fieldsInStatement.clear();
-    	   children[i].accept(this);
+    		statementContent = "";
+    	    children[i].accept(this);
+    	    modifyMethodBody(statementContent);
+    	    
     		  
     	  }
     	
@@ -538,7 +550,7 @@ public class BoogieVisitor extends NullVisitor {
 		currentMethodBody = currentMethodBody.concat(s);
 		methodBody.put(currentMethod, currentMethodBody);
     }
-    
+        
     public void modifyMethodSpec(String s) {
     	String currentMethodSpec = methodSpec.get(currentMethod);
 		currentMethodSpec = currentMethodSpec.concat(s);
