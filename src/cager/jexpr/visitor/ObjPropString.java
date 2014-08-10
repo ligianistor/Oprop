@@ -10,8 +10,7 @@ public class ObjPropString {
 	String name;
 	String[] params;
 	
-	ObjPropString(String object_, String fracParam_,String name_,
-			      LinkedList<String> params_) 
+	ObjPropString(String object_, String fracParam_,String name_, LinkedList<String> params_) 
 		{
 		object = object_;
 		fracParam = fracParam_;
@@ -19,11 +18,9 @@ public class ObjPropString {
 		int numberParams = params_.size();
 		params = new String[numberParams];
 		
-		  for (int i = 0; i < numberParams; i++) {
-			  params[i] = params_.get(i);
-          }
-		
-		
+			for (int i = 0; i < numberParams; i++) {
+				params[i] = params_.get(i);	
+		}
 	}
 	
 	void setMaxFrac(int max) {

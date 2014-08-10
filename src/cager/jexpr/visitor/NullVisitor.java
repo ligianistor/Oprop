@@ -134,9 +134,11 @@ public class NullVisitor implements Visitor
   public void visitChildren(AST ast ) 
 		  throws ParseException
   {
+	  if (ast!=null) {
 	  AST[] children = ast.getChildren();
 	  for (int i = 0; i < children.length; i++) {
 		  children[i].accept(this);
+	  }
 	  }
   }
 

@@ -17,6 +17,7 @@ import cager.jexpr.ParseException;
 import cager.jexpr.PredicateAndFieldValue;
 import cager.jexpr.Types;
 import cager.jexpr.ast.AST;
+import cager.jexpr.ast.ArgumentList;
 import cager.jexpr.ast.BinaryExpression;
 import cager.jexpr.ast.Block;
 import cager.jexpr.ast.CastExpression;
@@ -73,6 +74,7 @@ public class BoogieVisitor extends NullVisitor {
 	Set<String> fields = new TreeSet<String>();
 	HashMap<String, Boolean> fieldsInMethod = new HashMap<String, Boolean> (); 
 	boolean insideObjectProposition;
+	boolean insidePrecondition;
 	String objectPropString;
 	
 	public BoogieVisitor(BufferedWriter boogieFile, String namePredicate_) {
@@ -80,6 +82,7 @@ public class BoogieVisitor extends NullVisitor {
 		namePredicate = namePredicate_;
 		currentMethod = ""; 
 		insideObjectProposition = false;
+		insidePrecondition = false;
 		objectPropString = "";
 		statementContent = "";
 	}
@@ -323,7 +326,6 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitObjectProposition(ObjectProposition ast ) throws ParseException
     {
-    	//TODO create ObjPropString
     	insideObjectProposition = true;
     	
     	TypedAST object  = ast.getObject();
@@ -332,7 +334,6 @@ public class BoogieVisitor extends NullVisitor {
     	String objectString = objectPropString;
 
     	objectPropString = "";
-    	
     	
     	Expression frac = ast.getFraction();
     	
@@ -344,16 +345,24 @@ public class BoogieVisitor extends NullVisitor {
     	
     	Expression predDecl = ast.getPredicateDeclaration();
     	
-    	predDecl.accept(this);
+    	AST[] childrenPredDecl = predDecl.getChildren();
+    	
+    	childrenPredDecl[0].accept(this);
 
-    	String predDeclString = objectPropString;
+    	String identifierPredDecl = objectPropString;
+    	String predName = identifierPredDecl.toLowerCase();
 
     	objectPropString = "";
-    	String predName = predDeclString.toLowerCase();
-    	
+    	childrenPredDecl[1].accept(this);
+    	//this is ArgumentList but for this example 
+    	//there are no arguments so we set it to empty with new
 
     	modifyMethodSpec("packed[" + objectString+","+ 
     			         predName +"P] && (frac["+ objectString+ ","+ predName+"P] > 0);\n");
+    	if (insidePrecondition) {
+    		ObjPropString initialObjProp = new ObjPropString(objectString, fracString, identifierPredDecl, new LinkedList<String>()); 
+    		Gamma.add(initialObjProp);
+    	}
     	insideObjectProposition = false;
     }
 
@@ -515,13 +524,13 @@ public class BoogieVisitor extends NullVisitor {
     	Expression postcondition = ast.getPostcondition();
 
     	modifyMethodSpec("requires ");
-
+    	insidePrecondition = true;
     	precondition.accept(this );
     	
     	//need to createObjPropString and add it to Gamma
     	
     	modifyMethodSpec("ensures ");
-
+    	insidePrecondition = false;
     	postcondition.accept(this );
     	
     	}
@@ -537,13 +546,21 @@ public class BoogieVisitor extends NullVisitor {
     		statementContent = "";
     	    children[i].accept(this);
     	    modifyMethodBody(statementContent);
-    	    
-    		  
+    	      
     	  }
     	
     	modifyMethodBody("}\n ");
      	
   		  }
+    
+    
+    public void visitArgumentList(ArgumentList ast )
+  		  throws ParseException 
+  		  { 
+
+    	visitChildren(ast); 
+    	}
+    
     
     public void modifyMethodBody(String s) {
     	String currentMethodBody = methodBody.get(currentMethod);
