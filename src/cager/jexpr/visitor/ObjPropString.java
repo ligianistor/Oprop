@@ -23,6 +23,14 @@ public class ObjPropString {
 		}
 	}
 	
+	String getObject() {
+		return object;
+	}
+	
+	String getName() {
+		return name;
+	}
+	
 	void setMaxFrac(int max) {
 		maxFrac = max;
 		
@@ -40,5 +48,44 @@ public class ObjPropString {
 	int getMinFrac() {
 		return minFrac;
 	}
+	
+	@Override
+public boolean equals(Object obj) {
+		
+		if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+      
+        ObjPropString o1 = (ObjPropString) obj;
+
+		if (object.equals(o1.getObject()) && name.equals(o1.getName()))
+		{
+			return true;
+		}
+
+		return false;
+	}
+	
+	void print() {
+		String objProp=object+"@"+fracParam+" "+name+"(";
+		int numberParams = params.length;
+		for (int i = 0; i < numberParams-1; i++) {
+			objProp = objProp.concat(params[i]+",");	
+	}
+		if (numberParams >=1){
+			objProp = objProp.concat(params[numberParams-1]);	
+		}
+		objProp = objProp.concat(")");	
+		System.out.println(objProp);
+	
+	}
+	
+	@Override
+	public int hashCode(){
+	    return (object.hashCode() * name.hashCode());
+	  }
 
 }

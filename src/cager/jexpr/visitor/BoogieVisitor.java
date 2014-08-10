@@ -67,6 +67,7 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, String> fieldWhichPredicate = new HashMap<String, String>();
 	LinkedList<String> fieldsInStatement = new LinkedList<String>();
 	LinkedList<ObjPropString> Gamma = new LinkedList<ObjPropString>();
+	LinkedList<ObjPropString> ObjPropPostCondition = new LinkedList<ObjPropString>();
 	String statementContent;
 	BufferedWriter out;
 	String namePredicate;
@@ -359,9 +360,13 @@ public class BoogieVisitor extends NullVisitor {
 
     	modifyMethodSpec("packed[" + objectString+","+ 
     			         predName +"P] && (frac["+ objectString+ ","+ predName+"P] > 0);\n");
+    	ObjPropString objProp = new ObjPropString(objectString, fracString, 
+    			identifierPredDecl, new LinkedList<String>()); 
     	if (insidePrecondition) {
-    		ObjPropString initialObjProp = new ObjPropString(objectString, fracString, identifierPredDecl, new LinkedList<String>()); 
-    		Gamma.add(initialObjProp);
+    		Gamma.add(objProp);
+    	} 
+    	else {
+    		ObjPropPostCondition.add(objProp);
     	}
     	insideObjectProposition = false;
     }
@@ -545,9 +550,42 @@ public class BoogieVisitor extends NullVisitor {
     		fieldsInStatement.clear();
     		statementContent = "";
     	    children[i].accept(this);
+    	    //write what we are packing or unpacking 
+    	    //before writing the statement
+            for (int fi = 0; fi < fieldsInStatement.size(); fi++) {
+                String fieldName = fieldsInStatement.get(fi);
+                String predicateOfField = fieldWhichPredicate.get(fieldName).toUpperCase(); 
+                if (predicateOfField != null ) {
+                	ObjPropString temp = new ObjPropString("this", "k", 
+                			     predicateOfField, new LinkedList<String>());
+                	if (Gamma.contains(temp)) {
+                		modifyMethodBody("call Unpack"+predicateOfField+"(this);\n");
+                		modifyMethodBody("packed[this, "+predicateOfField+"P]:=false;\n");
+                		Gamma.remove(temp);
+                	}
+                }
+                	
+            }
+    	    
     	    modifyMethodBody(statementContent);
     	      
     	  }
+    	//pack the last object proposition
+    	//the one in the postcondition
+    	for (int i = 0; i < ObjPropPostCondition.size(); i++) {
+    		//need to check if this object proposition is also in Gamma
+    		//if it's not, then might throw an error or send a message
+    		
+    		ObjPropString o = ObjPropPostCondition.get(i);
+    		String obj = o.getObject();
+    		String name = o.getName();
+    		
+    		
+    		 //need to take care of the OK, ok uppercase issue
+    		 modifyMethodBody("call Pack"+name+"("+obj+");\n");
+    		 modifyMethodBody("packed["+obj+", "+name+"P]:=true;\n");
+    		
+    	}
     	
     	modifyMethodBody("}\n ");
      	
