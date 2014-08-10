@@ -1,0 +1,21 @@
+type Ref;
+type PredicateTypes;
+type FractionType = [Ref, PredicateTypes] int;
+type PackedType = [Ref, PredicateTypes] bool;
+var packed: PackedType;
+var frac: FractionType;
+const null: Ref;
+
+var val [Ref]int;
+var dbl [Ref]int;
+const unique okP: PredicateTypes;
+
+procedure Packok(this:Ref);
+requires (dbl[this]==2*val[this]);
+
+procedure Unpackok(this:Ref);
+requires packed[this, okP];
+ensures (dbl[this]==2*val[this]);
+
+kOKkOKval:=val+1;
+dbl:=dbl+2;

@@ -1,86 +1,32 @@
 type Ref;
-CompilationUnits:
-  CompilationUnit:
-    ClassDeclaration: DoubleCount
-      FieldDeclaration: int val
-      FieldDeclaration: int dbl
-      PredicateDeclaration: OK
-        FormalParameters:
-        QuantificationExpression: exists
-          QuantifierVariables:
-            QuantifierVariable: v type: int
-            QuantifierVariable: d type: int
-          BinaryExpression: boolean
-            Operator &&
-            BinaryExpression: boolean
-              Operator &&
-              BinaryExpression: boolean
-                Operator ->
-                PrimaryExpression (Type: int)
-                  class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
-                  FieldSelection (Type: int)
-                    ID=val
-                PrimaryExpression (Type: int)
-                  Identifier: v
-              BinaryExpression: boolean
-                Operator ->
-                PrimaryExpression (Type: int)
-                  class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
-                  FieldSelection (Type: int)
-                    ID=dbl
-                PrimaryExpression (Type: int)
-                  Identifier: d
-            BinaryExpression: boolean
-              Operator ==
-              PrimaryExpression (Type: int)
-                Identifier: d
-              BinaryExpression: int
-                Operator *
-                PrimaryExpression (Type: int)
-                  Literal: 2 (Type: : int)
-                PrimaryExpression (Type: int)
-                  Identifier: d
-      MethodDeclaration: increment(void)
-        FormalParameters:
-        MethodSpecExpression: 
-          MethodSpecVariables:
-            MethodSpecVariable: k type: int
-          ObjectProposition: 
-            PrimaryExpression (Type: DoubleCount)
-              class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
-            PrimaryExpression (Type: int)
-              Identifier: k
-            PrimaryExpression (Type: )
-              Identifier: OK
-              ArgumentList: 
-          ObjectProposition: 
-            PrimaryExpression (Type: DoubleCount)
-              class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
-            PrimaryExpression (Type: int)
-              Identifier: k
-            PrimaryExpression (Type: )
-              Identifier: OK
-              ArgumentList: 
-        Block
-          StatementExpression
-            BinaryExpression: boolean
-              Operator =
-              PrimaryExpression (Type: int)
-                Identifier: val
-              BinaryExpression: int
-                Operator +
-                PrimaryExpression (Type: int)
-                  Identifier: val
-                PrimaryExpression (Type: int)
-                  Literal: 1 (Type: : int)
-          StatementExpression
-            BinaryExpression: boolean
-              Operator =
-              PrimaryExpression (Type: int)
-                Identifier: dbl
-              BinaryExpression: int
-                Operator +
-                PrimaryExpression (Type: int)
-                  Identifier: dbl
-                PrimaryExpression (Type: int)
-                  Literal: 2 (Type: : int)
+type PredicateTypes;
+type FractionType = [Ref, PredicateTypes] int;
+type PackedType = [Ref, PredicateTypes] bool;
+var packed: PackedType;
+var frac: FractionType;
+const null: Ref;
+
+var val: [Ref]int;
+var dbl: [Ref]int;
+const unique okP: PredicateTypes;
+
+procedure PackOK(this:Ref);
+requires (dbl[this]==2*val[this]);
+
+procedure UnpackOK(this:Ref);
+requires packed[this, okP];
+ensures (dbl[this]==2*val[this]);
+
+procedure increment(this:Ref)
+modifies val, dbl, packed, frac;
+requires packed[this,okP] && (frac[this,okP] > 0);
+ensures packed[this,okP] && (frac[this,okP] > 0);
+{
+call UnpackOK(this);
+packed[this, OKP]:=false;
+val[this]:=val[this]+1;
+dbl[this]:=dbl[this]+2;
+call PackOK(this);
+packed[this, OKP]:=true;
+}
+ 

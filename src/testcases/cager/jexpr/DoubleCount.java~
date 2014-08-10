@@ -1,14 +1,12 @@
-package x;
-
-class DoubleCount {
+public class DoubleCount {
 	int val;
 	int dbl;
 	
 	predicate OK() = exists int v, int d : 
 			         this.val -> v && this.dbl -> d &&
-			         d == 2*v
+			         d == 2*d;
 	
-	void increment()
+	public void increment()
 	int k:
 	requires this#k OK()
 	ensures this#k OK()
