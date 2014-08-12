@@ -127,7 +127,7 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitPredicateDeclaration(PredicateDeclaration ast) throws ParseException
     { 
-    	namePredicate = ast.getIdentifier().getName().toLowerCase();
+    	namePredicate = ast.getIdentifier().getName();
     	
     			try {
     					out.write("const unique "+ namePredicate +"P: PredicateTypes;\n"); 
@@ -179,10 +179,10 @@ public class BoogieVisitor extends NullVisitor {
     		try {
     			
     			//will need to do something about formal parameters
-				out.write("procedure Pack"+currentNamePred.toUpperCase()+"(this:Ref);\n"); 
+				out.write("procedure Pack"+currentNamePred+"(this:Ref);\n"); 
 				out.write("requires ("+predBody+");\n"); 
 				out.write("\n");
-				out.write("procedure Unpack"+currentNamePred.toUpperCase()+"(this:Ref);\n");
+				out.write("procedure Unpack"+currentNamePred+"(this:Ref);\n");
 				out.write("requires packed[this, "+currentNamePred+"P];\n");
 				out.write("ensures ("+predBody+");\n");
 				out.write("\n");
@@ -554,7 +554,7 @@ public class BoogieVisitor extends NullVisitor {
     	    //before writing the statement
             for (int fi = 0; fi < fieldsInStatement.size(); fi++) {
                 String fieldName = fieldsInStatement.get(fi);
-                String predicateOfField = fieldWhichPredicate.get(fieldName).toUpperCase(); 
+                String predicateOfField = fieldWhichPredicate.get(fieldName); 
                 if (predicateOfField != null ) {
                 	ObjPropString temp = new ObjPropString("this", "k", 
                 			     predicateOfField, new LinkedList<String>());
