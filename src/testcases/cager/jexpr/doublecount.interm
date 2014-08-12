@@ -85,68 +85,68 @@ before visitor v
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: val
 FS name: val, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@fade06 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6846c is FS and type: int
 Evaluating type of IdentifierExpression: v v
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6846c type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@fade06 cager.jexpr.ast.PrimaryExpression@6846c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dfeb30 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6846c cager.jexpr.ast.PrimaryExpression@1dfeb30
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: dbl
 FS name: dbl, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dfeb30 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c9b6eb is FS and type: int
 Evaluating type of IdentifierExpression: d d
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c9b6eb type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1dfeb30 cager.jexpr.ast.PrimaryExpression@1c9b6eb
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@817d6 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c9b6eb cager.jexpr.ast.PrimaryExpression@817d6
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@817d6 cager.jexpr.ast.BinaryExpression@154fc43
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@154fc43 cager.jexpr.ast.BinaryExpression@7dac02
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: d d
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7dac02 type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@a7d968 type: int
-Evaluating type of IdentifierExpression: v v
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b2601c type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a7d968 cager.jexpr.ast.PrimaryExpression@1b2601c
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c3d029 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1b2601c cager.jexpr.ast.PrimaryExpression@1c3d029
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@7dac02 cager.jexpr.ast.BinaryExpression@1c3d029
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a7d968 cager.jexpr.ast.BinaryExpression@974e4b
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@974e4b cager.jexpr.ast.BinaryExpression@1955dd4
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1955dd4 cager.jexpr.ast.BinaryExpression@14322ba
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Visiting Method increment
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14322ba type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9d04dc type: DoubleCount
 Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@9d04dc type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@aa2594 type: int
 Evaluating type of IdentifierExpression: OK OK
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@aa2594 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@892539 type: null
 Setting type of Object Prop 
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@892539 type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eacdc4 type: DoubleCount
 Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eacdc4 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b29e6 type: int
 Evaluating type of IdentifierExpression: OK OK
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b29e6 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18bea70 type: null
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: val val
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18bea70 type: int
-Evaluating type of IdentifierExpression: val val
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@cca07b type: int
+Evaluating type of IdentifierExpression: val val
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@3c0965 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@cca07b cager.jexpr.ast.PrimaryExpression@3c0965
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18cef0a type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@3c0965 cager.jexpr.ast.PrimaryExpression@18cef0a
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@18bea70 cager.jexpr.ast.BinaryExpression@18cef0a
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@cca07b cager.jexpr.ast.BinaryExpression@1a18493
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: dbl dbl
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a18493 type: int
-Evaluating type of IdentifierExpression: dbl dbl
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@106fbd7 type: int
+Evaluating type of IdentifierExpression: dbl dbl
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@17ff759 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@106fbd7 cager.jexpr.ast.PrimaryExpression@17ff759
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@48074a type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@17ff759 cager.jexpr.ast.PrimaryExpression@48074a
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a18493 cager.jexpr.ast.BinaryExpression@48074a
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@106fbd7 cager.jexpr.ast.BinaryExpression@d6c6ea
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 before second dump 0
 CompilationUnits:

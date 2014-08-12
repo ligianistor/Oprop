@@ -8,13 +8,13 @@ const null: Ref;
 
 var val: [Ref]int;
 var dbl: [Ref]int;
-const unique okP: PredicateTypes;
+const unique OKP: PredicateTypes;
 
 procedure PackOK(this:Ref);
 requires (dbl[this]==2*val[this]);
 
 procedure UnpackOK(this:Ref);
-requires packed[this, okP];
+requires packed[this, OKP];
 ensures (dbl[this]==2*val[this]);
 
 procedure increment(this:Ref)

@@ -1,4 +1,4 @@
-package x;
+package testcases.cager.jexpr;
 
 class DoubleCount {
 	int val;
