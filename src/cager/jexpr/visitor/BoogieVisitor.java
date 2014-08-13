@@ -351,7 +351,7 @@ public class BoogieVisitor extends NullVisitor {
     	childrenPredDecl[0].accept(this);
 
     	String identifierPredDecl = objectPropString;
-    	String predName = identifierPredDecl.toLowerCase();
+    	String predName = identifierPredDecl;
 
     	objectPropString = "";
     	childrenPredDecl[1].accept(this);
