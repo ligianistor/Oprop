@@ -59,23 +59,65 @@ import cager.jexpr.ast.WhileStatement;
  * This class visits the AST to generate the Boogie code.
  */
 public class BoogieVisitor extends NullVisitor {
+	
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = new HashMap<PredicateAndFieldValue, String> ();
+	
+	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
+	
+	//This maps each method name to its String method body.
 	HashMap<String, String> methodBody = new HashMap<String, String>();
+	
+	//This maps each method name to its String method specification(pre- and post-condition).
 	HashMap<String, String> methodSpec = new HashMap<String, String>();
+	
+	//This maps each method name to the parameters of that method.
+	//I think they are separated by commas.
 	HashMap<String, String> methodParams = new HashMap<String, String>();
+	
+	//For each name of a field, this map tells us which is the predicate that 
+	//has the permission to the field.
+	//Might not be correct because there might be more than one predicate for the same
+	//field, but they don't exist at the same time in a method. 
 	HashMap<String, String> fieldWhichPredicate = new HashMap<String, String>();
+	
+	
 	LinkedList<String> fieldsInStatement = new LinkedList<String>();
+	
+	//Holds the object propositions of a method, starting with 
+	//the object propositions in the pre-condition of the method.
 	LinkedList<ObjPropString> Gamma = new LinkedList<ObjPropString>();
+	
+	
 	LinkedList<ObjPropString> ObjPropPostCondition = new LinkedList<ObjPropString>();
+	
+	
 	String statementContent;
+	
+	//The file where the output is written.
 	BufferedWriter out;
+	
+	//The name of the current predicate that we are parsing.
 	String namePredicate;
+	
+	//The name of the current method that we are parsing in Oprop 
+	//and translating in Boogie. 
 	String currentMethod;
+	
+	//The set of fields of this Oprop class.
 	Set<String> fields = new TreeSet<String>();
+	
+	//For each method, fieldsInMethod(field_i) is false in the beginning.
+	//As we parse the method and we encounter field_i, we set fieldsInMethod to true.
 	HashMap<String, Boolean> fieldsInMethod = new HashMap<String, Boolean> (); 
+	
+	//This boolean is true iff we are currently parsing an object proposition. 
 	boolean insideObjectProposition;
+	
+	//This boolean is true iff we are currently inside the pre-condition of a method.
 	boolean insidePrecondition;
+	
+	//The string of the object proposition inside which we are at the moment.
 	String objectPropString;
 	
 	public BoogieVisitor(BufferedWriter boogieFile, String namePredicate_) {
@@ -137,7 +179,6 @@ public class BoogieVisitor extends NullVisitor {
     						System.err.println("Error: " + e.getMessage());
     			}
     	predicateBody.put(namePredicate, "");
-    	
     	
     	visitChildren(ast ); 
     }
@@ -217,9 +258,6 @@ public class BoogieVisitor extends NullVisitor {
 		}
         }
         
-         
-    	
-    	
     }
 
     public void visitReturnStatement(ReturnStatement ast ) throws ParseException
