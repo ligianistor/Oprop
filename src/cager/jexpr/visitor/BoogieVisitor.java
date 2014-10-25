@@ -82,16 +82,21 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, String> fieldWhichPredicate = new HashMap<String, String>();
 	
 	
+	//This gathers the fields in each statement. Not in each block, but in each statement.
+	//A statement is a child of a block.
 	LinkedList<String> fieldsInStatement = new LinkedList<String>();
 	
 	//Holds the object propositions of a method, starting with 
 	//the object propositions in the pre-condition of the method.
 	LinkedList<ObjPropString> Gamma = new LinkedList<ObjPropString>();
 	
-	
+	//This might need to be a hashMap??
+	//It should contain the object propositions of a method, but how do we know which method it is?
 	LinkedList<ObjPropString> ObjPropPostCondition = new LinkedList<ObjPropString>();
 	
 	
+	//At the beginning of each block, this is made "".
+	//This contains the string of each block.
 	String statementContent;
 	
 	//The file where the output is written.
@@ -233,7 +238,8 @@ public class BoogieVisitor extends NullVisitor {
 				
 				out.write(methodParams.get(currentMethod));
 				
-				//do the modifies thing
+				//Need to automatically detect what is being modified, according to the Boogie manual.
+				//We do this after we parse and translate the body of the current method.
 				String modifies = "modifies ";
 							
 				Iterator<Entry<String, Boolean>> iter = fieldsInMethod.entrySet().iterator(); 
