@@ -1,6 +1,7 @@
 package cager.jexpr.visitor;
 
 import java.io.BufferedWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +28,7 @@ import cager.jexpr.ast.CompilationUnits;
 import cager.jexpr.ast.ConstructorDeclaration;
 import cager.jexpr.ast.DeclarationStatement;
 import cager.jexpr.ast.Expression;
+import cager.jexpr.ast.FieldAndTypePair;
 import cager.jexpr.ast.FieldDeclaration;
 import cager.jexpr.ast.FieldSelection;
 import cager.jexpr.ast.ForStatement;
@@ -61,6 +63,9 @@ import cager.jexpr.ast.WhileStatement;
 public class BoogieVisitor extends NullVisitor {
 	
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = new HashMap<PredicateAndFieldValue, String> ();
+	
+	//The name of the Java class.
+	String className;
 	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
@@ -112,6 +117,12 @@ public class BoogieVisitor extends NullVisitor {
 	//The set of fields of this Oprop class.
 	Set<String> fields = new TreeSet<String>();
 	
+	//The arraylist of (field, type) pairs of this Oprop class.
+	ArrayList<FieldAndTypePair> fieldsTypes = new ArrayList<FieldAndTypePair>();
+	
+	//The set of predicates of this Oprop class.
+	Set<String> predicates = new TreeSet<String>();
+	
 	//For each method, fieldsInMethod(field_i) is false in the beginning.
 	//As we parse the method and we encounter field_i, we set fieldsInMethod to true.
 	HashMap<String, Boolean> fieldsInMethod = new HashMap<String, Boolean> (); 
@@ -142,6 +153,9 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitCompilationUnit(CompilationUnit ast) throws ParseException
     {
+    	ClassDeclaration c = (ClassDeclaration)(ast.getChildren()[0]);
+    	className = c.getIdentifier().getName();
+    	
     	try {
         out.write("type Ref;\n");
         out.write("type PredicateTypes;\n");
@@ -162,6 +176,7 @@ public class BoogieVisitor extends NullVisitor {
     { 
     	String fieldName = ast.getName();
     	fields.add(fieldName);
+    	fieldsTypes.add(new FieldAndTypePair(fieldName, ast.getType().toString()));
     	
     	try {
     		out.write("var "+ fieldName +": [Ref]"+ast.getType()+";\n");
@@ -175,6 +190,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitPredicateDeclaration(PredicateDeclaration ast) throws ParseException
     { 
     	namePredicate = ast.getIdentifier().getName();
+    	predicates.add(namePredicate);
     	
     			try {
     					out.write("const unique "+ namePredicate +"P: PredicateTypes;\n"); 
@@ -199,6 +215,10 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
     {
+    	//Write the constructors to out. The constructor that does not pack to anything
+    	//and the ones that pack to predicates.
+    	makeConstructors(out);
+    	
     	fieldsInMethod = new HashMap<String, Boolean> (); 
     	Gamma.clear();
     	for (String s : fields) {
@@ -403,7 +423,7 @@ public class BoogieVisitor extends NullVisitor {
     	//there are no arguments so we set it to empty with new
 
     	modifyMethodSpec("packed[" + objectString+","+ 
-    			         predName +"P] && (frac["+ objectString+ ","+ predName+"P] > 0);\n");
+    			         predName +"P] && \n \t (frac["+ objectString+ ","+ predName+"P] >= 1);\n");
     	ObjPropString objProp = new ObjPropString(objectString, fracString, 
     			identifierPredDecl, new LinkedList<String>()); 
     	if (insidePrecondition) {
@@ -660,6 +680,50 @@ public class BoogieVisitor extends NullVisitor {
     	String currentMethodParams = methodParams.get(currentMethod);
 		currentMethodParams = currentMethodParams.concat(s);
 		methodParams.put(currentMethod, currentMethodParams);
+    }
+    
+    public void makeConstructors(BufferedWriter out) {
+    	
+    	try {
+    		for (String p : predicates) {
+        	//write constructors for each predicate
+            out.write("procedure Construct" + className + p + "P(");
+            for (FieldAndTypePair s : fieldsTypes) {
+            	out.write(s.getName() + "1 :"+ s.getType() + ", ");
+        	}
+            out.write("this: Ref);\n");
+            out.write("\t ensures ");
+            for (FieldAndTypePair s : fieldsTypes) {
+            	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t ");
+        	}
+            out.write("(packed[this,"+ p+"P]) && \n \t \t ");
+            out.write("(frac[this,"+p+"P] >= 100);\n \n");
+            
+        	}
+    		
+    		//write a constructor that doesn't pack to any predicate
+    		out.write("procedure Construct" + className + "(");
+            for (FieldAndTypePair s : fieldsTypes) {
+            	out.write(s.getName() + "1 :"+ s.getType() + ", ");
+        	}
+            out.write("this: Ref);\n");
+            out.write("\t ensures ");
+    		for (int i = 0; i < fieldsTypes.size()-1; i++) {
+            	out.write("(" + fieldsTypes.get(i).getName() + "[this] == "+ 
+            				fieldsTypes.get(i).getName() + "1) &&\n \t \t ");
+        	}
+    		out.write("(" + fieldsTypes.get(fieldsTypes.size()-1).getName() + "[this] == "+ 
+    				fieldsTypes.get(fieldsTypes.size()-1).getName() + "1); \n \n");
+    		
+    		   		
+    		
+    		
+    	}
+        	catch (Exception e) {
+        		System.err.println("Error: " + e.getMessage());
+        	}
+    	
+    	
     }
     
     
