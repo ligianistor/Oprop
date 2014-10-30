@@ -246,11 +246,13 @@ public class BoogieVisitor extends NullVisitor {
     			
     			//will need to do something about formal parameters
 				out.write("procedure Pack"+currentNamePred+"(this:Ref);\n"); 
-				out.write("requires ("+predBody+");\n"); 
+				out.write("\t requires (packed[this,"+currentNamePred+"P] == false) && \n");
+				out.write("\t \t" + predBody + ");\n"); 
 				out.write("\n");
 				out.write("procedure Unpack"+currentNamePred+"(this:Ref);\n");
-				out.write("requires packed[this, "+currentNamePred+"P];\n");
-				out.write("ensures ("+predBody+");\n");
+				out.write("\t requires packed[this, "+currentNamePred+"P] &&\n");
+				out.write("\t \t (frac[this,"+currentNamePred+"P] >= 1);\n");
+				out.write("\t ensures ("+predBody+");\n");
 				out.write("\n");
 				out.write("procedure "+ast.getIdentifier().getName()+"(this:Ref");
 				
@@ -260,7 +262,7 @@ public class BoogieVisitor extends NullVisitor {
 				
 				//Need to automatically detect what is being modified, according to the Boogie manual.
 				//We do this after we parse and translate the body of the current method.
-				String modifies = "modifies ";
+				String modifies = "\t modifies ";
 							
 				Iterator<Entry<String, Boolean>> iter = fieldsInMethod.entrySet().iterator(); 
 			       while(iter.hasNext()){
@@ -592,13 +594,13 @@ public class BoogieVisitor extends NullVisitor {
     	Expression precondition = ast.getPrecondition();
     	Expression postcondition = ast.getPostcondition();
 
-    	modifyMethodSpec("requires ");
+    	modifyMethodSpec("\t requires ");
     	insidePrecondition = true;
     	precondition.accept(this );
     	
     	//need to createObjPropString and add it to Gamma
     	
-    	modifyMethodSpec("ensures ");
+    	modifyMethodSpec("\t ensures ");
     	insidePrecondition = false;
     	postcondition.accept(this );
     	
@@ -623,8 +625,8 @@ public class BoogieVisitor extends NullVisitor {
                 	ObjPropString temp = new ObjPropString("this", "k", 
                 			     predicateOfField, new LinkedList<String>());
                 	if (Gamma.contains(temp)) {
-                		modifyMethodBody("call Unpack"+predicateOfField+"(this);\n");
-                		modifyMethodBody("packed[this, "+predicateOfField+"P]:=false;\n");
+                		modifyMethodBody("\t call Unpack"+predicateOfField+"(this);\n");
+                		modifyMethodBody("\t packed[this, "+predicateOfField+"P]:=false;\n");
                 		Gamma.remove(temp);
                 	}
                 }
@@ -646,8 +648,8 @@ public class BoogieVisitor extends NullVisitor {
     		
     		
     		 //need to take care of the OK, ok uppercase issue
-    		 modifyMethodBody("call Pack"+name+"("+obj+");\n");
-    		 modifyMethodBody("packed["+obj+", "+name+"P]:=true;\n");
+    		 modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
+    		 modifyMethodBody("\t packed["+obj+", "+name+"P]:=true;\n");
     		
     	}
     	
@@ -689,7 +691,7 @@ public class BoogieVisitor extends NullVisitor {
         	//write constructors for each predicate
             out.write("procedure Construct" + className + p + "P(");
             for (FieldAndTypePair s : fieldsTypes) {
-            	out.write(s.getName() + "1 :"+ s.getType() + ", ");
+            	out.write(s.getName() + "1: "+ s.getType() + ", ");
         	}
             out.write("this: Ref);\n");
             out.write("\t ensures ");
