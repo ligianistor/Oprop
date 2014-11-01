@@ -99,6 +99,14 @@ public class BoogieVisitor extends NullVisitor {
 	//It should contain the object propositions of a method, but how do we know which method it is?
 	LinkedList<ObjPropString> ObjPropPostCondition = new LinkedList<ObjPropString>();
 	
+	//For each method, this map tells us which are the preconditions for it.  
+	HashMap<String, LinkedList<ObjPropString>> methodPreconditions = 
+			new HashMap<String, LinkedList<ObjPropString>>();
+		
+	//For each method, this map tells us which are the preconditions for it. 
+	HashMap<String, LinkedList<ObjPropString>> methodPostconditions = 
+			new HashMap<String, LinkedList<ObjPropString>>();
+	
 	
 	//At the beginning of each block, this is made "".
 	//This contains the string of each block.
@@ -123,6 +131,9 @@ public class BoogieVisitor extends NullVisitor {
 	//The set of predicates of this Oprop class.
 	Set<String> predicates = new TreeSet<String>();
 	
+	//The set of methods in this Oprop class.
+	Set<String> methods = new TreeSet<String>();
+	
 	//For each method, fieldsInMethod(field_i) is false in the beginning.
 	//As we parse the method and we encounter field_i, we set fieldsInMethod to true.
 	HashMap<String, Boolean> fieldsInMethod = new HashMap<String, Boolean> (); 
@@ -136,16 +147,42 @@ public class BoogieVisitor extends NullVisitor {
 	//The string of the object proposition inside which we are at the moment.
 	String objectPropString;
 	
-	public BoogieVisitor(BufferedWriter boogieFile, String namePredicate_) {
+	public BoogieVisitor(BufferedWriter boogieFile,int numberFilesBefore, BoogieVisitor[] classBoogieDetails) {
 		out = boogieFile;
-		namePredicate = namePredicate_;
+		namePredicate = "";
 		currentMethod = ""; 
 		insideObjectProposition = false;
 		insidePrecondition = false;
 		objectPropString = "";
 		statementContent = "";
 	}
-		
+	
+	//public getter functions
+	//To use in the subsequent BoogieVisitor classes.
+	//Each input Java file is translated using a BoogieVisitor.
+	
+	public String getClassName() {
+		return className;
+	}
+	
+	public Set<String> getPredicates() {
+		return predicates;
+	}
+	
+	public Set<String> getMethods() {
+		return methods;
+	}
+	
+	public HashMap<String, LinkedList<ObjPropString>> getMethodPreconditions() {
+		return methodPreconditions;
+	}
+
+	public HashMap<String, LinkedList<ObjPropString>> getMethodPostconditions() {
+		return methodPostconditions;
+	}
+
+	//visit methods
+	
     public void visitCompilationUnits(CompilationUnits ast) throws ParseException
     {
         visitChildren(ast);
@@ -227,6 +264,8 @@ public class BoogieVisitor extends NullVisitor {
     	
     	namePredicate = "";
     	String methodName = ast.getIdentifier().name;
+    	methods.add(methodName);
+    	
     	methodBody.put(methodName, "");
     	methodSpec.put(methodName, "");
     	methodParams.put(methodName, "");
@@ -430,9 +469,11 @@ public class BoogieVisitor extends NullVisitor {
     			identifierPredDecl, new LinkedList<String>()); 
     	if (insidePrecondition) {
     		Gamma.add(objProp);
+    		modifyMethodPreconditions(objProp);
     	} 
     	else {
     		ObjPropPostCondition.add(objProp);
+    		modifyMethodPostconditions(objProp);
     	}
     	insideObjectProposition = false;
     }
@@ -682,6 +723,20 @@ public class BoogieVisitor extends NullVisitor {
     	String currentMethodParams = methodParams.get(currentMethod);
 		currentMethodParams = currentMethodParams.concat(s);
 		methodParams.put(currentMethod, currentMethodParams);
+    }
+        
+    public void modifyMethodPreconditions(ObjPropString s) {
+    	LinkedList<ObjPropString> currentMethodPreconditions = 
+    			methodPreconditions.get(currentMethod);
+    	currentMethodPreconditions.add(s);
+    	methodPreconditions.put(currentMethod, currentMethodPreconditions);
+    }
+    
+    public void modifyMethodPostconditions(ObjPropString s) {
+    	LinkedList<ObjPropString> currentMethodPostconditions = 
+    			methodPostconditions.get(currentMethod);
+    	currentMethodPostconditions.add(s);
+		methodPostconditions.put(currentMethod, currentMethodPostconditions);
     }
     
     public void makeConstructors(BufferedWriter out) {

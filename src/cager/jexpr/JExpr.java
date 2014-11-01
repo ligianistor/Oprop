@@ -45,15 +45,25 @@ import java.util.ArrayList;
 public class JExpr implements JExprConstants {
     public static void main(String [] args) throws Throwable {
         JExpr parser;
-        String filename = null;
+        String[] filenames;
+        BoogieVisitor[] classBoogieDetails;
+        String filename;
         String outputDirectory = null;
         long initTime = 0;
         long parseTime = 0;
         long startTime = 0;
         long stopTime = 0;
+        int numberOfInputFiles = 0;
         BufferedWriter out, outBoogie;
-        if (args.length >= 2) {
-        		filename = args[0];
+        if (args.length >= 2) {     		
+        		
+        		numberOfInputFiles = Integer.parseInt(args[0]);
+        		filenames = new String[numberOfInputFiles];
+        		classBoogieDetails = new BoogieVisitor[numberOfInputFiles];
+        		
+        		for (int j=1; j <= numberOfInputFiles; j++) {
+        		
+        		filename = args[j];
                 int extensionStart = filename.indexOf('.');
                 String fileNoExtension = (filename.substring(0, extensionStart)).toLowerCase();
                 String intermFile = fileNoExtension.concat(".interm");
@@ -84,7 +94,7 @@ public class JExpr implements JExprConstants {
                         setParents(ast_top);
 
 
-                parser = new JExpr(new java.io.FileReader(args[0]));
+                parser = new JExpr(new java.io.FileReader(args[j]));
                 CompilationUnit ast = parser.CompilationUnit();
                 ast_top.add(ast);
                 setParents(ast, ast_top);
@@ -99,10 +109,13 @@ public class JExpr implements JExprConstants {
             out.close();
             FileWriter fstreamBoogie = new FileWriter(boogieFile);
             outBoogie = new BufferedWriter(fstreamBoogie);
-            BoogieVisitor bv = new BoogieVisitor(outBoogie, "");
+            BoogieVisitor bv = new BoogieVisitor(outBoogie, j-1, classBoogieDetails);
+            classBoogieDetails[j-1] = bv;
             ast_top.accept(bv);
             //Close the output streams
             outBoogie.close();
+            
+        		}
             
            
 
