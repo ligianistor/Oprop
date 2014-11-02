@@ -1,17 +1,12 @@
 package testcases.cager.jexpr;
 
-public class SimpleCell {
+class SimpleCell {
 	int val;
 	SimpleCell next;
 	
 	predicate PredVal() = this.val -> v && v<15
 			
 	predicate PredNext() = this.next -> obj && obj#34 PredVal()	
-
-	public SimpleCell(int i, SimpleCell obj) {
-		val = i;
-		obj = next;
-	}
 
 	void changeVal(int r) 
 	requires this#100 PredVal()
@@ -20,7 +15,7 @@ public class SimpleCell {
 		val = r;
 	}
 	
-	public static void main(String[] args) {
+	void main(String[] args) {
 		
 		SimpleCell c = new SimpleCell(2, null);
 		

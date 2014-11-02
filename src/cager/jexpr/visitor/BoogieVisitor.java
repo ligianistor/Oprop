@@ -147,7 +147,12 @@ public class BoogieVisitor extends NullVisitor {
 	//The string of the object proposition inside which we are at the moment.
 	String objectPropString;
 	
-	public BoogieVisitor(BufferedWriter boogieFile,int numberFilesBefore, BoogieVisitor[] classBoogieDetails) {
+	BoogieVisitor[] bv;
+	
+	int numberFilesBefore;
+	
+	
+	public BoogieVisitor(BufferedWriter boogieFile, int n, BoogieVisitor[] bv0) {
 		out = boogieFile;
 		namePredicate = "";
 		currentMethod = ""; 
@@ -155,6 +160,8 @@ public class BoogieVisitor extends NullVisitor {
 		insidePrecondition = false;
 		objectPropString = "";
 		statementContent = "";
+		bv = bv0;
+		numberFilesBefore = n;
 	}
 	
 	//public getter functions
@@ -215,8 +222,21 @@ public class BoogieVisitor extends NullVisitor {
     	fields.add(fieldName);
     	fieldsTypes.add(new FieldAndTypePair(fieldName, ast.getType().toString()));
     	
+    	String fieldType = ast.getType().toString();
+    	boolean isClass = false;
+    	
+    	for (int i=0; i<numberFilesBefore; i++) {
+    		if (bv[i].getClassName().equals(fieldType) )
+    				isClass = true;
+    	}
+    	
     	try {
-    		out.write("var "+ fieldName +": [Ref]"+ast.getType()+";\n");
+    		if (isClass) {
+    		out.write("var "+ fieldName +": [Ref]Ref;\n");
+    		}
+    		else 
+    		out.write("var "+ fieldName +": [Ref]"+fieldType+";\n");
+    			
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
@@ -232,13 +252,16 @@ public class BoogieVisitor extends NullVisitor {
     			try {
     					out.write("const unique "+ namePredicate +"P: PredicateTypes;\n"); 
     					out.write("\n");
+    			    	predicateBody.put(namePredicate, "");
+    			    	
+    			    	visitChildren(ast ); 
     				}
     			catch (Exception e) {
     						System.err.println("Error: " + e.getMessage());
     			}
-    	predicateBody.put(namePredicate, "");
+
     	
-    	visitChildren(ast ); 
+    	
     }
     
     public void visitQuantifierVariable(QuantifierVariable ast ) throws ParseException
@@ -295,8 +318,9 @@ public class BoogieVisitor extends NullVisitor {
 				out.write("\n");
 				out.write("procedure "+ast.getIdentifier().getName()+"(this:Ref");
 				
+				System.out.println("xxx" + currentMethod);
 				visitChildren(ast);
-				
+				System.out.println("xxkkk" + currentMethod);
 				out.write(methodParams.get(currentMethod));
 				
 				//Need to automatically detect what is being modified, according to the Boogie manual.
@@ -313,7 +337,6 @@ public class BoogieVisitor extends NullVisitor {
 			       }
 			       modifies = modifies.concat("packed, frac;");
 			     out.write(modifies+"\n");
-				
 				
 				out.write(methodSpec.get(currentMethod));
 				
@@ -424,6 +447,9 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	else
     	{
+    		if (insideObjectProposition) {
+				  objectPropString = objectPropString.concat(astvalue);
+			  }
     		String currentPredicateBody = predicateBody.get(namePredicate);
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(astvalue));
     	}
@@ -435,9 +461,10 @@ public class BoogieVisitor extends NullVisitor {
     	insideObjectProposition = true;
     	
     	TypedAST object  = ast.getObject();
-    	
+    	System.out.println("yyy");
     	object.accept(this);
     	String objectString = objectPropString;
+    	System.out.println("xxx"+objectString);
 
     	objectPropString = "";
     	
@@ -446,7 +473,7 @@ public class BoogieVisitor extends NullVisitor {
     	frac.accept(this);
 
     	String fracString = objectPropString;
-
+    	System.out.println("xxxdd"+fracString);
     	objectPropString = "";
     	
     	Expression predDecl = ast.getPredicateDeclaration();
@@ -462,18 +489,26 @@ public class BoogieVisitor extends NullVisitor {
     	childrenPredDecl[1].accept(this);
     	//this is ArgumentList but for this example 
     	//there are no arguments so we set it to empty with new
-
-    	modifyMethodSpec("packed[" + objectString+","+ 
-    			         predName +"P] && \n \t (frac["+ objectString+ ","+ predName+"P] >= 1);\n");
+    	//currentMethod
     	ObjPropString objProp = new ObjPropString(objectString, fracString, 
-    			identifierPredDecl, new LinkedList<String>()); 
-    	if (insidePrecondition) {
-    		Gamma.add(objProp);
-    		modifyMethodPreconditions(objProp);
-    	} 
+    			identifierPredDecl, new LinkedList<String>());
+    	String bodyMethodOrPredicate = "packed[" + objectString+","+ 
+		         predName +"P] && \n \t (frac["+ objectString+ ","+ predName+"P] >= 1);\n";
+    	if (currentMethod!="") {
+    		modifyMethodSpec(bodyMethodOrPredicate);
+ 
+    		if (insidePrecondition) {
+    			Gamma.add(objProp);
+    			modifyMethodPreconditions(objProp);
+    		} 
+    		else {
+    			ObjPropPostCondition.add(objProp);
+    			modifyMethodPostconditions(objProp);
+    		}
+    	}
     	else {
-    		ObjPropPostCondition.add(objProp);
-    		modifyMethodPostconditions(objProp);
+    		modifyPredicateBody(bodyMethodOrPredicate);
+    		
     	}
     	insideObjectProposition = false;
     }
@@ -556,6 +591,9 @@ public class BoogieVisitor extends NullVisitor {
        if (!(fieldName.equals(""))) {
     	   if (namePredicate.equals("")){
     	   try{
+        	   if (insideObjectProposition) {
+ 				  objectPropString = objectPropString.concat(identifierName);
+ 			  }
  			  modifyMethodBody(fieldName+ "[this]");
  			  }
  		      catch (Exception e) {
@@ -563,12 +601,15 @@ public class BoogieVisitor extends NullVisitor {
  		      }
     	   }
     	   else {
+        	   if (insideObjectProposition) {
+ 				  objectPropString = objectPropString.concat(identifierName);
+ 			  }
   			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName+ "[this]"));
     	   }
     	   
        }
        else {
-    	   if (namePredicate.equals("")){
+    	   if (namePredicate.equals("")) {
     	   try {
     		   if ((currentMethod != "")  && (fieldsInMethod.get(identifierName) != null)){
     			   statementContent = statementContent.concat(identifierName+"[this]");
@@ -579,7 +620,6 @@ public class BoogieVisitor extends NullVisitor {
     			   if (insideObjectProposition) {
     					  objectPropString = objectPropString.concat(identifierName);
     				  }
-
     		   }
     		   
   			  }
@@ -588,6 +628,10 @@ public class BoogieVisitor extends NullVisitor {
   		      };
        }
        else {
+    	   if (insideObjectProposition) {
+				  objectPropString = objectPropString.concat(identifierName);
+			  }
+    	   System.out.println(objectPropString+ "****");
     	   predicateBody.put(namePredicate, currentPredicateBody.concat(identifierName));
        }
        }
@@ -712,9 +756,16 @@ public class BoogieVisitor extends NullVisitor {
 		currentMethodBody = currentMethodBody.concat(s);
 		methodBody.put(currentMethod, currentMethodBody);
     }
+    
+    public void modifyPredicateBody(String s) {
+    	String currentPredicateBody = predicateBody.get(namePredicate);
+    	currentPredicateBody = currentPredicateBody.concat(s);
+    	predicateBody.put(namePredicate, currentPredicateBody);
+    }
         
     public void modifyMethodSpec(String s) {
     	String currentMethodSpec = methodSpec.get(currentMethod);
+    	System.out.println("ZZZ"+s);
 		currentMethodSpec = currentMethodSpec.concat(s);
 		methodSpec.put(currentMethod, currentMethodSpec);
     }
@@ -728,6 +779,9 @@ public class BoogieVisitor extends NullVisitor {
     public void modifyMethodPreconditions(ObjPropString s) {
     	LinkedList<ObjPropString> currentMethodPreconditions = 
     			methodPreconditions.get(currentMethod);
+    	if (currentMethodPreconditions == null) {
+    		currentMethodPreconditions = new LinkedList<ObjPropString>();
+    	}
     	currentMethodPreconditions.add(s);
     	methodPreconditions.put(currentMethod, currentMethodPreconditions);
     }
@@ -735,6 +789,9 @@ public class BoogieVisitor extends NullVisitor {
     public void modifyMethodPostconditions(ObjPropString s) {
     	LinkedList<ObjPropString> currentMethodPostconditions = 
     			methodPostconditions.get(currentMethod);
+    	if (currentMethodPostconditions == null) {
+    		currentMethodPostconditions = new LinkedList<ObjPropString>();
+    	}
     	currentMethodPostconditions.add(s);
 		methodPostconditions.put(currentMethod, currentMethodPostconditions);
     }

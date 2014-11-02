@@ -5,11 +5,6 @@ class Share {
 	
 	predicate ShareCount() = exists DoubleCount d : 
 		       this.dc -> d && (d#1 OK())
-		
-	void Share(DoubleCount dc2) {
-		dc = dc2;
-	}
-
 		       
 	void touch() 
 	int k:
