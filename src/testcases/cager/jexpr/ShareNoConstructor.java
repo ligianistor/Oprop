@@ -5,6 +5,8 @@ class Share {
 	
 	predicate ShareCount() = exists DoubleCount d : 
 	       this.dc -> d && (d#1 OK())
+	       
+	       		//dc.increment();
 	
 
 	

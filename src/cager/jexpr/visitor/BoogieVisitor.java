@@ -40,6 +40,7 @@ import cager.jexpr.ast.KeywordExpression;
 import cager.jexpr.ast.LiteralExpression;
 import cager.jexpr.ast.LocalVariableDeclaration;
 import cager.jexpr.ast.MethodDeclaration;
+import cager.jexpr.ast.MethodSelection;
 import cager.jexpr.ast.MethodSpecExpression;
 import cager.jexpr.ast.MethodSpecVariable;
 import cager.jexpr.ast.MethodSpecVariables;
@@ -197,6 +198,7 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitCompilationUnit(CompilationUnit ast) throws ParseException
     {
+    	
     	ClassDeclaration c = (ClassDeclaration)(ast.getChildren()[0]);
     	className = c.getIdentifier().getName();
     	
@@ -219,6 +221,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitFieldDeclaration(FieldDeclaration ast ) throws ParseException 
     { 
     	String fieldName = ast.getName();
+    	
     	fields.add(fieldName);
     	fieldsTypes.add(new FieldAndTypePair(fieldName, ast.getType().toString()));
     	
@@ -275,6 +278,7 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
     {
+    	
     	//Write the constructors to out. The constructor that does not pack to anything
     	//and the ones that pack to predicates.
     	makeConstructors(out);
@@ -318,9 +322,8 @@ public class BoogieVisitor extends NullVisitor {
 				out.write("\n");
 				out.write("procedure "+ast.getIdentifier().getName()+"(this:Ref");
 				
-				System.out.println("xxx" + currentMethod);
 				visitChildren(ast);
-				System.out.println("xxkkk" + currentMethod);
+				
 				out.write(methodParams.get(currentMethod));
 				
 				//Need to automatically detect what is being modified, according to the Boogie manual.
@@ -357,6 +360,11 @@ public class BoogieVisitor extends NullVisitor {
     }
 
     public void visitFieldSelection(FieldSelection ast ) throws ParseException
+    {
+    	visitChildren(ast );
+    }
+    
+    public void visitMethodSelection(MethodSelection ast ) throws ParseException
     {
     	visitChildren(ast );
     }
@@ -461,10 +469,8 @@ public class BoogieVisitor extends NullVisitor {
     	insideObjectProposition = true;
     	
     	TypedAST object  = ast.getObject();
-    	System.out.println("yyy");
     	object.accept(this);
     	String objectString = objectPropString;
-    	System.out.println("xxx"+objectString);
 
     	objectPropString = "";
     	
@@ -473,7 +479,6 @@ public class BoogieVisitor extends NullVisitor {
     	frac.accept(this);
 
     	String fracString = objectPropString;
-    	System.out.println("xxxdd"+fracString);
     	objectPropString = "";
     	
     	Expression predDecl = ast.getPredicateDeclaration();
@@ -631,7 +636,6 @@ public class BoogieVisitor extends NullVisitor {
     	   if (insideObjectProposition) {
 				  objectPropString = objectPropString.concat(identifierName);
 			  }
-    	   System.out.println(objectPropString+ "****");
     	   predicateBody.put(namePredicate, currentPredicateBody.concat(identifierName));
        }
        }
@@ -694,10 +698,12 @@ public class BoogieVisitor extends NullVisitor {
     public void visitBlock(Block ast ) 
   		  throws ParseException 
   		  { 
+    	
     	modifyMethodBody("{\n");
     	
     	AST[] children = ast.getChildren();
     	for (int i = 0; i < children.length; i++) {
+    		
     		fieldsInStatement.clear();
     		statementContent = "";
     	    children[i].accept(this);
@@ -765,7 +771,6 @@ public class BoogieVisitor extends NullVisitor {
         
     public void modifyMethodSpec(String s) {
     	String currentMethodSpec = methodSpec.get(currentMethod);
-    	System.out.println("ZZZ"+s);
 		currentMethodSpec = currentMethodSpec.concat(s);
 		methodSpec.put(currentMethod, currentMethodSpec);
     }

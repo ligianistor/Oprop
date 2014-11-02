@@ -11,9 +11,7 @@ class Share {
 	requires this#k ShareCount()
 	ensures this#k ShareCount()
 	{
-	 dc.increment();
+		this.dc.increment();
 	}
 	
-	
-
 }

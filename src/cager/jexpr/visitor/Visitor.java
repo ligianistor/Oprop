@@ -16,6 +16,7 @@ public interface Visitor {
   public abstract void visitBinaryExpression(BinaryExpression ast ) throws ParseException;
   public abstract void visitPrimaryExpression(PrimaryExpression ast ) throws ParseException;
   public abstract void visitFieldSelection(FieldSelection ast ) throws ParseException;
+  public abstract void visitMethodSelection(MethodSelection ast ) throws ParseException;
   public abstract void visitCastExpression(CastExpression ast ) throws ParseException;
   public abstract void visitFormalParameter(FormalParameter ast ) throws ParseException;
   public abstract void visitFormalParameters(FormalParameters ast ) throws ParseException;

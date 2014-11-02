@@ -116,8 +116,6 @@ public class JExpr implements JExprConstants {
             outBoogie.close();
             
         		}
-            
-           
 
         }
         else
@@ -230,7 +228,7 @@ public class JExpr implements JExprConstants {
     ClassDeclaration cd = null;
     String packageName = null;
     packageName = PackageDeclaration();
-                                       System.out.println("package: " + packageName);
+                                       //System.out.println("package: " + packageName);
     cd = ClassDeclaration();
     jj_consume_token(0);
     {if (true) return new CompilationUnit(packageName, cd);}
@@ -309,13 +307,13 @@ public class JExpr implements JExprConstants {
                   for(int i = 0; i < fds.length; i++) { cd.addField(fds[i]); }
       } else if (jj_2_3(2147483647)) {
         cond = ConstructorDeclaration();
-                                                  cd.addConstructor(cond);
+        cd.addConstructor(cond);
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PREDICATE:
           jj_consume_token(PREDICATE);
           pd = PredicateDeclaration();
-                                                          cd.addPredicate(pd);
+          cd.addPredicate(pd);
           break;
         case BOOLEAN:
         case BYTE:
@@ -1030,7 +1028,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
   }
 
   final public MethodDeclaration MethodDeclaration() throws ParseException {
-    MethodDeclaration md = new MethodDeclaration();
+	MethodDeclaration md = new MethodDeclaration();
     Type resultType;
     FormalParameters params;
     Identifier ider;
@@ -1038,7 +1036,8 @@ FieldDeclaration FieldDeclaration() : //jhlee
     Block block;
     resultType = ResultType();
     jj_consume_token(IDENTIFIER);
-                 ider = new Identifier(getToken(0).image);
+    ider = new Identifier(getToken(0).image);
+               
     params = FormalParameters();
     mse = MethodSpecExpression();
     block = Block();
@@ -1106,7 +1105,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
     }
     t = Type();
     id = VariableDeclaratorId();
-                                                                                                {if (true) return new MethodSpecVariable(id, t);}
+    {if (true) return new MethodSpecVariable(id, t);}
     throw new Error("Missing return statement in function");
   }
 
@@ -2260,6 +2259,7 @@ void ConstructorDeclaration() :
   }
 
   final public Expression PrimaryExpression() throws ParseException {
+	
     PrimaryExpression e = new PrimaryExpression();
     PrimaryPrefix(e);
     label_29:
@@ -2286,7 +2286,8 @@ void ConstructorDeclaration() :
     case CHARACTER_LITERAL:
     case STRING_LITERAL:
       e = Literal();
-                          System.out.println("Added literal to pe: " + e); pe.add(e);
+                          //System.out.println("Added literal to pe: " + e); 
+                          pe.add(e);
       break;
     case THIS:
       jj_consume_token(THIS);
@@ -2330,9 +2331,10 @@ void ConstructorDeclaration() :
               jj_la1[80] = jj_gen;
               break label_30;
             }
+           
             jj_consume_token(DOT);
             jj_consume_token(IDENTIFIER);
-                                          e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
+            e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
           }
           break;
         default:
@@ -2363,11 +2365,24 @@ void ConstructorDeclaration() :
       case DOT:
         jj_consume_token(DOT);
         jj_consume_token(IDENTIFIER);
-                        e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
-        break;
+        
+        if (jj_ntk == -1) jj_ntk();
+        
+        if (jj_ntk == LPAREN) {
+        	e = new MethodSelection(new Identifier(getToken(0).image)); { pe.add(e);}
+        	
+        	el = Arguments();
+            pe.add(el); /* lnistor */        	
+        }
+        else {
+        	
+        	e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
+            
+        }
+        	break;
       case LPAREN:
         el = Arguments();
-                       pe.add(el); /* jhlee */
+        pe.add(el); /* jhlee */
         break;
       default:
         jj_la1[83] = jj_gen;
