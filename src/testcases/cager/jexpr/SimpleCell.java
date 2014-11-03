@@ -4,18 +4,18 @@ class SimpleCell {
 	int val;
 	SimpleCell next;
 	
-	predicate PredVal() = this.val -> v && v<15
+	predicate PredVal() = exists int v : this.val -> v && v<15
 			
-	predicate PredNext() = this.next -> obj && obj#34 PredVal()	
+	predicate PredNext() = exists SimpleCell obj : this.next -> obj && (obj#34 PredVal())	
 
 	void changeVal(int r) 
 	requires this#100 PredVal()
 	ensures this#100 PredVal()
 	{
-		val = r;
+		this.val = r;
 	}
 	
-	void main(String[] args) {
+	void main() {
 		
 		SimpleCell c = new SimpleCell(2, null);
 		
