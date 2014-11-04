@@ -68,7 +68,6 @@ public abstract class AST
 
     /**
     *   Provided to implement the visitor pattern.
-    *   This should be called accept
     */
     public abstract void accept(Visitor v) throws ParseException;
 

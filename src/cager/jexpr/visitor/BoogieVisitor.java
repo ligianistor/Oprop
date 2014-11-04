@@ -683,15 +683,18 @@ public class BoogieVisitor extends NullVisitor {
     	Expression precondition = ast.getPrecondition();
     	Expression postcondition = ast.getPostcondition();
 
+    	if (precondition != null) {
     	modifyMethodSpec("\t requires ");
     	insidePrecondition = true;
     	precondition.accept(this );
+    	}
     	
     	//need to createObjPropString and add it to Gamma
-    	
+    	if (postcondition != null) {
     	modifyMethodSpec("\t ensures ");
     	insidePrecondition = false;
     	postcondition.accept(this );
+    	}
     	
     	}
     
