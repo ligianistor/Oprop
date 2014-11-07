@@ -11,6 +11,14 @@ public class PredicateAndFieldValue {
 		fieldValue = fieldValue_;
 	}
 	
+	public String getPredicate() {
+		return predicate;
+	}
+	
+	public String getFieldValue() {
+		return fieldValue;
+	}
+		
 	 public boolean equals(Object obj) {
 		 if (obj == this) {
 	            return true;
@@ -20,17 +28,22 @@ public class PredicateAndFieldValue {
 	        }
 	      
 	        PredicateAndFieldValue o = (PredicateAndFieldValue) obj;
-		 
-	      return (o.predicate).equals(this.predicate) &&
-	    		  (o.fieldValue).equals(this.fieldValue);
+	        		 
+	      if (predicate.equals(o.getPredicate()) &&
+	    	 fieldValue.equals(o.getFieldValue()))
+	      {
+	    	  return true;}
+	      else {
+	    	  return false;}
+
 	 }
 	
 	  public int hashCode(){
 		    return (predicate.hashCode() * fieldValue.hashCode());
 		  }
 	 
-	  public void print() {
-		  System.out.println("predicateAndField" + predicate + " " + fieldValue);
+	  public void println() {
+		  System.out.println("predicateAndField: " + predicate + " " + fieldValue);
 	  }
 	
 }

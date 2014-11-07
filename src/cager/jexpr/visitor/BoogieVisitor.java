@@ -304,6 +304,7 @@ public class BoogieVisitor extends NullVisitor {
      	   
      		String predBodyUnprocessed = predicateBody.get(currentNamePred);
      		//need to do more processing of the predBody
+     		//TODO
      		int i=0;
      		while (predBodyUnprocessed.charAt(i)=='&') i++;
      		String predBody = predBodyUnprocessed.substring(i);
@@ -313,7 +314,7 @@ public class BoogieVisitor extends NullVisitor {
     			//will need to do something about formal parameters
 				out.write("procedure Pack"+currentNamePred+"(this:Ref);\n"); 
 				out.write("\t requires (packed[this,"+currentNamePred+"P] == false) && \n");
-				out.write("\t \t" + predBody + ");\n"); 
+				out.write("\t \t(" + predBody + ");\n"); 
 				out.write("\n");
 				out.write("procedure Unpack"+currentNamePred+"(this:Ref);\n");
 				out.write("\t requires packed[this, "+currentNamePred+"P] &&\n");
@@ -325,6 +326,7 @@ public class BoogieVisitor extends NullVisitor {
 				visitChildren(ast);
 				
 				out.write(methodParams.get(currentMethod));
+				
 				
 				//Need to automatically detect what is being modified, according to the Boogie manual.
 				//We do this after we parse and translate the body of the current method.
@@ -376,13 +378,15 @@ public class BoogieVisitor extends NullVisitor {
     		PrimaryExpression e2 = (PrimaryExpression)ast.E2;
     		FieldSelection f = (FieldSelection)(e1.getChildren()[1]);
     		String nameField = f.getIdentifier().name;
+    		
     		fieldWhichPredicate.put(nameField, namePredicate);
     		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
     		String fieldValue = i.getName();
     		
         	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, fieldValue);
+        	//pv.println();
         	quantifiedVars.put(pv, nameField);
-
+        	
     		return;
     	}
     	
@@ -458,8 +462,10 @@ public class BoogieVisitor extends NullVisitor {
     		if (insideObjectProposition) {
 				  objectPropString = objectPropString.concat(astvalue);
 			  }
+    		else {
     		String currentPredicateBody = predicateBody.get(namePredicate);
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(astvalue));
+    		}
     	}
     	
     	visitChildren(ast ); }
@@ -471,7 +477,6 @@ public class BoogieVisitor extends NullVisitor {
     	TypedAST object  = ast.getObject();
     	object.accept(this);
     	String objectString = objectPropString;
-
     	objectPropString = "";
     	
     	Expression frac = ast.getFraction();
@@ -497,8 +502,20 @@ public class BoogieVisitor extends NullVisitor {
     	//currentMethod
     	ObjPropString objProp = new ObjPropString(objectString, fracString, 
     			identifierPredDecl, new LinkedList<String>());
-    	String bodyMethodOrPredicate = "packed[" + objectString+","+ 
-		         predName +"P] && \n \t (frac["+ objectString+ ","+ predName+"P] >= 1);\n";
+    	    	
+    	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, objectString);
+    	String fieldName = quantifiedVars.get(pv);
+        String bodyMethodOrPredicate = "";
+    	if (fieldName == null){
+    		
+    	bodyMethodOrPredicate = "packed[" + objectString+","+ 
+		         predName +"P] && \n \t \t(frac["+ objectString+ ","+ predName+"P] >= 1";
+    	}
+    	else {
+    		
+    		bodyMethodOrPredicate = "packed[" + fieldName+"[this],"+ 
+   		         predName +"P] && \n \t \t(frac["+ fieldName + "[this],"+ predName+"P] >= 1";
+    	}
     	if (currentMethod!="") {
     		modifyMethodSpec(bodyMethodOrPredicate);
  
@@ -534,6 +551,7 @@ public class BoogieVisitor extends NullVisitor {
     	   	
     	visitChildren(ast ); 
     	
+    	
     	if (currentMethod != "") {
     		modifyMethodParams(")\n"); 
         	}
@@ -558,7 +576,9 @@ public class BoogieVisitor extends NullVisitor {
 		  }
 		  else {
 			  try {
-			  out.write(ast.getValue() + "");
+				  //this is where the error is
+				  //seems like keyword is only this
+			  //out.write(ast.getValue() + "XCXCX");
 			  }
 			  catch (Exception e) {
 		    		System.err.println("Error: " + e.getMessage());
@@ -582,18 +602,10 @@ public class BoogieVisitor extends NullVisitor {
        }
        
        PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
-
-       String fieldName = "";
-       Iterator<Entry<PredicateAndFieldValue, String>> j = quantifiedVars.entrySet().iterator(); 
-       while(j.hasNext()){
-    	   PredicateAndFieldValue key = j.next().getKey();
-           if (key.equals(pv))
-           {
-        	   fieldName = quantifiedVars.get(key);
-           }
-       }
+       String fieldName = quantifiedVars.get(pv);
+             
        String currentPredicateBody = predicateBody.get(namePredicate);
-       if (!(fieldName.equals(""))) {
+       if (!(fieldName == null)) {
     	   if (namePredicate.equals("")){
     	   try{
         	   if (insideObjectProposition) {
@@ -609,7 +621,9 @@ public class BoogieVisitor extends NullVisitor {
         	   if (insideObjectProposition) {
  				  objectPropString = objectPropString.concat(identifierName);
  			  }
+        	   if (!insideObjectProposition) {
   			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName+ "[this]"));
+        	   }
     	   }
     	   
        }
@@ -636,7 +650,9 @@ public class BoogieVisitor extends NullVisitor {
     	   if (insideObjectProposition) {
 				  objectPropString = objectPropString.concat(identifierName);
 			  }
+    	   else {
     	   predicateBody.put(namePredicate, currentPredicateBody.concat(identifierName));
+    	   }
        }
        }
     	visitChildren(ast );
@@ -682,11 +698,11 @@ public class BoogieVisitor extends NullVisitor {
   		  { 
     	Expression precondition = ast.getPrecondition();
     	Expression postcondition = ast.getPostcondition();
-
     	if (precondition != null) {
     	modifyMethodSpec("\t requires ");
     	insidePrecondition = true;
     	precondition.accept(this );
+    	modifyMethodSpec(");\n");
     	}
     	
     	//need to createObjPropString and add it to Gamma
@@ -694,6 +710,7 @@ public class BoogieVisitor extends NullVisitor {
     	modifyMethodSpec("\t ensures ");
     	insidePrecondition = false;
     	postcondition.accept(this );
+    	modifyMethodSpec(");\n");
     	}
     	
     	}
@@ -701,6 +718,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitBlock(Block ast ) 
   		  throws ParseException 
   		  { 
+    	
     	
     	modifyMethodBody("{\n");
     	
@@ -846,6 +864,15 @@ public class BoogieVisitor extends NullVisitor {
         	}
     	
     	
+    }
+    
+    public static void printMap(Map mp) {
+        Iterator it = mp.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry)it.next();
+            System.out.println(pairs.getKey() + " = " + pairs.getValue());
+            it.remove(); // avoids a ConcurrentModificationException
+        }
     }
     
     
