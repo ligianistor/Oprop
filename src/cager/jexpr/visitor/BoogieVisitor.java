@@ -68,6 +68,9 @@ public class BoogieVisitor extends NullVisitor {
 	//The name of the Java class.
 	String className;
 	
+	//Is this the first method that is being translated 
+	boolean isFirstMethod = true;
+	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
 	
@@ -277,12 +280,7 @@ public class BoogieVisitor extends NullVisitor {
  //Since methods are not children of 
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
-    {
-    	
-    	//Write the constructors to out. The constructor that does not pack to anything
-    	//and the ones that pack to predicates.
-    	makeConstructors(out);
-    	
+    {    	
     	fieldsInMethod = new HashMap<String, Boolean> (); 
     	Gamma.clear();
     	for (String s : fields) {
@@ -298,6 +296,13 @@ public class BoogieVisitor extends NullVisitor {
     	methodParams.put(methodName, "");
     	currentMethod = methodName;
     	
+    	//When we hit the first method, we write out the constructors for this 
+    	//class and the Pack and Unpack procedures. 
+    	if (isFirstMethod) {
+    	//Write the constructors to out. The constructor that does not pack to anything
+    	//and the ones that pack to predicates.
+    	makeConstructors(out);
+    	
     	Iterator<Entry<String, String>> j = predicateBody.entrySet().iterator(); 
         while(j.hasNext()){
      	   String currentNamePred = j.next().getKey();
@@ -309,18 +314,27 @@ public class BoogieVisitor extends NullVisitor {
      		while (predBodyUnprocessed.charAt(i)=='&') i++;
      		String predBody = predBodyUnprocessed.substring(i);
      		
+     		try {
+			//will need to do something about formal parameters
+			out.write("procedure Pack"+currentNamePred+"(this:Ref);\n"); 
+			out.write("\t requires (packed[this,"+currentNamePred+"P] == false) && \n");
+			out.write("\t \t(" + predBody + ");\n"); 
+			out.write("\n");
+			out.write("procedure Unpack"+currentNamePred+"(this:Ref);\n");
+			out.write("\t requires packed[this, "+currentNamePred+"P] &&\n");
+			out.write("\t \t (frac[this,"+currentNamePred+"P] >= 1);\n");
+			out.write("\t ensures ("+predBody+");\n");
+			out.write("\n");
+     		}
+     		
+    		catch (Exception e) {
+    			System.err.println("Error: " + e.getMessage());
+    		}
+        }
+    	}
+    	     		
+        //Writing the current procedure out.
     		try {
-    			
-    			//will need to do something about formal parameters
-				out.write("procedure Pack"+currentNamePred+"(this:Ref);\n"); 
-				out.write("\t requires (packed[this,"+currentNamePred+"P] == false) && \n");
-				out.write("\t \t(" + predBody + ");\n"); 
-				out.write("\n");
-				out.write("procedure Unpack"+currentNamePred+"(this:Ref);\n");
-				out.write("\t requires packed[this, "+currentNamePred+"P] &&\n");
-				out.write("\t \t (frac[this,"+currentNamePred+"P] >= 1);\n");
-				out.write("\t ensures ("+predBody+");\n");
-				out.write("\n");
 				out.write("procedure "+ast.getIdentifier().getName()+"(this:Ref");
 				
 				visitChildren(ast);
@@ -351,8 +365,8 @@ public class BoogieVisitor extends NullVisitor {
 		catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 		}
-        }
-        
+    		
+    		isFirstMethod = false;
     }
 
     public void visitReturnStatement(ReturnStatement ast ) throws ParseException

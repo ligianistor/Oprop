@@ -16,7 +16,6 @@ class SimpleCell {
 	}
 	
 	void main() {
-		
 		SimpleCell c = new SimpleCell(2, null);
 		
 		SimpleCell a = new SimpleCell(2, c);

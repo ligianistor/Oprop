@@ -14,4 +14,12 @@ class Share {
 		this.dc.increment();
 	}
 	
+	void main() 
+	{
+		DoubleCount dc = new DoubleCount();
+		Share s1 = new Share(dc);
+		Share s2 = new Share(dc);
+		s1.touch();
+		s2.touch();
+	}
 }
