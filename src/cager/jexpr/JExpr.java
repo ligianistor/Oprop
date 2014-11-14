@@ -1459,7 +1459,8 @@ void ConstructorDeclaration() :
   final public String Name() throws ParseException {
     StringBuffer sb;
     jj_consume_token(IDENTIFIER);
-                  sb = new StringBuffer(getToken(0).image);
+    sb = new StringBuffer(getToken(0).image);
+    //lnistor this is where we need to get the initial invariant
     label_17:
     while (true) {
       if (jj_2_15(2)) {
@@ -1469,7 +1470,7 @@ void ConstructorDeclaration() :
       }
       jj_consume_token(DOT);
       jj_consume_token(IDENTIFIER);
-                                      sb.append('.'); sb.append(getToken(0).image);
+      sb.append('.'); sb.append(getToken(0).image);
     }
     {if (true) return sb.toString();}
     throw new Error("Missing return statement in function");
@@ -2307,7 +2308,8 @@ void ConstructorDeclaration() :
       break;
     case NEW:
       e = AllocationExpression();
-                               pe.add(e);
+      //lnistor need to change here
+      pe.add(e);
       break;
     default:
       jj_la1[81] = jj_gen;
@@ -2514,6 +2516,7 @@ void ConstructorDeclaration() :
 
   final public Expression AllocationExpression() throws ParseException {
     String n = null;
+    String p = null;
     Expression e = null;
     if (jj_2_25(2)) {
       jj_consume_token(NEW);
@@ -2529,8 +2532,11 @@ void ConstructorDeclaration() :
           ArrayDimsAndInits();
           break;
         case LPAREN:
+          jj_consume_token(LPAREN);
+          p = Name();
+          jj_consume_token(RPAREN);
           e = Arguments();
-                        {if (true) return new AllocationExpression(n, e);}
+                        {if (true) return new AllocationExpression(n, p, e);}
           break;
         default:
           jj_la1[88] = jj_gen;

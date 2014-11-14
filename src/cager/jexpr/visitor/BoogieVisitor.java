@@ -574,13 +574,29 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitFormalParameter(FormalParameter ast ) throws ParseException
     {
-        visitChildren(ast );
+    	
+    	
+        visitChildren(ast);
 
     }
     
-    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast ) throws ParseException
+    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast) throws ParseException
     {
-    	visitChildren(ast );
+    	String fieldType = ast.getType().toString();
+    	boolean isClass = fieldType.equals(className);
+    	
+    	for (int i=0; i<numberFilesBefore; i++) {
+    		if (bv[i].getClassName().equals(fieldType) )
+    				isClass = true;
+    	}
+
+    		if (isClass) {
+    			modifyMethodBody("\t var " + ast.getName() +":Ref;\n");
+    		}
+    		else 
+    			modifyMethodBody("\t var " + ast.getName() +":"+ fieldType+";\n");
+    	
+    	visitChildren(ast);
     }
     
     public void visitKeywordExpression(KeywordExpression ast ) throws ParseException

@@ -10,11 +10,13 @@ import cager.jexpr.visitor.Visitor;
 public class AllocationExpression extends Expression
 {
 	private String alloc_func;
+	private String predicate;
 	private Expression body;
 	
-    public AllocationExpression(String alloc, Expression body)
+    public AllocationExpression(String alloc, String predicate, Expression body)
     {
     	this.alloc_func = alloc;
+    	this.predicate = predicate;
         this.body = body;
     }
    
@@ -30,7 +32,7 @@ public class AllocationExpression extends Expression
 
     public void dump(int level, BufferedWriter out)
     {  try {
-        out.write(dumpPrefix(level) + "AllocationExpression: new " + alloc_func + "\n");
+        out.write(dumpPrefix(level) + "AllocationExpression: new " + alloc_func + "("+predicate+")\n");
     }
     catch(Exception e){
     	System.err.println("Error: " + e.getMessage());
