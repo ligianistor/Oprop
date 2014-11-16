@@ -64,7 +64,7 @@ public class ArgumentList extends Expression
 
     public void dump(int level, BufferedWriter out)
     { try {
-        out.write(dumpPrefix(level) + "ArgumentList: \n");
+        out.write(dumpPrefix(level) + "ArgumentList:\n");        
     }
     catch(Exception e){
     	System.err.println("Error: " + e.getMessage());

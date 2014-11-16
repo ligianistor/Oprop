@@ -24,7 +24,15 @@ public class AllocationExpression extends Expression
     {
         return new AST[] { body };
     }
+    
+    public String getAlloc_func() {
+    	return alloc_func;
+    }
 
+    public String getPredicate() {
+    	return predicate;
+    }
+    
     public void accept(Visitor v) throws ParseException
     {
         v.visitAllocationExpression(this);

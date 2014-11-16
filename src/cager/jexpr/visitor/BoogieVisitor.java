@@ -18,6 +18,7 @@ import cager.jexpr.ParseException;
 import cager.jexpr.PredicateAndFieldValue;
 import cager.jexpr.Types;
 import cager.jexpr.ast.AST;
+import cager.jexpr.ast.AllocationExpression;
 import cager.jexpr.ast.ArgumentList;
 import cager.jexpr.ast.BinaryExpression;
 import cager.jexpr.ast.Block;
@@ -68,8 +69,14 @@ public class BoogieVisitor extends NullVisitor {
 	//The name of the Java class.
 	String className;
 	
+	//The name of the current local variable
+	String localVariableName = "";
+	
 	//Is this the first method that is being translated 
 	boolean isFirstMethod = true;
+	
+	//Are we in an argument list?
+	boolean inArgumentList = false;
 	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
@@ -208,7 +215,7 @@ public class BoogieVisitor extends NullVisitor {
     	try {
         out.write("type Ref;\n");
         out.write("type PredicateTypes;\n");
-        out.write("type FractionType = [Ref, PredicateTypes] int;\n");
+        out.write("type FractionType = [Ref, PredicateTypes] real;\n");
         out.write("type PackedType = [Ref, PredicateTypes] bool;\n");
         out.write("var packed: PackedType;\n");
         out.write("var frac: FractionType;\n");
@@ -580,8 +587,26 @@ public class BoogieVisitor extends NullVisitor {
 
     }
     
+    public void visitAllocationExpression(AllocationExpression ast ) throws ParseException
+    {
+    	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+ast.getPredicate()+"(");
+        visitChildren(ast);
+        modifyMethodBody(localVariableName + ");\n");
+
+    }
+    
+    public void visitDeclarationStatement(DeclarationStatement ast ) 
+  		  throws ParseException 
+  		  { 
+    	
+    	visitChildren(ast); 
+    	localVariableName = "";
+  		  }
+    
     public void visitLocalVariableDeclaration(LocalVariableDeclaration ast) throws ParseException
     {
+    	localVariableName = ast.getName();
+    	
     	String fieldType = ast.getType().toString();
     	boolean isClass = fieldType.equals(className);
     	
@@ -591,13 +616,13 @@ public class BoogieVisitor extends NullVisitor {
     	}
 
     		if (isClass) {
-    			modifyMethodBody("\t var " + ast.getName() +":Ref;\n");
+    			modifyMethodBody("\t var " + localVariableName +":Ref;\n");
     		}
     		else 
-    			modifyMethodBody("\t var " + ast.getName() +":"+ fieldType+";\n");
+    			modifyMethodBody("\t var " + localVariableName +":"+ fieldType+";\n");
     	
     	visitChildren(ast);
-    }
+      }
     
     public void visitKeywordExpression(KeywordExpression ast ) throws ParseException
     { 
@@ -619,8 +644,9 @@ public class BoogieVisitor extends NullVisitor {
 
     }
  
-    public void visitIdentifierExpression(IdentifierExpression ast ) throws ParseException
+    public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {    	
+    try {
        String identifierName = ast.name;
        fieldsInStatement.add(identifierName);
        
@@ -633,59 +659,63 @@ public class BoogieVisitor extends NullVisitor {
        
        PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
        String fieldName = quantifiedVars.get(pv);
-             
-       String currentPredicateBody = predicateBody.get(namePredicate);
-       if (!(fieldName == null)) {
-    	   if (namePredicate.equals("")){
-    	   try{
-        	   if (insideObjectProposition) {
- 				  objectPropString = objectPropString.concat(identifierName);
- 			  }
- 			  modifyMethodBody(fieldName+ "[this]");
- 			  }
- 		      catch (Exception e) {
- 		    		System.err.println("Error: " + e.getMessage());
- 		      }
+       
+       if (namePredicate.equals("")) {
+    	   //we are not inside a predicate
+    	   if (!(fieldName == null)) {
+    		   if (insideObjectProposition) {
+  				  objectPropString = objectPropString.concat(identifierName);
+  			  }
+  			  modifyMethodBody(fieldName+ "[this]"); 
+    		   
     	   }
     	   else {
-        	   if (insideObjectProposition) {
- 				  objectPropString = objectPropString.concat(identifierName);
- 			  }
-        	   if (!insideObjectProposition) {
-  			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName+ "[this]"));
-        	   }
-    	   }
-    	   
-       }
-       else {
-    	   if (namePredicate.equals("")) {
-    	   try {
-    		   if ((currentMethod != "")  && (fieldsInMethod.get(identifierName) != null)){
+    		   if ((currentMethod != "")  && (fieldsInMethod.get(identifierName) != null)) {
+    			   //we must be inside a statement
     			   statementContent = statementContent.concat(identifierName+"[this]");
     	       }
-    		   else {
+    		   
+    		   if ((currentMethod != "") && (inArgumentList)) {
+    			   modifyMethodBody(identifierName + ",");
     			   
-    			   //modify object proposition parts
-    			   if (insideObjectProposition) {
-    					  objectPropString = objectPropString.concat(identifierName);
-    				  }
     		   }
     		   
-  			  }
-  		      catch (Exception e) {
-  		    		System.err.println("Error: " + e.getMessage());
-  		      };
+    		   
+    			   //modify object proposition parts
+    		   if (insideObjectProposition) {
+    			   objectPropString = objectPropString.concat(identifierName);
+    				  }	
+    	   }
        }
+       
        else {
+    	   //we are inside a predicate
+    	   String currentPredicateBody = predicateBody.get(namePredicate);
+    	 
+    	   if (!(fieldName == null)) {
+    	   
     	   if (insideObjectProposition) {
 				  objectPropString = objectPropString.concat(identifierName);
 			  }
+     	   if (!insideObjectProposition) {
+			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName+ "[this]"));
+     	   }
+    	   }
     	   else {
-    	   predicateBody.put(namePredicate, currentPredicateBody.concat(identifierName));
+    		   if (insideObjectProposition) {
+ 				  objectPropString = objectPropString.concat(identifierName);
+ 			  }
+     	   else {
+     	   predicateBody.put(namePredicate, currentPredicateBody.concat(identifierName));
+     	   }
     	   }
        }
-       }
-    	visitChildren(ast );
+    }
+      catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+      };
+      
+    	visitChildren(ast);
     }
     
     public void visitIfStatement(IfStatement ast ) throws ParseException
@@ -802,9 +832,12 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitArgumentList(ArgumentList ast )
   		  throws ParseException 
-  		  { 
+  		  {  
+    	inArgumentList = true;
 
     	visitChildren(ast); 
+    	
+    	inArgumentList = false;
     	}
     
     

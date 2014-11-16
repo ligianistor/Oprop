@@ -16,7 +16,7 @@ class Share {
 	
 	void main() 
 	{
-		DoubleCount dc0 = new DoubleCount(OK)();
+		DoubleCount dc0 = new DoubleCount(OK)(2, 4);
 		Share s1 = new Share(ShareCount)(dc0);
 		Share s2 = new Share(ShareCount)(dc0);
 		s1.touch();
