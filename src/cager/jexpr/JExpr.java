@@ -2288,8 +2288,8 @@ void ConstructorDeclaration() :
     case CHARACTER_LITERAL:
     case STRING_LITERAL:
       e = Literal();
-                          //System.out.println("Added literal to pe: " + e); 
-                          pe.add(e);
+      //System.out.println("Added literal to pe: " + e); 
+      pe.add(e);
       break;
     case THIS:
       jj_consume_token(THIS);

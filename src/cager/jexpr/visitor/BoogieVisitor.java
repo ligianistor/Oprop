@@ -78,6 +78,9 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
+	//The name of the latest identifier
+	String currentIdentifier = "";
+	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
 	
@@ -122,6 +125,8 @@ public class BoogieVisitor extends NullVisitor {
 	//At the beginning of each block, this is made "".
 	//This contains the string of each block.
 	String statementContent;
+	
+	boolean inStatement = false;
 	
 	//The file where the output is written.
 	BufferedWriter out;
@@ -389,7 +394,10 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitMethodSelection(MethodSelection ast ) throws ParseException
     {
+    	String localcurrentIdentifier = currentIdentifier;
+    	modifyMethodBody("call "+ ast.getIdentifier().name + "(");
     	visitChildren(ast );
+    	modifyMethodBody(localcurrentIdentifier+");\n");
     }
 
     public void visitBinaryExpression(BinaryExpression ast ) throws ParseException
@@ -458,21 +466,21 @@ public class BoogieVisitor extends NullVisitor {
   		  throws ParseException
   		  { 
     	String astvalue = ast.value.toString();
+    	if (insideObjectProposition) {
+			  objectPropString = objectPropString.concat(astvalue);
+		  }
+    	
+		  if ((currentMethod != "") && (inStatement) ) {
+			  statementContent = statementContent.concat(astvalue);
+		  }
+		  
+		  if ((currentMethod != "") && (inArgumentList) ) {
+			  modifyMethodBody(astvalue + ",");
+		  }
+		  
     	if (namePredicate.equals("")){
     	 try{
-			  if (currentMethod != "") {
-				  statementContent = statementContent.concat(astvalue);
-			  }
-			  else {
-				  if (insideObjectProposition) {
-					  objectPropString = objectPropString.concat(astvalue);
-				  }
-				  else {
-					  out.write(astvalue);
-				  }
-				  
-			  }
-			  
+			  out.write(astvalue);	  
 			  }
 		      catch (Exception e) {
 		    		System.err.println("Error: " + e.getMessage());
@@ -480,13 +488,9 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	else
     	{
-    		if (insideObjectProposition) {
-				  objectPropString = objectPropString.concat(astvalue);
-			  }
-    		else {
     		String currentPredicateBody = predicateBody.get(namePredicate);
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(astvalue));
-    		}
+    		
     	}
     	
     	visitChildren(ast ); }
@@ -646,8 +650,10 @@ public class BoogieVisitor extends NullVisitor {
  
     public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {    	
+    	currentIdentifier = ast.name;
     try {
-       String identifierName = ast.name;
+      
+       String identifierName = currentIdentifier;
        fieldsInStatement.add(identifierName);
        
        if (currentMethod != "") {
@@ -677,7 +683,6 @@ public class BoogieVisitor extends NullVisitor {
     		   
     		   if ((currentMethod != "") && (inArgumentList)) {
     			   modifyMethodBody(identifierName + ",");
-    			   
     		   }
     		   
     		   
@@ -726,7 +731,7 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitStatementExpression(StatementExpression ast )
   		  throws ParseException
-  		  { 
+  		  { inStatement = true;
     		visitChildren(ast );
     		try {
     			if (currentMethod != "") {
@@ -739,6 +744,7 @@ public class BoogieVisitor extends NullVisitor {
         	catch (Exception e) {
         		System.err.println("Error: " + e.getMessage());
         	}
+    		inStatement = false;
   		  }
     
     public void visitMethodSpecVariable(MethodSpecVariable ast ) 
