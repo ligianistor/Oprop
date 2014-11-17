@@ -16,10 +16,10 @@ class SimpleCell {
 	}
 	
 	void main() {
-		SimpleCell c = new SimpleCell(2, null);
+		SimpleCell c = new SimpleCell(PredVal)(2, null);
 		
-		SimpleCell a = new SimpleCell(2, c);
-		SimpleCell b = new SimpleCell(3, c);
+		SimpleCell a = new SimpleCell(PredNext)(2, c);
+		SimpleCell b = new SimpleCell(PredNext)(3, c);
 		
 		c.changeVal(4);
 		

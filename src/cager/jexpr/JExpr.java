@@ -2277,6 +2277,7 @@ void ConstructorDeclaration() :
   }
 
   final public void PrimaryPrefix(PrimaryExpression pe) throws ParseException {
+	ArgumentList el;
     Expression e = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FALSE:
@@ -2336,8 +2337,23 @@ void ConstructorDeclaration() :
            
             jj_consume_token(DOT);
             jj_consume_token(IDENTIFIER);
-            e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
-          }
+            
+            
+            if (jj_ntk == -1) jj_ntk();
+            
+            if (jj_ntk == LPAREN) {
+            	System.out.println("im in method selection");
+            	e = new MethodSelection(new Identifier(getToken(0).image)); { pe.add(e);}
+            	
+            	el = Arguments();
+                pe.add(el); /* lnistor */        	
+            }
+            else {
+            	System.out.println("im in field selection");
+            	e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
+                
+            }
+            }
           break;
         default:
           jj_la1[82] = jj_gen;
@@ -2371,13 +2387,14 @@ void ConstructorDeclaration() :
         if (jj_ntk == -1) jj_ntk();
         
         if (jj_ntk == LPAREN) {
+        	System.out.println("im in method selection");
         	e = new MethodSelection(new Identifier(getToken(0).image)); { pe.add(e);}
         	
         	el = Arguments();
             pe.add(el); /* lnistor */        	
         }
         else {
-        	
+        	System.out.println("im in field selection");
         	e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
             
         }
