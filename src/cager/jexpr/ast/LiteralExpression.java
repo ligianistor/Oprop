@@ -67,7 +67,7 @@ public class LiteralExpression extends Expression
 
     public void dump(int level, BufferedWriter out)
     { try {
-        out.write(dumpPrefix(level) + "Literal: " + value + " (Type: " + 
+        out.write(dumpPrefix(level) + "Literal: " + value + " (Type" + 
                  ( type == null ? "" : ": " + type.toString()) + ")\n");
     }
     catch(Exception e)

@@ -220,8 +220,8 @@ public class BoogieVisitor extends NullVisitor {
     	try {
         out.write("type Ref;\n");
         out.write("type PredicateTypes;\n");
-        out.write("type FractionType = [Ref, PredicateTypes] real;\n");
-        out.write("type PackedType = [Ref, PredicateTypes] bool;\n");
+        out.write("type FractionType = [Ref] real;\n");
+        out.write("type PackedType = [Ref] bool;\n");
         out.write("var packed: PackedType;\n");
         out.write("var frac: FractionType;\n");
         out.write("const null: Ref;\n");
@@ -268,8 +268,6 @@ public class BoogieVisitor extends NullVisitor {
     	predicates.add(namePredicate);
     	
     			try {
-    					out.write("const unique "+ namePredicate +"P: PredicateTypes;\n"); 
-    					out.write("\n");
     			    	predicateBody.put(namePredicate, "");
     			    	
     			    	visitChildren(ast ); 
@@ -329,12 +327,12 @@ public class BoogieVisitor extends NullVisitor {
      		try {
 			//will need to do something about formal parameters
 			out.write("procedure Pack"+currentNamePred+"(this:Ref);\n"); 
-			out.write("\t requires (packed[this,"+currentNamePred+"P] == false) && \n");
+			out.write("\t requires (packed"+currentNamePred+"[this] == false) && \n");
 			out.write("\t \t(" + predBody + ");\n"); 
 			out.write("\n");
 			out.write("procedure Unpack"+currentNamePred+"(this:Ref);\n");
-			out.write("\t requires packed[this, "+currentNamePred+"P] &&\n");
-			out.write("\t \t (frac[this,"+currentNamePred+"P] >= 1);\n");
+			out.write("\t requires packed"+currentNamePred+"[this] &&\n");
+			out.write("\t \t (frac"+currentNamePred+"[this] > 0.0);\n");
 			out.write("\t ensures ("+predBody+");\n");
 			out.write("\n");
      		}
@@ -395,7 +393,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitMethodSelection(MethodSelection ast ) throws ParseException
     {
     	String localcurrentIdentifier = currentIdentifier;
-    	modifyMethodBody("call "+ ast.getIdentifier().name + "(");
+    	modifyMethodBody("\t call "+ ast.getIdentifier().name + "(");
     	visitChildren(ast );
     	modifyMethodBody(localcurrentIdentifier+");\n");
     }
@@ -470,7 +468,7 @@ public class BoogieVisitor extends NullVisitor {
 			  objectPropString = objectPropString.concat(astvalue);
 		  }
     	
-		  if ((currentMethod != "") && (inStatement) ) {
+		  if ((currentMethod != "") && (inStatement) && !inArgumentList ) {
 			  statementContent = statementContent.concat(astvalue);
 		  }
 		  
@@ -478,22 +476,12 @@ public class BoogieVisitor extends NullVisitor {
 			  modifyMethodBody(astvalue + ",");
 		  }
 		  
-    	if (namePredicate.equals("")){
-    	 try{
-			  out.write(astvalue);	  
-			  }
-		      catch (Exception e) {
-		    		System.err.println("Error: " + e.getMessage());
-		      }
-    	}
-    	else
-    	{
+    	if (!namePredicate.equals("") && !insideObjectProposition){
     		String currentPredicateBody = predicateBody.get(namePredicate);
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(astvalue));
-    		
     	}
     	
-    	visitChildren(ast ); }
+    	visitChildren(ast); }
     
     public void visitObjectProposition(ObjectProposition ast ) throws ParseException
     {
@@ -533,13 +521,14 @@ public class BoogieVisitor extends NullVisitor {
         String bodyMethodOrPredicate = "";
     	if (fieldName == null){
     		
-    	bodyMethodOrPredicate = "packed[" + objectString+","+ 
-		         predName +"P] && \n \t \t(frac["+ objectString+ ","+ predName+"P] >= 1";
+    	bodyMethodOrPredicate = "packed"+predName+"[" + objectString+
+    			          "] && \n \t \t(frac"+predName+"["+ objectString+ "] > 0.0";
     	}
     	else {
     		
-    		bodyMethodOrPredicate = "packed[" + fieldName+"[this],"+ 
-   		         predName +"P] && \n \t \t(frac["+ fieldName + "[this],"+ predName+"P] >= 1";
+    		bodyMethodOrPredicate ="packed"+predName+"[" + fieldName +
+			          "] && \n \t \t(frac"+predName+"["+ fieldName + "] > 0.0"; 
+    				
     	}
     	if (currentMethod!="") {
     		modifyMethodSpec(bodyMethodOrPredicate);
@@ -804,7 +793,7 @@ public class BoogieVisitor extends NullVisitor {
                 			     predicateOfField, new LinkedList<String>());
                 	if (Gamma.contains(temp)) {
                 		modifyMethodBody("\t call Unpack"+predicateOfField+"(this);\n");
-                		modifyMethodBody("\t packed[this, "+predicateOfField+"P]:=false;\n");
+                		modifyMethodBody("\t packed"+predicateOfField+"[this]:=false;\n");
                 		Gamma.remove(temp);
                 	}
                 }
@@ -827,7 +816,7 @@ public class BoogieVisitor extends NullVisitor {
     		
     		 //need to take care of the OK, ok uppercase issue
     		 modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
-    		 modifyMethodBody("\t packed["+obj+", "+name+"P]:=true;\n");
+    		 modifyMethodBody("\t packed"+name+"["+obj+"P]:=true;\n");
     		
     	}
     	
@@ -905,8 +894,8 @@ public class BoogieVisitor extends NullVisitor {
             for (FieldAndTypePair s : fieldsTypes) {
             	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t ");
         	}
-            out.write("(packed[this,"+ p+"P]) && \n \t \t ");
-            out.write("(frac[this,"+p+"P] >= 100);\n \n");
+            out.write("(packed"+p+"[this]) && \n \t \t ");
+            out.write("(frac"+p+"[this] == 1.0);\n \n");
             
         	}
     		

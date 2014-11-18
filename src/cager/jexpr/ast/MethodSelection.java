@@ -1,6 +1,7 @@
 package cager.jexpr.ast;
 
 import java.io.BufferedWriter;
+import java.util.List;
 
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
@@ -9,11 +10,16 @@ public class MethodSelection extends Expression
 {
     private Identifier id;
     private Expression[] parameters = null;
-    private Expression[] children;
+    private Expression[] children = new Expression[1];
 
     public MethodSelection(Identifier id)
     {
         this.id = id;
+    }
+    
+    public void add(Expression e)
+    {
+        children[0] = e;
     }
 
     public Identifier getIdentifier()
@@ -54,5 +60,6 @@ public class MethodSelection extends Expression
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
+    	 dumpChildren(level + 1, out);
     }
 }
