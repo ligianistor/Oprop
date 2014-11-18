@@ -13,7 +13,7 @@ class DoubleCount {
 	requires this#k OK()
 	ensures this#k OK()
 	{
-		val = val + 1;
-		dbl = dbl + 2;
+		this.val = this.val + 1;
+		this.dbl = this.dbl + 2;
 	}
 }

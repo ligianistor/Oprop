@@ -2342,14 +2342,13 @@ void ConstructorDeclaration() :
             if (jj_ntk == -1) jj_ntk();
             
             if (jj_ntk == LPAREN) {
-            	System.out.println("im in method selection");
             	MethodSelection ms = new MethodSelection(new Identifier(getToken(0).image)); { pe.add(ms);}
             	
             	el = Arguments();
                 ms.add(el); /* lnistor */        	
             }
             else {
-            	System.out.println("im in field selection");
+            	
             	e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
                 
             }
@@ -2387,14 +2386,14 @@ void ConstructorDeclaration() :
         if (jj_ntk == -1) jj_ntk();
         
         if (jj_ntk == LPAREN) {
-        	System.out.println("im in method selectionxxx");
+        	
         	MethodSelection ms = new MethodSelection(new Identifier(getToken(0).image)); { pe.add(ms);}
         	
         	el = Arguments();
             ms.add(el); /* lnistor */        	
         }
         else {
-        	System.out.println("im in field selection");
+        	
         	e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
             
         }

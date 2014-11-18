@@ -385,12 +385,31 @@ public class BoogieVisitor extends NullVisitor {
 
     }
 
-    public void visitFieldSelection(FieldSelection ast ) throws ParseException
+    public void visitFieldSelection(FieldSelection ast) throws ParseException
     {
-    	visitChildren(ast );
+    	String fieldName = ast.getIdentifier().name+"[this]";
+    	if (insideObjectProposition) {
+			  objectPropString = objectPropString.concat(fieldName);
+		  }
+    	
+		  if ((currentMethod != "") && (inStatement) && !inArgumentList ) {
+			  statementContent = statementContent.concat(fieldName);
+		  }
+		  
+		  if ((currentMethod != "") && (inArgumentList) ) {
+			  modifyMethodBody(fieldName + ",");
+		  }
+		  
+    	if (!namePredicate.equals("") && !insideObjectProposition){
+    		String currentPredicateBody = predicateBody.get(namePredicate);
+			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName));
+    	}
+    	
+    	
+    	visitChildren(ast);
     }
     
-    public void visitMethodSelection(MethodSelection ast ) throws ParseException
+    public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
     	String localcurrentIdentifier = currentIdentifier;
     	modifyMethodBody("\t call "+ ast.getIdentifier().name + "(");
@@ -555,12 +574,12 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast );
     }
 
-    public void visitPrimaryExpression(PrimaryExpression ast ) throws ParseException
+    public void visitPrimaryExpression(PrimaryExpression ast) throws ParseException
     {
         visitChildren(ast );
     }
     
-    public void visitFormalParameters(FormalParameters ast ) throws ParseException 
+    public void visitFormalParameters(FormalParameters ast) throws ParseException 
   		  { 
     	   	
     	visitChildren(ast ); 
