@@ -78,7 +78,11 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
-	//The name of the latest identifier
+	//Does this primary expression contain a methodSelection?
+	//Are we inside a method selection statement?
+	boolean inMethodSelectionStatement = false;
+	
+	//The name of the latest identifier or field[this]
 	String currentIdentifier = "";
 	
 	//For each predicate name, this maps it to its body represented as a String.
@@ -388,21 +392,26 @@ public class BoogieVisitor extends NullVisitor {
     public void visitFieldSelection(FieldSelection ast) throws ParseException
     {
     	String fieldName = ast.getIdentifier().name+"[this]";
+    	currentIdentifier = fieldName;
     	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(fieldName);
-		  }
+			  }
     	
-		  if ((currentMethod != "") && (inStatement) && !inArgumentList ) {
+		  if ((currentMethod != "") && (inStatement) && 
+			  !inArgumentList && !inMethodSelectionStatement) {
 			  statementContent = statementContent.concat(fieldName);
+			  
 		  }
 		  
 		  if ((currentMethod != "") && (inArgumentList) ) {
 			  modifyMethodBody(fieldName + ",");
+			  
 		  }
 		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
     		String currentPredicateBody = predicateBody.get(namePredicate);
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName));
+			 			 
     	}
     	
     	
@@ -411,10 +420,10 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
-    	String localcurrentIdentifier = currentIdentifier;
-    	modifyMethodBody("\t call "+ ast.getIdentifier().name + "(");
-    	visitChildren(ast );
-    	modifyMethodBody(localcurrentIdentifier+");\n");
+    	
+    	statementContent= statementContent + "\t call "+ ast.getIdentifier().name + "(";
+    	visitChildren(ast);
+    	statementContent = statementContent +currentIdentifier+");\n";
     }
 
     public void visitBinaryExpression(BinaryExpression ast ) throws ParseException
@@ -576,7 +585,18 @@ public class BoogieVisitor extends NullVisitor {
 
     public void visitPrimaryExpression(PrimaryExpression ast) throws ParseException
     {
-        visitChildren(ast );
+    	Expression[] children = (Expression[])ast.getChildren();
+    	if (children.length == 2) 
+    	{
+    		if (children[1] instanceof MethodSelection) {
+    			inMethodSelectionStatement = true;
+    		}
+    	} else if (children.length == 3) {
+    		if (children[2] instanceof MethodSelection) {
+    			inMethodSelectionStatement = true;
+    		}
+    	}
+        visitChildren(ast);
     }
     
     public void visitFormalParameters(FormalParameters ast) throws ParseException 
@@ -681,17 +701,23 @@ public class BoogieVisitor extends NullVisitor {
   				  objectPropString = objectPropString.concat(identifierName);
   			  }
   			  modifyMethodBody(fieldName+ "[this]"); 
-    		   
     	   }
     	   else {
+    		   /*
     		   if ((currentMethod != "")  && (fieldsInMethod.get(identifierName) != null)) {
     			   //we must be inside a statement
     			   statementContent = statementContent.concat(identifierName+"[this]");
     	       }
+    	       */
     		   
     		   if ((currentMethod != "") && (inArgumentList)) {
     			   modifyMethodBody(identifierName + ",");
     		   }
+    		   
+    		   if ((currentMethod != "") && (inStatement) && 
+    			   !inArgumentList && !inMethodSelectionStatement ) {
+    				  statementContent = statementContent.concat(identifierName);
+    			  }
     		   
     		   
     			   //modify object proposition parts

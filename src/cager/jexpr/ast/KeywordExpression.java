@@ -37,8 +37,13 @@ public class KeywordExpression extends Expression
         v.visitKeywordExpression(this);
     }
 
-    public void dump(int level)
+    public void dump(int level, BufferedWriter out)
     {
-        System.out.println(dumpPrefix(level) + "Keyword: " + value);
+    	try {
+        out.write(dumpPrefix(level) + "Keyword: " + value +"\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
     }
 }

@@ -20,7 +20,7 @@ public abstract class Expression extends TypedAST
     public void dump(int level, BufferedWriter out)
     {   
     	try {
-		out.write("Abstract class Expression\n");
+		out.write(dumpPrefix(level) +"Abstract class Expression\n");
     	}
     	catch(Exception e){
     		System.err.println("Error: " + e.getMessage());
