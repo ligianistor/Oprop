@@ -125,6 +125,14 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<ObjPropString>> methodPostconditions = 
 			new HashMap<String, LinkedList<ObjPropString>>();
 	
+	//TODO
+	//Make a FractionString class.
+	//For each Pack and Unpack procedure, but mainly Pack,
+	//have a list of FractionString 's that
+	//gets updated in the same way like methodPreconditions.
+	//This will let us make updates to fracOK, etc
+	//when a Pack procedure is called.
+	
 	
 	//At the beginning of each block, this is made "".
 	//This contains the string of each block.
@@ -941,7 +949,6 @@ public class BoogieVisitor extends NullVisitor {
         	}
             out.write("(packed"+p+"[this]) && \n \t \t ");
             out.write("(frac"+p+"[this] == 1.0);\n \n");
-            
         	}
     		
     		//write a constructor that doesn't pack to any predicate
