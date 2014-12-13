@@ -125,6 +125,16 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<ObjPropString>> methodPostconditions = 
 			new HashMap<String, LinkedList<ObjPropString>>();
 	
+	//For each procedure, including the Pack and Unpack ones
+	//this map tells us which frac[] are in its "requires" clause
+	HashMap<String, LinkedList<FracString>> requiresFrac =
+			new HashMap<String, LinkedList<FracString>>();
+	
+	//For each procedure, including the Pack and Unpack ones
+	//this map tells us which frac[] are in its "ensures" clause
+	HashMap<String, LinkedList<FracString>>  ensuresFrac = 
+			new HashMap<String, LinkedList<FracString>>();
+	
 	//TODO
 	//Make a FractionString class.
 	//For each Pack and Unpack procedure, but mainly Pack,
@@ -557,6 +567,11 @@ public class BoogieVisitor extends NullVisitor {
         String bodyMethodOrPredicate = "";
     	if (fieldName == null){
     		
+    		//TODO
+    		//this is where FracString needs to be updated
+    		//but only when we are inside a predicate
+    		//or maybe it can get updated in all cases, but be put in the
+    		//linked list only if we are inside a predicate
     	bodyMethodOrPredicate = "packed"+predName+"[" + objectString+
     			          "] && \n \t \t(frac"+predName+"["+ objectString+ "] > 0.0";
     	}
@@ -931,6 +946,28 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	currentMethodPostconditions.add(s);
 		methodPostconditions.put(currentMethod, currentMethodPostconditions);
+    }
+    
+    //adds a FracString to the requiresFrac map for a certain procedureName
+    public void modifyRequiresFrac(FracString s, String procedureName) {
+    	LinkedList<FracString> currentRequiresFrac = 
+    			requiresFrac.get(procedureName);
+    	if (currentRequiresFrac == null) {
+    		currentRequiresFrac = new LinkedList<FracString>();
+    	}
+    	currentRequiresFrac.add(s);
+    	requiresFrac.put(procedureName, currentRequiresFrac);
+    }
+    
+    //adds a FracString to the ensuresFrac map for a certain procedureName
+    public void modifyEnsuresFrac(FracString s, String procedureName) {
+    	LinkedList<FracString> currentEnsuresFrac = 
+    			ensuresFrac.get(procedureName);
+    	if (currentEnsuresFrac == null) {
+    		currentEnsuresFrac = new LinkedList<FracString>();
+    	}
+    	currentEnsuresFrac.add(s);
+    	ensuresFrac.put(procedureName, currentEnsuresFrac);
     }
     
     public void makeConstructors(BufferedWriter out) {
