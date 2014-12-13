@@ -135,6 +135,12 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<FracString>>  ensuresFrac = 
 			new HashMap<String, LinkedList<FracString>>();
 	
+	
+	//For each predicate, this map
+	//tells us which frac[] are in the body of the predicate
+	HashMap<String, LinkedList<FracString>>  predicateFrac = 
+			new HashMap<String, LinkedList<FracString>>();
+	
 	//TODO
 	//Make a FractionString class.
 	//For each Pack and Unpack procedure, but mainly Pack,
@@ -185,6 +191,7 @@ public class BoogieVisitor extends NullVisitor {
 	//The string of the object proposition inside which we are at the moment.
 	String objectPropString;
 	
+	//The Boogie Visitors of the files that have been translated before this one.
 	BoogieVisitor[] bv;
 	
 	int numberFilesBefore;
@@ -224,6 +231,18 @@ public class BoogieVisitor extends NullVisitor {
 
 	public HashMap<String, LinkedList<ObjPropString>> getMethodPostconditions() {
 		return methodPostconditions;
+	}
+	
+	public HashMap<String, LinkedList<FracString>> getRequiresFrac() {
+		return requiresFrac;
+	}
+	
+	public HashMap<String, LinkedList<FracString>>  getEnsuresFrac() {
+		return ensuresFrac;
+	}
+
+	public HashMap<String, LinkedList<FracString>>  getPredicateFrac() {
+		return predicateFrac;
 	}
 
 	//visit methods
@@ -438,10 +457,38 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
-    	
-    	statementContent= statementContent + "\t call "+ ast.getIdentifier().name + "(";
+    	String methodName = ast.getIdentifier().name;
+    	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
     	statementContent = statementContent +currentIdentifier+");\n";
+    	
+    	//TODO
+    	// I need to look at methods from other classes also. 
+    	
+    	// Modify the frac variables corresponding to the requires and ensures of 
+    	// this method.
+
+    	LinkedList<FracString> currentRequiresFrac = 
+    			requiresFrac.get(methodName);
+    	if (currentRequiresFrac != null) {
+    		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
+                FracString fracString = currentRequiresFrac.get(pf);
+        		statementContent = 
+        			statementContent.concat(fracString.getStatementFracString(true, currentIdentifier));
+        	}
+    	}
+    	
+    	LinkedList<FracString> currentEnsuresFrac = 
+    			ensuresFrac.get(methodName);
+    	if (currentEnsuresFrac != null) {
+    		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
+                FracString fracString = currentEnsuresFrac.get(pf);
+        		statementContent = 
+        			statementContent.concat(fracString.getStatementFracString(false, currentIdentifier));
+        	}
+    	}
+        	
+    	
     }
 
     public void visitBinaryExpression(BinaryExpression ast ) throws ParseException
@@ -468,8 +515,8 @@ public class BoogieVisitor extends NullVisitor {
     		return;
     	}
     	    		
-    			helperBinaryExpression(ast , ast.op.getName());
-    			return;
+    	helperBinaryExpression(ast , ast.op.getName());
+    	return;
     		
     }
     
@@ -533,6 +580,7 @@ public class BoogieVisitor extends NullVisitor {
     {
     	insideObjectProposition = true;
     	
+    	FracString fracString = new FracString();
     	TypedAST object  = ast.getObject();
     	object.accept(this);
     	String objectString = objectPropString;
@@ -542,7 +590,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	frac.accept(this);
 
-    	String fracString = objectPropString;
+    	String fracInObjProp = objectPropString;
     	objectPropString = "";
     	
     	Expression predDecl = ast.getPredicateDeclaration();
@@ -559,43 +607,53 @@ public class BoogieVisitor extends NullVisitor {
     	//this is ArgumentList but for this example 
     	//there are no arguments so we set it to empty with new
     	//currentMethod
-    	ObjPropString objProp = new ObjPropString(objectString, fracString, 
+    	ObjPropString objProp = new ObjPropString(objectString, fracInObjProp, 
     			identifierPredDecl, new LinkedList<String>());
     	    	
     	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, objectString);
     	String fieldName = quantifiedVars.get(pv);
         String bodyMethodOrPredicate = "";
+        fracString.setNameFrac("frac"+predName);
+        
     	if (fieldName == null){
     		
-    		//TODO
-    		//this is where FracString needs to be updated
-    		//but only when we are inside a predicate
-    		//or maybe it can get updated in all cases, but be put in the
-    		//linked list only if we are inside a predicate
+    		// This is where FracString is updated
+    		// but only when we are inside a predicate.
     	bodyMethodOrPredicate = "packed"+predName+"[" + objectString+
     			          "] && \n \t \t(frac"+predName+"["+ objectString+ "] > 0.0";
     	}
     	else {
     		
     		bodyMethodOrPredicate ="packed"+predName+"[" + fieldName +
-			          "] && \n \t \t(frac"+predName+"["+ fieldName + "] > 0.0"; 
+			          "[this]] && \n \t \t(frac"+predName+"["+ fieldName + "[this]] > 0.0"; 
+    		fracString.setField(fieldName);
     				
     	}
+    	
+    	// The minBound is the same if the fieldName is null or not. 
+    	// We do not need to set this inside the if branches.
+    	fracString.setMinBound(0);
+    	
     	if (currentMethod!="") {
     		modifyMethodSpec(bodyMethodOrPredicate);
  
     		if (insidePrecondition) {
     			Gamma.add(objProp);
     			modifyMethodPreconditions(objProp);
+    			modifyRequiresFrac(fracString);
     		} 
     		else {
     			ObjPropPostCondition.add(objProp);
     			modifyMethodPostconditions(objProp);
+    			modifyEnsuresFrac(fracString);
     		}
     	}
     	else {
     		modifyPredicateBody(bodyMethodOrPredicate);
-    		
+    		//We want to add the FracString to predicateFrac for
+    		//the current predicate and the FracString 
+    		//frac+predName[fieldname] >0.0.
+    		modifyPredicateFrac(fracString);
     	}
     	insideObjectProposition = false;
     }
@@ -644,10 +702,24 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitAllocationExpression(AllocationExpression ast ) throws ParseException
     {
-    	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+ast.getPredicate()+"(");
+    	String predicateOfConstruct = ast.getPredicate();
+    	
+    	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+predicateOfConstruct+"(");
         visitChildren(ast);
         modifyMethodBody(localVariableName + ");\n");
-
+        
+        // We want to modify the frac that we find in the predicate
+        // corresponding to this constructor.
+        
+        LinkedList<FracString> currentPredicateFrac = 
+    			predicateFrac.get(predicateOfConstruct);
+        if (currentPredicateFrac != null) {
+        	
+        	for (int pf = 0; pf < currentPredicateFrac.size(); pf++) {
+                FracString fracString = currentPredicateFrac.get(pf);
+                modifyMethodBody(fracString.getStatementFracString(true, "this"));
+        	}
+        }
     }
     
     public void visitDeclarationStatement(DeclarationStatement ast ) 
@@ -884,7 +956,7 @@ public class BoogieVisitor extends NullVisitor {
     		
     		 //need to take care of the OK, ok uppercase issue
     		 modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
-    		 modifyMethodBody("\t packed"+name+"["+obj+"P]:=true;\n");
+    		 modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
     		
     	}
     	
@@ -948,26 +1020,36 @@ public class BoogieVisitor extends NullVisitor {
 		methodPostconditions.put(currentMethod, currentMethodPostconditions);
     }
     
-    //adds a FracString to the requiresFrac map for a certain procedureName
-    public void modifyRequiresFrac(FracString s, String procedureName) {
+    //adds a FracString to the requiresFrac map for the currentMethod
+    public void modifyRequiresFrac(FracString s) {
     	LinkedList<FracString> currentRequiresFrac = 
-    			requiresFrac.get(procedureName);
+    			requiresFrac.get(currentMethod);
     	if (currentRequiresFrac == null) {
     		currentRequiresFrac = new LinkedList<FracString>();
     	}
     	currentRequiresFrac.add(s);
-    	requiresFrac.put(procedureName, currentRequiresFrac);
+    	requiresFrac.put(currentMethod, currentRequiresFrac);
     }
     
-    //adds a FracString to the ensuresFrac map for a certain procedureName
-    public void modifyEnsuresFrac(FracString s, String procedureName) {
+    //adds a FracString to the ensuresFrac map for the currentMethod
+    public void modifyEnsuresFrac(FracString s) {
     	LinkedList<FracString> currentEnsuresFrac = 
-    			ensuresFrac.get(procedureName);
+    			ensuresFrac.get(currentMethod);
     	if (currentEnsuresFrac == null) {
     		currentEnsuresFrac = new LinkedList<FracString>();
     	}
     	currentEnsuresFrac.add(s);
-    	ensuresFrac.put(procedureName, currentEnsuresFrac);
+    	ensuresFrac.put(currentMethod, currentEnsuresFrac);
+    }
+    
+    public void modifyPredicateFrac(FracString s) {
+    	LinkedList<FracString> currentPredicateFrac = 
+    			predicateFrac.get(namePredicate);
+    	if (currentPredicateFrac == null) {
+    		currentPredicateFrac = new LinkedList<FracString>();
+    	}
+    	currentPredicateFrac.add(s);
+    	predicateFrac.put(namePredicate, currentPredicateFrac);    	
     }
     
     public void makeConstructors(BufferedWriter out) {
