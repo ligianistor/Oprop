@@ -25,6 +25,7 @@ import cager.jexpr.ast.IfStatement;
 import cager.jexpr.ast.KeywordExpression;
 import cager.jexpr.ast.LocalVariableDeclaration;
 import cager.jexpr.ast.MethodDeclaration;
+import cager.jexpr.ast.MethodSelection;
 import cager.jexpr.ast.MethodSpecExpression;
 import cager.jexpr.ast.MethodSpecVariable;
 import cager.jexpr.ast.MethodSpecVariables;
@@ -47,16 +48,26 @@ import org.apache.bcel.generic.Type;
  */
 public class ContextVisitor extends NullVisitor
 {
-BufferedWriter out;
+	BufferedWriter out;
+
+	//The Context Visitors of the files that have been translated before this one.
+	ContextVisitor[] contextVisitors;
 	
-	public ContextVisitor(BufferedWriter intermFile) {
+	int numberFilesBefore;
+	
+	CompilationUnits compilationUnits = new CompilationUnits();
+	
+	public ContextVisitor(BufferedWriter intermFile, int n, ContextVisitor[] contextVisitors0) {
 		out = intermFile;
+		contextVisitors = contextVisitors0;
+		numberFilesBefore = n;
 	}
 	
     //CompilationUnit cu;
 
     public void visitCompilationUnits(CompilationUnits ast) throws ParseException
     {
+    	compilationUnits = ast;
         visitChildren(ast);
     }
     
@@ -92,6 +103,128 @@ BufferedWriter out;
         visitChildren(ast);
 
     }
+    
+    //lnistor
+    public void visitMethodSelection(MethodSelection ast) throws ParseException
+    {
+    	visitChildren(ast);
+    	
+    	if (ast.getType() == null) {
+    		
+    		try {
+                out.write("Evaluating type of MethodSelection: " + ast.getIdentifier().name+"\n");
+        		}
+        		catch (Exception e) {
+        			System.err.println("Error: " + e.getMessage());
+        		}
+    		
+
+            AST parent = ast;
+            
+            while (parent != null && !(parent instanceof PrimaryExpression)) {
+            	parent = parent.getParent();
+            }
+            
+            if (parent == null)
+            	throw new Error("No PrimaryExpression parent");
+            
+
+            // I am assuming that the component before this MethodSelecion is the class to refer to.
+            // Might need to do some more work here.
+            PrimaryExpression pe = (PrimaryExpression) parent;
+            Expression[] components = (Expression[])(pe.getChildren());
+            Expression e1; int i;
+            
+            for (i = components.length-1; i > 0; i--) {
+            	e1 = components[i];
+            	if (e1 instanceof MethodSelection && 
+            		((MethodSelection) e1).getIdentifier().name.equals(ast.getIdentifier().name)) {
+            		break;
+            	}
+            }
+            
+            e1 = components[i-1];
+            if (e1.getType() == null) {
+                return; // This is for cases like System.out.print
+            }
+            
+            String className = e1.getType().toString();
+            
+            
+            while (parent != null && !(parent instanceof CompilationUnits)) {
+            	parent = parent.getParent();
+            }
+
+            if (parent == null)
+            	throw new Error("No CompilationUnits parent");
+
+                         
+            //(CompilationUnits) parent;
+           
+            ClassDeclaration cd = null;
+
+        	for (int j=0; j < numberFilesBefore; j++) {
+        		//TODO
+        		CompilationUnits cus = contextVisitors[j].getCompilationUnits();
+        		CompilationUnit cu = (CompilationUnit) cus.getCompilationUnit(className);
+        		if (cu != null) {
+        			cd = cu.getClassDeclaration();
+        		}
+        	}
+        	
+        	if (cd == null)
+        	{
+
+                CompilationUnits cus = (CompilationUnits) parent;
+                CompilationUnit cu = (CompilationUnit) cus.getCompilationUnit(className);
+                cd = cu.getClassDeclaration();
+        		
+        	}
+           
+            
+            if (cd != null) {
+            	FieldDeclaration fd = cd.getField(ast.getIdentifier().name);
+            	if (fd != null) {
+            		Type t = fd.getType();
+            		ast.setType(t);
+            		try {
+            		out.write("MS name: " + ast.getIdentifier().name + ", type: " + t + "\n");
+            		}
+            		catch (Exception e) {
+            			System.err.println("Error: " + e.getMessage());
+            		}
+            	} else {
+            		MethodDeclaration md = cd.getMethod(ast.getIdentifier().name);
+            		if (md != null) {
+            			Type t = md.getType();
+            			ast.setType(t);
+            			try {
+            			out.write("MS name: " + ast.getIdentifier().name + ", type: " + t+"\n");
+            			}
+            			catch (Exception e) {
+            				System.err.println("Error: " + e.getMessage());
+            			}
+            		} 
+            		else {
+            		try {
+            		out.write("MS name: " + ast.getIdentifier().name + ", type: ???\n" );
+            		}
+            		catch (Exception e) {
+            			System.err.println("Error: " + e.getMessage());
+            		}
+            		}
+            	}
+            }
+            
+            
+        }
+
+    }
+  
+    		
+    	
+    	
+    
 
     public void visitFieldSelection(FieldSelection ast) throws ParseException
     {
@@ -122,7 +255,8 @@ BufferedWriter out;
             
             for (i = components.length-1; i > 0; i--) {
             	e1 = components[i];
-            	if (e1 instanceof FieldSelection && ((FieldSelection) e1).getIdentifier().name.equals(ast.getIdentifier().name)) {
+            	if (e1 instanceof FieldSelection && 
+            		((FieldSelection) e1).getIdentifier().name.equals(ast.getIdentifier().name)) {
             		break;
             	}
             }
@@ -166,12 +300,13 @@ BufferedWriter out;
             			catch (Exception e) {
             				System.err.println("Error: " + e.getMessage());
             			}
-            		}
+            		} else {
             		try {
             		out.write("FS name: " + ast.getIdentifier().name + ", type: ???\n" );
             		}
             		catch (Exception e) {
             			System.err.println("Error: " + e.getMessage());
+            		}
             		}
             	}
             }
@@ -674,7 +809,10 @@ BufferedWriter out;
         {
             throw new ParseException("Invalid Type of expression in While Statement");
         }
-
+    }
+    
+    public CompilationUnits getCompilationUnits() {
+    	return compilationUnits;
     }
 
 /*

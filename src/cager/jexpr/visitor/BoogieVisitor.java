@@ -82,8 +82,11 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we inside a method selection statement?
 	boolean inMethodSelectionStatement = false;
 	
-	//The name of the latest identifier or field[this]
+	//The name of the latest identifier or field[this].
+	//Its use is in visitMethodSelection.
 	String currentIdentifier = "";
+	
+	String lastPrimaryExpressionType = "";
 	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
@@ -461,14 +464,12 @@ public class BoogieVisitor extends NullVisitor {
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
     	statementContent = statementContent +currentIdentifier+");\n";
-    	
-    	//TODO
-    	// I need to look at methods from other classes also. 
+    	LinkedList<FracString> currentRequiresFrac = null;
+    	LinkedList<FracString> currentEnsuresFrac = null;
     	
     	// Modify the frac variables corresponding to the requires and ensures of 
     	// this method.
-
-    	LinkedList<FracString> currentRequiresFrac = 
+    	currentRequiresFrac = 
     			requiresFrac.get(methodName);
     	if (currentRequiresFrac != null) {
     		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
@@ -478,7 +479,7 @@ public class BoogieVisitor extends NullVisitor {
         	}
     	}
     	
-    	LinkedList<FracString> currentEnsuresFrac = 
+    	currentEnsuresFrac = 
     			ensuresFrac.get(methodName);
     	if (currentEnsuresFrac != null) {
     		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
@@ -487,7 +488,39 @@ public class BoogieVisitor extends NullVisitor {
         			statementContent.concat(fracString.getStatementFracString(false, currentIdentifier));
         	}
     	}
+    	
+    	//TODO
+    	// I am looking at methods from other classes also. 
+    	// This for should be a while. 
+    	int classOfMethod = -1;
+    	for (int i=0; i< numberFilesBefore; i++) {
+    		if (bv[i].getClassName().equals(lastPrimaryExpressionType))
+    			classOfMethod = i;
+    	}
+    	
+    	// There is some duplication of code here -- same as the code above
+    	// that is for this BoogieVisitor.
+    	if (classOfMethod != -1)  {
+        	currentRequiresFrac = bv[classOfMethod].getRequiresFrac().get(methodName);
+        	if (currentRequiresFrac != null) {
+        		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
+                    FracString fracString = currentRequiresFrac.get(pf);
+            		statementContent = 
+            			statementContent.concat(fracString.getStatementFracString(true, currentIdentifier));
+            	}
+        	}
         	
+        	currentEnsuresFrac = bv[classOfMethod].getEnsuresFrac().get(methodName);
+        	if (currentEnsuresFrac != null) {
+        		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
+                    FracString fracString = currentEnsuresFrac.get(pf);
+            		statementContent = 
+            			statementContent.concat(fracString.getStatementFracString(false, currentIdentifier));
+            	}
+        	}
+    		
+    	}
+    	
     	
     }
 
@@ -677,6 +710,7 @@ public class BoogieVisitor extends NullVisitor {
     			inMethodSelectionStatement = true;
     		}
     	}
+    	lastPrimaryExpressionType = ast.getType().toString();
         visitChildren(ast);
     }
     

@@ -47,6 +47,7 @@ public class JExpr implements JExprConstants {
         JExpr parser;
         String[] filenames;
         BoogieVisitor[] classBoogieDetails;
+        ContextVisitor[] contextVisitors;
         String filename;
         String outputDirectory = null;
         long initTime = 0;
@@ -60,6 +61,7 @@ public class JExpr implements JExprConstants {
         		numberOfInputFiles = Integer.parseInt(args[0]);
         		filenames = new String[numberOfInputFiles];
         		classBoogieDetails = new BoogieVisitor[numberOfInputFiles];
+        		contextVisitors = new ContextVisitor[numberOfInputFiles];
         		
         		for (int j=1; j <= numberOfInputFiles; j++) {
         		
@@ -102,8 +104,9 @@ public class JExpr implements JExprConstants {
             out.write("before dump 0\n");
             ast_top.dump(0, out);
             out.write("before visitor v\n");
-            Visitor v = new ContextVisitor(out);
-            ast_top.accept(v);
+            ContextVisitor cv = new ContextVisitor(out, j-1, contextVisitors);
+            contextVisitors[j-1] = cv;
+            ast_top.accept(cv);
             out.write("before second dump 0\n");
             ast_top.dump(0, out);
             out.close();
