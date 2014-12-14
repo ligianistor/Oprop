@@ -63,8 +63,6 @@ public class ContextVisitor extends NullVisitor
 		numberFilesBefore = n;
 	}
 	
-    //CompilationUnit cu;
-
     public void visitCompilationUnits(CompilationUnits ast) throws ParseException
     {
     	compilationUnits = ast;
@@ -73,8 +71,7 @@ public class ContextVisitor extends NullVisitor
     
     public void visitCompilationUnit(CompilationUnit ast) throws ParseException
     {
-        //cu = ast;
-
+        
         visitChildren(ast);
 
     }

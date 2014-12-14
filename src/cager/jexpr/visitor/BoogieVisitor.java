@@ -710,7 +710,13 @@ public class BoogieVisitor extends NullVisitor {
     			inMethodSelectionStatement = true;
     		}
     	}
+    	// Sometimes the type of the primary expression is null.
+    	// We are interested only in the type of the primary expression
+    	// when it is the parent of methodSelection because that
+    	// is when we are going to use the type.
+    	if (ast.getType() != null) {
     	lastPrimaryExpressionType = ast.getType().toString();
+    	}
         visitChildren(ast);
     }
     

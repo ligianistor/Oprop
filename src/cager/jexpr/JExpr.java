@@ -116,10 +116,8 @@ public class JExpr implements JExprConstants {
             classBoogieDetails[j-1] = bv;
             ast_top.accept(bv);
             //Close the output streams
-            outBoogie.close();
-            
+            outBoogie.close();        
         		}
-
         }
         else
         {
