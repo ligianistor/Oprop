@@ -7,14 +7,14 @@ public class ObjPropString {
 	int maxFrac;
 	int minFrac;
 	String fracParam;
-	String name;
+	String predicateName;
 	String[] params;
 	
-	ObjPropString(String object_, String fracParam_,String name_, LinkedList<String> params_) 
+	ObjPropString(String object_, String fracParam_,String predicateName_, LinkedList<String> params_) 
 		{
 		object = object_;
 		fracParam = fracParam_;
-		name = name_;
+		predicateName = predicateName_;
 		int numberParams = params_.size();
 		params = new String[numberParams];
 		
@@ -28,7 +28,7 @@ public class ObjPropString {
 	}
 	
 	String getName() {
-		return name;
+		return predicateName;
 	}
 	
 	void setMaxFrac(int max) {
@@ -61,7 +61,7 @@ public boolean equals(Object obj) {
       
         ObjPropString o1 = (ObjPropString) obj;
 
-		if (object.equals(o1.getObject()) && name.equals(o1.getName()))
+		if (object.equals(o1.getObject()) && predicateName.equals(o1.getName()))
 		{
 			return true;
 		}
@@ -70,7 +70,7 @@ public boolean equals(Object obj) {
 	}
 	
 	void print() {
-		String objProp=object+"@"+fracParam+" "+name+"(";
+		String objProp=object+"@"+fracParam+" "+predicateName+"(";
 		int numberParams = params.length;
 		for (int i = 0; i < numberParams-1; i++) {
 			objProp = objProp.concat(params[i]+",");	
@@ -85,7 +85,7 @@ public boolean equals(Object obj) {
 	
 	@Override
 	public int hashCode(){
-	    return (object.hashCode() * name.hashCode());
+	    return (object.hashCode() * predicateName.hashCode());
 	  }
 
 }

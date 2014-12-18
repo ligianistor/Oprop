@@ -105,7 +105,7 @@ public class BoogieVisitor extends NullVisitor {
 	//has the permission to the field.
 	//Might not be correct because there might be more than one predicate for the same
 	//field, but they don't exist at the same time in a method. 
-	HashMap<String, String> fieldWhichPredicate = new HashMap<String, String>();
+	HashMap<String, LinkedList<String>> fieldWhichPredicates = new HashMap<String, LinkedList<String>>();
 	
 	
 	//This gathers the fields in each statement. Not in each block, but in each statement.
@@ -144,10 +144,9 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<FracString>>  predicateFrac = 
 			new HashMap<String, LinkedList<FracString>>();
 	
-	//TODO
-	//Make a FractionString class.
+	//I made a FractionString class.
 	//For each Pack and Unpack procedure, but mainly Pack,
-	//have a list of FractionString 's that
+	//I have a list of FractionString 's that
 	//gets updated in the same way like methodPreconditions.
 	//This will let us make updates to fracOK, etc
 	//when a Pack procedure is called.
@@ -489,7 +488,6 @@ public class BoogieVisitor extends NullVisitor {
         	}
     	}
     	
-    	//TODO
     	// I am looking at methods from other classes also. 
     	// This for should be a while. 
     	int classOfMethod = -1;
@@ -532,7 +530,11 @@ public class BoogieVisitor extends NullVisitor {
     		FieldSelection f = (FieldSelection)(e1.getChildren()[1]);
     		String nameField = f.getIdentifier().name;
     		
-    		fieldWhichPredicate.put(nameField, namePredicate);
+    		// Here we put in the fieldWhichPredicate 
+    		// only if we are in the definition of a predicate.
+    		if (namePredicate != "" ) {
+    			addToFieldWhichPredicates(nameField, namePredicate);
+    		}
     		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
     		String fieldValue = i.getName();
     		
@@ -965,20 +967,26 @@ public class BoogieVisitor extends NullVisitor {
     	    children[i].accept(this);
     	    //write what we are packing or unpacking 
     	    //before writing the statement
+    	    
             for (int fi = 0; fi < fieldsInStatement.size(); fi++) {
                 String fieldName = fieldsInStatement.get(fi);
-                String predicateOfField = fieldWhichPredicate.get(fieldName); 
-                if (predicateOfField != null ) {
+                if (fieldName != null) {
+                	
+                LinkedList<String> predicatesOfField = fieldWhichPredicates.get(fieldName); 
+                if (predicatesOfField != null) {
+                for (int k = 0; k < predicatesOfField.size() - 1; k++) {
                 	ObjPropString temp = new ObjPropString("this", "k", 
-                			     predicateOfField, new LinkedList<String>());
+                			predicatesOfField.get(k), new LinkedList<String>());
                 	if (Gamma.contains(temp)) {
-                		modifyMethodBody("\t call Unpack"+predicateOfField+"(this);\n");
-                		modifyMethodBody("\t packed"+predicateOfField+"[this]:=false;\n");
+                		modifyMethodBody("\t call Unpack"+predicatesOfField.get(k)+"(this);\n");
+                		modifyMethodBody("\t packed"+predicatesOfField.get(k)+"[this]:=false;\n");
                 		Gamma.remove(temp);
                 	}
+            	} 	
                 }
-                	
             }
+            }
+            
     	    
     	    modifyMethodBody(statementContent);
     	      
@@ -1080,6 +1088,17 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	currentEnsuresFrac.add(s);
     	ensuresFrac.put(currentMethod, currentEnsuresFrac);
+    }
+    
+    public void addToFieldWhichPredicates(String field, String predicate) {
+    	LinkedList<String> currentFieldWhichPredicates = 
+    			fieldWhichPredicates.get(field);
+    	if (currentFieldWhichPredicates == null) {
+    		currentFieldWhichPredicates = new LinkedList<String>();
+    	}
+    	currentFieldWhichPredicates.add(predicate);
+    	fieldWhichPredicates.put(field, currentFieldWhichPredicates);
+    	
     }
     
     public void modifyPredicateFrac(FracString s) {

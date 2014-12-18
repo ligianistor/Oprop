@@ -98,7 +98,6 @@ public class ContextVisitor extends NullVisitor
     public void visitReturnStatement(ReturnStatement ast) throws ParseException
     {
         visitChildren(ast);
-
     }
     
     //lnistor
