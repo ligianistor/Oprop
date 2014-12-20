@@ -110,7 +110,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//This gathers the fields in each statement. Not in each block, but in each statement.
 	//A statement is a child of a block.
-	LinkedList<String> fieldsInStatement = new LinkedList<String>();
+	Set<String> fieldsInStatement = new TreeSet<String>();
 	
 	//Holds the object propositions of a method, starting with 
 	//the object propositions in the pre-condition of the method.
@@ -317,10 +317,7 @@ public class BoogieVisitor extends NullVisitor {
     				}
     			catch (Exception e) {
     						System.err.println("Error: " + e.getMessage());
-    			}
-
-    	
-    	
+    			}   	
     }
     
     public void visitQuantifierVariable(QuantifierVariable ast ) throws ParseException
@@ -430,7 +427,9 @@ public class BoogieVisitor extends NullVisitor {
 
     public void visitFieldSelection(FieldSelection ast) throws ParseException
     {
-    	String fieldName = ast.getIdentifier().name+"[this]";
+    	String identifierName = ast.getIdentifier().name;
+    	String fieldName = identifierName +"[this]";
+    	fieldsInStatement.add(identifierName);
     	currentIdentifier = fieldName;
     	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(fieldName);
@@ -819,7 +818,6 @@ public class BoogieVisitor extends NullVisitor {
     try {
       
        String identifierName = currentIdentifier;
-       fieldsInStatement.add(identifierName);
        
        if (currentMethod != "") {
     	   if (fieldsInMethod.get(identifierName) != null)
@@ -967,23 +965,21 @@ public class BoogieVisitor extends NullVisitor {
     	    children[i].accept(this);
     	    //write what we are packing or unpacking 
     	    //before writing the statement
-    	    
-            for (int fi = 0; fi < fieldsInStatement.size(); fi++) {
-                String fieldName = fieldsInStatement.get(fi);
-                if (fieldName != null) {
-                	
-                LinkedList<String> predicatesOfField = fieldWhichPredicates.get(fieldName); 
-                if (predicatesOfField != null) {
-                for (int k = 0; k < predicatesOfField.size() - 1; k++) {
-                	ObjPropString temp = new ObjPropString("this", "k", 
+            for (String fieldName : fieldsInStatement) {
+                if (fieldName != null) {   
+                	LinkedList<String> predicatesOfField = fieldWhichPredicates.get(fieldName); 
+                	if (predicatesOfField != null) {
+                		for (int k = 0; k < predicatesOfField.size(); k++) {
+                			ObjPropString temp = new ObjPropString("this", "k", 
                 			predicatesOfField.get(k), new LinkedList<String>());
-                	if (Gamma.contains(temp)) {
-                		modifyMethodBody("\t call Unpack"+predicatesOfField.get(k)+"(this);\n");
-                		modifyMethodBody("\t packed"+predicatesOfField.get(k)+"[this]:=false;\n");
-                		Gamma.remove(temp);
+                			temp.print();
+                			if (Gamma.contains(temp)) {
+                				modifyMethodBody("\t call Unpack"+predicatesOfField.get(k)+"(this);\n");
+                				modifyMethodBody("\t packed"+predicatesOfField.get(k)+"[this]:=false;\n");
+                				Gamma.remove(temp);
+                			}
+                		} 	
                 	}
-            	} 	
-                }
             }
             }
             
@@ -1142,9 +1138,6 @@ public class BoogieVisitor extends NullVisitor {
         	}
     		out.write("(" + fieldsTypes.get(fieldsTypes.size()-1).getName() + "[this] == "+ 
     				fieldsTypes.get(fieldsTypes.size()-1).getName() + "1); \n \n");
-    		
-    		   		
-    		
     		
     	}
         	catch (Exception e) {
