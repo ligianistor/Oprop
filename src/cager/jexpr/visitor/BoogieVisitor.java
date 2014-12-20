@@ -115,11 +115,7 @@ public class BoogieVisitor extends NullVisitor {
 	//Holds the object propositions of a method, starting with 
 	//the object propositions in the pre-condition of the method.
 	LinkedList<ObjPropString> Gamma = new LinkedList<ObjPropString>();
-	
-	//This might need to be a hashMap??
-	//It should contain the object propositions of a method, but how do we know which method it is?
-	LinkedList<ObjPropString> ObjPropPostCondition = new LinkedList<ObjPropString>();
-	
+		
 	//For each method, this map tells us which are the preconditions for it.  
 	HashMap<String, LinkedList<ObjPropString>> methodPreconditions = 
 			new HashMap<String, LinkedList<ObjPropString>>();
@@ -321,8 +317,7 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     public void visitQuantifierVariable(QuantifierVariable ast ) throws ParseException
-  	{ 
-    	   	    	
+  	{    	   	    	
     	visitChildren(ast ); 
     }
     
@@ -458,7 +453,48 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
+    	// TODO
+    	// It might be that some object propositions in the "requires" of the call procedure
+    	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
+    	// When there is a procedure "call" statement in the code, 
+    	// we look in the "requires" of that procedure and decide which 
+    	// of the object propositions need to be packed and 
+    	// which "Pack" needs to be called.
+    	// I currently call the Pack procedure for all the object propositions
+    	// in the "requires" of the procedure.
+    	// In order to find the "requires" of "methodName" we first look in the
+    	// "requires" of this class. If the "requires" for "methodName" is empty,
+    	// we then look at the previous Boogie visitors and look for the one for 
+    	// the class = "lastPrimaryExpressionType".
+    	
+    	LinkedList<ObjPropString> callMethodPreconditions = 
+    			methodPreconditions.get(methodName);
+    	if (callMethodPreconditions == null) {
+    		int classOfCallMethod = -1;
+        	for (int i=0; i < numberFilesBefore; i++) {
+        		if (bv[i].getClassName().equals(lastPrimaryExpressionType))
+        			classOfCallMethod = i;
+        	}
+        	callMethodPreconditions = bv[classOfCallMethod].getMethodPreconditions().get(methodName);		
+    	}
+    	
+    	if (callMethodPreconditions != null) {
+    		for (int j=0; j < callMethodPreconditions.size(); j++) {
+    			//TODO
+    			// Need to check if these object propositions are in Gamma.
+    			// Might need another map for knowing which object propositions are packed and which are
+    			// unpacked. Or a more general way of writing the class ObjPropString.
+    			ObjPropString o = callMethodPreconditions.get(j);
+    			String obj = o.getObject();
+    			String name = o.getName();
+    		
+    			//need to take care of the OK, ok uppercase issue
+    			statementContent = statementContent + "\t call Pack"+name+"("+obj+");\n";
+    			statementContent = statementContent + "\t packed"+name+"["+obj+"]:=true;\n";
+    		}
+    	}
+    	
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
     	statementContent = statementContent +currentIdentifier+");\n";
@@ -677,7 +713,6 @@ public class BoogieVisitor extends NullVisitor {
     			modifyRequiresFrac(fracString);
     		} 
     		else {
-    			ObjPropPostCondition.add(objProp);
     			modifyMethodPostconditions(objProp);
     			modifyEnsuresFrac(fracString);
     		}
@@ -982,26 +1017,27 @@ public class BoogieVisitor extends NullVisitor {
                 	}
             }
             }
-            
-    	    
     	    modifyMethodBody(statementContent);
-    	      
     	  }
-    	//pack the last object proposition
-    	//the one in the postcondition
-    	for (int i = 0; i < ObjPropPostCondition.size(); i++) {
-    		//need to check if this object proposition is also in Gamma
-    		//if it's not, then might throw an error or send a message
+    	
+
+    	LinkedList<ObjPropString> thisMethodPostCond = methodPostconditions.get(currentMethod);
+    	if (thisMethodPostCond != null) {
+    		//Pack the object propositions
+    		//that are in the postcondition.
+    		for (int i = 0; i < thisMethodPostCond.size(); i++) {
+    			//TODO
+    			//Need to check if this object proposition is also in Gamma
+    			//if it's not, then might throw an error or send a message
     		
-    		ObjPropString o = ObjPropPostCondition.get(i);
-    		String obj = o.getObject();
-    		String name = o.getName();
+    			ObjPropString o = thisMethodPostCond.get(i);
+    			String obj = o.getObject();
+    			String name = o.getName();
     		
-    		
-    		 //need to take care of the OK, ok uppercase issue
-    		 modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
-    		 modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
-    		
+    			//need to take care of the OK, ok uppercase issue
+    			modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
+    			modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");		
+    		}
     	}
     	
     	modifyMethodBody("}\n ");
