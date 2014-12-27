@@ -88,6 +88,12 @@ public class BoogieVisitor extends NullVisitor {
 	
 	String lastPrimaryExpressionType = "";
 	
+	//For each predicate name, this maps to a list of PackObjMods. 
+	//This map needs to be reset in the beginning of each method.
+	//The first String represents the name of the predicate.
+	HashMap<String, LinkedList<PackObjMods>> packedMods = 
+			new HashMap<String, LinkedList<PackObjMods>>();
+	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, String> predicateBody = new HashMap<String, String>();
 	
@@ -349,7 +355,8 @@ public class BoogieVisitor extends NullVisitor {
     	makeConstructors(out);
     	
     	Iterator<Entry<String, String>> j = predicateBody.entrySet().iterator(); 
-        while(j.hasNext()){
+    	
+        while(j.hasNext()) {
      	   String currentNamePred = j.next().getKey();
      	   
      		String predBodyUnprocessed = predicateBody.get(currentNamePred);
@@ -375,11 +382,25 @@ public class BoogieVisitor extends NullVisitor {
     		catch (Exception e) {
     			System.err.println("Error: " + e.getMessage());
     		}
+     		//We are initializing packedMods here, with the names of all predicates.
+     		packedMods.put(currentNamePred, new LinkedList<PackObjMods>());   
         }
+      
+        
     	}
     	     		
         //Writing the current procedure out.
     		try {
+    			
+    			// We reset packedMods here.
+    			// Before we enter the body of the current method.
+    			Iterator<Entry<String, String>> j = predicateBody.entrySet().iterator(); 
+    	    	
+    	        while(j.hasNext()) {
+    	     	  String currentNamePred = j.next().getKey();
+    	     	  packedMods.put(currentNamePred, new LinkedList<PackObjMods>()); 
+    	        }
+    			
 				out.write("procedure "+ast.getIdentifier().getName()+"(this:Ref");
 				
 				visitChildren(ast);
@@ -492,6 +513,12 @@ public class BoogieVisitor extends NullVisitor {
     			//need to take care of the OK, ok uppercase issue
     			statementContent = statementContent + "\t call Pack"+name+"("+obj+");\n";
     			statementContent = statementContent + "\t packed"+name+"["+obj+"]:=true;\n";
+    			
+    			//TODO
+    			//packedMods should be initialized with the predicates of the preceding classes \
+    			//too.
+    			
+    			
     		}
     	}
     	
