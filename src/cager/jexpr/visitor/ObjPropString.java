@@ -4,8 +4,9 @@ import java.util.LinkedList;
 
 public class ObjPropString {
 	String object;
-	int maxFrac;
-	int minFrac;
+	double maxFrac;
+	double minFrac;
+	double exactFrac;
 	String fracParam;
 	String predicateName;
 	String[] params;
@@ -21,6 +22,12 @@ public class ObjPropString {
 			for (int i = 0; i < numberParams; i++) {
 				params[i] = params_.get(i);	
 		}
+			
+		// All these fields below have default values.
+	    // The value -1 is an error flag.
+		maxFrac = -1;
+		minFrac = -1;
+		exactFrac = -1;		
 	}
 	
 	String getObject() {
@@ -31,22 +38,30 @@ public class ObjPropString {
 		return predicateName;
 	}
 	
-	void setMaxFrac(int max) {
+	void setMaxFrac(double max) {
 		maxFrac = max;
 		
 	}
 	
-	void setMinFrac(int min) {
+	void setMinFrac(double min) {
 		 minFrac = min;
 	}
 	
-	int getMaxFrac() {
+	void setExactFrac(double exact) {
+		exactFrac = exact;
+	}
+	
+	double getMaxFrac() {
 		return maxFrac;
 		
 	}
 	
-	int getMinFrac() {
+	double getMinFrac() {
 		return minFrac;
+	}
+	
+	double getExactFrac() {
+		return exactFrac;
 	}
 	
 	@Override

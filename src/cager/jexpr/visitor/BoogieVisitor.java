@@ -679,6 +679,11 @@ public class BoogieVisitor extends NullVisitor {
     	//currentMethod
     	ObjPropString objProp = new ObjPropString(objectString, fracInObjProp, 
     			identifierPredDecl, new LinkedList<String>());
+    	
+    	if (isNumeric(fracInObjProp)) {
+    		double d = Double.parseDouble(fracInObjProp); 
+    		objProp.setExactFrac(d);
+    	}
     	    	
     	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, objectString);
     	String fieldName = quantifiedVars.get(pv);
@@ -1007,7 +1012,6 @@ public class BoogieVisitor extends NullVisitor {
                 		for (int k = 0; k < predicatesOfField.size(); k++) {
                 			ObjPropString temp = new ObjPropString("this", "k", 
                 			predicatesOfField.get(k), new LinkedList<String>());
-                			temp.print();
                 			if (Gamma.contains(temp)) {
                 				modifyMethodBody("\t call Unpack"+predicatesOfField.get(k)+"(this);\n");
                 				modifyMethodBody("\t packed"+predicatesOfField.get(k)+"[this]:=false;\n");
@@ -1192,5 +1196,62 @@ public class BoogieVisitor extends NullVisitor {
         }
     }
     
+    public static boolean isNumeric(String str) {
+      // Match a number with optional '-' and decimal.
+      return str.matches("-?\\d+(\\.\\d+)?");  
+    }
     
-}
+    LinkedList<ObjPropString> objPropToUnpackForFrac(
+    	LinkedList<ObjPropString> Gamma0,
+    	String namePredicate0,
+    	String object0,
+    	double needFrac,
+    	double haveFrac
+    		) {
+    	LinkedList<ObjPropString> result = new LinkedList<ObjPropString>();
+    	// We assume that haveFrac < needFrac.
+    	// We need to check for this before entering this function.
+    	Iterator<Entry<String, String>> it = predicateBody.entrySet().iterator();
+    	String iterPredicateName = "";
+        while (it.hasNext()) {
+        	Entry<String, String> pairs = (Entry<String, String>)it.next();
+        	String iterPredicateBody = pairs.getValue();
+        	//I'm not sure if this should use toLowerCase or not.
+        	//It shouldn't, after I fix everything about the name of the predicates.
+        	if (iterPredicateBody.toLowerCase().contains("frac" + namePredicate0.toLowerCase())) {
+        		iterPredicateName = pairs.getKey();
+        		// This break is for the while.
+        		// This is just temporary, it should return *all* the predicateBody's 
+        		// that contain that predicateName.
+        		break;
+        	}
+        	
+            // it.remove(); // avoids a ConcurrentModificationException
+            // We do not need this line because at the moment we are not in a 
+            // concurrent setting.
+           
+        }
+        if (iterPredicateName != "") {
+        	// I assume here that the fraction is the one that I'm looking for.
+        	// but actually, if the fraction is not enough, we need to call this
+        	// function recursively.
+        	ObjPropString temp = new ObjPropString("this", "k", 
+        			iterPredicateName, new LinkedList<String>());
+        			
+        			if (Gamma0.contains(temp)) {
+        				result.add(temp);
+        				return result;
+        			
+        			//This needs to be removed from the actual Gamma.
+        			//Might be able to us the actual Gamma, and not Gamma0.	
+        				
+        			}	
+        }
+        
+    	return null;
+   	
+    	}
+       	
+    	
+    }
+    
