@@ -19,12 +19,9 @@ public class PackObjMods {
 		modifications = new LinkedList<String>();
 	}
 	
-	public void addModification(boolean b){
-		if (b) {
-			modifications.add("1");
-		} else {
-			modifications.add("0");
-		}
+	// s can only be "1" or "0"
+	public void addModification(String s){
+		modifications.add(s);
 	}
 	
 	public String getObjectString() {
@@ -56,5 +53,5 @@ public boolean equals(Object obj) {
 	public int hashCode(){
 	    return objectString.hashCode();
 	  }
-
+	
 }

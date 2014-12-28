@@ -513,6 +513,7 @@ public class BoogieVisitor extends NullVisitor {
     			//need to take care of the OK, ok uppercase issue
     			statementContent = statementContent + "\t call Pack"+name+"("+obj+");\n";
     			statementContent = statementContent + "\t packed"+name+"["+obj+"]:=true;\n";
+    			modifyPackedMods(name, obj, "1");
     			
     			//TODO
     			//packedMods should be initialized with the predicates of the preceding classes \
@@ -1040,8 +1041,10 @@ public class BoogieVisitor extends NullVisitor {
                 			ObjPropString temp = new ObjPropString("this", "k", 
                 			predicatesOfField.get(k), new LinkedList<String>());
                 			if (Gamma.contains(temp)) {
-                				modifyMethodBody("\t call Unpack"+predicatesOfField.get(k)+"(this);\n");
-                				modifyMethodBody("\t packed"+predicatesOfField.get(k)+"[this]:=false;\n");
+                				String localNameOfPredicate = predicatesOfField.get(k);
+                				modifyMethodBody("\t call Unpack"+localNameOfPredicate+"(this);\n");
+                				modifyMethodBody("\t packed"+localNameOfPredicate+"[this]:=false;\n");
+                				modifyPackedMods(localNameOfPredicate, "this", "0");
                 				Gamma.remove(temp);
                 			}
                 		} 	
@@ -1067,7 +1070,8 @@ public class BoogieVisitor extends NullVisitor {
     		
     			//need to take care of the OK, ok uppercase issue
     			modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
-    			modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");		
+    			modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
+    			modifyPackedMods(name, obj, "1");
     		}
     	}
     	
@@ -1278,6 +1282,42 @@ public class BoogieVisitor extends NullVisitor {
     	return null;
    	
     	}
+    
+    
+    // A result of -1 means that the object was not found in the 
+    // LinkedList as the first element of some PackObjMods.
+	public int getPositionObjectName(LinkedList<PackObjMods> packmod, String objectName) {
+		for (int j=0; j < packmod.size(); j++) {
+			PackObjMods o = packmod.get(j);
+			if (objectName.equals(o.getObjectString())) {
+				return j;
+			}
+		}
+		return -1;
+	}
+	
+	//boo comes from boolean
+	//name is the name of the predicate
+	//obj is the name of the object. It can be this, or dc[this], etc.
+	public void modifyPackedMods(String name, String obj, String boo) {
+		LinkedList<PackObjMods> currentPackObjMods = 
+    			packedMods.get(name);
+		//Maybe I don't need this if because I 
+		//initialize it to the empty LinkedList.
+    	if (currentPackObjMods == null) {
+    		 System.out.println("Im here");
+    		currentPackObjMods = new LinkedList<PackObjMods>();
+    	}
+    	System.out.println("name=" + name);
+    	int position = getPositionObjectName(currentPackObjMods, obj);
+    	if (position == -1) {
+    		// TODO
+    	} else {
+    	PackObjMods o = currentPackObjMods.get(position);
+    	o.addModification(boo);
+    	currentPackObjMods.set(position, o);
+    	}
+	}
        	
     	
     }
