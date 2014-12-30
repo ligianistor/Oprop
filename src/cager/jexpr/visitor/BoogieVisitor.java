@@ -1286,6 +1286,7 @@ public class BoogieVisitor extends NullVisitor {
     
     // A result of -1 means that the object was not found in the 
     // LinkedList as the first element of some PackObjMods.
+    // A PackObjMods has 2 elements: objectString and modifications.
 	public int getPositionObjectName(LinkedList<PackObjMods> packmod, String objectName) {
 		for (int j=0; j < packmod.size(); j++) {
 			PackObjMods o = packmod.get(j);
@@ -1311,12 +1312,16 @@ public class BoogieVisitor extends NullVisitor {
     	System.out.println("name=" + name);
     	int position = getPositionObjectName(currentPackObjMods, obj);
     	if (position == -1) {
-    		// TODO
+    		PackObjMods o = new PackObjMods(obj);
+    		o.addModification(boo);
+    		currentPackObjMods.add(o); 		
     	} else {
     	PackObjMods o = currentPackObjMods.get(position);
     	o.addModification(boo);
     	currentPackObjMods.set(position, o);
     	}
+    	
+    	packedMods.put(name, currentPackObjMods);
 	}
        	
     	
