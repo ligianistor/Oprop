@@ -385,6 +385,16 @@ public class BoogieVisitor extends NullVisitor {
      		//We are initializing packedMods here, with the names of all predicates.
      		packedMods.put(currentNamePred, new LinkedList<PackObjMods>());   
         }
+        
+        //We have to initialize packedMods with the names of the predicates in the 
+        //previous classes too.
+        for (int i=0; i<numberFilesBefore; i++) {
+        	Set<String> predicatesOfi = bv[i].getPredicates();
+        	for (String namePredicateOfi : predicatesOfi) {
+        		packedMods.put(namePredicateOfi, new LinkedList<PackObjMods>());   
+        	}
+    				
+    	}
       
         
     	}
@@ -406,8 +416,7 @@ public class BoogieVisitor extends NullVisitor {
 				visitChildren(ast);
 				
 				out.write(methodParams.get(currentMethod));
-				
-				
+								
 				//Need to automatically detect what is being modified, according to the Boogie manual.
 				//We do this after we parse and translate the body of the current method.
 				String modifies = "\t modifies ";
@@ -424,6 +433,49 @@ public class BoogieVisitor extends NullVisitor {
 			     out.write(modifies+"\n");
 				
 				out.write(methodSpec.get(currentMethod));
+				
+
+				//TODO
+				//Here we need to generate 
+				//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
+				// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) ==> (packedOK[x] == old(packedOK[x]))));"
+				// and the others.
+				
+		        Iterator<Entry<String, LinkedList<PackObjMods>>> it = packedMods.entrySet().iterator();
+		        while (it.hasNext()) {
+		        	Entry<String, LinkedList<PackObjMods>> pairs = 
+		        			(Entry<String, LinkedList<PackObjMods>>)it.next();
+		        	String nameOfPredicate = pairs.getKey();
+		        	LinkedList<PackObjMods> objMods = pairs.getValue();
+		        	Set<String> modifiedObjects = new TreeSet<String>();
+		        	for (int i = 0; i < objMods.size(); i++)
+		        	{
+		        		PackObjMods p = objMods.get(i);
+		        		if (p.isPackedModified()) {
+		        			modifiedObjects.add(p.getObjectString());
+		        		}	
+		        	}
+		        	String ensuresForall = "\t ensures (forall x:Ref :: (";
+		        	if (modifiedObjects.isEmpty()) {
+		        		ensuresForall = ensuresForall.concat("packed"+nameOfPredicate + 
+		        				"[x] == old(packed" + nameOfPredicate +"[x])));");
+		        	} else {
+		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
+		        		int len = modifiedObjectsArray.length;
+		        		ensuresForall = ensuresForall.concat("(");
+		        		for (int k = 0; k < len - 1; k++) {
+		        			ensuresForall = ensuresForall.concat("(x!="+modifiedObjectsArray[k]+") &&");
+		        		}
+		        		
+		        		ensuresForall = ensuresForall.concat("(x!="+modifiedObjectsArray[len-1]+") ) ==> ");
+		        		
+		        		ensuresForall = ensuresForall.concat("(packed"+ nameOfPredicate + 
+		        				"[x] == old(packed"+nameOfPredicate+"[x]))));");
+		        	}
+		        	
+		        	out.write(ensuresForall+"\n");
+		            //it.remove(); avoids a ConcurrentModificationException
+		        }
 				
 				out.write(methodBody.get(currentMethod));
 							
@@ -513,13 +565,8 @@ public class BoogieVisitor extends NullVisitor {
     			//need to take care of the OK, ok uppercase issue
     			statementContent = statementContent + "\t call Pack"+name+"("+obj+");\n";
     			statementContent = statementContent + "\t packed"+name+"["+obj+"]:=true;\n";
-    			modifyPackedMods(name, obj, "1");
-    			
-    			//TODO
-    			//packedMods should be initialized with the predicates of the preceding classes \
-    			//too.
-    			
-    			
+    			modifyPackedMods(name, obj, 1);
+    			    			
     		}
     	}
     	
@@ -1044,7 +1091,7 @@ public class BoogieVisitor extends NullVisitor {
                 				String localNameOfPredicate = predicatesOfField.get(k);
                 				modifyMethodBody("\t call Unpack"+localNameOfPredicate+"(this);\n");
                 				modifyMethodBody("\t packed"+localNameOfPredicate+"[this]:=false;\n");
-                				modifyPackedMods(localNameOfPredicate, "this", "0");
+                				modifyPackedMods(localNameOfPredicate, "this", -1);
                 				Gamma.remove(temp);
                 			}
                 		} 	
@@ -1071,7 +1118,7 @@ public class BoogieVisitor extends NullVisitor {
     			//need to take care of the OK, ok uppercase issue
     			modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
     			modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
-    			modifyPackedMods(name, obj, "1");
+    			modifyPackedMods(name, obj, 1);
     		}
     	}
     	
@@ -1300,7 +1347,7 @@ public class BoogieVisitor extends NullVisitor {
 	//boo comes from boolean
 	//name is the name of the predicate
 	//obj is the name of the object. It can be this, or dc[this], etc.
-	public void modifyPackedMods(String name, String obj, String boo) {
+	public void modifyPackedMods(String name, String obj, int boo) {
 		LinkedList<PackObjMods> currentPackObjMods = 
     			packedMods.get(name);
 		//Maybe I don't need this if because I 
