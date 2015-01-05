@@ -171,6 +171,7 @@ public class BoogieVisitor extends NullVisitor {
 	String currentMethod;
 	
 	//The set of fields of this Oprop class.
+	//This includes packed and frac, but fieldsTypes does not.
 	Set<String> fields = new TreeSet<String>();
 	
 	//The arraylist of (field, type) pairs of this Oprop class.
@@ -182,9 +183,8 @@ public class BoogieVisitor extends NullVisitor {
 	//The set of methods in this Oprop class.
 	Set<String> methods = new TreeSet<String>();
 	
-	//For each method, fieldsInMethod(field_i) is false in the beginning.
-	//As we parse the method and we encounter field_i, we set fieldsInMethod to true.
-	HashMap<String, Boolean> fieldsInMethod = new HashMap<String, Boolean> (); 
+	//For each method, fieldsInMethod contains the set of fields in that method.
+	Set<String> fieldsInMethod = new TreeSet<String> (); 
 	
 	//This boolean is true iff we are currently parsing an object proposition. 
 	boolean insideObjectProposition;
@@ -261,20 +261,23 @@ public class BoogieVisitor extends NullVisitor {
     	
     	ClassDeclaration c = (ClassDeclaration)(ast.getChildren()[0]);
     	className = c.getIdentifier().getName();
-    	
-    	try {
-        out.write("type Ref;\n");
-        out.write("type PredicateTypes;\n");
-        out.write("type FractionType = [Ref] real;\n");
-        out.write("type PackedType = [Ref] bool;\n");
-        out.write("var packed: PackedType;\n");
-        out.write("var frac: FractionType;\n");
-        out.write("const null: Ref;\n");
-        out.write("\n");
-    	}
-    	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
-    	}
+    		try {
+    			if (numberFilesBefore == 0) {
+    			out.write("type Ref;\n");
+    			out.write("type PredicateTypes;\n");
+    			out.write("type FractionType = [Ref] real;\n");
+    			out.write("type PackedType = [Ref] bool;\n");
+    			out.write("const null: Ref;\n");
+    			out.write("\n");
+    			} else {
+    				out.write("//----------------------------------\n");
+    				out.write("//new class\n\n");
+    			}
+    			
+    		}
+    		catch (Exception e) {
+    			System.err.println("Error: " + e.getMessage());
+    		}
         visitChildren(ast );
     }
     
@@ -282,6 +285,7 @@ public class BoogieVisitor extends NullVisitor {
     { 
     	String fieldName = ast.getName();
     	
+    	System.out.println(fieldName);
     	fields.add(fieldName);
     	fieldsTypes.add(new FieldAndTypePair(fieldName, ast.getType().toString()));
     	
@@ -332,12 +336,9 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
     {    	
-    	fieldsInMethod = new HashMap<String, Boolean> (); 
+    	fieldsInMethod = new TreeSet<String> (); 
     	Gamma.clear();
-    	for (String s : fields) {
-    		fieldsInMethod.put(s, new Boolean(false));
-    	}
-    	
+  	
     	namePredicate = "";
     	String methodName = ast.getIdentifier().name;
     	methods.add(methodName);
@@ -419,18 +420,18 @@ public class BoogieVisitor extends NullVisitor {
 								
 				//Need to automatically detect what is being modified, according to the Boogie manual.
 				//We do this after we parse and translate the body of the current method.
+				String[] fieldsInMethodArray = fieldsInMethod.toArray(new String[0]);
+        		int leng = fieldsInMethodArray.length;
+        		if (leng > 0) {
 				String modifies = "\t modifies ";
-							
-				Iterator<Entry<String, Boolean>> iter = fieldsInMethod.entrySet().iterator(); 
-			       while(iter.hasNext()){
-			    	   String key = iter.next().getKey();
-			           if (fieldsInMethod.get(key).booleanValue())
-			           {
-			        	   modifies = modifies.concat(key+ ", ");
-			           }		   
-			       }
-			       modifies = modifies.concat("packed, frac;");
-			     out.write(modifies+"\n");
+
+        		for (int k = 0; k < leng - 1; k++) {
+        			modifies = modifies.concat(fieldsInMethodArray[k]+",");
+        		}
+
+        		modifies = modifies.concat(fieldsInMethodArray[leng-1]+";\n");
+			    out.write(modifies);
+        		}
 				
 				out.write(methodSpec.get(currentMethod));
 				
@@ -462,12 +463,17 @@ public class BoogieVisitor extends NullVisitor {
 		        	} else {
 		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
 		        		int len = modifiedObjectsArray.length;
-		        		ensuresForall = ensuresForall.concat("(");
+		        		if (len > 1) {
+		        			ensuresForall = ensuresForall.concat("(");
+		        		}
 		        		for (int k = 0; k < len - 1; k++) {
 		        			ensuresForall = ensuresForall.concat("(x!="+modifiedObjectsArray[k]+") &&");
 		        		}
 		        		
-		        		ensuresForall = ensuresForall.concat("(x!="+modifiedObjectsArray[len-1]+") ) ==> ");
+		        		ensuresForall = ensuresForall.concat("(x!="+modifiedObjectsArray[len-1]+") ==> ");
+		        		if (len > 1) {
+		        			ensuresForall = ensuresForall.concat("(");
+		        		}
 		        		
 		        		ensuresForall = ensuresForall.concat("(packed"+ nameOfPredicate + 
 		        				"[x] == old(packed"+nameOfPredicate+"[x]))));");
@@ -496,6 +502,11 @@ public class BoogieVisitor extends NullVisitor {
     public void visitFieldSelection(FieldSelection ast) throws ParseException
     {
     	String identifierName = ast.getIdentifier().name;
+    	
+        if (currentMethod != "") {
+     		   fieldsInMethod.add(identifierName);   
+        }
+    	
     	String fieldName = identifierName +"[this]";
     	fieldsInStatement.add(identifierName);
     	currentIdentifier = fieldName;
@@ -565,6 +576,7 @@ public class BoogieVisitor extends NullVisitor {
     			//need to take care of the OK, ok uppercase issue
     			statementContent = statementContent + "\t call Pack"+name+"("+obj+");\n";
     			statementContent = statementContent + "\t packed"+name+"["+obj+"]:=true;\n";
+    			fieldsInMethod.add("packed"+name);
     			modifyPackedMods(name, obj, 1);
     			    			
     		}
@@ -585,6 +597,7 @@ public class BoogieVisitor extends NullVisitor {
                 FracString fracString = currentRequiresFrac.get(pf);
         		statementContent = 
         			statementContent.concat(fracString.getStatementFracString(true, currentIdentifier));
+        		fieldsInMethod.add(fracString.getNameFrac());
         	}
     	}
     	
@@ -595,6 +608,7 @@ public class BoogieVisitor extends NullVisitor {
                 FracString fracString = currentEnsuresFrac.get(pf);
         		statementContent = 
         			statementContent.concat(fracString.getStatementFracString(false, currentIdentifier));
+        		fieldsInMethod.add(fracString.getNameFrac());
         	}
     	}
     	
@@ -615,6 +629,7 @@ public class BoogieVisitor extends NullVisitor {
                     FracString fracString = currentRequiresFrac.get(pf);
             		statementContent = 
             			statementContent.concat(fracString.getStatementFracString(true, currentIdentifier));
+            		fieldsInMethod.add(fracString.getNameFrac());
             	}
         	}
         	
@@ -624,11 +639,15 @@ public class BoogieVisitor extends NullVisitor {
                     FracString fracString = currentEnsuresFrac.get(pf);
             		statementContent = 
             			statementContent.concat(fracString.getStatementFracString(false, currentIdentifier));
+            		fieldsInMethod.add(fracString.getNameFrac());
             	}
         	}
     		
     	}
     	
+    	//If the last 2 characters are ";\n" we need to delete them because
+    	//they are going to be added at the end of visitStatement.
+    	statementContent = statementContent.substring(0, statementContent.length() - 2);
     	
     }
 
@@ -932,15 +951,7 @@ public class BoogieVisitor extends NullVisitor {
     	currentIdentifier = ast.name;
     try {
       
-       String identifierName = currentIdentifier;
-       
-       if (currentMethod != "") {
-    	   if (fieldsInMethod.get(identifierName) != null)
-    	   {
-    		   fieldsInMethod.put(identifierName, new Boolean(true));
-    	   }
-       }
-       
+       String identifierName = currentIdentifier;      
        PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
        String fieldName = quantifiedVars.get(pv);
        
@@ -1091,6 +1102,7 @@ public class BoogieVisitor extends NullVisitor {
                 				String localNameOfPredicate = predicatesOfField.get(k);
                 				modifyMethodBody("\t call Unpack"+localNameOfPredicate+"(this);\n");
                 				modifyMethodBody("\t packed"+localNameOfPredicate+"[this]:=false;\n");
+                				fieldsInMethod.add("packed"+localNameOfPredicate);
                 				modifyPackedMods(localNameOfPredicate, "this", -1);
                 				Gamma.remove(temp);
                 			}
@@ -1118,6 +1130,7 @@ public class BoogieVisitor extends NullVisitor {
     			//need to take care of the OK, ok uppercase issue
     			modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
     			modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
+    			fieldsInMethod.add("packed"+name);
     			modifyPackedMods(name, obj, 1);
     		}
     	}
@@ -1226,6 +1239,18 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     public void makeConstructors(BufferedWriter out) {
+    	//I also declare the packed and frac global variables for this class.
+    	try {
+    		for (String p : predicates) {
+    			out.write("var packed" + p + ": PackedType;\n");
+    			out.write("var frac" + p + ": FractionType;\n");
+    		}
+    		out.write("\n");
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+    	
     	
     	try {
     		for (String p : predicates) {

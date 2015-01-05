@@ -101,7 +101,8 @@ public boolean equals(Object obj) {
 			if (minBound == 0) {
 				statement = statement.concat(" / 2.0;\n");
 			}
-		} else {
+		} // If we go on the else branch, we are in Ensures. 
+		else {
 			if (minBound == 0) {
 				statement = statement.concat(" * 2.0;\n");
 			}
