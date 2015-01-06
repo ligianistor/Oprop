@@ -34,6 +34,10 @@ public class ObjPropString {
 		return object;
 	}
 	
+	void setObject(String newObject) {
+		object = newObject;
+	}
+	
 	String getName() {
 		return predicateName;
 	}

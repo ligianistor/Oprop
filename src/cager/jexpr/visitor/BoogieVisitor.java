@@ -140,11 +140,15 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<FracString>>  ensuresFrac = 
 			new HashMap<String, LinkedList<FracString>>();
 	
-	
 	//For each predicate, this map
 	//tells us which frac[] are in the body of the predicate
 	HashMap<String, LinkedList<FracString>>  predicateFrac = 
 			new HashMap<String, LinkedList<FracString>>();
+	
+	//For each predicate, this map 
+	//tells us which ObjPropString are in the body of the predicate
+	HashMap<String, LinkedList<ObjPropString>>  predicateObjProp = 
+			new HashMap<String, LinkedList<ObjPropString>>();
 	
 	//I made a FractionString class.
 	//For each Pack and Unpack procedure, but mainly Pack,
@@ -247,6 +251,10 @@ public class BoogieVisitor extends NullVisitor {
 
 	public HashMap<String, LinkedList<FracString>>  getPredicateFrac() {
 		return predicateFrac;
+	}
+	
+	public HashMap<String, LinkedList<ObjPropString>> getPredicateObjProp() {
+		return predicateObjProp;
 	}
 
 	//visit methods
@@ -436,8 +444,7 @@ public class BoogieVisitor extends NullVisitor {
 				out.write(methodSpec.get(currentMethod));
 				
 
-				//TODO
-				//Here we need to generate 
+				//Here we generate 
 				//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
 				// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) ==> (packedOK[x] == old(packedOK[x]))));"
 				// and the others.
@@ -530,8 +537,6 @@ public class BoogieVisitor extends NullVisitor {
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName));
 			 			 
     	}
-    	
-    	
     	visitChildren(ast);
     }
     
@@ -570,18 +575,21 @@ public class BoogieVisitor extends NullVisitor {
     			// Might need another map for knowing which object propositions are packed and which are
     			// unpacked. Or a more general way of writing the class ObjPropString.
     			ObjPropString o = callMethodPreconditions.get(j);
-    			String obj = o.getObject();
+    			o.setObject(currentIdentifier);
     			String name = o.getName();
-    		
-    			//need to take care of the OK, ok uppercase issue
-    			statementContent = statementContent + "\t call Pack"+name+"("+obj+");\n";
-    			statementContent = statementContent + "\t packed"+name+"["+obj+"]:=true;\n";
-    			fieldsInMethod.add("packed"+name);
-    			modifyPackedMods(name, obj, 1);
+    			
+    			//Only call packing if this object proposition is not already packed and in Gamma.
+    			if (!Gamma.contains(o)) {
+    				//need to take care of the OK, ok uppercase issue
+    				statementContent = statementContent + "\t call Pack"+name+"("+currentIdentifier+");\n";
+    				statementContent = statementContent + "\t packed"+name+"["+currentIdentifier+"]:=true;\n";
+    				fieldsInMethod.add("packed"+name);
+    				modifyPackedMods(name, currentIdentifier, 1);
+    			}
     			    			
     		}
     	}
-    	
+    	//TODO I need to modify here.
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
     	statementContent = statementContent +currentIdentifier+");\n";
@@ -642,7 +650,6 @@ public class BoogieVisitor extends NullVisitor {
             		fieldsInMethod.add(fracString.getNameFrac());
             	}
         	}
-    		
     	}
     	
     	//If the last 2 characters are ";\n" we need to delete them because
@@ -796,6 +803,7 @@ public class BoogieVisitor extends NullVisitor {
     		bodyMethodOrPredicate ="packed"+predName+"[" + fieldName +
 			          "[this]] && \n \t \t(frac"+predName+"["+ fieldName + "[this]] > 0.0"; 
     		fracString.setField(fieldName);
+    		objProp.setObject(fieldName+"[this]");
     				
     	}
     	
@@ -822,6 +830,7 @@ public class BoogieVisitor extends NullVisitor {
     		//the current predicate and the FracString 
     		//frac+predName[fieldname] >0.0.
     		modifyPredicateFrac(fracString);
+    		modifyPredicateObjProp(objProp);
     	}
     	insideObjectProposition = false;
     }
@@ -1102,6 +1111,11 @@ public class BoogieVisitor extends NullVisitor {
                 				String localNameOfPredicate = predicatesOfField.get(k);
                 				modifyMethodBody("\t call Unpack"+localNameOfPredicate+"(this);\n");
                 				modifyMethodBody("\t packed"+localNameOfPredicate+"[this]:=false;\n");
+                				//TODO
+                				//Here I need to add to Gamma the object propositions from the body of the
+                				//unpacked predicate.
+                				addObjPropToGamma(localNameOfPredicate);
+                				
                 				fieldsInMethod.add("packed"+localNameOfPredicate);
                 				modifyPackedMods(localNameOfPredicate, "this", -1);
                 				Gamma.remove(temp);
@@ -1136,7 +1150,6 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	
     	modifyMethodBody("}\n ");
-     	
   		  }
     
     
@@ -1236,6 +1249,16 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	currentPredicateFrac.add(s);
     	predicateFrac.put(namePredicate, currentPredicateFrac);    	
+    }
+    
+    public void modifyPredicateObjProp(ObjPropString s) {
+    	LinkedList<ObjPropString> currentPredicateObjProp = 
+    			predicateObjProp.get(namePredicate);
+    	if (currentPredicateObjProp == null) {
+    		currentPredicateObjProp = new LinkedList<ObjPropString>();
+    	}
+    	currentPredicateObjProp.add(s);
+    	predicateObjProp.put(namePredicate, currentPredicateObjProp);    	
     }
     
     public void makeConstructors(BufferedWriter out) {
@@ -1392,8 +1415,21 @@ public class BoogieVisitor extends NullVisitor {
     	o.addModification(boo);
     	currentPackObjMods.set(position, o);
     	}
-    	
     	packedMods.put(name, currentPackObjMods);
+	}
+	
+	//This adds to Gamma the object propositions that are in the body of
+	//the predicate nameOfPredicate.
+	public void addObjPropToGamma(String nameOfPredicate) {
+		LinkedList<ObjPropString> currentPredicateObjProp = 
+    			predicateObjProp.get(nameOfPredicate);
+    	if (currentPredicateObjProp != null) {
+    		for (int i=0; i<currentPredicateObjProp.size(); i++) {
+    			ObjPropString o = currentPredicateObjProp.get(i);
+    			Gamma.add(o);
+    		}
+    		
+    	}		
 	}
        	
     	
