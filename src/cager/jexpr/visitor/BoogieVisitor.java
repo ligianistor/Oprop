@@ -3,36 +3,28 @@ package cager.jexpr.visitor;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.apache.bcel.generic.Type;
-
 import cager.jexpr.JExprConstants;
-import cager.jexpr.OperatorTypeInfo;
 import cager.jexpr.ParseException;
 import cager.jexpr.PredicateAndFieldValue;
-import cager.jexpr.Types;
 import cager.jexpr.ast.AST;
 import cager.jexpr.ast.AllocationExpression;
 import cager.jexpr.ast.ArgumentList;
 import cager.jexpr.ast.BinaryExpression;
 import cager.jexpr.ast.Block;
-import cager.jexpr.ast.CastExpression;
 import cager.jexpr.ast.ClassDeclaration;
 import cager.jexpr.ast.CompilationUnit;
 import cager.jexpr.ast.CompilationUnits;
-import cager.jexpr.ast.ConstructorDeclaration;
 import cager.jexpr.ast.DeclarationStatement;
 import cager.jexpr.ast.Expression;
 import cager.jexpr.ast.FieldAndTypePair;
 import cager.jexpr.ast.FieldDeclaration;
 import cager.jexpr.ast.FieldSelection;
-import cager.jexpr.ast.ForStatement;
 import cager.jexpr.ast.FormalParameter;
 import cager.jexpr.ast.FormalParameters;
 import cager.jexpr.ast.IdentifierExpression;
@@ -48,16 +40,11 @@ import cager.jexpr.ast.MethodSpecVariables;
 import cager.jexpr.ast.ObjectProposition;
 import cager.jexpr.ast.PredicateDeclaration;
 import cager.jexpr.ast.PrimaryExpression;
-import cager.jexpr.ast.QuantificationExpression;
 import cager.jexpr.ast.QuantifierVariable;
-import cager.jexpr.ast.QuantifierVariables;
 import cager.jexpr.ast.ReturnStatement;
-import cager.jexpr.ast.Statement;
 import cager.jexpr.ast.StatementExpression;
 import cager.jexpr.ast.TypedAST;
 import cager.jexpr.ast.UnaryExpression;
-import cager.jexpr.ast.VariableDeclaration;
-import cager.jexpr.ast.WhileStatement;
 
 /*
  * This class visits the AST to generate the Boogie code.
@@ -85,7 +72,7 @@ public class BoogieVisitor extends NullVisitor {
 	//The name of the latest identifier or field[this].
 	//Its use is in visitMethodSelection.
 	String currentIdentifier = "";
-	
+		
 	String lastPrimaryExpressionType = "";
 	
 	//For each predicate name, this maps to a list of PackObjMods. 
@@ -118,9 +105,13 @@ public class BoogieVisitor extends NullVisitor {
 	//A statement is a child of a block.
 	Set<String> fieldsInStatement = new TreeSet<String>();
 	
-	//Holds the object propositions of a method, starting with 
+	//Holds the packed object propositions of a method, starting with 
 	//the object propositions in the pre-condition of the method.
 	LinkedList<ObjPropString> Gamma = new LinkedList<ObjPropString>();
+	
+	//Holds the binary expressions that come from unpacking a predicate,
+	//for a method.
+	LinkedList<BinExprString> GammaBinExpr = new LinkedList<BinExprString>();
 		
 	//For each method, this map tells us which are the preconditions for it.  
 	HashMap<String, LinkedList<ObjPropString>> methodPreconditions = 
@@ -150,6 +141,12 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<ObjPropString>>  predicateObjProp = 
 			new HashMap<String, LinkedList<ObjPropString>>();
 	
+	//For each predicate, this map 
+	//tells us which BinExprString are in the body of the predicate
+	HashMap<String, LinkedList<BinExprString>>  predicateBinExpr = 
+			new HashMap<String, LinkedList<BinExprString>>();
+	
+	
 	//I made a FractionString class.
 	//For each Pack and Unpack procedure, but mainly Pack,
 	//I have a list of FractionString 's that
@@ -158,11 +155,15 @@ public class BoogieVisitor extends NullVisitor {
 	//when a Pack procedure is called.
 	
 	
-	//At the beginning of each block, this is made "".
-	//This contains the string of each block.
+	//At the beginning of each statement, this is made "".
+	//This contains the string of each statement.
 	String statementContent;
 	
 	boolean inStatement = false;
+	
+	//This becomes true if a method selection was visited in a 
+	//statement.
+	boolean visitedMethSel = false;
 	
 	//The file where the output is written.
 	BufferedWriter out;
@@ -256,6 +257,10 @@ public class BoogieVisitor extends NullVisitor {
 	public HashMap<String, LinkedList<ObjPropString>> getPredicateObjProp() {
 		return predicateObjProp;
 	}
+	
+	public HashMap<String, LinkedList<BinExprString>> getPredicateBinExpr() {
+		return predicateBinExpr;
+	}
 
 	//visit methods
 	
@@ -311,7 +316,6 @@ public class BoogieVisitor extends NullVisitor {
     		}
     		else 
     		out.write("var "+ fieldName +": [Ref]"+fieldType+";\n");
-    			
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
@@ -404,8 +408,7 @@ public class BoogieVisitor extends NullVisitor {
         	}
     				
     	}
-      
-        
+          
     	}
     	     		
         //Writing the current procedure out.
@@ -523,8 +526,7 @@ public class BoogieVisitor extends NullVisitor {
     	
 		  if ((currentMethod != "") && (inStatement) && 
 			  !inArgumentList && !inMethodSelectionStatement) {
-			  statementContent = statementContent.concat(fieldName);
-			  
+			  statementContent = statementContent.concat(fieldName);  
 		  }
 		  
 		  if ((currentMethod != "") && (inArgumentList) ) {
@@ -542,10 +544,25 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
-    	// TODO
+    	visitedMethSel = true;
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
+    	
+    	//TODO
+    	//We first need to add to Gamma the object propositions that we get from 
+    	//unpacking the object propositions that we do unpack.
+    	//We add these object propositions here and we might need to 
+    	//decide what to unpack right here.
+    	//We might need to duplicate the unpack code that is now in visitBlock()
+    	//and check in that method if the statement is a call to a method,
+    	//so that we don't write "unpack" twice to the out string.
+    	
+    	//The copies of global variables as they were before visiting the children
+    	//of the methodSelection node.
+    	
+    	
+    	
     	// When there is a procedure "call" statement in the code, 
     	// we look in the "requires" of that procedure and decide which 
     	// of the object propositions need to be packed and 
@@ -569,25 +586,17 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	
     	if (callMethodPreconditions != null) {
-    		for (int j=0; j < callMethodPreconditions.size(); j++) {
-    			//TODO
-    			// Need to check if these object propositions are in Gamma.
-    			// Might need another map for knowing which object propositions are packed and which are
-    			// unpacked. Or a more general way of writing the class ObjPropString.
-    			ObjPropString o = callMethodPreconditions.get(j);
-    			o.setObject(currentIdentifier);
-    			String name = o.getName();
-    			
-    			//Only call packing if this object proposition is not already packed and in Gamma.
-    			if (!Gamma.contains(o)) {
-    				//need to take care of the OK, ok uppercase issue
-    				statementContent = statementContent + "\t call Pack"+name+"("+currentIdentifier+");\n";
-    				statementContent = statementContent + "\t packed"+name+"["+currentIdentifier+"]:=true;\n";
-    				fieldsInMethod.add("packed"+name);
-    				modifyPackedMods(name, currentIdentifier, 1);
-    			}
-    			    			
-    		}
+    		String objPropMethPrecondString = objPropForMethodPrecond(
+		        	Gamma,	
+		        	callMethodPreconditions,
+		        	currentIdentifier,
+		        	//this has to be modified to the list of parameters
+		        	//TODO
+		        	new LinkedList<String>()
+		        		);
+    		statementContent = statementContent.concat(objPropMethPrecondString);
+
+
     	}
     	//TODO I need to modify here.
     	statementContent= statementContent + "\t call "+ methodName + "(";
@@ -654,8 +663,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	//If the last 2 characters are ";\n" we need to delete them because
     	//they are going to be added at the end of visitStatement.
-    	statementContent = statementContent.substring(0, statementContent.length() - 2);
-    	
+    	statementContent = statementContent.substring(0, statementContent.length() - 2); 	
     }
 
     public void visitBinaryExpression(BinaryExpression ast ) throws ParseException
@@ -675,7 +683,6 @@ public class BoogieVisitor extends NullVisitor {
     		String fieldValue = i.getName();
     		
         	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, fieldValue);
-        	//pv.println();
         	quantifiedVars.put(pv, nameField);
         	
     		return;
@@ -693,8 +700,8 @@ public class BoogieVisitor extends NullVisitor {
     
     public void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException
     {
+    	int initialStatementLength = statementContent.length();
     	AST[] children = ast.getChildren();
-		
 		  children[0].accept(this );
 		  if (namePredicate.equals("")) {
 		  try{
@@ -714,14 +721,26 @@ public class BoogieVisitor extends NullVisitor {
 	    		System.err.println("Error: " + e.getMessage());
 	      }
 		  }
-		  else {
+		  else {			  
 			 String currentPredicateBody = predicateBody.get(namePredicate);
 			 predicateBody.put(namePredicate, currentPredicateBody.concat(operatorSymbol));
-			 
 		  }
 		  
-		  
 		  children[1].accept(this );
+		  
+		  if (!namePredicate.equals("")) {
+			  Set<String> operatorSet = new HashSet<String>();
+			  operatorSet.add("==");
+			  operatorSet.add("<");
+			  operatorSet.add("<=");
+			  operatorSet.add(">");
+			  operatorSet.add(">=");
+			  if (operatorSet.contains(operatorSymbol)) {
+				  String binaryExpression = statementContent.substring(initialStatementLength);
+				  BinExprString b = new BinExprString(binaryExpression, "this");
+				  modifyPredicateBinExpr(b);
+			  } 
+		  }
     }
         
     public void visitLiteralExpression(LiteralExpression ast )
@@ -973,12 +992,6 @@ public class BoogieVisitor extends NullVisitor {
   			  modifyMethodBody(fieldName+ "[this]"); 
     	   }
     	   else {
-    		   /*
-    		   if ((currentMethod != "")  && (fieldsInMethod.get(identifierName) != null)) {
-    			   //we must be inside a statement
-    			   statementContent = statementContent.concat(identifierName+"[this]");
-    	       }
-    	       */
     		   
     		   if ((currentMethod != "") && (inArgumentList)) {
     			   modifyMethodBody(identifierName + ",");
@@ -988,7 +1001,6 @@ public class BoogieVisitor extends NullVisitor {
     			   !inArgumentList && !inMethodSelectionStatement ) {
     				  statementContent = statementContent.concat(identifierName);
     			  }
-    		   
     		   
     			   //modify object proposition parts
     		   if (insideObjectProposition) {
@@ -1075,6 +1087,7 @@ public class BoogieVisitor extends NullVisitor {
     	modifyMethodSpec(");\n");
     	}
     	
+    	//TODO
     	//need to createObjPropString and add it to Gamma
     	if (postcondition != null) {
     	modifyMethodSpec("\t ensures ");
@@ -1088,8 +1101,6 @@ public class BoogieVisitor extends NullVisitor {
     public void visitBlock(Block ast ) 
   		  throws ParseException 
   		  { 
-    	
-    	
     	modifyMethodBody("{\n");
     	
     	AST[] children = ast.getChildren();
@@ -1097,9 +1108,11 @@ public class BoogieVisitor extends NullVisitor {
     		
     		fieldsInStatement.clear();
     		statementContent = "";
+    		visitedMethSel = false;
     	    children[i].accept(this);
     	    //write what we are packing or unpacking 
     	    //before writing the statement
+    	    if (visitedMethSel == false) {
             for (String fieldName : fieldsInStatement) {
                 if (fieldName != null) {   
                 	LinkedList<String> predicatesOfField = fieldWhichPredicates.get(fieldName); 
@@ -1114,6 +1127,7 @@ public class BoogieVisitor extends NullVisitor {
                 				//TODO
                 				//Here I need to add to Gamma the object propositions from the body of the
                 				//unpacked predicate.
+                				//Maybe this should be added at the end of visiMethodSelection().
                 				addObjPropToGamma(localNameOfPredicate);
                 				
                 				fieldsInMethod.add("packed"+localNameOfPredicate);
@@ -1124,6 +1138,11 @@ public class BoogieVisitor extends NullVisitor {
                 	}
             }
             }
+    	    }
+    	    else {
+    	    	
+    	    }
+            
     	    modifyMethodBody(statementContent);
     	  }
     	
@@ -1261,6 +1280,16 @@ public class BoogieVisitor extends NullVisitor {
     	predicateObjProp.put(namePredicate, currentPredicateObjProp);    	
     }
     
+    public void modifyPredicateBinExpr(BinExprString s) {
+    	LinkedList<BinExprString> currentPredicateBinExpr = 
+    			predicateBinExpr.get(namePredicate);
+    	if (currentPredicateBinExpr == null) {
+    		currentPredicateBinExpr = new LinkedList<BinExprString>();
+    	}
+    	currentPredicateBinExpr.add(s);
+    	predicateBinExpr.put(namePredicate, currentPredicateBinExpr);    	
+    }
+    
     public void makeConstructors(BufferedWriter out) {
     	//I also declare the packed and frac global variables for this class.
     	try {
@@ -1312,21 +1341,12 @@ public class BoogieVisitor extends NullVisitor {
     	
     	
     }
-    
-    public static void printMap(Map mp) {
-        Iterator it = mp.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pairs = (Map.Entry)it.next();
-            System.out.println(pairs.getKey() + " = " + pairs.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
-        }
-    }
-    
+        
     public static boolean isNumeric(String str) {
       // Match a number with optional '-' and decimal.
       return str.matches("-?\\d+(\\.\\d+)?");  
     }
-    
+        
     LinkedList<ObjPropString> objPropToUnpackForFrac(
     	LinkedList<ObjPropString> Gamma0,
     	String namePredicate0,
@@ -1426,11 +1446,49 @@ public class BoogieVisitor extends NullVisitor {
     	if (currentPredicateObjProp != null) {
     		for (int i=0; i<currentPredicateObjProp.size(); i++) {
     			ObjPropString o = currentPredicateObjProp.get(i);
+    			o.print();
     			Gamma.add(o);
     		}
     		
     	}		
 	}
+	
+    String objPropForMethodPrecond(
+        	LinkedList<ObjPropString> Gamma0,	
+        	LinkedList<ObjPropString> methPreconditions,
+        	String caller,
+        	LinkedList<String> params
+        		) {
+    	String result = "";
+        	
+    		for (int j=0; j < methPreconditions.size(); j++) {
+    			//TODO
+    			// Need to check if these object propositions are in Gamma.
+    			// Might need another map for knowing which object propositions are packed and which are
+    			// unpacked. Or a more general way of writing the class ObjPropString.
+    			// Or another GammaUnpacked that is like Gamma, but for the current unpacked object propositions.
+    			ObjPropString o = methPreconditions.get(j);
+    			o.setObject(caller);
+    			String name = o.getName();
+    			
+    			System.out.println("xxxx");
+    			for (int i=0; i<Gamma.size(); i++) {
+        			ObjPropString ox = Gamma.get(i);
+        			ox.print();
+        		}
+    			
+    			//Only call packing if this object proposition is not already packed and in Gamma.
+    			if (!Gamma.contains(o)) {
+    				//need to take care of the OK, ok uppercase issue
+    				statementContent = statementContent + "\t call Pack"+name+"("+caller+");\n";
+    				statementContent = statementContent + "\t packed"+name+"["+caller+"]:=true;\n";
+    				fieldsInMethod.add("packed"+name);
+    				modifyPackedMods(name, caller, 1);
+    			}
+    			    			
+    		}
+        	return result;
+        }
        	
     	
     }
