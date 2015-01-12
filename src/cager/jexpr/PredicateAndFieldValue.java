@@ -1,7 +1,5 @@
 package cager.jexpr;
 
-import cager.jexpr.visitor.ObjPropString;
-
 public class PredicateAndFieldValue {
 	String predicate;
 	String fieldValue;

@@ -2,8 +2,6 @@ package cager.jexpr.ast;
 
 import java.io.BufferedWriter;
 
-import org.apache.bcel.generic.Type;
-
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 

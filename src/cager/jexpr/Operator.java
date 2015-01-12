@@ -3,7 +3,6 @@ package cager.jexpr;
 import java.io.BufferedWriter;
 import java.util.*;
 import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.BasicType;
 import org.apache.bcel.Constants;
 
 /**
@@ -41,8 +40,8 @@ public class Operator
         return id;
     }
 
-    private static Map binaryOperatorMap; //binary also includes assignOperator
-    private static Map unaryOperatorMap;
+    private static Map<String, Operator> binaryOperatorMap; //binary also includes assignOperator
+    private static Map<String, Operator> unaryOperatorMap;
 
     private static void putBinary(int id, String name, TypeResolver resolver)
     {
@@ -57,8 +56,8 @@ public class Operator
 
     static
     {
-        binaryOperatorMap = new HashMap();
-        unaryOperatorMap = new HashMap();
+        binaryOperatorMap = new HashMap<String, Operator>();
+        unaryOperatorMap = new HashMap<String, Operator>();
 
         NumericTypeResolver nt = new NumericTypeResolver();
         BooleanTypeResolver bt = new BooleanTypeResolver();

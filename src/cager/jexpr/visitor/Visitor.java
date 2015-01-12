@@ -1,7 +1,5 @@
 package cager.jexpr.visitor;
 
-import java.io.BufferedWriter;
-
 import cager.jexpr.ParseException;
 import cager.jexpr.ast.*;
 

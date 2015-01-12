@@ -84,13 +84,7 @@ public class MethodDeclaration extends TypedAST
 
 package cager.jexpr.ast;
 
-import org.apache.bcel.generic.Type;
-
 import java.io.BufferedWriter;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Vector;
-import java.util.List;
 
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;

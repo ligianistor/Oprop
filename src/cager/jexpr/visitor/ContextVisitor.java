@@ -378,22 +378,6 @@ public class ContextVisitor extends NullVisitor
 
     }
 
-    private void tempDebug(BinaryExpression ast)
-    {
-        if (ast.E1 instanceof BinaryExpression)
-            tempDebug((BinaryExpression)ast.E1);
-        else
-            System.out.println("Leaf1:" + ast.E1);
-
-        System.out.println("Op: " + ast.op.getName());
-
-        if (ast.E2 instanceof BinaryExpression)
-            tempDebug((BinaryExpression)ast.E2);
-        else
-            System.out.println("Leaf2:" + ast.E2);
-
-    }
-
     public void visitUnaryExpression(UnaryExpression ast) throws ParseException
     {
         visitChildren(ast);

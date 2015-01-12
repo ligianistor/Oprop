@@ -1,7 +1,6 @@
 package cager.jexpr.ast;
 
 import java.io.BufferedWriter;
-import java.util.List;
 
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;

@@ -1,9 +1,5 @@
 package cager.jexpr.ast;
 
-import java.util.Comparator;
-
-import cager.jexpr.visitor.ObjPropString;
-
 public class FieldAndTypePair {
 	String name;
 	String type;

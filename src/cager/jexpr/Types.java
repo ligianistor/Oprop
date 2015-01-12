@@ -1,6 +1,5 @@
 package cager.jexpr;
 
-import java.util.*;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.generic.BasicType;
 import org.apache.bcel.generic.ObjectType;

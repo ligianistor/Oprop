@@ -1460,6 +1460,9 @@ public class BoogieVisitor extends NullVisitor {
         	LinkedList<String> params
         		) {
     	String result = "";
+    	
+    	//first try to pack.
+    	//if you can't, try to unpack by looking bottom up for what to unpack.
         	
     		for (int j=0; j < methPreconditions.size(); j++) {
     			//TODO

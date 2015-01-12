@@ -45,21 +45,14 @@ import java.util.ArrayList;
 public class JExpr implements JExprConstants {
     public static void main(String [] args) throws Throwable {
         JExpr parser;
-        String[] filenames;
+       
         BoogieVisitor[] classBoogieDetails;
         ContextVisitor[] contextVisitors;
         String filename;
-        String outputDirectory = null;
-        long initTime = 0;
-        long parseTime = 0;
-        long startTime = 0;
-        long stopTime = 0;
         int numberOfInputFiles = 0;
         BufferedWriter out, outBoogie;
         if (args.length >= 2) {     		
-        		
         		numberOfInputFiles = Integer.parseInt(args[0]);
-        		filenames = new String[numberOfInputFiles];
         		classBoogieDetails = new BoogieVisitor[numberOfInputFiles];
         		contextVisitors = new ContextVisitor[numberOfInputFiles];
         		
@@ -77,13 +70,11 @@ public class JExpr implements JExprConstants {
                 try {
                 	out.write("Java Parser Version 1.1 (for Java1.2 code):  Reading from file " + filename + "...\n");
                     	try {
-                    		startTime = System.currentTimeMillis();
                             parser = new JExpr(new java.io.FileInputStream(filename));
-                            stopTime = System.currentTimeMillis();
-                            initTime = stopTime - startTime;
                         } 
                     	catch (java.io.FileNotFoundException e) {
-                    		System.out.println("Java Parser Version 1.1 (for Java1.2 code):  File " + filename + " not found.");
+                    		System.out.println("Java Parser Version 1.1 (for Java1.2 code):  File " 
+                    					+ filename + " not found.");
                     		return;
                     	}
                 }
@@ -203,7 +194,12 @@ public class JExpr implements JExprConstants {
 
     class NotImplementedException extends ParseException
     {
-        NotImplementedException(String construct)
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		NotImplementedException(String construct)
         {
             super("Construct Not Implemented in JExpr: " + construct);
         }
@@ -232,8 +228,7 @@ public class JExpr implements JExprConstants {
                                        //System.out.println("package: " + packageName);
     cd = ClassDeclaration();
     jj_consume_token(0);
-    {if (true) return new CompilationUnit(packageName, cd);}
-    throw new Error("Missing return statement in function");
+    return new CompilationUnit(packageName, cd);
   }
 
 /**
@@ -245,8 +240,7 @@ public class JExpr implements JExprConstants {
     jj_consume_token(PACKAGE);
     name = Name();
     jj_consume_token(SEMICOLON);
-      {if (true) return name;}
-    throw new Error("Missing return statement in function");
+    return name;
   }
 
 /** Not implemented. */
@@ -362,8 +356,7 @@ public class JExpr implements JExprConstants {
       }
     }
     jj_consume_token(RBRACE);
-    {if (true) return cd;}
-    throw new Error("Missing return statement in function");
+    return cd;
   }
 
   final public void UnmodifiedClassDeclaration() throws ParseException {
@@ -828,8 +821,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
                                       fields.add(new FieldDeclaration(id, type));
     }
     jj_consume_token(SEMICOLON);
-        {if (true) return (FieldDeclaration[])(fields.toArray(new FieldDeclaration[0]));}
-    throw new Error("Missing return statement in function");
+    return (FieldDeclaration[])(fields.toArray(new FieldDeclaration[0]));
   }
 
   final public void VariableDeclarator() throws ParseException {
@@ -862,8 +854,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
       jj_consume_token(LBRACKET);
       jj_consume_token(RBRACKET);
     }
-                                                           {if (true) return id;}
-    throw new Error("Missing return statement in function");
+   return id;
   }
 
   final public void VariableInitializer() throws ParseException {
@@ -986,10 +977,9 @@ FieldDeclaration FieldDeclaration() : //jhlee
       }
       jj_consume_token(COMMA);
       p = QuantifierVariable();
-                                                                                qvaris.add(p);
+      qvaris.add(p);
     }
-    {if (true) return qvaris;}
-    throw new Error("Missing return statement in function");
+   return qvaris;
   }
 
   final public QuantifierVariable QuantifierVariable() throws ParseException {
@@ -998,16 +988,14 @@ FieldDeclaration FieldDeclaration() : //jhlee
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FINAL:
       jj_consume_token(FINAL);
-              {if (true) throw new NotImplementedException();}
-      break;
+              {throw new NotImplementedException();}
     default:
       jj_la1[28] = jj_gen;
       ;
     }
     t = Type();
     id = VariableDeclaratorId();
-                                                                                                {if (true) return new QuantifierVariable(id, t);}
-    throw new Error("Missing return statement in function");
+    return new QuantifierVariable(id, t);
   }
 
   final public PredicateDeclaration PredicateDeclaration() throws ParseException {
@@ -1023,9 +1011,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
     pd.setIdentifier(ider);
     pd.setParameters(params);
     pd.setExpression(ex);
-
-    {if (true) return pd;}
-    throw new Error("Missing return statement in function");
+    return pd;
   }
 
   final public MethodDeclaration MethodDeclaration() throws ParseException {
@@ -1047,9 +1033,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
     md.setParameters(params);
     md.setMethodSpecExpression(mse);
     md.setBlock(block);
-
-    {if (true) return md;}
-    throw new Error("Missing return statement in function");
+    return md;
   }
 
   final public MethodSpecVariables MethodSpecVariables() throws ParseException {
@@ -1067,7 +1051,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
     case SHORT:
     case IDENTIFIER:
       p = MethodSpecVariable();
-                               params.add(p);
+      params.add(p);
       label_13:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1080,7 +1064,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
         }
         jj_consume_token(COMMA);
         p = MethodSpecVariable();
-                                                                                 params.add(p);
+        params.add(p);
       }
       jj_consume_token(COLON);
       break;
@@ -1088,8 +1072,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
       jj_la1[30] = jj_gen;
       ;
     }
-    {if (true) return params;}
-    throw new Error("Missing return statement in function");
+    return params;
   }
 
   final public MethodSpecVariable MethodSpecVariable() throws ParseException {
@@ -1098,16 +1081,14 @@ FieldDeclaration FieldDeclaration() : //jhlee
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FINAL:
       jj_consume_token(FINAL);
-              {if (true) throw new NotImplementedException();}
-      break;
+      throw new NotImplementedException();
     default:
       jj_la1[31] = jj_gen;
       ;
     }
     t = Type();
     id = VariableDeclaratorId();
-    {if (true) return new MethodSpecVariable(id, t);}
-    throw new Error("Missing return statement in function");
+    return new MethodSpecVariable(id, t);
   }
 
   final public MethodSpecExpression MethodSpecExpression() throws ParseException {
@@ -1137,8 +1118,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
     msexp.setMethodSpecVariables(msvs);
     msexp.setPrecondition(precond);
     msexp.setPostcondition(postcond);
-    {if (true) return msexp;}
-    throw new Error("Missing return statement in function");
+    return msexp;
   }
 
   final public FormalParameters FormalParameters() throws ParseException {
@@ -1170,7 +1150,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
         }
         jj_consume_token(COMMA);
         p = FormalParameter();
-                                                                               params.add(p);
+        params.add(p);
       }
       break;
     default:
@@ -1178,8 +1158,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
       ;
     }
     jj_consume_token(RPAREN);
-    {if (true) return params;}
-    throw new Error("Missing return statement in function");
+    return params;
   }
 
   final public FormalParameter FormalParameter() throws ParseException {
@@ -1188,16 +1167,14 @@ FieldDeclaration FieldDeclaration() : //jhlee
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FINAL:
       jj_consume_token(FINAL);
-              {if (true) throw new NotImplementedException();}
-      break;
+      throw new NotImplementedException();
     default:
       jj_la1[36] = jj_gen;
       ;
     }
     t = Type();
     id = VariableDeclaratorId();
-                                                                                                {if (true) return new FormalParameter(id, t);}
-    throw new Error("Missing return statement in function");
+    return new FormalParameter(id, t);
   }
 
 /** Not implemented. 
@@ -1256,8 +1233,7 @@ void ConstructorDeclaration() :
     cond.setIdentifier(ider);
     cond.setParameters(params);
     cond.setBlock(block);
-    {if (true) return cond;}
-    throw new Error("Missing return statement in function");
+    return cond;
   }
 
 /** Not implemented. */
@@ -1362,12 +1338,10 @@ void ConstructorDeclaration() :
       jj_consume_token(LBRACKET);
       jj_consume_token(RBRACKET);
     }
-    {if (true) return t;}
-    throw new Error("Missing return statement in function");
+    return t;
   }
 
   final public Type TypeName() throws ParseException {
-    Type t;
     StringBuffer sb;
     jj_consume_token(IDENTIFIER);
                    sb = new StringBuffer(getToken(0).image);
@@ -1383,10 +1357,9 @@ void ConstructorDeclaration() :
       }
       jj_consume_token(DOT);
       jj_consume_token(IDENTIFIER);
-                                                                                                 sb.append('.'); sb.append(getToken(0).image);
+      sb.append('.'); sb.append(getToken(0).image);
     }
-        {if (true) return Types.getType(sb.toString());}
-    throw new Error("Missing return statement in function");
+    return Types.getType(sb.toString());
   }
 
   final public Type PrimitiveType() throws ParseException {
@@ -1420,8 +1393,7 @@ void ConstructorDeclaration() :
       jj_consume_token(-1);
       throw new ParseException();
     }
-      {if (true) return Types.getType(getToken(0).image);}
-    throw new Error("Missing return statement in function");
+    return Types.getType(getToken(0).image);
   }
 
 /**
@@ -1432,8 +1404,7 @@ void ConstructorDeclaration() :
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VOID:
       jj_consume_token(VOID);
-                  {if (true) return Types.getType("void");}
-      break;
+      return Types.getType("void");
     case BOOLEAN:
     case BYTE:
     case CHAR:
@@ -1444,14 +1415,12 @@ void ConstructorDeclaration() :
     case SHORT:
     case IDENTIFIER:
       t = Type();
-                  {if (true) return t;}
-      break;
+      return t;
     default:
       jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    throw new Error("Missing return statement in function");
   }
 
 /**
@@ -1473,8 +1442,7 @@ void ConstructorDeclaration() :
       jj_consume_token(IDENTIFIER);
       sb.append('.'); sb.append(getToken(0).image);
     }
-    {if (true) return sb.toString();}
-    throw new Error("Missing return statement in function");
+    return sb.toString();
   }
 
   final public void NameList() throws ParseException {
@@ -1582,8 +1550,7 @@ void ConstructorDeclaration() :
         throw new ParseException();
       }
     }
-   {if (true) return e;}
-    throw new Error("Missing return statement in function");
+   return e;
   }
 
   final public String AssignmentOperator() throws ParseException {
@@ -1630,8 +1597,8 @@ void ConstructorDeclaration() :
       jj_consume_token(-1);
       throw new ParseException();
     }
-    op = getToken(0).image; {if (true) return op;}
-    throw new Error("Missing return statement in function");
+    op = getToken(0).image; 
+    return op;
   }
 
   final public Expression ObjectProposition() throws ParseException {
@@ -1644,14 +1611,13 @@ void ConstructorDeclaration() :
       jj_consume_token(FRACTION);
       frac = ConditionalExpression();
       pd = ConditionalExpression();
-                                                                  e = new ObjectProposition(e, frac, pd);
+      e = new ObjectProposition(e, frac, pd);
       break;
     default:
       jj_la1[52] = jj_gen;
       ;
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e; 
   }
 
   final public Expression ConditionalExpression() throws ParseException {
@@ -1668,8 +1634,7 @@ void ConstructorDeclaration() :
       jj_la1[53] = jj_gen;
       ;
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression ConditionalOrExpression() throws ParseException {
@@ -1690,8 +1655,7 @@ void ConstructorDeclaration() :
       rhs = ConditionalAndExpression();
          e = new BinaryExpression(e, "||", rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression ConditionalAndExpression() throws ParseException {
@@ -1710,10 +1674,9 @@ void ConstructorDeclaration() :
       }
       jj_consume_token(SC_AND);
       rhs = InclusiveOrExpression();
-                                                                      e = new BinaryExpression(e, "&&", rhs);
+      e = new BinaryExpression(e, "&&", rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression InclusiveOrExpression() throws ParseException {
@@ -1732,10 +1695,9 @@ void ConstructorDeclaration() :
       }
       jj_consume_token(BIT_OR);
       rhs = ExclusiveOrExpression();
-                                                                     e = new BinaryExpression(e, "|", rhs);
+      e = new BinaryExpression(e, "|", rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression ExclusiveOrExpression() throws ParseException {
@@ -1754,10 +1716,9 @@ void ConstructorDeclaration() :
       }
       jj_consume_token(XOR);
       rhs = AndExpression();
-                                                     e = new BinaryExpression(e, "^", rhs);
+      e = new BinaryExpression(e, "^", rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression AndExpression() throws ParseException {
@@ -1776,10 +1737,10 @@ void ConstructorDeclaration() :
       }
       jj_consume_token(BIT_AND);
       rhs = EqualityExpression();
-                                                               e = new BinaryExpression(e, "&", rhs);
+      e = new BinaryExpression(e, "&", rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
+    
   }
 
   final public Expression EqualityExpression() throws ParseException {
@@ -1810,12 +1771,11 @@ void ConstructorDeclaration() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                 op = getToken(0).image;
+      op = getToken(0).image;
       rhs = InstanceOfExpression();
-                                                                                                           e = new BinaryExpression(e, op, rhs);
+      e = new BinaryExpression(e, op, rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression InstanceOfExpression() throws ParseException {
@@ -1825,14 +1785,13 @@ void ConstructorDeclaration() :
     case INSTANCEOF:
       jj_consume_token(INSTANCEOF);
       Type();
-                                                      e = new BinaryExpression(e, "instanceof", null);
+      e = new BinaryExpression(e, "instanceof", null);
       break;
     default:
       jj_la1[61] = jj_gen;
       ;
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
 //This also include Key Access Expression "->"
@@ -1876,12 +1835,11 @@ void ConstructorDeclaration() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                               op = getToken(0).image;
+      op = getToken(0).image;
       rhs = ShiftExpression();
-                                                                                                                    e = new BinaryExpression(e, op, rhs);
+      e = new BinaryExpression(e, op, rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression ShiftExpression() throws ParseException {
@@ -1916,12 +1874,11 @@ void ConstructorDeclaration() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                       op = getToken(0).image;
+      op = getToken(0).image;
       rhs = AdditiveExpression();
-                                                                                                               e = new BinaryExpression(e, op, rhs);
+      e = new BinaryExpression(e, op, rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression AdditiveExpression() throws ParseException {
@@ -1952,12 +1909,11 @@ void ConstructorDeclaration() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                   op = getToken(0).image;
+      op = getToken(0).image;
       rhs = MultiplicativeExpression();
-                                                                                                                 e = new BinaryExpression(e, op, rhs);
+      e = new BinaryExpression(e, op, rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression MultiplicativeExpression() throws ParseException {
@@ -1996,8 +1952,7 @@ void ConstructorDeclaration() :
       rhs = UnaryExpression();
                                                                                                      e = new BinaryExpression(e, op, rhs);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression UnaryExpression() throws ParseException {
@@ -2020,7 +1975,7 @@ void ConstructorDeclaration() :
       }
                   op = getToken(0).image;
       e = UnaryExpression();
-                                                                    e = new UnaryExpression(e, op, false);
+      e = new UnaryExpression(e, op, false);
       break;
     case INCR:
       e = PreIncrementExpression();
@@ -2058,26 +2013,23 @@ void ConstructorDeclaration() :
       jj_consume_token(-1);
       throw new ParseException();
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression PreIncrementExpression() throws ParseException {
     Expression e = null;
     jj_consume_token(INCR);
     e = PrimaryExpression();
-                                 e = new UnaryExpression(e, "++", false);
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    e = new UnaryExpression(e, "++", false);
+    return e;
   }
 
   final public Expression PreDecrementExpression() throws ParseException {
     Expression e = null;
     jj_consume_token(DECR);
     e = PrimaryExpression();
-                                 e = new UnaryExpression(e, "--", false);
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    e = new UnaryExpression(e, "--", false);
+    return e;
   }
 
   final public Expression UnaryExpressionNotPlusMinus() throws ParseException {
@@ -2138,8 +2090,7 @@ void ConstructorDeclaration() :
         }
       }
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
 // This production is to determine lookahead only.  The LOOKAHEAD specifications
@@ -2230,8 +2181,7 @@ void ConstructorDeclaration() :
       jj_la1[78] = jj_gen;
       ;
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public Expression CastExpression() throws ParseException {
@@ -2256,8 +2206,7 @@ void ConstructorDeclaration() :
         throw new ParseException();
       }
     }
-    {if (true) return new CastExpression(t, e);}
-    throw new Error("Missing return statement in function");
+    return new CastExpression(t, e);
   }
 
   final public Expression PrimaryExpression() throws ParseException {
@@ -2273,8 +2222,7 @@ void ConstructorDeclaration() :
       }
       PrimarySuffix(e);
     }
-    {if (true) return e;}
-    throw new Error("Missing return statement in function");
+    return e;
   }
 
   final public void PrimaryPrefix(PrimaryExpression pe) throws ParseException {
@@ -2300,8 +2248,7 @@ void ConstructorDeclaration() :
       jj_consume_token(SUPER);
       jj_consume_token(DOT);
       jj_consume_token(IDENTIFIER);
-                              {if (true) throw new ParseException("\u005c"super\u005c" not supprted");}
-      break;
+      throw new ParseException("\u005c"super\u005c" not supprted");
     case LPAREN:
       jj_consume_token(LPAREN);
       e = Expression();
@@ -2416,59 +2363,48 @@ void ConstructorDeclaration() :
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER_LITERAL:
       jj_consume_token(INTEGER_LITERAL);
-                              {if (true) return new LiteralExpression(parseIntegerLiteral(getToken(0)));}
-      break;
+      return new LiteralExpression(parseIntegerLiteral(getToken(0)));
     case FLOATING_POINT_LITERAL:
       jj_consume_token(FLOATING_POINT_LITERAL);
-                              {if (true) return new LiteralExpression(parseFPLiteral(getToken(0)));}
-      break;
+      return new LiteralExpression(parseFPLiteral(getToken(0)));
     case CHARACTER_LITERAL:
       jj_consume_token(CHARACTER_LITERAL);
-                              {if (true) return new LiteralExpression(new Character(getToken(0).image.charAt(1)));}
-      break;
+      return new LiteralExpression(new Character(getToken(0).image.charAt(1)));
     case STRING_LITERAL:
       jj_consume_token(STRING_LITERAL);
-                              {if (true) return new LiteralExpression(parseStringLiteral(getToken(0)));}
-      break;
+      return new LiteralExpression(parseStringLiteral(getToken(0)));
     case FALSE:
     case TRUE:
       e = BooleanLiteral();
-                              {if (true) return e;}
-      break;
+      return e;
     case NULL:
       e = NullLiteral();
-                              {if (true) return e;}
-      break;
+      return e;
     default:
       jj_la1[84] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    throw new Error("Missing return statement in function");
   }
 
   final public Expression BooleanLiteral() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TRUE:
       jj_consume_token(TRUE);
-                  {if (true) return new LiteralExpression(Boolean.TRUE);}
-      break;
+      return new LiteralExpression(Boolean.TRUE);
     case FALSE:
       jj_consume_token(FALSE);
-                  {if (true) return new LiteralExpression(Boolean.FALSE);}
-      break;
+      return new LiteralExpression(Boolean.FALSE);
     default:
       jj_la1[85] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    throw new Error("Missing return statement in function");
   }
 
   final public Expression NullLiteral() throws ParseException {
     jj_consume_token(NULL);
-           {if (true) return new KeywordExpression(null, Types.getType("Object"));}
-    throw new Error("Missing return statement in function");
+    return new KeywordExpression(null, Types.getType("Object"));
   }
 
   final public ArgumentList Arguments() throws ParseException {
@@ -2519,7 +2455,7 @@ void ConstructorDeclaration() :
         }
         jj_consume_token(COMMA);
         a = Expression();
-                                                                 al.add(a);
+        al.add(a);
       }
       break;
     default:
@@ -2527,8 +2463,7 @@ void ConstructorDeclaration() :
       ;
     }
     jj_consume_token(RPAREN);
-    {if (true) return al;}
-    throw new Error("Missing return statement in function");
+    return al;
   }
 
   final public Expression AllocationExpression() throws ParseException {
@@ -2553,8 +2488,7 @@ void ConstructorDeclaration() :
           p = Name();
           jj_consume_token(RPAREN);
           e = Arguments();
-                        {if (true) return new AllocationExpression(n, p, e);}
-          break;
+          return new AllocationExpression(n, p, e);
         default:
           jj_la1[88] = jj_gen;
           jj_consume_token(-1);
@@ -2567,8 +2501,7 @@ void ConstructorDeclaration() :
         throw new ParseException();
       }
     }
-      {if (true) throw new NotImplementedException("new");}
-    throw new Error("Missing return statement in function");
+    throw new NotImplementedException("new");
   }
 
 /*
@@ -2704,8 +2637,7 @@ void ConstructorDeclaration() :
         throw new ParseException();
       }
     }
-   {if (true) return s;}
-    throw new Error("Missing return statement in function");
+   return s;
   }
 
   final public void LabeledStatement() throws ParseException {
@@ -2770,8 +2702,7 @@ void ConstructorDeclaration() :
                                b.add(s);
     }
     jj_consume_token(RBRACE);
-    {if (true) return b;}
-    throw new Error("Missing return statement in function");
+    return b;
   }
 
   final public Statement BlockStatement() throws ParseException {
@@ -2855,8 +2786,7 @@ void ConstructorDeclaration() :
         throw new ParseException();
       }
     }
-   {if (true) return s;}
-    throw new Error("Missing return statement in function");
+   return s;
   }
 
 /*
@@ -2879,8 +2809,7 @@ void LocalVariableDeclaration() :
     }
     type = Type();
     id = VariableDeclaratorId();
-        {if (true) return new LocalVariableDeclaration(id, type);}
-    throw new Error("Missing return statement in function");
+    return new LocalVariableDeclaration(id, type);
   }
 
   final public void EmptyStatement() throws ParseException {
@@ -2977,8 +2906,7 @@ void LocalVariableDeclaration() :
       jj_consume_token(-1);
       throw new ParseException();
     }
-    {if (true) return new StatementExpression(e);}
-    throw new Error("Missing return statement in function");
+    return new StatementExpression(e);
   }
 
   final public void SwitchStatement() throws ParseException {
@@ -3094,9 +3022,7 @@ void LocalVariableDeclaration() :
       s.setExpression(e);
       s.setThenClause(thenClause);
       s.setElseClause(elseClause);
-
-      {if (true) return s;}
-    throw new Error("Missing return statement in function");
+      return s;
   }
 
   final public WhileStatement WhileStatement() throws ParseException {
@@ -3112,8 +3038,7 @@ void LocalVariableDeclaration() :
       s.setExpression(e);
       s.setDoClause(doClause);
 
-      {if (true) return s;}
-    throw new Error("Missing return statement in function");
+      return s;
   }
 
   final public void DoStatement() throws ParseException {
@@ -3232,8 +3157,7 @@ void LocalVariableDeclaration() :
     }
     jj_consume_token(RPAREN);
     s3 = Statement();
-    {if (true) return new ForStatement(s1, exp, s2, s3);}
-    throw new Error("Missing return statement in function");
+    return new ForStatement(s1, exp, s2, s3);
   }
 
 /*
@@ -3289,8 +3213,7 @@ void ForInit() :
         throw new ParseException();
       }
     }
-    {if (true) return s;}
-    throw new Error("Missing return statement in function");
+    return s;
   }
 
   final public void StatementExpressionList() throws ParseException {
@@ -3320,8 +3243,7 @@ void ForUpdate() :
   final public Statement ForUpdate() throws ParseException {
   Statement s;
     s = StatementExpression();
-    {if (true) return s;}
-    throw new Error("Missing return statement in function");
+    return s;
   }
 
   final public void BreakStatement() throws ParseException {
@@ -3391,8 +3313,8 @@ void ForUpdate() :
       ;
     }
     jj_consume_token(SEMICOLON);
-                                       s = new ReturnStatement(e); {if (true) return s;}
-    throw new Error("Missing return statement in function");
+    s = new ReturnStatement(e); 
+    return s;
   }
 
   final public void ThrowStatement() throws ParseException {
@@ -5517,7 +5439,12 @@ void ForUpdate() :
     throw generateParseException();
   }
 
-  static private final class LookaheadSuccess extends java.lang.Error { }
+  static private final class LookaheadSuccess extends java.lang.Error {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; }
   final private LookaheadSuccess jj_ls = new LookaheadSuccess();
   private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {

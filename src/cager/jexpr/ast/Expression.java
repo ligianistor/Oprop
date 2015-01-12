@@ -2,9 +2,6 @@ package cager.jexpr.ast;
 
 import java.io.BufferedWriter;
 
-import cager.jexpr.ParseException;
-import cager.jexpr.visitor.Visitor;
-
 /**
 *   An abstract AST class to represent a generic expression. Could be a
 * binary expression, unary expression, cast expression etc.

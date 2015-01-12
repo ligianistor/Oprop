@@ -4,11 +4,7 @@
 
 package cager.jexpr.ast;
 
-import org.apache.bcel.generic.Type;
-
 import java.io.BufferedWriter;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 

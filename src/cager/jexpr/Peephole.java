@@ -1,6 +1,5 @@
 package cager.jexpr;
 
-import java.io.*;
 import java.util.Iterator;
 import org.apache.bcel.classfile.*;
 import org.apache.bcel.generic.*;
@@ -55,18 +54,16 @@ public class Peephole {
 
     InstructionFinder f     = new InstructionFinder(il);
     String            pat   = "IfInstruction ICONST_0 GOTO ICONST_1 NOP (IFEQ|IFNE)";
-    InstructionHandle next  = null;
     int               count = 0;
 
     for(Iterator it = f.search(pat, constraint); it.hasNext(); )
     {
       InstructionHandle[] match = (InstructionHandle[])it.next();
-      InstructionHandle   first = match[0];
       InstructionHandle   last  = match[match.length - 1];
 
       /* Some nasty Java compilers may add NOP at end of method.
        */
-      if((next = last.getNext()) == null)
+      if(last.getNext() == null)
         break;
 
       count++;

@@ -1,15 +1,10 @@
 package cager.jexpr.visitor;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
 import cager.jexpr.*;
 import cager.jexpr.ast.*;
 
 import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.BranchInstruction;
 import org.apache.bcel.generic.ClassGen;
 import org.apache.bcel.generic.CompoundInstruction;
@@ -247,7 +242,6 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
     public void visitLiteralExpression(LiteralExpression ast) throws ParseException
     {
         Object v = ast.getValue();
-        Type t = ast.getType();
         CompoundInstruction i;
 
         if (v instanceof Boolean)
@@ -276,7 +270,6 @@ public class CodeGenVisitor extends NullVisitor implements org.apache.bcel.Const
         // this, super and null.
 
         Object v = ast.getValue();
-        Type t = ast.getType();
         Instruction i;
 
         if (v == null)

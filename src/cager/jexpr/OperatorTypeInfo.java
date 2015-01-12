@@ -1,7 +1,6 @@
 package cager.jexpr;
 
 import org.apache.bcel.generic.Type;
-import org.apache.bcel.Constants;
 
 /**
  * Information about an operation's <I>result type</I>.

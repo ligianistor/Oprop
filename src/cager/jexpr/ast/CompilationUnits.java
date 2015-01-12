@@ -8,8 +8,6 @@ import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.bcel.generic.Type;
-
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
