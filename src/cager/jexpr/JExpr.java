@@ -2242,7 +2242,7 @@ void ConstructorDeclaration() :
       break;
     case THIS:
       jj_consume_token(THIS);
-           pe.add(new KeywordExpression("this", null));
+      pe.add(new KeywordExpression("this", null));
       break;
     case SUPER:
       jj_consume_token(SUPER);
@@ -2253,7 +2253,7 @@ void ConstructorDeclaration() :
       jj_consume_token(LPAREN);
       e = Expression();
       jj_consume_token(RPAREN);
-                              pe.add(e);
+      pe.add(e);
       break;
     case NEW:
       e = AllocationExpression();
@@ -2266,12 +2266,13 @@ void ConstructorDeclaration() :
         ResultType();
         jj_consume_token(DOT);
         jj_consume_token(CLASS);
-                              {if (true) throw new ParseException("Not done ResultType().class");}
+        throw new ParseException("Not done ResultType().class");
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
           jj_consume_token(IDENTIFIER);
-                   e = new IdentifierExpression(getToken(0).image); { pe.add(e);}
+          e = new IdentifierExpression(getToken(0).image); 
+          pe.add(e);
           label_30:
           while (true) {
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2290,14 +2291,15 @@ void ConstructorDeclaration() :
             if (jj_ntk == -1) jj_ntk();
             
             if (jj_ntk == LPAREN) {
-            	MethodSelection ms = new MethodSelection(new Identifier(getToken(0).image)); { pe.add(ms);}
-            	
+            	MethodSelection ms = new MethodSelection(new Identifier(getToken(0).image));
+            	pe.add(ms);
             	el = Arguments();
                 ms.add(el); /* lnistor */        	
             }
             else {
             	
-            	e = new FieldSelection(new Identifier(getToken(0).image)); { pe.add(e);}
+            	e = new FieldSelection(new Identifier(getToken(0).image)); 
+            	pe.add(e);
                 
             }
             }
@@ -2466,10 +2468,12 @@ void ConstructorDeclaration() :
     return al;
   }
 
+  //TODO modify this
   final public Expression AllocationExpression() throws ParseException {
     String n = null;
     String p = null;
     Expression e = null;
+    Expression predicateArgs = null;
     if (jj_2_25(2)) {
       jj_consume_token(NEW);
       PrimitiveType();
@@ -2485,10 +2489,17 @@ void ConstructorDeclaration() :
           break;
         case LPAREN:
           jj_consume_token(LPAREN);
+          //This name is the name of the predicate invariant.
           p = Name();
+          
+          //These are the arguments of the predicate.
+          predicateArgs = Arguments();
           jj_consume_token(RPAREN);
           e = Arguments();
-          return new AllocationExpression(n, p, e);
+          AllocationExpression allocExpr = new AllocationExpression(n, p);
+          allocExpr.addPredicateArgs(predicateArgs);
+          allocExpr.addNewArgs(e);
+          return allocExpr;
         default:
           jj_la1[88] = jj_gen;
           jj_consume_token(-1);

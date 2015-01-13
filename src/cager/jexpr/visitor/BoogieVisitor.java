@@ -897,10 +897,7 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitFormalParameter(FormalParameter ast ) throws ParseException
     {
-    	
-    	
         visitChildren(ast);
-
     }
     
     public void visitAllocationExpression(AllocationExpression ast ) throws ParseException

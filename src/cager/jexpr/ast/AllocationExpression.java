@@ -9,26 +9,52 @@ public class AllocationExpression extends Expression
 {
 	private String alloc_func;
 	private String predicate;
-	private Expression body;
+	private Expression[] children = new Expression[2];
 	
-    public AllocationExpression(String alloc, String predicate, Expression body)
+    public AllocationExpression(
+    		String alloc, 
+    		String predicate
+    )
     {
     	this.alloc_func = alloc;
     	this.predicate = predicate;
-        this.body = body;
-    }
-   
-    public AST[] getChildren()
-    {
-        return new AST[] { body };
     }
     
+    public void addPredicateArgs(Expression e)
+    {
+        children[0] = e;
+    }
+    
+    public void addNewArgs(Expression e)
+    {
+        children[1] = e;
+    }
+    
+    public AST[] getChildren()
+    {
+        if (children == null)
+        {
+            children = new Expression[] { };
+        }
+
+        return children;
+    }
+       
     public String getAlloc_func() {
     	return alloc_func;
     }
 
     public String getPredicate() {
     	return predicate;
+    }
+    
+    public Expression getPredicateArgs()
+    {
+        return children[0];
+    }
+    
+    public Expression getNewArgs() {
+    	return children[1];
     }
     
     public void accept(Visitor v) throws ParseException
