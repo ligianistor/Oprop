@@ -327,15 +327,16 @@ public class BoogieVisitor extends NullVisitor {
     { 
     	namePredicate = ast.getIdentifier().getName();
     	predicates.add(namePredicate);
-    	
-    			try {
-    			    	predicateBody.put(namePredicate, "");
-    			    	
-    			    	visitChildren(ast ); 
-    				}
-    			catch (Exception e) {
-    						System.err.println("Error: " + e.getMessage());
-    			}   	
+    	predicateBody.put(namePredicate, "");
+    	AST[] children = ast.getChildren();
+    	//Visit formal parameters.
+    	children[0].accept(this);
+    	//TODO
+    	//need to take care of formal parameters
+    	//might need to change how predicateBody is represented
+    	//Visit expression.
+    	children[1].accept(this);
+	
     }
     
     public void visitQuantifierVariable(QuantifierVariable ast ) throws ParseException
@@ -376,6 +377,7 @@ public class BoogieVisitor extends NullVisitor {
      		//need to do more processing of the predBody
      		//TODO
      		int i=0;
+     		System.out.println("XXX" + predBodyUnprocessed+ " " + currentNamePred);
      		while (predBodyUnprocessed.charAt(i)=='&') i++;
      		String predBody = predBodyUnprocessed.substring(i);
      		
