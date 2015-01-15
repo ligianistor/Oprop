@@ -25,6 +25,7 @@ import cager.jexpr.ast.Expression;
 import cager.jexpr.ast.FieldAndTypePair;
 import cager.jexpr.ast.FieldDeclaration;
 import cager.jexpr.ast.FieldSelection;
+import cager.jexpr.ast.FieldTypePredbody;
 import cager.jexpr.ast.FormalParameter;
 import cager.jexpr.ast.FormalParameters;
 import cager.jexpr.ast.IdentifierExpression;
@@ -82,7 +83,7 @@ public class BoogieVisitor extends NullVisitor {
 			new HashMap<String, LinkedList<PackObjMods>>();
 	
 	//For each predicate name, this maps it to its body represented as a String.
-	HashMap<String, String> predicateBody = new HashMap<String, String>();
+	HashMap<String, FieldTypePredbody> paramsPredicateBody = new HashMap<String, FieldTypePredbody>();
 	
 	//This maps each method name to its String method body.
 	HashMap<String, String> methodBody = new HashMap<String, String>();
@@ -327,13 +328,12 @@ public class BoogieVisitor extends NullVisitor {
     { 
     	namePredicate = ast.getIdentifier().getName();
     	predicates.add(namePredicate);
-    	predicateBody.put(namePredicate, "");
+    	paramsPredicateBody.put(namePredicate, new FieldTypePredbody());
     	AST[] children = ast.getChildren();
     	//Visit formal parameters.
     	children[0].accept(this);
     	//TODO
     	//need to take care of formal parameters
-    	//might need to change how predicateBody is represented
     	//Visit expression.
     	children[1].accept(this);
 	
@@ -368,12 +368,13 @@ public class BoogieVisitor extends NullVisitor {
     	//and the ones that pack to predicates.
     	makeConstructors(out);
     	
-    	Iterator<Entry<String, String>> j = predicateBody.entrySet().iterator(); 
-    	
+    	Iterator<Entry<String, FieldTypePredbody>> j = 
+    			paramsPredicateBody.entrySet().iterator(); 
+    
         while(j.hasNext()) {
      	   String currentNamePred = j.next().getKey();
-     	   
-     		String predBodyUnprocessed = predicateBody.get(currentNamePred);
+     	    FieldTypePredbody paramsPred = paramsPredicateBody.get(currentNamePred);
+     		String predBodyUnprocessed = paramsPred.getPredicateBody();
      		//need to do more processing of the predBody
      		//TODO
      		int i=0;
@@ -418,7 +419,7 @@ public class BoogieVisitor extends NullVisitor {
     			
     			// We reset packedMods here.
     			// Before we enter the body of the current method.
-    			Iterator<Entry<String, String>> j = predicateBody.entrySet().iterator(); 
+    			Iterator<Entry<String, FieldTypePredbody>> j = paramsPredicateBody.entrySet().iterator(); 
     	    	
     	        while(j.hasNext()) {
     	     	  String currentNamePred = j.next().getKey();
@@ -537,8 +538,11 @@ public class BoogieVisitor extends NullVisitor {
 		  }
 		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
-    		String currentPredicateBody = predicateBody.get(namePredicate);
-			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName));
+    		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+			paramsPredicateBody.put(
+					namePredicate, 
+					currentParamsPredicateBody.concatToPredicateBody(fieldName)
+			);
 			 			 
     	}
     	visitChildren(ast);
@@ -723,9 +727,13 @@ public class BoogieVisitor extends NullVisitor {
 	    		System.err.println("Error: " + e.getMessage());
 	      }
 		  }
-		  else {			  
-			 String currentPredicateBody = predicateBody.get(namePredicate);
-			 predicateBody.put(namePredicate, currentPredicateBody.concat(operatorSymbol));
+		  else {		
+			  FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+			  paramsPredicateBody.put(
+					  namePredicate, 
+					  currentParamsPredicateBody.concatToPredicateBody(operatorSymbol)
+			  );
+
 		  }
 		  
 		  children[1].accept(this );
@@ -762,8 +770,11 @@ public class BoogieVisitor extends NullVisitor {
 		  }
 		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
-    		String currentPredicateBody = predicateBody.get(namePredicate);
-			 predicateBody.put(namePredicate, currentPredicateBody.concat(astvalue));
+    		  FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+			  paramsPredicateBody.put(
+					  namePredicate, 
+					  currentParamsPredicateBody.concatToPredicateBody(astvalue)
+			  );
     	}
     	
     	visitChildren(ast); }
@@ -887,10 +898,8 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitFormalParameters(FormalParameters ast) throws ParseException 
   		  { 
-    	   	
-    	visitChildren(ast ); 
-    	
-    	
+    	  	
+    	visitChildren(ast);
     	if (currentMethod != "") {
     		modifyMethodParams(")\n"); 
         	}
@@ -899,7 +908,14 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitFormalParameter(FormalParameter ast ) throws ParseException
     {
-        visitChildren(ast);
+    	if (ast!=null) {
+    		String name = ast.getName();
+    		String type = ast.getType().toString();
+    	
+    		modifyFormalParams(name, type); 
+    		//I don't think this node has any children.
+    		visitChildren(ast);
+    	}
     }
     
     public void visitAllocationExpression(AllocationExpression ast ) throws ParseException
@@ -1009,16 +1025,22 @@ public class BoogieVisitor extends NullVisitor {
        }
        
        else {
+    	   
     	   //we are inside a predicate
-    	   String currentPredicateBody = predicateBody.get(namePredicate);
-    	 
+			  
+		   FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+    	      	 
     	   if (!(fieldName == null)) {
     	   
     	   if (insideObjectProposition) {
 				  objectPropString = objectPropString.concat(identifierName);
 			  }
      	   if (!insideObjectProposition) {
-			 predicateBody.put(namePredicate, currentPredicateBody.concat(fieldName+ "[this]"));
+     		   
+     		  paramsPredicateBody.put(
+					  namePredicate, 
+					  currentParamsPredicateBody.concatToPredicateBody(fieldName+ "[this]")
+			  );
      	   }
     	   }
     	   else {
@@ -1026,7 +1048,11 @@ public class BoogieVisitor extends NullVisitor {
  				  objectPropString = objectPropString.concat(identifierName);
  			  }
      	   else {
-     	   predicateBody.put(namePredicate, currentPredicateBody.concat(identifierName));
+     		  paramsPredicateBody.put(
+					  namePredicate, 
+					  currentParamsPredicateBody.concatToPredicateBody(identifierName)
+			  );
+     		   
      	   }
     	   }
        }
@@ -1189,9 +1215,19 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     public void modifyPredicateBody(String s) {
-    	String currentPredicateBody = predicateBody.get(namePredicate);
-    	currentPredicateBody = currentPredicateBody.concat(s);
-    	predicateBody.put(namePredicate, currentPredicateBody);
+		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+		paramsPredicateBody.put(
+				namePredicate, 
+				currentParamsPredicateBody.concatToPredicateBody(s)
+		);
+    }
+    
+    public void modifyFormalParams(String name, String type) {
+		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+		paramsPredicateBody.put(
+				namePredicate, 
+				currentParamsPredicateBody.addParam(name, type)
+		);
     }
         
     public void modifyMethodSpec(String s) {
@@ -1356,11 +1392,12 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<ObjPropString> result = new LinkedList<ObjPropString>();
     	// We assume that haveFrac < needFrac.
     	// We need to check for this before entering this function.
-    	Iterator<Entry<String, String>> it = predicateBody.entrySet().iterator();
+    	Iterator<Entry<String, FieldTypePredbody>> it = paramsPredicateBody.entrySet().iterator();
     	String iterPredicateName = "";
         while (it.hasNext()) {
-        	Entry<String, String> pairs = (Entry<String, String>)it.next();
-        	String iterPredicateBody = pairs.getValue();
+        	Entry<String, FieldTypePredbody> pairs = (Entry<String, FieldTypePredbody>)it.next();
+        	FieldTypePredbody iterParamsPredicateBody = pairs.getValue();
+        	String iterPredicateBody = iterParamsPredicateBody.getPredicateBody();
         	//I'm not sure if this should use toLowerCase or not.
         	//It shouldn't, after I fix everything about the name of the predicates.
         	if (iterPredicateBody.toLowerCase().contains("frac" + namePredicate0.toLowerCase())) {

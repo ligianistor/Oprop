@@ -15,30 +15,14 @@ class Link {
     	&& v >= x && v <= y &&
     	((o#1 UniRange(x,y)) || o == null)
     
-    void add(int z)
+    void add()
     int x, int y: //SpecExpression with list of declaration
     requires x < y && (this#1 UniRange(x,y))
-    ensures (this#1 UniRange(x+z,y+z))
+    ensures (this#1 UniRange(x,y))
     {
-    	this.val = this.val + z;
+    	this.val = this.val;
     	if (this.next != null) 
-    	  {this.next.add(z);}
+    	  {this.next.add(1);}
     }
-  
-    void addModulo11(int x)
-    int k: //int k 
-    requires (this#k Range(0,10))
-    ensures (this#k Range(0,10))
-    {
-    	this.val = (this.val + x)%11;
-    	if (this.next != null) 
-    	   {this.next.addModulo11(x);}
-    }
-    
-    void main() {
-		Link l1 = new Link(Range(0,10))(3, null);
-		Link l2 = new Link(Range(0,10))(4, l1);
-		Link l3 = new Link(Range(0,10))(5, l2);
-		l3.addModulo11(20);
-	}
+ 
 }
