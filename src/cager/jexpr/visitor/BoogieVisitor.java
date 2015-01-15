@@ -1224,10 +1224,13 @@ public class BoogieVisitor extends NullVisitor {
     
     public void modifyFormalParams(String name, String type) {
 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+		if (currentParamsPredicateBody != null) {
 		paramsPredicateBody.put(
 				namePredicate, 
 				currentParamsPredicateBody.addParam(name, type)
 		);
+		} 
+		//TODO else
     }
         
     public void modifyMethodSpec(String s) {
