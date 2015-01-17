@@ -66,6 +66,8 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
+	boolean methodContainsModulo = false;
+	
 	//Does this primary expression contain a methodSelection?
 	//Are we inside a method selection statement?
 	boolean inMethodSelectionStatement = false;
@@ -349,6 +351,7 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
     {    	
+    	methodContainsModulo = false;
     	fieldsInMethod = new TreeSet<String> (); 
     	Gamma.clear();
   	
@@ -495,8 +498,31 @@ public class BoogieVisitor extends NullVisitor {
 		        	out.write(ensuresForall+"\n");
 		            //it.remove(); avoids a ConcurrentModificationException
 		        }
+		        
+				//write here the function for modulo, if modulo was found in the 
+				//body of the procedure.
+		        //It is OK for modulo to be added after it was used in the procedure.
+		        
+		        //TODO Need to add the modulo function if it is used in a predicate too.
+				
+				if (methodContainsModulo){
+					//add the modulo function to the Beginning of this method
+					String moduloTranslation = "function modulo(x:int, y:int) returns (int); \n" +
+					"axiom (forall x:int, y:int :: {modulo(x,y)}\n" +
+				    "\t ((0 <= x) &&(0 < y) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < y) )\n" +
+				    "\t&&\n" +
+				    "\t((0 <= x) &&(y < 0) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < -y) )\n" +
+				    "\t&&\n" +
+				    "\t((x <= 0) &&(0 < y) ==> (-y <= modulo(x,y) ) && (modulo(x,y) <= 0) )\n" +
+				    "\t&&\n" +
+				    "\t((x <= 0) &&(y < 0) ==> (y <= modulo(x,y) ) && (modulo(x,y) <= 0) )\n" +
+				   "\t);\n\n";
+					modifyMethodBody(moduloTranslation);
+				}
 				
 				out.write(methodBody.get(currentMethod));
+				
+
 							
 			}
 		catch (Exception e) {
@@ -698,46 +724,69 @@ public class BoogieVisitor extends NullVisitor {
     		helperBinaryExpression(ast , ":=");
     		return;
     	}
+    	
+    	//This is for modulo == REM 
+    	if (ast.op.getId() == JExprConstants.REM){
+    		methodContainsModulo = true;
+    		//The , is like the operator that gets put between operand 1 and 2.
+    		helperBinaryExpression(ast, ",");
+    		return;
+    	}
     	    		
     	helperBinaryExpression(ast , ast.op.getName());
     	return;
     		
     }
     
+    //TODO
+    //many of the functions in this file don't need to be public
+    void concatToStatementObjProp(String symbol) {
+    	if (namePredicate.equals("")) {
+  		  try{
+  			  if (currentMethod != "") {
+  				  statementContent = statementContent.concat(symbol);
+  			  }
+  			  else {
+  				  if (insideObjectProposition) {
+  					  objectPropString = objectPropString.concat(symbol);
+  				  }
+  				  else {
+  				  out.write(symbol);
+  				  }
+  			  }
+  		  }
+  	      catch (Exception e) {
+  	    		System.err.println("Error: " + e.getMessage());
+  	      }
+  		  }
+  		  else {		
+  			  FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+  			  paramsPredicateBody.put(
+  					  namePredicate, 
+  					  currentParamsPredicateBody.concatToPredicateBody(symbol)
+  			  );
+
+  		  }
+    }
+    
     public void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException
     {
     	int initialStatementLength = statementContent.length();
+    	if (operatorSymbol == ",") {
+    		//TODO this is a modulo binary expression
+    		concatToStatementObjProp("modulo(");
+    	}
     	AST[] children = ast.getChildren();
 		  children[0].accept(this );
-		  if (namePredicate.equals("")) {
-		  try{
-			  if (currentMethod != "") {
-				  statementContent = statementContent.concat(operatorSymbol);
-			  }
-			  else {
-				  if (insideObjectProposition) {
-					  objectPropString = objectPropString.concat(operatorSymbol);
-				  }
-				  else {
-				  out.write(operatorSymbol);
-				  }
-			  }
-		  }
-	      catch (Exception e) {
-	    		System.err.println("Error: " + e.getMessage());
-	      }
-		  }
-		  else {		
-			  FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
-			  paramsPredicateBody.put(
-					  namePredicate, 
-					  currentParamsPredicateBody.concatToPredicateBody(operatorSymbol)
-			  );
-
-		  }
-		  
+		  concatToStatementObjProp(operatorSymbol);
 		  children[1].accept(this );
 		  
+	    	if (operatorSymbol == ",") {
+	    		//TODO this is a modulo binary expression
+	    		concatToStatementObjProp(")");
+	    	}
+		  
+		  //TODO needs comment for this code
 		  if (!namePredicate.equals("")) {
 			  Set<String> operatorSet = new HashSet<String>();
 			  operatorSet.add("==");
@@ -752,7 +801,7 @@ public class BoogieVisitor extends NullVisitor {
 			  } 
 		  }
     }
-        
+      
     public void visitLiteralExpression(LiteralExpression ast )
   		  throws ParseException
   		  { 
