@@ -43,6 +43,7 @@ import cager.jexpr.ast.PredicateDeclaration;
 import cager.jexpr.ast.PrimaryExpression;
 import cager.jexpr.ast.QuantifierVariable;
 import cager.jexpr.ast.ReturnStatement;
+import cager.jexpr.ast.Statement;
 import cager.jexpr.ast.StatementExpression;
 import cager.jexpr.ast.TypedAST;
 import cager.jexpr.ast.UnaryExpression;
@@ -294,10 +295,10 @@ public class BoogieVisitor extends NullVisitor {
     		catch (Exception e) {
     			System.err.println("Error: " + e.getMessage());
     		}
-        visitChildren(ast );
+        visitChildren(ast);
     }
     
-    public void visitFieldDeclaration(FieldDeclaration ast ) throws ParseException 
+    public void visitFieldDeclaration(FieldDeclaration ast) throws ParseException 
     { 
     	String fieldName = ast.getName();
     	
@@ -323,7 +324,7 @@ public class BoogieVisitor extends NullVisitor {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-    	visitChildren(ast );  
+    	visitChildren(ast);  
     	}
     
     public void visitPredicateDeclaration(PredicateDeclaration ast) throws ParseException
@@ -341,15 +342,15 @@ public class BoogieVisitor extends NullVisitor {
 	
     }
     
-    public void visitQuantifierVariable(QuantifierVariable ast ) throws ParseException
+    public void visitQuantifierVariable(QuantifierVariable ast) throws ParseException
   	{    	   	    	
-    	visitChildren(ast ); 
+    	visitChildren(ast); 
     }
     
     
  //Since methods are not children of 
  //Predicate, we might not need namePredicate here
-    public void visitMethodDeclaration(MethodDeclaration ast ) throws ParseException
+    public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
     {    	
     	methodContainsModulo = false;
     	fieldsInMethod = new TreeSet<String> (); 
@@ -532,9 +533,9 @@ public class BoogieVisitor extends NullVisitor {
     		isFirstMethod = false;
     }
 
-    public void visitReturnStatement(ReturnStatement ast ) throws ParseException
+    public void visitReturnStatement(ReturnStatement ast) throws ParseException
     {
-        visitChildren(ast );
+        visitChildren(ast);
 
     }
 
@@ -698,7 +699,7 @@ public class BoogieVisitor extends NullVisitor {
     	statementContent = statementContent.substring(0, statementContent.length() - 2); 	
     }
 
-    public void visitBinaryExpression(BinaryExpression ast ) throws ParseException
+    public void visitBinaryExpression(BinaryExpression ast) throws ParseException
     {
     	if (ast.op.getId() == JExprConstants.KEYACCESS){
     		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
@@ -802,7 +803,7 @@ public class BoogieVisitor extends NullVisitor {
 		  }
     }
       
-    public void visitLiteralExpression(LiteralExpression ast )
+    public void visitLiteralExpression(LiteralExpression ast)
   		  throws ParseException
   		  { 
     	String astvalue = ast.value.toString();
@@ -828,7 +829,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	visitChildren(ast); }
     
-    public void visitObjectProposition(ObjectProposition ast ) throws ParseException
+    public void visitObjectProposition(ObjectProposition ast) throws ParseException
     {
     	insideObjectProposition = true;
     	
@@ -917,9 +918,9 @@ public class BoogieVisitor extends NullVisitor {
     }
 
    
-    public void visitUnaryExpression(UnaryExpression ast ) throws ParseException
+    public void visitUnaryExpression(UnaryExpression ast) throws ParseException
     {
-        visitChildren(ast );
+        visitChildren(ast);
     }
 
     public void visitPrimaryExpression(PrimaryExpression ast) throws ParseException
@@ -955,7 +956,7 @@ public class BoogieVisitor extends NullVisitor {
     
     	}
     
-    public void visitFormalParameter(FormalParameter ast ) throws ParseException
+    public void visitFormalParameter(FormalParameter ast) throws ParseException
     {
     	if (ast!=null) {
     		String name = ast.getName();
@@ -967,7 +968,7 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
-    public void visitAllocationExpression(AllocationExpression ast ) throws ParseException
+    public void visitAllocationExpression(AllocationExpression ast) throws ParseException
     {
     	String predicateOfConstruct = ast.getPredicate();
     	
@@ -989,7 +990,7 @@ public class BoogieVisitor extends NullVisitor {
         }
     }
     
-    public void visitDeclarationStatement(DeclarationStatement ast ) 
+    public void visitDeclarationStatement(DeclarationStatement ast) 
   		  throws ParseException 
   		  { 
     	
@@ -1018,25 +1019,52 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast);
       }
     
-    public void visitKeywordExpression(KeywordExpression ast ) throws ParseException
+    public void visitKeywordExpression(KeywordExpression ast) throws ParseException
     { 
-    	if (insideObjectProposition) {
-			  objectPropString = objectPropString.concat(ast.getValue() + "");
-		  }
-		  else {
-			  try {
-				  //this is where the error is
-				  //seems like keyword is only this
-			  //out.write(ast.getValue() + "XCXCX");
-			  }
-			  catch (Exception e) {
-		    		System.err.println("Error: " + e.getMessage());
-		      }
-			  
-		  }
-    	visitChildren(ast );
-
+    	String keywordString;
+    	Object value= ast.getValue();
+    	if (value == null) {
+    		//If it is null, it means the keyword null was encountered.
+    		keywordString = "null";
+    	}
+    	else {
+    		keywordString = value.toString();
+    	}
+    		
+        if (namePredicate.equals("")) {
+        	System.out.println("inside predicate");
+     	   //we are not inside a predicate
+     		   
+     		   if ((currentMethod != "") && (inArgumentList)) {
+     			   modifyMethodBody(keywordString + ",");
+     		   }
+     		   
+     		   if ((currentMethod != "") && (inStatement) && 
+     			   !inArgumentList && !inMethodSelectionStatement ) {
+     				  statementContent = statementContent.concat(keywordString);
+     			  }
+     		   
+     			   //modify object proposition parts
+     		   if (insideObjectProposition) {
+     			   objectPropString = objectPropString.concat(keywordString);
+     				  }	
+        }
+        else { 
+     	   //we are inside a predicate	  
+ 		   FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+     	      	 
+     		   if (insideObjectProposition) {
+  				  objectPropString = objectPropString.concat(keywordString);
+  			  }
+      	   else {
+      		  paramsPredicateBody.put(
+ 					  namePredicate, 
+ 					  currentParamsPredicateBody.concatToPredicateBody(keywordString)
+ 			  );
+      		   
+      	   }
     }
+}
  
     public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {    	
@@ -1113,16 +1141,31 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast);
     }
     
-    public void visitIfStatement(IfStatement ast ) throws ParseException
+    public void visitIfStatement(IfStatement ast) throws ParseException
     {
-        visitChildren(ast );
+    	//if then is a call method, there are problem, it deleted the if
+    	//TODO
+    	//An if statements can be only inside a method statement.
+    	AST[] children = ast.getChildren();
+    	int size = children.length;
+    	statementContent = statementContent.concat("if (");
+    	children[0].accept(this);
 
+    	statementContent = statementContent.concat(") {\n");
+    	children[1].accept(this);
+    	statementContent = statementContent.concat("}\n");
+
+    	if (size == 3) { 
+        	statementContent = statementContent.concat("else {\n");
+        	children[2].accept(this);
+        	statementContent = statementContent.concat("};\n");
+    	}
     }
     
-    public void visitStatementExpression(StatementExpression ast )
+    public void visitStatementExpression(StatementExpression ast)
   		  throws ParseException
   		  { inStatement = true;
-    		visitChildren(ast );
+    		visitChildren(ast);
     		try {
     			if (currentMethod != "") {
     				statementContent = statementContent.concat(";\n");
@@ -1137,19 +1180,19 @@ public class BoogieVisitor extends NullVisitor {
     		inStatement = false;
   		  }
     
-    public void visitMethodSpecVariable(MethodSpecVariable ast ) 
+    public void visitMethodSpecVariable(MethodSpecVariable ast) 
   		  throws ParseException 
   		  {
-    	visitChildren(ast ); 
+    	visitChildren(ast); 
     	}
     
-    public void visitMethodSpecVariables(MethodSpecVariables ast )
+    public void visitMethodSpecVariables(MethodSpecVariables ast)
   		  throws ParseException 
   		  { 
-    	visitChildren(ast ); 
+    	visitChildren(ast); 
     	}
     
-    public void visitMethodSpecExpression(MethodSpecExpression ast ) 
+    public void visitMethodSpecExpression(MethodSpecExpression ast) 
   		  throws ParseException 
   		  { 
     	Expression precondition = ast.getPrecondition();
@@ -1172,7 +1215,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	}
     
-    public void visitBlock(Block ast ) 
+    public void visitBlock(Block ast) 
   		  throws ParseException 
   		  { 
     	modifyMethodBody("{\n");
@@ -1216,7 +1259,6 @@ public class BoogieVisitor extends NullVisitor {
     	    else {
     	    	
     	    }
-            
     	    modifyMethodBody(statementContent);
     	  }
     	
@@ -1246,7 +1288,7 @@ public class BoogieVisitor extends NullVisitor {
   		  }
     
     
-    public void visitArgumentList(ArgumentList ast )
+    public void visitArgumentList(ArgumentList ast)
   		  throws ParseException 
   		  {  
     	inArgumentList = true;

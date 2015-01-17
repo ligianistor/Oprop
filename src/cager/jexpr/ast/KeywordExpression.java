@@ -40,7 +40,7 @@ public class KeywordExpression extends Expression
     public void dump(int level, BufferedWriter out)
     {
     	try {
-        out.write(dumpPrefix(level) + "Keyword: " + value +"\n");
+        out.write(dumpPrefix(level) + "KeywordExpression: " + value +"\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
