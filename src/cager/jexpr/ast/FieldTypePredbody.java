@@ -34,7 +34,7 @@ public class FieldTypePredbody {
 	}
 	
 	public FieldTypePredbody addParam(String name, String type) {
-		formalParameters.addFirst(new FieldAndTypePair(name, type));
+		formalParameters.add(new FieldAndTypePair(name, type));
 		return this;
 	}
 

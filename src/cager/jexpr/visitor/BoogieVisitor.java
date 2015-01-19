@@ -43,7 +43,6 @@ import cager.jexpr.ast.PredicateDeclaration;
 import cager.jexpr.ast.PrimaryExpression;
 import cager.jexpr.ast.QuantifierVariable;
 import cager.jexpr.ast.ReturnStatement;
-import cager.jexpr.ast.Statement;
 import cager.jexpr.ast.StatementExpression;
 import cager.jexpr.ast.TypedAST;
 import cager.jexpr.ast.UnaryExpression;
@@ -389,12 +388,19 @@ public class BoogieVisitor extends NullVisitor {
      		
      		try {
 			//will need to do something about formal parameters
-			out.write("procedure Pack"+currentNamePred+"(this:Ref);\n"); 
+			out.write("procedure Pack"+currentNamePred+"(");
+			writePredParamsOut(currentNamePred, 1);
+			out.write("this:Ref);\n"); 
 			out.write("\t requires (packed"+currentNamePred+"[this] == false) && \n");
 			out.write("\t \t(" + predBody + ");\n"); 
 			out.write("\n");
-			out.write("procedure Unpack"+currentNamePred+"(this:Ref);\n");
+			out.write("procedure Unpack"+currentNamePred+"(");
+			writePredParamsOut(currentNamePred, 1);
+			out.write("this:Ref);\n");
 			out.write("\t requires packed"+currentNamePred+"[this] &&\n");
+			//TODO we don't do this for Pack because 
+			//we do it in the code after we call the Pack procedure
+			writePredParamsOut(currentNamePred, 3);
 			out.write("\t \t (frac"+currentNamePred+"[this] > 0.0);\n");
 			out.write("\t ensures ("+predBody+");\n");
 			out.write("\n");
@@ -739,8 +745,6 @@ public class BoogieVisitor extends NullVisitor {
     		
     }
     
-    //TODO
-    //many of the functions in this file don't need to be public
     void concatToStatementObjProp(String symbol) {
     	if (namePredicate.equals("")) {
   		  try{
@@ -770,7 +774,7 @@ public class BoogieVisitor extends NullVisitor {
   		  }
     }
     
-    public void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException
+    void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException
     {
     	int initialStatementLength = statementContent.length();
     	if (operatorSymbol == ",") {
@@ -1300,13 +1304,13 @@ public class BoogieVisitor extends NullVisitor {
     	}
     
     
-    public void modifyMethodBody(String s) {
+    void modifyMethodBody(String s) {
     	String currentMethodBody = methodBody.get(currentMethod);
 		currentMethodBody = currentMethodBody.concat(s);
 		methodBody.put(currentMethod, currentMethodBody);
     }
     
-    public void modifyPredicateBody(String s) {
+    void modifyPredicateBody(String s) {
 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 		paramsPredicateBody.put(
 				namePredicate, 
@@ -1314,7 +1318,7 @@ public class BoogieVisitor extends NullVisitor {
 		);
     }
     
-    public void modifyFormalParams(String name, String type) {
+    void modifyFormalParams(String name, String type) {
 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 		if (currentParamsPredicateBody != null) {
 		paramsPredicateBody.put(
@@ -1325,19 +1329,19 @@ public class BoogieVisitor extends NullVisitor {
 		//TODO else
     }
         
-    public void modifyMethodSpec(String s) {
+    void modifyMethodSpec(String s) {
     	String currentMethodSpec = methodSpec.get(currentMethod);
 		currentMethodSpec = currentMethodSpec.concat(s);
 		methodSpec.put(currentMethod, currentMethodSpec);
     }
     
-    public void modifyMethodParams(String s) {
+    void modifyMethodParams(String s) {
     	String currentMethodParams = methodParams.get(currentMethod);
 		currentMethodParams = currentMethodParams.concat(s);
 		methodParams.put(currentMethod, currentMethodParams);
     }
         
-    public void modifyMethodPreconditions(ObjPropString s) {
+    void modifyMethodPreconditions(ObjPropString s) {
     	LinkedList<ObjPropString> currentMethodPreconditions = 
     			methodPreconditions.get(currentMethod);
     	if (currentMethodPreconditions == null) {
@@ -1347,7 +1351,7 @@ public class BoogieVisitor extends NullVisitor {
     	methodPreconditions.put(currentMethod, currentMethodPreconditions);
     }
     
-    public void modifyMethodPostconditions(ObjPropString s) {
+    void modifyMethodPostconditions(ObjPropString s) {
     	LinkedList<ObjPropString> currentMethodPostconditions = 
     			methodPostconditions.get(currentMethod);
     	if (currentMethodPostconditions == null) {
@@ -1358,7 +1362,7 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     //adds a FracString to the requiresFrac map for the currentMethod
-    public void modifyRequiresFrac(FracString s) {
+    void modifyRequiresFrac(FracString s) {
     	LinkedList<FracString> currentRequiresFrac = 
     			requiresFrac.get(currentMethod);
     	if (currentRequiresFrac == null) {
@@ -1369,7 +1373,7 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     //adds a FracString to the ensuresFrac map for the currentMethod
-    public void modifyEnsuresFrac(FracString s) {
+    void modifyEnsuresFrac(FracString s) {
     	LinkedList<FracString> currentEnsuresFrac = 
     			ensuresFrac.get(currentMethod);
     	if (currentEnsuresFrac == null) {
@@ -1379,7 +1383,7 @@ public class BoogieVisitor extends NullVisitor {
     	ensuresFrac.put(currentMethod, currentEnsuresFrac);
     }
     
-    public void addToFieldWhichPredicates(String field, String predicate) {
+    void addToFieldWhichPredicates(String field, String predicate) {
     	LinkedList<String> currentFieldWhichPredicates = 
     			fieldWhichPredicates.get(field);
     	if (currentFieldWhichPredicates == null) {
@@ -1390,7 +1394,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     }
     
-    public void modifyPredicateFrac(FracString s) {
+    void modifyPredicateFrac(FracString s) {
     	LinkedList<FracString> currentPredicateFrac = 
     			predicateFrac.get(namePredicate);
     	if (currentPredicateFrac == null) {
@@ -1400,7 +1404,7 @@ public class BoogieVisitor extends NullVisitor {
     	predicateFrac.put(namePredicate, currentPredicateFrac);    	
     }
     
-    public void modifyPredicateObjProp(ObjPropString s) {
+    void modifyPredicateObjProp(ObjPropString s) {
     	LinkedList<ObjPropString> currentPredicateObjProp = 
     			predicateObjProp.get(namePredicate);
     	if (currentPredicateObjProp == null) {
@@ -1410,7 +1414,7 @@ public class BoogieVisitor extends NullVisitor {
     	predicateObjProp.put(namePredicate, currentPredicateObjProp);    	
     }
     
-    public void modifyPredicateBinExpr(BinExprString s) {
+    void modifyPredicateBinExpr(BinExprString s) {
     	LinkedList<BinExprString> currentPredicateBinExpr = 
     			predicateBinExpr.get(namePredicate);
     	if (currentPredicateBinExpr == null) {
@@ -1420,23 +1424,15 @@ public class BoogieVisitor extends NullVisitor {
     	predicateBinExpr.put(namePredicate, currentPredicateBinExpr);    	
     }
     
-    public void makeConstructors(BufferedWriter out) {
+    void makeConstructors(BufferedWriter out) {
     	//I also declare the packed and frac global variables for this class.
     	try {
     		for (String p : predicates) {
     			out.write("var packed" + p + ": PackedType;\n");
     			out.write("var frac" + p + ": FractionType;\n");
-    			FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(p);
-    			if (currentParamsPredicateBody != null) {
-    				LinkedList<FieldAndTypePair> formalParamsList =
-    						currentParamsPredicateBody.getFormalParameters();
-    				if (!formalParamsList.isEmpty()) {
-    					for (int i=0;i<formalParamsList.size();i++) {
-    						FieldAndTypePair f = formalParamsList.get(i);
-    						out.write("var " + f.getName()+p+": [Ref]"+f.getType()+";\n");
-    					}
-    				}	
-    			}
+    			
+    			//2 is for writing var x: type
+    			writePredParamsOut(p, 2);
     			
             	//write constructors for each predicate
     			out.write("\n");
@@ -1444,12 +1440,21 @@ public class BoogieVisitor extends NullVisitor {
                 for (FieldAndTypePair s : fieldsTypes) {
                 	out.write(s.getName() + "1: "+ s.getType() + ", ");
             	}
+                
+                //1 is for writing paramName: type
+                writePredParamsOut(p, 1);
+
+                            
                 out.write("this: Ref);\n");
                 out.write("\t ensures ");
                 for (FieldAndTypePair s : fieldsTypes) {
-                	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t ");
+                	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t");
             	}
-                out.write("(packed"+p+"[this]) && \n \t \t ");
+                
+                //3 is for writing the current value of the parameter in the predicate.
+                writePredParamsOut(p, 3);
+                
+                out.write("(packed"+p+"[this]) && \n \t \t");
                 out.write("(frac"+p+"[this] == 1.0);\n \n");
     	  	   	
     		}
@@ -1483,7 +1488,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     }
         
-    public static boolean isNumeric(String str) {
+    static boolean isNumeric(String str) {
       // Match a number with optional '-' and decimal.
       return str.matches("-?\\d+(\\.\\d+)?");  
     }
@@ -1544,7 +1549,7 @@ public class BoogieVisitor extends NullVisitor {
     // A result of -1 means that the object was not found in the 
     // LinkedList as the first element of some PackObjMods.
     // A PackObjMods has 2 elements: objectString and modifications.
-	public int getPositionObjectName(LinkedList<PackObjMods> packmod, String objectName) {
+	int getPositionObjectName(LinkedList<PackObjMods> packmod, String objectName) {
 		for (int j=0; j < packmod.size(); j++) {
 			PackObjMods o = packmod.get(j);
 			if (objectName.equals(o.getObjectString())) {
@@ -1557,7 +1562,7 @@ public class BoogieVisitor extends NullVisitor {
 	//boo comes from boolean
 	//name is the name of the predicate
 	//obj is the name of the object. It can be this, or dc[this], etc.
-	public void modifyPackedMods(String name, String obj, int boo) {
+	void modifyPackedMods(String name, String obj, int boo) {
 		LinkedList<PackObjMods> currentPackObjMods = 
     			packedMods.get(name);
 		//Maybe I don't need this if because I 
@@ -1582,7 +1587,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//This adds to Gamma the object propositions that are in the body of
 	//the predicate nameOfPredicate.
-	public void addObjPropToGamma(String nameOfPredicate) {
+	void addObjPropToGamma(String nameOfPredicate) {
 		LinkedList<ObjPropString> currentPredicateObjProp = 
     			predicateObjProp.get(nameOfPredicate);
     	if (currentPredicateObjProp != null) {
@@ -1634,6 +1639,43 @@ public class BoogieVisitor extends NullVisitor {
     		}
         	return result;
         }
+    
+    //k=1 is for writing nameParam: type
+    //k=2 is for writing var x: type 
+    //k=3 is for writing the current value of the parameter in the predicate.
+    void writePredParamsOut(String pred, int k) {
+    	try{
+    	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
+		if (currentParamsPredicateBody != null) {
+			LinkedList<FieldAndTypePair> formalParamsList =
+					currentParamsPredicateBody.getFormalParameters();
+			if (!formalParamsList.isEmpty()) {
+				for (int i=0;i<formalParamsList.size();i++) {
+					FieldAndTypePair f = formalParamsList.get(i);
+					switch (k) {
+		            case 1:  
+		            	out.write(f.getName() + ":"+f.getType()+", ");
+		                break;
+		            case 2: 
+		            	out.write("var " + f.getName()+pred+": [Ref]"+f.getType()+";\n");
+		            	break; 
+		            case 3: 
+		            	out.write("("+f.getName() + pred+"[this] == "+ f.getName()+") && \n \t \t");
+		            	break;
+		            default: 
+		            	break;
+					}
+					
+				}
+			}	
+		}
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
+    	
+    	
+    }
        	
     	
     }
