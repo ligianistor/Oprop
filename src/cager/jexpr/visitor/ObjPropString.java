@@ -9,19 +9,16 @@ public class ObjPropString {
 	double exactFrac;
 	String fracParam;
 	String predicateName;
-	String[] params;
+	LinkedList<String> params;
 	
 	ObjPropString(String object_, String fracParam_,String predicateName_, LinkedList<String> params_) 
 		{
 		object = object_;
 		fracParam = fracParam_;
 		predicateName = predicateName_;
-		int numberParams = params_.size();
-		params = new String[numberParams];
-		
-			for (int i = 0; i < numberParams; i++) {
-				params[i] = params_.get(i);	
-		}
+		params = new LinkedList<String>();
+		params = params_;
+
 			
 		// All these fields below have default values.
 	    // The value -1 is an error flag.
@@ -34,12 +31,20 @@ public class ObjPropString {
 		return object;
 	}
 	
+	public LinkedList<String> getParams() {
+		return params;
+	}
+	
 	void setObject(String newObject) {
 		object = newObject;
 	}
 	
 	String getName() {
 		return predicateName;
+	}
+	
+	public void addParam(String param) {
+		params.add(param);
 	}
 	
 	void setMaxFrac(double max) {
@@ -89,13 +94,13 @@ public boolean equals(Object obj) {
 	}
 	
 	void print() {
-		String objProp=object+"@"+fracParam+" "+predicateName+"(";
-		int numberParams = params.length;
+		String objProp="  "+object+"@"+fracParam+" "+predicateName+"(";
+		int numberParams = params.size();
 		for (int i = 0; i < numberParams-1; i++) {
-			objProp = objProp.concat(params[i]+",");	
+			objProp = objProp.concat(params.get(i)+",");	
 	}
 		if (numberParams >=1){
-			objProp = objProp.concat(params[numberParams-1]);	
+			objProp = objProp.concat(params.get(numberParams-1));	
 		}
 		objProp = objProp.concat(")");	
 		System.out.println(objProp);

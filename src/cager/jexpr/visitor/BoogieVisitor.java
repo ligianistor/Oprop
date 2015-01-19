@@ -392,11 +392,15 @@ public class BoogieVisitor extends NullVisitor {
 			out.write("procedure Unpack"+currentNamePred+"(");
 			writePredParamsOut(currentNamePred, 1);
 			out.write("this:Ref);\n");
-			out.write("\t requires packed"+currentNamePred+"[this] &&\n\t \t ");
+			out.write("\t requires packed"+currentNamePred+"[");
+			writePredParamsOut(currentNamePred, 2);
+			out.write("this] &&\n\t \t ");
 			//TODO we don't do this for Pack because 
 			//we do it in the code after we call the Pack procedure
+			
+			out.write("(frac"+currentNamePred+"[");
 			writePredParamsOut(currentNamePred, 2);
-			out.write("(frac"+currentNamePred+"[this] > 0.0);\n");
+			out.write("this] > 0.0);\n");
 			out.write("\t ensures ("+predBody+");\n");
 			out.write("\n");
      		}
@@ -578,6 +582,7 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
+    	String identifierBeforeMethSel = currentIdentifier;
     	visitedMethSel = true;
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
@@ -623,7 +628,7 @@ public class BoogieVisitor extends NullVisitor {
     		String objPropMethPrecondString = objPropForMethodPrecond(
 		        	Gamma,	
 		        	callMethodPreconditions,
-		        	currentIdentifier,
+		        	identifierBeforeMethSel,
 		        	//this has to be modified to the list of parameters
 		        	//TODO
 		        	new LinkedList<String>()
@@ -635,7 +640,7 @@ public class BoogieVisitor extends NullVisitor {
     	//TODO I need to modify here.
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
-    	statementContent = statementContent +currentIdentifier+");\n";
+    	statementContent = statementContent +identifierBeforeMethSel+");\n";
     	LinkedList<FracString> currentRequiresFrac = null;
     	LinkedList<FracString> currentEnsuresFrac = null;
     	
@@ -647,7 +652,7 @@ public class BoogieVisitor extends NullVisitor {
     		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
                 FracString fracString = currentRequiresFrac.get(pf);
         		statementContent = 
-        			statementContent.concat(fracString.getStatementFracString(true, currentIdentifier));
+        			statementContent.concat(fracString.getStatementFracString(true, identifierBeforeMethSel));
         		fieldsInMethod.add(fracString.getNameFrac());
         	}
     	}
@@ -658,7 +663,7 @@ public class BoogieVisitor extends NullVisitor {
     		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
                 FracString fracString = currentEnsuresFrac.get(pf);
         		statementContent = 
-        			statementContent.concat(fracString.getStatementFracString(false, currentIdentifier));
+        			statementContent.concat(fracString.getStatementFracString(false, identifierBeforeMethSel));
         		fieldsInMethod.add(fracString.getNameFrac());
         	}
     	}
@@ -679,7 +684,7 @@ public class BoogieVisitor extends NullVisitor {
         		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
                     FracString fracString = currentRequiresFrac.get(pf);
             		statementContent = 
-            			statementContent.concat(fracString.getStatementFracString(true, currentIdentifier));
+            			statementContent.concat(fracString.getStatementFracString(true, identifierBeforeMethSel));
             		fieldsInMethod.add(fracString.getNameFrac());
             	}
         	}
@@ -689,7 +694,7 @@ public class BoogieVisitor extends NullVisitor {
         		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
                     FracString fracString = currentEnsuresFrac.get(pf);
             		statementContent = 
-            			statementContent.concat(fracString.getStatementFracString(false, currentIdentifier));
+            			statementContent.concat(fracString.getStatementFracString(false, identifierBeforeMethSel));
             		fieldsInMethod.add(fracString.getNameFrac());
             	}
         	}
@@ -814,8 +819,12 @@ public class BoogieVisitor extends NullVisitor {
 			  statementContent = statementContent.concat(astvalue);
 		  }
 		  
-		  if ((currentMethod != "") && (inArgumentList) ) {
-			  modifyMethodBody(astvalue + ",");
+		  if ((currentMethod != "") && (inStatement) && (inArgumentList) ) {
+			  statementContent = statementContent.concat(astvalue + ",");
+		  }
+		  
+		  if ((currentMethod != "") && (!inStatement) && (inArgumentList) ) {
+			 modifyMethodBody(astvalue + ",");
 		  }
 		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
@@ -834,6 +843,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	FracString fracString = new FracString();
     	TypedAST object  = ast.getObject();
+    	objectPropString = "";
     	object.accept(this);
     	String objectString = objectPropString;
     	objectPropString = "";
@@ -843,25 +853,35 @@ public class BoogieVisitor extends NullVisitor {
     	frac.accept(this);
 
     	String fracInObjProp = objectPropString;
-    	objectPropString = "";
+
     	
     	Expression predDecl = ast.getPredicateDeclaration();
     	
     	AST[] childrenPredDecl = predDecl.getChildren();
-    	
+    	objectPropString = "";
     	childrenPredDecl[0].accept(this);
-
-    	String identifierPredDecl = objectPropString;
-    	String predName = identifierPredDecl;
+    	String predName = objectPropString;
 
     	objectPropString = "";
-    	childrenPredDecl[1].accept(this);
+    	ArgumentList argList = (ArgumentList)childrenPredDecl[1];
+    	
+    	LinkedList<String> args = new LinkedList<String>();
+    	if (!argList.isEmpty()) {
     	//this is ArgumentList but for this example 
     	//there are no arguments so we set it to empty with new
     	//currentMethod
-    	ObjPropString objProp = new ObjPropString(objectString, fracInObjProp, 
-    			identifierPredDecl, new LinkedList<String>());
-    	
+
+    		AST[] childrenArgList = argList.getChildren();
+    		for (int i=0; i<childrenArgList.length; i++){
+    			objectPropString = "";
+    			childrenArgList[i].accept(this);
+    			args.add(objectPropString);
+    		}
+    	}
+    	ObjPropString objProp =
+    			new ObjPropString(objectString, fracInObjProp, 
+    	    			predName, args);
+    				
     	if (isNumeric(fracInObjProp)) {
     		double d = Double.parseDouble(fracInObjProp); 
     		objProp.setExactFrac(d);
@@ -913,6 +933,7 @@ public class BoogieVisitor extends NullVisitor {
     		modifyPredicateFrac(fracString);
     		modifyPredicateObjProp(objProp);
     	}
+    	objProp.print();
     	insideObjectProposition = false;
     }
 
@@ -1083,7 +1104,11 @@ public class BoogieVisitor extends NullVisitor {
     	   }
     	   else {
     		   
-    		   if ((currentMethod != "") && (inArgumentList)) {
+    		   if ((currentMethod != "") && (inArgumentList) && (inStatement)) {
+    			   statementContent = statementContent.concat(identifierName + ",");
+    		   }
+    		   
+    		   if ((currentMethod != "") && (inArgumentList) && (!inStatement)) {
     			   modifyMethodBody(identifierName + ",");
     		   }
     		   
@@ -1258,6 +1283,9 @@ public class BoogieVisitor extends NullVisitor {
     	    else {
     	    	
     	    }
+    	    //TODO
+    	    //this adds something twice
+    	    //there is an error here
     	    modifyMethodBody(statementContent);
     	  }
     	

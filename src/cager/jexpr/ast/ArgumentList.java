@@ -19,6 +19,10 @@ public class ArgumentList extends Expression
     public ArgumentList()
     {
     }
+    
+    public boolean isEmpty() {
+    	return (children == null);
+    }
 
     public void add(Expression a)
     {
