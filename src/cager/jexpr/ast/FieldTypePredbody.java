@@ -20,6 +20,10 @@ public class FieldTypePredbody {
 		this.predBody = "";
 	}
 	
+	public LinkedList<FieldAndTypePair> getFormalParameters() {
+		return formalParameters;
+	}
+	
 	public String getPredicateBody() {
 		return predBody;
 	}

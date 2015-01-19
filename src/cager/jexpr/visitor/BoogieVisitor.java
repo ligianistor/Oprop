@@ -67,6 +67,7 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
+	//True iff this method contains the modulo operator.
 	boolean methodContainsModulo = false;
 	
 	//Does this primary expression contain a methodSelection?
@@ -536,7 +537,6 @@ public class BoogieVisitor extends NullVisitor {
     public void visitReturnStatement(ReturnStatement ast) throws ParseException
     {
         visitChildren(ast);
-
     }
 
     public void visitFieldSelection(FieldSelection ast) throws ParseException
@@ -1143,23 +1143,24 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitIfStatement(IfStatement ast) throws ParseException
     {
-    	//if then is a call method, there are problem, it deleted the if
-    	//TODO
     	//An if statements can be only inside a method statement.
+    	inStatement = true;
     	AST[] children = ast.getChildren();
     	int size = children.length;
     	statementContent = statementContent.concat("if (");
     	children[0].accept(this);
 
-    	statementContent = statementContent.concat(") {\n");
+    	statementContent = statementContent.concat(")\n");
+    	modifyMethodBody(statementContent);
+    	//children[1] and [2] are Blocks.
     	children[1].accept(this);
-    	statementContent = statementContent.concat("}\n");
 
     	if (size == 3) { 
-        	statementContent = statementContent.concat("else {\n");
+    		modifyMethodBody("else \n");
         	children[2].accept(this);
-        	statementContent = statementContent.concat("};\n");
     	}
+    	
+    	inStatement = false;
     }
     
     public void visitStatementExpression(StatementExpression ast)
@@ -1425,30 +1426,41 @@ public class BoogieVisitor extends NullVisitor {
     		for (String p : predicates) {
     			out.write("var packed" + p + ": PackedType;\n");
     			out.write("var frac" + p + ": FractionType;\n");
+    			FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(p);
+    			if (currentParamsPredicateBody != null) {
+    				LinkedList<FieldAndTypePair> formalParamsList =
+    						currentParamsPredicateBody.getFormalParameters();
+    				if (!formalParamsList.isEmpty()) {
+    					for (int i=0;i<formalParamsList.size();i++) {
+    						FieldAndTypePair f = formalParamsList.get(i);
+    						out.write("var " + f.getName()+p+": [Ref]"+f.getType()+";\n");
+    					}
+    				}	
+    			}
+    			
+            	//write constructors for each predicate
+    			out.write("\n");
+                out.write("procedure Construct" + className + p + "(");
+                for (FieldAndTypePair s : fieldsTypes) {
+                	out.write(s.getName() + "1: "+ s.getType() + ", ");
+            	}
+                out.write("this: Ref);\n");
+                out.write("\t ensures ");
+                for (FieldAndTypePair s : fieldsTypes) {
+                	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t ");
+            	}
+                out.write("(packed"+p+"[this]) && \n \t \t ");
+                out.write("(frac"+p+"[this] == 1.0);\n \n");
+    	  	   	
     		}
     		out.write("\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-    	
-    	
+    	    	
     	try {
-    		for (String p : predicates) {
-        	//write constructors for each predicate
-            out.write("procedure Construct" + className + p + "P(");
-            for (FieldAndTypePair s : fieldsTypes) {
-            	out.write(s.getName() + "1: "+ s.getType() + ", ");
-        	}
-            out.write("this: Ref);\n");
-            out.write("\t ensures ");
-            for (FieldAndTypePair s : fieldsTypes) {
-            	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t ");
-        	}
-            out.write("(packed"+p+"[this]) && \n \t \t ");
-            out.write("(frac"+p+"[this] == 1.0);\n \n");
-        	}
-    		
+   		
     		//write a constructor that doesn't pack to any predicate
     		out.write("procedure Construct" + className + "(");
             for (FieldAndTypePair s : fieldsTypes) {
