@@ -281,9 +281,6 @@ public class BoogieVisitor extends NullVisitor {
     		try {
     			if (numberFilesBefore == 0) {
     			out.write("type Ref;\n");
-    			out.write("type PredicateTypes;\n");
-    			out.write("type FractionType = [Ref] real;\n");
-    			out.write("type PackedType = [Ref] bool;\n");
     			out.write("const null: Ref;\n");
     			out.write("\n");
     			} else {
@@ -301,8 +298,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitFieldDeclaration(FieldDeclaration ast) throws ParseException 
     { 
     	String fieldName = ast.getName();
-    	
-    	System.out.println(fieldName);
+
     	fields.add(fieldName);
     	fieldsTypes.add(new FieldAndTypePair(fieldName, ast.getType().toString()));
     	
@@ -382,7 +378,6 @@ public class BoogieVisitor extends NullVisitor {
      		//need to do more processing of the predBody
      		//TODO
      		int i=0;
-     		System.out.println("XXX" + predBodyUnprocessed+ " " + currentNamePred);
      		while (predBodyUnprocessed.charAt(i)=='&') i++;
      		String predBody = predBodyUnprocessed.substring(i);
      		
@@ -397,11 +392,11 @@ public class BoogieVisitor extends NullVisitor {
 			out.write("procedure Unpack"+currentNamePred+"(");
 			writePredParamsOut(currentNamePred, 1);
 			out.write("this:Ref);\n");
-			out.write("\t requires packed"+currentNamePred+"[this] &&\n");
+			out.write("\t requires packed"+currentNamePred+"[this] &&\n\t \t ");
 			//TODO we don't do this for Pack because 
 			//we do it in the code after we call the Pack procedure
-			writePredParamsOut(currentNamePred, 3);
-			out.write("\t \t (frac"+currentNamePred+"[this] > 0.0);\n");
+			writePredParamsOut(currentNamePred, 2);
+			out.write("(frac"+currentNamePred+"[this] > 0.0);\n");
 			out.write("\t ensures ("+predBody+");\n");
 			out.write("\n");
      		}
@@ -1036,7 +1031,6 @@ public class BoogieVisitor extends NullVisitor {
     	}
     		
         if (namePredicate.equals("")) {
-        	System.out.println("inside predicate");
      	   //we are not inside a predicate
      		   
      		   if ((currentMethod != "") && (inArgumentList)) {
@@ -1427,12 +1421,16 @@ public class BoogieVisitor extends NullVisitor {
     void makeConstructors(BufferedWriter out) {
     	//I also declare the packed and frac global variables for this class.
     	try {
+    		
+			out.write("type FractionType = [Ref] real;\n");
+			out.write("type PackedType = [Ref] bool;\n");
     		for (String p : predicates) {
-    			out.write("var packed" + p + ": PackedType;\n");
-    			out.write("var frac" + p + ": FractionType;\n");
-    			
-    			//2 is for writing var x: type
-    			writePredParamsOut(p, 2);
+    			out.write("var packed" + p + ": [");
+    			 writePredParamsOut(p, 3);
+    			 out.write("Ref] bool;\n");
+    			 out.write("var frac" + p + ": [");
+    			 writePredParamsOut(p, 3);
+    			 out.write("Ref] real;\n");
     			
             	//write constructors for each predicate
     			out.write("\n");
@@ -1451,11 +1449,13 @@ public class BoogieVisitor extends NullVisitor {
                 	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t");
             	}
                 
-                //3 is for writing the current value of the parameter in the predicate.
-                writePredParamsOut(p, 3);
-                
-                out.write("(packed"+p+"[this]) && \n \t \t");
-                out.write("(frac"+p+"[this] == 1.0);\n \n");
+                out.write("(packed"+p+"[");
+                //2 is for writing the current value of the parameter in the predicate.
+                writePredParamsOut(p, 2);
+                out.write("this]) && \n \t \t");
+                out.write("(frac"+p+"[");
+                writePredParamsOut(p, 2);
+                out.write("this] == 1.0);\n \n");
     	  	   	
     		}
     		out.write("\n");
@@ -1568,10 +1568,8 @@ public class BoogieVisitor extends NullVisitor {
 		//Maybe I don't need this if because I 
 		//initialize it to the empty LinkedList.
     	if (currentPackObjMods == null) {
-    		 System.out.println("Im here");
     		currentPackObjMods = new LinkedList<PackObjMods>();
     	}
-    	System.out.println("name=" + name);
     	int position = getPositionObjectName(currentPackObjMods, obj);
     	if (position == -1) {
     		PackObjMods o = new PackObjMods(obj);
@@ -1593,7 +1591,6 @@ public class BoogieVisitor extends NullVisitor {
     	if (currentPredicateObjProp != null) {
     		for (int i=0; i<currentPredicateObjProp.size(); i++) {
     			ObjPropString o = currentPredicateObjProp.get(i);
-    			o.print();
     			Gamma.add(o);
     		}
     		
@@ -1621,12 +1618,6 @@ public class BoogieVisitor extends NullVisitor {
     			o.setObject(caller);
     			String name = o.getName();
     			
-    			System.out.println("xxxx");
-    			for (int i=0; i<Gamma.size(); i++) {
-        			ObjPropString ox = Gamma.get(i);
-        			ox.print();
-        		}
-    			
     			//Only call packing if this object proposition is not already packed and in Gamma.
     			if (!Gamma.contains(o)) {
     				//need to take care of the OK, ok uppercase issue
@@ -1634,15 +1625,14 @@ public class BoogieVisitor extends NullVisitor {
     				statementContent = statementContent + "\t packed"+name+"["+caller+"]:=true;\n";
     				fieldsInMethod.add("packed"+name);
     				modifyPackedMods(name, caller, 1);
-    			}
-    			    			
+    			}	    			
     		}
         	return result;
         }
     
     //k=1 is for writing nameParam: type
-    //k=2 is for writing var x: type 
-    //k=3 is for writing the current value of the parameter in the predicate.
+    //k=2 is for writing the current value of the parameters
+    //k=3 is for writing the types of the parameters
     void writePredParamsOut(String pred, int k) {
     	try{
     	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
@@ -1655,12 +1645,12 @@ public class BoogieVisitor extends NullVisitor {
 					switch (k) {
 		            case 1:  
 		            	out.write(f.getName() + ":"+f.getType()+", ");
-		                break;
+		                break; 
 		            case 2: 
-		            	out.write("var " + f.getName()+pred+": [Ref]"+f.getType()+";\n");
-		            	break; 
+		            	out.write(f.getName() + ", ");
+		            	break;
 		            case 3: 
-		            	out.write("("+f.getName() + pred+"[this] == "+ f.getName()+") && \n \t \t");
+		            	out.write(f.getType() + ", ");
 		            	break;
 		            default: 
 		            	break;
