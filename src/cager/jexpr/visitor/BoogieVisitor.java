@@ -66,6 +66,12 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
+	//Are we inside an IfStatement?
+	//We need this because there are Blocks inside an IfStatement and 
+	//they get confused with the Blocks at the beginning of 
+	//method declarations.
+	boolean inIfStatement = false;
+	
 	//True iff this method contains the modulo operator.
 	boolean methodContainsModulo = false;
 	
@@ -1166,24 +1172,29 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitIfStatement(IfStatement ast) throws ParseException
     {
-    	//An if statements can be only inside a method statement.
+    	inIfStatement = true;
+    	//An if statement can be only inside a method statement.
     	inStatement = true;
     	AST[] children = ast.getChildren();
     	int size = children.length;
     	statementContent = statementContent.concat("if (");
     	children[0].accept(this);
-
     	statementContent = statementContent.concat(")\n");
+    	System.out.println("Statement content in if:"+statementContent);
     	modifyMethodBody(statementContent);
+    	//We make it "" because we have just written it to methodBody.
+    	statementContent = "";
     	//children[1] and [2] are Blocks.
     	children[1].accept(this);
-
+    	statementContent = "";
     	if (size == 3) { 
     		modifyMethodBody("else \n");
         	children[2].accept(this);
+        	statementContent = "";
     	}
     	
     	inStatement = false;
+    	inIfStatement = false;
     }
     
     public void visitStatementExpression(StatementExpression ast)
@@ -1245,8 +1256,7 @@ public class BoogieVisitor extends NullVisitor {
     	modifyMethodBody("{\n");
     	
     	AST[] children = ast.getChildren();
-    	for (int i = 0; i < children.length; i++) {
-    		
+    	for (int i = 0; i < children.length; i++) {  		
     		fieldsInStatement.clear();
     		statementContent = "";
     		visitedMethSel = false;
@@ -1269,8 +1279,7 @@ public class BoogieVisitor extends NullVisitor {
                 				//Here I need to add to Gamma the object propositions from the body of the
                 				//unpacked predicate.
                 				//Maybe this should be added at the end of visiMethodSelection().
-                				addObjPropToGamma(localNameOfPredicate);
-                				
+                				addObjPropToGamma(localNameOfPredicate);              				
                 				fieldsInMethod.add("packed"+localNameOfPredicate);
                 				modifyPackedMods(localNameOfPredicate, "this", -1);
                 				Gamma.remove(temp);
@@ -1286,28 +1295,31 @@ public class BoogieVisitor extends NullVisitor {
     	    //TODO
     	    //this adds something twice
     	    //there is an error here
+    	   System.out.println("Statement content in block:" + statementContent);
     	    modifyMethodBody(statementContent);
     	  }
     	
-
-    	LinkedList<ObjPropString> thisMethodPostCond = methodPostconditions.get(currentMethod);
-    	if (thisMethodPostCond != null) {
-    		//Pack the object propositions
-    		//that are in the postcondition.
-    		for (int i = 0; i < thisMethodPostCond.size(); i++) {
-    			//TODO
-    			//Need to check if this object proposition is also in Gamma
-    			//if it's not, then might throw an error or send a message
+    	if (!inIfStatement) {
+    		LinkedList<ObjPropString> thisMethodPostCond = 
+    				methodPostconditions.get(currentMethod);
+    		if (thisMethodPostCond != null) {
+    			//Pack the object propositions
+    			//that are in the postcondition.
+    			for (int i = 0; i < thisMethodPostCond.size(); i++) {
+    				//TODO
+    				//Need to check if this object proposition is also in Gamma
+    				//if it's not, then might throw an error or send a message
     		
-    			ObjPropString o = thisMethodPostCond.get(i);
-    			String obj = o.getObject();
-    			String name = o.getName();
+    				ObjPropString o = thisMethodPostCond.get(i);
+    				String obj = o.getObject();
+    				String name = o.getName();
     		
-    			//need to take care of the OK, ok uppercase issue
-    			modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
-    			modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
-    			fieldsInMethod.add("packed"+name);
-    			modifyPackedMods(name, obj, 1);
+    				//need to take care of the OK, ok uppercase issue
+    				modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
+    				modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
+    				fieldsInMethod.add("packed"+name);
+    				modifyPackedMods(name, obj, 1);
+    			}
     		}
     	}
     	
@@ -1319,9 +1331,7 @@ public class BoogieVisitor extends NullVisitor {
   		  throws ParseException 
   		  {  
     	inArgumentList = true;
-
     	visitChildren(ast); 
-    	
     	inArgumentList = false;
     	}
     
