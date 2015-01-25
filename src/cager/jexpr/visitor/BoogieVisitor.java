@@ -72,8 +72,9 @@ public class BoogieVisitor extends NullVisitor {
 	//method declarations.
 	boolean inIfStatement = false;
 	
-	//True iff this method contains the modulo operator.
-	boolean methodContainsModulo = false;
+	//True iff this program contains the modulo operator.
+	boolean programContainsModulo = false;
+	boolean writtenModuloFunction = false;
 	
 	//Does this primary expression contain a methodSelection?
 	//Are we inside a method selection statement?
@@ -354,7 +355,17 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
     {    	
-    	methodContainsModulo = false;
+		String moduloTranslation = "function modulo(x:int, y:int) returns (int); \n" +
+		"axiom (forall x:int, y:int :: {modulo(x,y)}\n" +
+	    "\t ((0 <= x) &&(0 < y) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < y) )\n" +
+	    "\t&&\n" +
+	    "\t((0 <= x) &&(y < 0) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < -y) )\n" +
+	    "\t&&\n" +
+	    "\t((x <= 0) &&(0 < y) ==> (-y <= modulo(x,y) ) && (modulo(x,y) <= 0) )\n" +
+	    "\t&&\n" +
+	    "\t((x <= 0) &&(y < 0) ==> (y <= modulo(x,y) ) && (modulo(x,y) <= 0) )\n" +
+	   "\t);\n\n";
+		
     	fieldsInMethod = new TreeSet<String> (); 
     	Gamma.clear();
   	
@@ -369,7 +380,19 @@ public class BoogieVisitor extends NullVisitor {
     	
     	//When we hit the first method, we write out the constructors for this 
     	//class and the Pack and Unpack procedures. 
-    	if (isFirstMethod) {
+    	if (isFirstMethod) {   	
+    	//This if is for when the modulo symbol is in the body of a predicate.
+		if (programContainsModulo && !writtenModuloFunction){
+			try{
+			out.write(moduloTranslation);
+			}
+			catch(Exception e) {
+				System.err.println("Error: " + e.getMessage());
+			}
+			//We only want to write out the modulo function once.
+			writtenModuloFunction = true;
+		}
+		
     	//Write the constructors to out. The constructor that does not pack to anything
     	//and the ones that pack to predicates.
     	makeConstructors(out);
@@ -515,22 +538,12 @@ public class BoogieVisitor extends NullVisitor {
 				//write here the function for modulo, if modulo was found in the 
 				//body of the procedure.
 		        //It is OK for modulo to be added after it was used in the procedure.
-		        
-		        //TODO Need to add the modulo function if it is used in a predicate too.
 				
-				if (methodContainsModulo){
+				if (programContainsModulo && !writtenModuloFunction){
 					//add the modulo function to the Beginning of this method
-					String moduloTranslation = "function modulo(x:int, y:int) returns (int); \n" +
-					"axiom (forall x:int, y:int :: {modulo(x,y)}\n" +
-				    "\t ((0 <= x) &&(0 < y) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < y) )\n" +
-				    "\t&&\n" +
-				    "\t((0 <= x) &&(y < 0) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < -y) )\n" +
-				    "\t&&\n" +
-				    "\t((x <= 0) &&(0 < y) ==> (-y <= modulo(x,y) ) && (modulo(x,y) <= 0) )\n" +
-				    "\t&&\n" +
-				    "\t((x <= 0) &&(y < 0) ==> (y <= modulo(x,y) ) && (modulo(x,y) <= 0) )\n" +
-				   "\t);\n\n";
 					modifyMethodBody(moduloTranslation);
+					//We only want to write out the modulo function once.
+					writtenModuloFunction = true;
 				}
 				
 				out.write(methodBody.get(currentMethod));
@@ -567,6 +580,9 @@ public class BoogieVisitor extends NullVisitor {
     	
 		  if ((currentMethod != "") && (inStatement) && 
 			  !inArgumentList && !inMethodSelectionStatement) {
+			  //First remove the last 4 characters in the string statementContent
+			  //because they == "this", which shouldn't be there.
+			  statementContent = statementContent.substring(0, statementContent.length()-4);
 			  statementContent = statementContent.concat(fieldName);  
 		  }
 		  
@@ -728,8 +744,7 @@ public class BoogieVisitor extends NullVisitor {
     		String fieldValue = i.getName();
     		
         	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, fieldValue);
-        	quantifiedVars.put(pv, nameField);
-        	
+        	quantifiedVars.put(pv, nameField);     	
     		return;
     	}
     	
@@ -740,7 +755,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	//This is for modulo == REM 
     	if (ast.op.getId() == JExprConstants.REM){
-    		methodContainsModulo = true;
+    		programContainsModulo = true;
     		//The , is like the operator that gets put between operand 1 and 2.
     		helperBinaryExpression(ast, ",");
     		return;
@@ -1066,6 +1081,7 @@ public class BoogieVisitor extends NullVisitor {
      		   
      		   if ((currentMethod != "") && (inStatement) && 
      			   !inArgumentList && !inMethodSelectionStatement ) {
+     			   System.out.println("where I should be");
      				  statementContent = statementContent.concat(keywordString);
      			  }
      		   
@@ -1172,12 +1188,18 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitIfStatement(IfStatement ast) throws ParseException
     {
+    	inMethodSelectionStatement = false;
     	inIfStatement = true;
     	//An if statement can be only inside a method statement.
     	inStatement = true;
     	AST[] children = ast.getChildren();
     	int size = children.length;
     	statementContent = statementContent.concat("if (");
+    	System.out.println("booleans in if:currentMethod="+ currentMethod+ 
+    			";inStatement= "+ inStatement + ";inArgumentList=" +inArgumentList +
+    			"; inMethodSelectionStatement="+inMethodSelectionStatement
+    			);
+    	
     	children[0].accept(this);
     	statementContent = statementContent.concat(")\n");
     	System.out.println("Statement content in if:"+statementContent);
@@ -1260,6 +1282,7 @@ public class BoogieVisitor extends NullVisitor {
     		fieldsInStatement.clear();
     		statementContent = "";
     		visitedMethSel = false;
+    		inMethodSelectionStatement = false;
     	    children[i].accept(this);
     	    //write what we are packing or unpacking 
     	    //before writing the statement
