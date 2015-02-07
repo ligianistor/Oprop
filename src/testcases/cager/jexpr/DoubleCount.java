@@ -9,7 +9,7 @@ class DoubleCount {
 			         d == 2*v
 	
 	void increment()
-	int k:
+	double k:
 	requires this#k OK()
 	ensures this#k OK()
 	{

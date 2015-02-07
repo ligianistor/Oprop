@@ -7,7 +7,7 @@ class Share {
 		       this.dc -> d && (d#1 OK())
 		       
 	void touch() 
-	int k:
+	double k:
 	requires this#k ShareCount()
 	ensures this#k ShareCount()
 	{

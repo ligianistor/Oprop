@@ -6,7 +6,7 @@ class Link {
     Link next;
  
  	predicate Range(int x, int y) =
-    	exists int v, Link o, int k: this.val -> v && this.next -> o 
+    	exists int v, Link o, double k: this.val -> v && this.next -> o 
     	&& v >= x && v <= y &&
     	((o#k Range(x,y)) || o == null) 
  
@@ -14,6 +14,16 @@ class Link {
     	exists int v, Link o: this.val ->v && this.next -> o 
     	&& v >= x && v <= y &&
     	((o#1 UniRange(x,y)) || o == null)
+    	
+    void addModulo11(int x)
+    double k: //int k 
+    requires (this#k Range(0,10))
+    ensures (this#k Range(0,10))
+    {
+    	this.val = (this.val + x)%11;
+    	if (this.next != null) 
+    	   {this.next.addModulo11(x);}
+    }
     
     void add(int z)
     int x, int y: //SpecExpression with list of declaration
@@ -24,16 +34,7 @@ class Link {
     	if (this.next != null) 
     	  {this.next.add(z);}
     }
-  
-    void addModulo11(int x)
-    int k: //int k 
-    requires (this#k Range(0,10))
-    ensures (this#k Range(0,10))
-    {
-    	this.val = (this.val + x)%11;
-    	if (this.next != null) 
-    	   {this.next.addModulo11(x);}
-    }
+ 
     
     void main() {
 		Link l1 = new Link(Range(0,10))(3, null);
