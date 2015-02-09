@@ -134,13 +134,35 @@ public class BoogieVisitor extends NullVisitor {
 	//for a method.
 	LinkedList<BinExprString> GammaBinExpr = new LinkedList<BinExprString>();
 		
-	//For each method, this map tells us which are the preconditions for it.  
-	HashMap<String, LinkedList<ObjPropString>> methodPreconditions = 
+	//For each method, this map tells us which are the
+	//packed object propositions in the precondition of that method.  
+	HashMap<String, LinkedList<ObjPropString>> methodPreconditionsPacked = 
 			new HashMap<String, LinkedList<ObjPropString>>();
+	
+	//For each method, this map tells us which are the
+	//unpacked object propositions in the precondition of that method.  
+	HashMap<String, LinkedList<ObjPropString>> methodPreconditionsUnpacked = 
+			new HashMap<String, LinkedList<ObjPropString>>();
+	
+	//For each method, this map tells us which are the
+	//pieces of object propositions in the precondition of that method.  
+	HashMap<String, LinkedList<String>> methodPreconditionsPieces = 
+			new HashMap<String, LinkedList<String>>();
 		
-	//For each method, this map tells us which are the preconditions for it. 
-	HashMap<String, LinkedList<ObjPropString>> methodPostconditions = 
+	//For each method, this map tells us which are the
+	//packed object propositions in the postcondition of that method. 
+	HashMap<String, LinkedList<ObjPropString>> methodPostconditionsPacked = 
 			new HashMap<String, LinkedList<ObjPropString>>();
+	
+	//For each method, this map tells us which are the
+	//unpacked object propositions in the postcondition of that method.
+	HashMap<String, LinkedList<ObjPropString>> methodPostconditionsUnpacked = 
+			new HashMap<String, LinkedList<ObjPropString>>();
+	
+	//For each method, this map tells us which are the
+	//pieces of object propositions in the postcondition of that method. 
+	HashMap<String, LinkedList<String>> methodPostconditionsPieces = 
+			new HashMap<String, LinkedList<String>>();
 	
 	//For each procedure, including the Pack and Unpack ones
 	//this map tells us which frac[] are in its "requires" clause
@@ -255,12 +277,12 @@ public class BoogieVisitor extends NullVisitor {
 		return methods;
 	}
 	
-	public HashMap<String, LinkedList<ObjPropString>> getMethodPreconditions() {
-		return methodPreconditions;
+	public HashMap<String, LinkedList<ObjPropString>> getMethodPreconditionsPacked() {
+		return methodPreconditionsPacked;
 	}
 
-	public HashMap<String, LinkedList<ObjPropString>> getMethodPostconditions() {
-		return methodPostconditions;
+	public HashMap<String, LinkedList<ObjPropString>> getMethodPostconditionsPacked() {
+		return methodPostconditionsPacked;
 	}
 	
 	public HashMap<String, LinkedList<FracString>> getRequiresFrac() {
@@ -645,14 +667,14 @@ public class BoogieVisitor extends NullVisitor {
     	// the class = "lastPrimaryExpressionType".
     	
     	LinkedList<ObjPropString> callMethodPreconditions = 
-    			methodPreconditions.get(methodName);
+    			methodPreconditionsPacked.get(methodName);
     	if (callMethodPreconditions == null) {
     		int classOfCallMethod = -1;
         	for (int i=0; i < numberFilesBefore; i++) {
         		if (bv[i].getClassName().equals(lastPrimaryExpressionType))
         			classOfCallMethod = i;
         	}
-        	callMethodPreconditions = bv[classOfCallMethod].getMethodPreconditions().get(methodName);		
+        	callMethodPreconditions = bv[classOfCallMethod].getMethodPreconditionsPacked().get(methodName);		
     	}
     	
     	if (callMethodPreconditions != null) {
@@ -1326,7 +1348,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	if (!inIfStatement) {
     		LinkedList<ObjPropString> thisMethodPostCond = 
-    				methodPostconditions.get(currentMethod);
+    				methodPostconditionsPacked.get(currentMethod);
     		if (thisMethodPostCond != null) {
     			//Pack the object propositions
     			//that are in the postcondition.
@@ -1400,22 +1422,22 @@ public class BoogieVisitor extends NullVisitor {
         
     void modifyMethodPreconditions(ObjPropString s) {
     	LinkedList<ObjPropString> currentMethodPreconditions = 
-    			methodPreconditions.get(currentMethod);
+    			methodPreconditionsPacked.get(currentMethod);
     	if (currentMethodPreconditions == null) {
     		currentMethodPreconditions = new LinkedList<ObjPropString>();
     	}
     	currentMethodPreconditions.add(s);
-    	methodPreconditions.put(currentMethod, currentMethodPreconditions);
+    	methodPreconditionsPacked.put(currentMethod, currentMethodPreconditions);
     }
     
     void modifyMethodPostconditions(ObjPropString s) {
     	LinkedList<ObjPropString> currentMethodPostconditions = 
-    			methodPostconditions.get(currentMethod);
+    			methodPostconditionsPacked.get(currentMethod);
     	if (currentMethodPostconditions == null) {
     		currentMethodPostconditions = new LinkedList<ObjPropString>();
     	}
     	currentMethodPostconditions.add(s);
-		methodPostconditions.put(currentMethod, currentMethodPostconditions);
+		methodPostconditionsPacked.put(currentMethod, currentMethodPostconditions);
     }
     
     //adds a FracString to the requiresFrac map for the currentMethod
@@ -1660,17 +1682,35 @@ public class BoogieVisitor extends NullVisitor {
     	}		
 	}
 	
-    String objPropForMethodPrecond(
-        	LinkedList<ObjPropString> Gamma0,	
-        	LinkedList<ObjPropString> methPreconditions,
-        	String caller,
-        	LinkedList<String> params
-        		) {
-    	String result = "";
-    	
-    	//first try to pack.
-    	//if you can't, try to unpack by looking bottom up for what to unpack.
-        	
+	StateOfGammas unpackToGetPiece(
+			LinkedList<ObjPropString> GammaPacked0, 
+			String piece) {
+		return new StateOfGammas();
+	}
+	
+	StateOfGammas unpackToGetUnpacked(
+			LinkedList<ObjPropString> GammaPacked0, 
+			ObjPropString unpackedObjProp) {
+		return new StateOfGammas();
+	}
+	
+	StateOfGammas packPiecesToGetPacked(
+			LinkedList<String> GammaPiecesOfObjProp0, 
+			ObjPropString packedObjProp
+			) {
+		return new StateOfGammas();
+	}
+	
+	StateOfGammas unpackToGetPacked(
+			LinkedList<ObjPropString> GammaPacked0,
+        	LinkedList<ObjPropString> GammaUnpacked0,
+        	LinkedList<String> GammaPiecesOfObjProp0,
+        	ObjPropString packedObjProp
+			) {
+		String result = "";
+		StateOfGammas state = new StateOfGammas();
+		/*
+		 *  	
     		for (int j=0; j < methPreconditions.size(); j++) {
     			//TODO
     			// Need to check if these object propositions are in GammaPacked.
@@ -1691,6 +1731,106 @@ public class BoogieVisitor extends NullVisitor {
     			}	    			
     		}
         	return result;
+		 */
+		
+		
+		
+		
+		
+	}
+	
+	//TODO put comment here
+	//
+	//
+    String objPropForMethodPrecond(
+    		LinkedList<ObjPropString> GammaPacked0,
+        	LinkedList<ObjPropString> GammaUnpacked0,
+        	LinkedList<String> GammaPiecesOfObjProp0,
+        	LinkedList<ObjPropString> methodPreconditionsPacked0,
+        	LinkedList<ObjPropString> methodPreconditionsUnpacked0,
+        	LinkedList<String> methodPreconditionsPieces0,
+        	String caller,
+        	LinkedList<String> params
+        		) {
+    	String result = "";
+    	
+    	//First try to obtain the pieces in our method precondition.
+    	//We might have to unpack some object propositions to get to them.
+    	if (methodPreconditionsPieces0.size() != 0) {
+    		for (int i=0;i<methodPreconditionsPieces0.size();i++){
+    			if (!GammaPiecesOfObjProp0.contains(methodPreconditionsPieces0.get(i))){
+    				//Try to unpack an object proposition and see if it contains this piece.
+    				//TODO
+    				//Need to update the state of the Gammas after the call to the method below.
+    				result = result.concat(
+    						unpackToGetPiece(GammaPacked0, methodPreconditionsPieces0.get(i)).getResultString()
+    				);
+    				
+    			}
+    		}
+    	}
+    	
+    	//Second try to obtain the unpacked object propositions in our method precondition.
+    	//We might have to unpack some object propositions to get to them.
+    	if (methodPreconditionsUnpacked0.size() != 0) {
+    		for (int i=0;i<methodPreconditionsUnpacked0.size();i++){
+    			ObjPropString unpackedObjProp = methodPreconditionsUnpacked0.get(i);
+    			unpackedObjProp.setObject(caller);
+    			if (!GammaPiecesOfObjProp0.contains(unpackedObjProp)){
+    				//Try to unpack an object proposition and see if it contains this 
+    				//unpacked object proposition.
+    				//TODO
+    				//Need to update the state of the Gammas after the call to the method below.
+    				result = result.concat(
+    						unpackToGetUnpacked(GammaPacked0, unpackedObjProp).getResultString()
+    				);
+    				
+    			}
+    		}
+    	}
+    	
+    	//Third try to obtain the packed object propositions in our method precondition.
+    	//First try to pack.
+    	//If you can't, try to unpack by looking bottom up for what to unpack.
+    	//This is the most common case from what I have seen.
+    	//We might need to unpack a few times to get to the packed object
+    	//proposition that we want.
+    	if (methodPreconditionsPacked0.size() != 0) {
+    		for (int i=0;i<methodPreconditionsPacked0.size();i++){
+    			ObjPropString packedObjProp = methodPreconditionsPacked0.get(i);
+    			packedObjProp.setObject(caller);
+    			
+    			if (!GammaPiecesOfObjProp0.contains(packedObjProp)){
+
+    				//First try to pack to this object proposition.
+    				String couldPackString = packPiecesToGetPacked(
+    						GammaPiecesOfObjProp0, 
+    						packedObjProp
+    						).getResultString();
+    				
+    				if (couldPackString==""){
+    				//If packing didn't work, try to unpack repeatedly.
+    				
+    					StateOfGammas multipleUnpacking = unpackToGetPacked(
+    						GammaPacked0,
+    			        	GammaUnpacked0,
+    			        	GammaPiecesOfObjProp0,
+    			        	packedObjProp
+    						);
+    					
+    					result = result.concat(multipleUnpacking.getResultString());
+
+    				}
+    				
+    				else {
+    					result = result.concat(couldPackString);
+    					
+    				}
+    				
+    			}
+    		}
+    	}
+
         }
     
     //k=1 is for writing nameParam: type
@@ -1728,4 +1868,3 @@ public class BoogieVisitor extends NullVisitor {
     	}  	
     }    		
     }
-    
