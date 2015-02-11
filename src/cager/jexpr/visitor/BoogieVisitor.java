@@ -1709,6 +1709,103 @@ public class BoogieVisitor extends NullVisitor {
 			) {
 		String result = "";
 		StateOfGammas state = new StateOfGammas();
+		//I make a copy of the original state of the Gammas
+		//in case I need to eventually write a backtracking algorithm that
+		//tries to do a series of unpackings in multiple ways.
+		//Right now I am only trying out one series of unpackings.
+		LinkedList<ObjPropString> originalGammaPacked0 = new LinkedList<ObjPropString>();
+    	LinkedList<ObjPropString> originalGammaUnpacked0 = new LinkedList<ObjPropString>();
+    	LinkedList<String> originalGammaPiecesOfObjProp0 = new LinkedList<String>();
+    	originalGammaPacked0 = GammaPacked0;
+    	originalGammaUnpacked0 = GammaUnpacked0;
+    	originalGammaPiecesOfObjProp0 = GammaPiecesOfObjProp0;
+    	
+    	//For the predicate in packedObjProp,
+    	//look to see which other predicates contain this predicate.
+    	//Might need to look at the predicates from previous Boogie 
+    	//visitors.
+    	//We need to use this:
+    	//For each predicate, this map 
+    	//tells us which ObjPropString are in the body of the predicate
+    	//HashMap<String, LinkedList<ObjPropString>>  predicateObjProp = 
+    	//		new HashMap<String, LinkedList<ObjPropString>>();
+    	//Might need to check each object proposition in a for loop
+    	//because the callers might not be the same
+    	//and we only want to know if the predicate of that object proposition,
+    	//with the right params,
+    	//is in this predicate.
+    	
+    	//The set of predicates that contain the predicate in packedObjProp.
+    	LinkedList<String> predicateSet = new LinkedList<String>();
+    	LinkedList<ObjPropString> objPropSetContainPredicate = new LinkedList<ObjPropString>();
+    	LinkedList<String> enclosingPredicate = new LinkedList<String>();
+    	
+    	String targetPredicate = packedObjProp.getName();
+    	
+        Iterator<Entry<String, LinkedList<ObjPropString>>> it = predicateObjProp.entrySet().iterator();
+        while (it.hasNext()) {
+        	Entry<String, LinkedList<ObjPropString>> pair = 
+        			(Entry<String, LinkedList<ObjPropString>>)it.next();
+        	String nameOfPredicate = pair.getKey();
+        	LinkedList<ObjPropString> objPropStrings = pair.getValue();
+        	
+        	for (int i=0;i<objPropStrings.size();i++) {
+        		String nameOfPred = objPropStrings.get(i).getName();
+        		if (nameOfPred == targetPredicate) {
+        			predicateSet.add(nameOfPred);
+        			objPropSetContainPredicate.add(objPropStrings.get(i));
+        			enclosingPredicate.add(nameOfPredicate);
+        		}
+        	}
+
+        	it.remove(); // avoids a ConcurrentModificationException
+        }
+        
+        //We need to do the same algorithm as above for the predicateObjProp
+        //in the previous Boogie visitors.
+        
+    	for (int i=0; i < numberFilesBefore; i++) {
+    		HashMap<String, LinkedList<ObjPropString>> bvPredicateObjProp =
+    				bv[i].getPredicateObjProp();
+    		 Iterator<Entry<String, LinkedList<ObjPropString>>> it2 = bvPredicateObjProp.entrySet().iterator();
+    	        while (it2.hasNext()) {
+    	        	Entry<String, LinkedList<ObjPropString>> pair = 
+    	        			(Entry<String, LinkedList<ObjPropString>>)it2.next();
+    	        	String nameOfPredicate = pair.getKey();
+    	        	LinkedList<ObjPropString> objPropStrings = pair.getValue();
+    	        	
+    	        	for (int j=0;j<objPropStrings.size();j++) {
+    	        		String nameOfPred = objPropStrings.get(j).getName();
+    	        		if (nameOfPred == targetPredicate) {
+    	        			predicateSet.add(nameOfPred);
+    	        			objPropSetContainPredicate.add(objPropStrings.get(j));
+    	        			enclosingPredicate.add(nameOfPredicate);
+    	        		}
+    	        	}
+
+    	        	it2.remove(); // avoids a ConcurrentModificationException
+    	        }
+    	}
+    	
+    	//The set of object propositions that contain the predicate in packedObjProp.
+    	Set<ObjPropString> objPropSet = new TreeSet<ObjPropString>();
+    	
+    	for (int k=0;k<GammaPacked0.size();k++) {
+    		ObjPropString o = GammaPacked0.get(k);
+    		if (predicateSet.contains(o.getName())) {
+    			objPropSet.add(o);
+    		}
+    	}
+    	
+    	//We need to replace [this] with [caller] in the object propositions inside objPropSet.
+    	//ObjPropString wantedObjProp = new ObjPropString();
+    	for (ObjPropString ob : objPropSet) {
+    		//work with ob
+    		LinkedList<ObjPropString> obListOfObjProp = 
+    	}
+    	
+    	
+    	
 		/*
 		 *  	
     		for (int j=0; j < methPreconditions.size(); j++) {
@@ -1830,7 +1927,7 @@ public class BoogieVisitor extends NullVisitor {
     			}
     		}
     	}
-
+ return result;
         }
     
     //k=1 is for writing nameParam: type
