@@ -1737,8 +1737,8 @@ public class BoogieVisitor extends NullVisitor {
     	
     	//The set of predicates that contain the predicate in packedObjProp.
     	LinkedList<String> predicateSet = new LinkedList<String>();
-    	LinkedList<ObjPropString> objPropSetContainPredicate = new LinkedList<ObjPropString>();
-    	LinkedList<String> enclosingPredicate = new LinkedList<String>();
+    	//The predicates for objprop in this set are all the target predicate.
+    	LinkedList<ObjPropString> objPropForPredicateSet = new LinkedList<ObjPropString>();
     	
     	String targetPredicate = packedObjProp.getName();
     	
@@ -1752,9 +1752,8 @@ public class BoogieVisitor extends NullVisitor {
         	for (int i=0;i<objPropStrings.size();i++) {
         		String nameOfPred = objPropStrings.get(i).getName();
         		if (nameOfPred == targetPredicate) {
-        			predicateSet.add(nameOfPred);
-        			objPropSetContainPredicate.add(objPropStrings.get(i));
-        			enclosingPredicate.add(nameOfPredicate);
+        			predicateSet.add(nameOfPredicate);
+        			objPropForPredicateSet.add(objPropStrings.get(i));
         		}
         	}
 
@@ -1777,9 +1776,8 @@ public class BoogieVisitor extends NullVisitor {
     	        	for (int j=0;j<objPropStrings.size();j++) {
     	        		String nameOfPred = objPropStrings.get(j).getName();
     	        		if (nameOfPred == targetPredicate) {
-    	        			predicateSet.add(nameOfPred);
-    	        			objPropSetContainPredicate.add(objPropStrings.get(j));
-    	        			enclosingPredicate.add(nameOfPredicate);
+    	        			predicateSet.add(nameOfPredicate);
+    	        			objPropForPredicateSet.add(objPropStrings.get(j));
     	        		}
     	        	}
 
@@ -1787,23 +1785,31 @@ public class BoogieVisitor extends NullVisitor {
     	        }
     	}
     	
-    	//The set of object propositions that contain the predicate in packedObjProp.
+    	//The set of object propositions in GammaPacked0 that contain the predicate in packedObjProp.
     	Set<ObjPropString> objPropSet = new TreeSet<ObjPropString>();
     	
     	for (int k=0;k<GammaPacked0.size();k++) {
     		ObjPropString o = GammaPacked0.get(k);
-    		if (predicateSet.contains(o.getName())) {
-    			objPropSet.add(o);
+    		String caller = o.getObject();
+    		//Replace [this] with [caller] in the corresponding object proposition 
+    		//inside objPropForPredicateSet.
+    		for (int l=0;l<predicateSet.size();l++) {
+    			if (predicateSet.get(l) == o.getName())
+    			{
+    				//Here we replace [this] with [caller]
+    				ObjPropString temp = objPropForPredicateSet.get(l);
+    				String newCaller = (temp.getObject()).replaceAll("[this]", "["+caller+"]");
+    				temp.setObject(newCaller);
+    				if (temp.equals(packedObjProp)) {
+    				objPropSet.add(o);
+    				}
+    			}
     		}
     	}
     	
-    	//We need to replace [this] with [caller] in the object propositions inside objPropSet.
-    	//ObjPropString wantedObjProp = new ObjPropString();
-    	for (ObjPropString ob : objPropSet) {
-    		//work with ob
-    		LinkedList<ObjPropString> obListOfObjProp = 
-    	}
-    	
+    	//Now objPropSet contains all the viable object propositions that
+    	//are in GammaPAcked0 and could be unpacked to get the desired object proposition.
+    	//We might try all the possibilities or do it randomly.
     	
     	
 		/*
