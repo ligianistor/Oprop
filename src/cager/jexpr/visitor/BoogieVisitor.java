@@ -676,7 +676,7 @@ public class BoogieVisitor extends NullVisitor {
         	}
         	callMethodPreconditions = bv[classOfCallMethod].getMethodPreconditionsPacked().get(methodName);		
     	}
-    	
+    	/*
     	if (callMethodPreconditions != null) {
     		String objPropMethPrecondString = objPropForMethodPrecond(
 		        	GammaPacked,	
@@ -690,6 +690,7 @@ public class BoogieVisitor extends NullVisitor {
 
 
     	}
+    	*/
     	//TODO I need to modify here.
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
@@ -1700,7 +1701,11 @@ public class BoogieVisitor extends NullVisitor {
 			) {
 		return new StateOfGammas();
 	}
-	
+//I am not inferring the calling of pack/unpack.
+//The programmer now puts the annotations in the body of the Java files.
+//The inference of the pack/unpack can be done as a side project.
+//That would be a search problem + heuristics.
+/*	
 	StateOfGammas unpackToGetPacked(
 			LinkedList<ObjPropString> GammaPacked0,
         	LinkedList<ObjPropString> GammaUnpacked0,
@@ -1833,18 +1838,9 @@ public class BoogieVisitor extends NullVisitor {
     				modifyPackedMods(name, caller, 1);
     			}	    			
     		}
-        	return result;
-		 */
-		
-		
-		
-		
-		
-	}
-	
-	//TODO put comment here
-	//
-	//
+        	return result;	
+	}	
+
     String objPropForMethodPrecond(
     		LinkedList<ObjPropString> GammaPacked0,
         	LinkedList<ObjPropString> GammaUnpacked0,
@@ -1935,6 +1931,7 @@ public class BoogieVisitor extends NullVisitor {
     	}
  return result;
         }
+    */
     
     //k=1 is for writing nameParam: type
     //k=2 is for writing the current value of the parameters
