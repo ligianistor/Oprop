@@ -20,9 +20,12 @@ class Link {
     requires (this#k Range(0,10))
     ensures (this#k Range(0,10))
     {
+    	unpack(this#k Range(0,10));
     	this.val = (this.val + x)%11;
-    	if (this.next != null) 
-    	   {this.next.addModulo11(x);}
+    	pack(this#k Range(0,10));
+    	if (this.next != null) {
+    		this.next.addModulo11(x);
+    		}
     }
     
     void add(int z)
@@ -30,9 +33,12 @@ class Link {
     requires x < y && (this#1 UniRange(x,y))
     ensures (this#1 UniRange(x+z,y+z))
     {
+    	unpack(this#1 UniRange(x,y));
     	this.val = this.val + z;
-    	if (this.next != null) 
-    	  {this.next.add(z);}
+    	pack(this#1 UniRange(x+z,y+z));
+    	if (this.next != null) {
+    		this.next.add(z);
+    	}
     }
  
     

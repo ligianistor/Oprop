@@ -11,7 +11,9 @@ class Share {
 	requires this#k ShareCount()
 	ensures this#k ShareCount()
 	{
+		unpack(this#k ShareCount());
 		this.dc.increment();
+		pack(this#k ShareCount());
 	}
 	
 	void main() 
