@@ -25,7 +25,7 @@ class SimpleCell {
 		
 		unpack(a#1 PredNext());
 		unpack(b#1 PredNext());
-		addFrac(c#0.34 PredVal(), c#0.34 PredVal(), c#0.34 PredVal());
+		addFrac(c#0.34 PredVal(), c#0.34 PredVal(), c#0.32 PredVal());
 		c.changeVal(4);
 		
 	}

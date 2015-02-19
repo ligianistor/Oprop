@@ -1537,7 +1537,7 @@ void ConstructorDeclaration() :
         case RUNSIGNEDSHIFTASSIGN:
           op = AssignmentOperator();
           e2 = Expression();
-                                                                e = new BinaryExpression(e, op, e2);
+          e = new BinaryExpression(e, op, e2);
           break;
         default:
           jj_la1[49] = jj_gen;

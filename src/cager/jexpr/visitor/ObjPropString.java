@@ -6,7 +6,7 @@ public class ObjPropString {
 	String object;
 	double maxFrac;
 	double minFrac;
-	Fraction exactFrac;
+	double exactFrac;
 	String fracParam;
 	String predicateName;
 	LinkedList<String> params;
@@ -23,7 +23,7 @@ public class ObjPropString {
 	    // The value -1 is an error flag.
 		maxFrac = -1;
 		minFrac = -1;
-		exactFrac = new Fraction(-1,1);		
+		exactFrac = -1;		
 	}
 	
 	String getObject() {
@@ -55,8 +55,8 @@ public class ObjPropString {
 		 minFrac = min;
 	}
 	
-	void setExactFrac(int up, int down) {
-		exactFrac.changeTo(up, down);
+	void setExactFrac(double e) {
+		exactFrac = e;
 	}
 	
 	double getMaxFrac() {
@@ -68,7 +68,7 @@ public class ObjPropString {
 		return minFrac;
 	}
 	
-	Fraction getExactFrac() {
+	double getExactFrac() {
 		return exactFrac;
 	}
 	

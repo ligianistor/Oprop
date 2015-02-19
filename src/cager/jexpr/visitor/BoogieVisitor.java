@@ -939,8 +939,8 @@ public class BoogieVisitor extends NullVisitor {
     		//TODO
     		//We only had ints so far,
     		//but need to deal with actual fractions on an example.
-    		int d = Integer.parseInt(fracInObjProp); 
-    		objProp.setExactFrac(d, 1);
+    		double d = Double.parseDouble(fracInObjProp); 
+    		objProp.setExactFrac(d);
     	}
     	    	
     	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, objectString);
