@@ -1,4 +1,4 @@
-package testcases.cager.jexpr;
+package x;
 
 class SimpleCell {
 	int val;
@@ -19,7 +19,6 @@ class SimpleCell {
 	
 	void main() {
 		SimpleCell c = new SimpleCell(PredVal())(2, null);
-		splitFrac(c#1 PredVal(), 3);
 		SimpleCell a = new SimpleCell(PredNext())(2, c);
 		SimpleCell b = new SimpleCell(PredNext())(3, c);
 		
