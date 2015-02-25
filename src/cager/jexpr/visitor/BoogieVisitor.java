@@ -28,6 +28,7 @@ import cager.jexpr.ast.FieldSelection;
 import cager.jexpr.ast.FieldTypePredbody;
 import cager.jexpr.ast.FormalParameter;
 import cager.jexpr.ast.FormalParameters;
+import cager.jexpr.ast.FractionAnnotation;
 import cager.jexpr.ast.IdentifierExpression;
 import cager.jexpr.ast.IfStatement;
 import cager.jexpr.ast.KeywordExpression;
@@ -72,6 +73,8 @@ public class BoogieVisitor extends NullVisitor {
 	//they get confused with the Blocks at the beginning of 
 	//method declarations.
 	boolean inIfStatement = false;
+	
+	boolean inPackUnpackAnnotation = false;
 	
 	//True iff this program contains the modulo operator.
 	boolean programContainsModulo = false;
@@ -243,6 +246,10 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//The string of the object proposition inside which we are at the moment.
 	String objectPropString;
+	
+	String objectObjProp;
+	String predicateNameObjProp;
+	LinkedList<String> argumentsObjProp = new LinkedList<String>();
 	
 	//The Boogie Visitors of the files that have been translated before this one.
 	BoogieVisitor[] bv;
@@ -868,7 +875,7 @@ public class BoogieVisitor extends NullVisitor {
     	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(astvalue);
 		  }
-    	
+    	if (!inPackUnpackAnnotation) {
 		  if ((currentMethod != "") && (inStatement) && !inArgumentList ) {
 			  statementContent = statementContent.concat(astvalue);
 		  }
@@ -880,6 +887,7 @@ public class BoogieVisitor extends NullVisitor {
 		  if ((currentMethod != "") && (!inStatement) && (inArgumentList) ) {
 			 modifyMethodBody(astvalue + ",");
 		  }
+    	}
 		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
     		  FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
@@ -892,7 +900,7 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast); }
     
     public void visitObjectProposition(ObjectProposition ast) throws ParseException
-    {
+    {    	
     	insideObjectProposition = true;
     	
     	FracString fracString = new FracString();
@@ -900,6 +908,7 @@ public class BoogieVisitor extends NullVisitor {
     	objectPropString = "";
     	object.accept(this);
     	String objectString = objectPropString;
+    	
     	objectPropString = "";
     	
     	Expression frac = ast.getFraction();
@@ -915,6 +924,7 @@ public class BoogieVisitor extends NullVisitor {
     	objectPropString = "";
     	childrenPredDecl[0].accept(this);
     	String predName = objectPropString;
+    	
 
     	objectPropString = "";
     	ArgumentList argList = (ArgumentList)childrenPredDecl[1];
@@ -932,10 +942,14 @@ public class BoogieVisitor extends NullVisitor {
     			args.add(objectPropString);
     		}
     	}
+    	
+    	argumentsObjProp = args;
+    	objectObjProp = objectString;
+    	predicateNameObjProp = predName;
+    	
     	ObjPropString objProp =
     			new ObjPropString(objectString, fracInObjProp, 
     	    			predName, args);
-    				
     	if (isNumeric(fracInObjProp)) {
     		//TODO
     		//We only had ints so far,
@@ -969,7 +983,7 @@ public class BoogieVisitor extends NullVisitor {
     	// We do not need to set this inside the if branches.
     	fracString.setMinBound(0);
     	
-    	if (currentMethod!="") {
+    	if ((currentMethod != "") && !inPackUnpackAnnotation) {
     		modifyMethodSpec(bodyMethodOrPredicate);
  
     		if (insidePrecondition) {
@@ -982,7 +996,7 @@ public class BoogieVisitor extends NullVisitor {
     			modifyEnsuresFrac(fracString);
     		}
     	}
-    	else {
+    	else if (currentMethod == "") {
     		modifyPredicateBody(bodyMethodOrPredicate);
     		//We want to add the FracString to predicateFrac for
     		//the current predicate and the FracString 
@@ -1109,7 +1123,7 @@ public class BoogieVisitor extends NullVisitor {
     		
         if (namePredicate.equals("")) {
      	   //we are not inside a predicate
-     		   
+     		   if (!inPackUnpackAnnotation) {
      		   if ((currentMethod != "") && (inArgumentList)) {
      			   modifyMethodBody(keywordString + ",");
      		   }
@@ -1118,11 +1132,11 @@ public class BoogieVisitor extends NullVisitor {
      			   !inArgumentList && !inMethodSelectionStatement ) {
      				  statementContent = statementContent.concat(keywordString);
      			  }
-     		   
+     		   }
      			   //modify object proposition parts
      		   if (insideObjectProposition) {
      			   objectPropString = objectPropString.concat(keywordString);
-     				  }	
+     				  }	   
         }
         else { 
      	   //we are inside a predicate	  
@@ -1141,10 +1155,56 @@ public class BoogieVisitor extends NullVisitor {
     }
 }
     
+    public void visitFractionAnnotation(FractionAnnotation ast) 
+  		  throws ParseException
+  		  { 
+    	
+    	visitChildren(ast); 
+    	
+  		  }
+    
+    
     public void visitPackUnpackAnnotation(PackUnpackAnnotation ast) 
   		  throws ParseException
   		  { 
+    	String annotationName = ast.getName();
+    	String toWrite = "";
+    	inPackUnpackAnnotation = true;
+    	
+    	objectObjProp = "";
+    	predicateNameObjProp = "";
+    	argumentsObjProp.clear();
     	visitChildren(ast); 
+    	System.out.println(predicateNameObjProp);
+    	if (annotationName.equals("pack")) {
+    		toWrite = toWrite.concat("call Pack"); 
+    	}
+    	else {
+    		toWrite = toWrite.concat("call Unpack"); 
+    	}
+    	
+    	toWrite = toWrite.concat(predicateNameObjProp + "("); 
+    	
+    	for (int i=0;i<argumentsObjProp.size();i++) {
+    		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
+    	}
+    	
+    	toWrite = toWrite.concat(objectObjProp + ");\n"); 
+    	toWrite = toWrite.concat("packed" + predicateNameObjProp+"[");
+    	
+    	for (int i=0;i<argumentsObjProp.size();i++) {
+    		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
+    	}
+    	toWrite = toWrite.concat(objectObjProp + "] := "); 
+       	if (annotationName.equals("pack")) {
+    		toWrite = toWrite.concat("true"); 
+    	}
+    	else {
+    		toWrite = toWrite.concat("false"); 
+    	}
+    	
+    	modifyMethodBody(toWrite);
+    	inPackUnpackAnnotation = false;
     	
   		  }
  
@@ -1166,7 +1226,7 @@ public class BoogieVisitor extends NullVisitor {
   			  modifyMethodBody(fieldName+ "[this]"); 
     	   }
     	   else {
-    		   
+    		   if (!inPackUnpackAnnotation) {
     		   if ((currentMethod != "") && (inArgumentList) && (inStatement)) {
     			   statementContent = statementContent.concat(identifierName + ",");
     		   }
@@ -1179,11 +1239,12 @@ public class BoogieVisitor extends NullVisitor {
     			   !inArgumentList && !inMethodSelectionStatement ) {
     				  statementContent = statementContent.concat(identifierName);
     			  }
-    		   
+    		   }
     			   //modify object proposition parts
     		   if (insideObjectProposition) {
     			   objectPropString = objectPropString.concat(identifierName);
     				  }	
+    	   
     	   }
        }
        
@@ -1322,6 +1383,8 @@ public class BoogieVisitor extends NullVisitor {
     	    children[i].accept(this);
     	    //write what we are packing or unpacking 
     	    //before writing the statement
+    	    //This is for pack/unpack search problem.
+    	    /*
     	    if (visitedMethSel == false) {
             for (String fieldName : fieldsInStatement) {
                 if (fieldName != null) {   
@@ -1348,9 +1411,8 @@ public class BoogieVisitor extends NullVisitor {
             }
             }
     	    }
-    	    else {
-    	    	
-    	    }
+    	    */
+
     	    modifyMethodBody(statementContent);
     	  }
     	
@@ -1365,15 +1427,18 @@ public class BoogieVisitor extends NullVisitor {
     				//Need to check if this object proposition is also in GammaPacked
     				//if it's not, then might throw an error or send a message
     		
+    				//This for the pack/unpack search problem.
+    				/*
     				ObjPropString o = thisMethodPostCond.get(i);
     				String obj = o.getObject();
     				String name = o.getName();
-    		
+    				
     				//need to take care of the OK, ok uppercase issue
     				modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
     				modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
     				fieldsInMethod.add("packed"+name);
     				modifyPackedMods(name, obj, 1);
+    				*/
     			}
     		}
     	}
@@ -1656,6 +1721,8 @@ public class BoogieVisitor extends NullVisitor {
 	//boo comes from boolean
 	//name is the name of the predicate
 	//obj is the name of the object. It can be this, or dc[this], etc.
+	//TODO
+	//What does this method do?
 	void modifyPackedMods(String name, String obj, int boo) {
 		LinkedList<PackObjMods> currentPackObjMods = 
     			packedMods.get(name);

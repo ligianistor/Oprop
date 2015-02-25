@@ -2282,6 +2282,11 @@ void ConstructorDeclaration() :
         	  ((PackUnpackAnnotation)e).add(objProp);
         	  
           }
+          else if ("addFrac".equals(nameOfIdentifier)) {
+        	  e = new FractionAnnotation(nameOfIdentifier); 
+        	  Expression objPropArgs = Arguments();
+        	  ((FractionAnnotation)e).add(objPropArgs);
+          }
           else {
           e = new IdentifierExpression(getToken(0).image); 
           }

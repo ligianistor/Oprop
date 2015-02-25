@@ -20,6 +20,7 @@ public interface Visitor {
   public abstract void visitFormalParameters(FormalParameters ast) throws ParseException;
   public abstract void visitIdentifierExpression(IdentifierExpression ast) throws ParseException;
   public abstract void visitPackUnpackAnnotation(PackUnpackAnnotation ast) throws ParseException;
+  public abstract void visitFractionAnnotation(FractionAnnotation ast) throws ParseException;
   public abstract void visitKeywordExpression(KeywordExpression ast) throws ParseException;
   public abstract void visitLiteralExpression(LiteralExpression ast) throws ParseException;
   public abstract void visitUnaryExpression(UnaryExpression ast) throws ParseException;
