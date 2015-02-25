@@ -249,6 +249,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	String objectObjProp;
 	String predicateNameObjProp;
+	String fractionObjProp;
 	LinkedList<String> argumentsObjProp = new LinkedList<String>();
 	
 	//The Boogie Visitors of the files that have been translated before this one.
@@ -946,6 +947,7 @@ public class BoogieVisitor extends NullVisitor {
     	argumentsObjProp = args;
     	objectObjProp = objectString;
     	predicateNameObjProp = predName;
+    	fractionObjProp = fracInObjProp;
     	
     	ObjPropString objProp =
     			new ObjPropString(objectString, fracInObjProp, 
@@ -1062,9 +1064,25 @@ public class BoogieVisitor extends NullVisitor {
     {
     	String predicateOfConstruct = ast.getPredicate();
     	
-    	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+predicateOfConstruct+"(");
-        visitChildren(ast);
+    	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+"(");
+    	AST[] children = ast.getChildren();
+    	//This is the ArgumentList that contains the arguments
+    	//for the fields.
+        children[1].accept(this);
+       
         modifyMethodBody(localVariableName + ");\n");
+        modifyMethodBody("packed" +predicateOfConstruct+"[");
+        
+        children[0].accept(this);
+        
+        modifyMethodBody(localVariableName + "] := true;\n");
+        
+        modifyMethodBody("frac" +predicateOfConstruct+"[");
+        
+        children[0].accept(this);
+        
+        modifyMethodBody(localVariableName + "] := 1.0;\n");
+        
         
         // We want to modify the frac that we find in the predicate
         // corresponding to this constructor.
@@ -1159,8 +1177,61 @@ public class BoogieVisitor extends NullVisitor {
   		  throws ParseException
   		  { 
     	
-    	visitChildren(ast); 
+    	String localObjectObjProp;
+    	String localPredicateNameObjProp;
     	
+    	//LinkedList<String> localArgumentsObjProp = new LinkedList<String>();
+    	
+    	String annotationName = ast.getName();
+    	String toWrite = "";
+    	inPackUnpackAnnotation = true;
+    	AST[] children0 = ast.getChildren();
+    	ArgumentList argAst = (ArgumentList)(children0[0]);
+    	AST[] children = argAst.getChildren();
+    	
+
+    	objectObjProp = "";
+    	predicateNameObjProp = "";
+    	argumentsObjProp.clear();
+    	fractionObjProp = "";
+    	children[0].accept(this);
+    	localObjectObjProp = objectObjProp;
+    	localPredicateNameObjProp = predicateNameObjProp;
+    	//localFractionObjProp = fractionObjProp;
+    	//localArgumentsObjProp = argumentsObjProp;
+    
+    	toWrite = toWrite.concat("frac"+predicateNameObjProp+"[");
+    	for (int i=0;i<argumentsObjProp.size();i++) {
+    		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
+    	}
+    	toWrite = toWrite.concat(objectObjProp + "] := ");
+    	//Same code as above
+    	//TODO remove duplicate code
+    	toWrite = toWrite.concat("frac"+predicateNameObjProp+"[");
+    	for (int i=0;i<argumentsObjProp.size();i++) {
+    		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
+    	}
+    	toWrite = toWrite.concat(objectObjProp + "]");
+    	
+  	  for (int i = 1; i < children.length; i++) {
+  		objectObjProp = "";
+    	predicateNameObjProp = "";
+    	argumentsObjProp.clear();
+    	fractionObjProp = "";
+		children[i].accept(this);
+		assert(localObjectObjProp == objectObjProp);
+		assert(localPredicateNameObjProp == predicateNameObjProp);
+		if (annotationName.equals("addFrac")) {
+		toWrite = toWrite.concat("+" + fractionObjProp);
+		} else {
+			
+		}
+		  //TODO
+		  //need to add assert for LinkedList too
+	  }
+    	
+  	modifyMethodBody(toWrite);
+  	inPackUnpackAnnotation = false;
   		  }
     
     
@@ -1175,7 +1246,7 @@ public class BoogieVisitor extends NullVisitor {
     	predicateNameObjProp = "";
     	argumentsObjProp.clear();
     	visitChildren(ast); 
-    	System.out.println(predicateNameObjProp);
+    	
     	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("call Pack"); 
     	}
@@ -1206,7 +1277,7 @@ public class BoogieVisitor extends NullVisitor {
     	modifyMethodBody(toWrite);
     	inPackUnpackAnnotation = false;
     	
-  		  }
+  		}
  
     public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {    	
