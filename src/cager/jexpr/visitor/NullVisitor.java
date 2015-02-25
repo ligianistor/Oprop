@@ -21,6 +21,7 @@ import cager.jexpr.ast.MethodSpecExpression;
 import cager.jexpr.ast.MethodSpecVariable;
 import cager.jexpr.ast.MethodSpecVariables;
 import cager.jexpr.ast.ObjectProposition;
+import cager.jexpr.ast.PackUnpackAnnotation;
 import cager.jexpr.ast.PredicateDeclaration;
 import cager.jexpr.ast.QuantificationExpression;
 import cager.jexpr.ast.QuantifierVariable;
@@ -65,6 +66,10 @@ public class NullVisitor implements Visitor
 		  { visitChildren(ast); }
   
   public void visitIdentifierExpression(IdentifierExpression ast ) 
+		  throws ParseException
+		  { visitChildren(ast); }
+  
+  public void visitPackUnpackAnnotation(PackUnpackAnnotation ast) 
 		  throws ParseException
 		  { visitChildren(ast); }
   

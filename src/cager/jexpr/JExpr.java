@@ -2271,8 +2271,22 @@ void ConstructorDeclaration() :
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
           jj_consume_token(IDENTIFIER);
+          //lnistor
+          String nameOfIdentifier = getToken(0).image;
+          if ("unpack".equals(nameOfIdentifier) ||
+        	  "pack".equals(nameOfIdentifier)) {
+        	  e = new PackUnpackAnnotation(nameOfIdentifier); 
+        	  jj_consume_token(LPAREN);
+        	  Expression objProp = ObjectProposition();
+        	  jj_consume_token(RPAREN);
+        	  ((PackUnpackAnnotation)e).add(objProp);
+        	  
+          }
+          else {
           e = new IdentifierExpression(getToken(0).image); 
+          }
           pe.add(e);
+
           label_30:
           while (true) {
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2897,9 +2911,9 @@ void LocalVariableDeclaration() :
         case RSIGNEDSHIFTASSIGN:
         case RUNSIGNEDSHIFTASSIGN:
           //AssignmentOperator() Expression()
-              op = AssignmentOperator();
+          op = AssignmentOperator();
           e2 = Expression();
-                                                  e = new BinaryExpression(e, op, e2);
+          e = new BinaryExpression(e, op, e2);
           break;
         default:
           jj_la1[97] = jj_gen;

@@ -39,6 +39,7 @@ import cager.jexpr.ast.MethodSpecExpression;
 import cager.jexpr.ast.MethodSpecVariable;
 import cager.jexpr.ast.MethodSpecVariables;
 import cager.jexpr.ast.ObjectProposition;
+import cager.jexpr.ast.PackUnpackAnnotation;
 import cager.jexpr.ast.PredicateDeclaration;
 import cager.jexpr.ast.PrimaryExpression;
 import cager.jexpr.ast.QuantifierVariable;
@@ -1139,6 +1140,13 @@ public class BoogieVisitor extends NullVisitor {
       	   }
     }
 }
+    
+    public void visitPackUnpackAnnotation(PackUnpackAnnotation ast) 
+  		  throws ParseException
+  		  { 
+    	visitChildren(ast); 
+    	
+  		  }
  
     public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {    	
@@ -1206,8 +1214,7 @@ public class BoogieVisitor extends NullVisitor {
      		  paramsPredicateBody.put(
 					  namePredicate, 
 					  currentParamsPredicateBody.concatToPredicateBody(identifierName)
-			  );
-     		   
+			  ); 		   
      	   }
     	   }
        }
@@ -1518,6 +1525,7 @@ public class BoogieVisitor extends NullVisitor {
     			 writePredParamsOut(p, 3);
     			 out.write("Ref] real;\n");
     			
+    			 /*
             	//write constructors for each predicate
     			out.write("\n");
                 out.write("procedure Construct" + className + p + "(");
@@ -1542,7 +1550,7 @@ public class BoogieVisitor extends NullVisitor {
                 out.write("(frac"+p+"[");
                 writePredParamsOut(p, 2);
                 out.write("this] == 1.0);\n \n");
-    	  	   	
+    	  	   	*/
     		}
     		out.write("\n");
     	}
