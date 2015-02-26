@@ -9,7 +9,7 @@ class SimpleCell {
 	predicate PredNext() = exists SimpleCell obj : this.next -> obj && (obj#0.34 PredVal())	
 
 	void changeVal(int r) 
-	requires this#1 PredVal()
+	requires (this#1 PredVal()) && (r<15) 
 	ensures this#1 PredVal()
 	{
 		unpack(this#1 PredVal());
