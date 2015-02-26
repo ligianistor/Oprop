@@ -90,6 +90,8 @@ public class BoogieVisitor extends NullVisitor {
 		
 	String lastPrimaryExpressionType = "";
 	
+	String stringOfVarDecls = "";
+	
 	//For each predicate name, this maps to a list of PackObjMods. 
 	//This map needs to be reset in the beginning of each method.
 	//The first String represents the name of the predicate.
@@ -395,6 +397,7 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
     {    	
+    	stringOfVarDecls = "";
 		String moduloTranslation = "function modulo(x:int, y:int) returns (int); \n" +
 		"axiom (forall x:int, y:int :: {modulo(x,y)}\n" +
 	    "\t ((0 <= x) &&(0 < y) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < y) )\n" +
@@ -468,7 +471,6 @@ public class BoogieVisitor extends NullVisitor {
      		
      		int numDeleteParam = (int)(numberOfAmb/2)-1;
      		
-     		System.out.println(numDeleteParam + " " + sb.toString());
      		int numLeftParamToDelete = numDeleteParam;
      		int numRightParamToDelete = numDeleteParam;
      		k=0;
@@ -627,10 +629,8 @@ public class BoogieVisitor extends NullVisitor {
 					//We only want to write out the modulo function once.
 					writtenModuloFunction = true;
 				}
-				
+				out.write("{\n"+stringOfVarDecls);
 				out.write(methodBody.get(currentMethod));
-				
-
 							
 			}
 		catch (Exception e) {
@@ -852,24 +852,22 @@ public class BoogieVisitor extends NullVisitor {
     void concatToStatementObjProp(String symbol) {
     	if (namePredicate.equals("")) {
   		  try{
-  			  if (currentMethod != "") {
-  				  statementContent = statementContent.concat(symbol);
-  			  }
-  			  else {
-  				  if (insideObjectProposition) {
-  					  objectPropString = objectPropString.concat(symbol);
-  				  }
-  				  else {
-  				  out.write(symbol);
-  				  }
-  			  }
+  			 if (insideObjectProposition && (currentMethod != "")) {
+				  objectPropString = objectPropString.concat(symbol);
+			  } else if (!insideObjectProposition && (currentMethod != "")) {
+  				  statementContent = statementContent.concat(symbol);  				
+  			           } else {
+  			             out.write(symbol);
+  			       }
+  			  
   		  }
   	      catch (Exception e) {
   	    		System.err.println("Error: " + e.getMessage());
   	      }
   		  }
   		  else {		
-  			  FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+  			  FieldTypePredbody currentParamsPredicateBody = 
+  					  paramsPredicateBody.get(namePredicate);
   			  paramsPredicateBody.put(
   					  namePredicate, 
   					  currentParamsPredicateBody.concatToPredicateBody(symbol)
@@ -1173,10 +1171,10 @@ public class BoogieVisitor extends NullVisitor {
     	}
 
     		if (isClass) {
-    			modifyMethodBody("\t var " + localVariableName +":Ref;\n");
+    			stringOfVarDecls = stringOfVarDecls.concat("\t var " + localVariableName +":Ref;\n");
     		}
     		else 
-    			modifyMethodBody("\t var " + localVariableName +":"+ fieldType+";\n");
+    			stringOfVarDecls = stringOfVarDecls.concat("\t var " + localVariableName +":"+ fieldType+";\n");
     	
     	visitChildren(ast);
       }
@@ -1497,7 +1495,9 @@ public class BoogieVisitor extends NullVisitor {
     public void visitBlock(Block ast) 
   		  throws ParseException 
   		  { 
+    	if (inIfStatement) {
     	modifyMethodBody("{\n");
+    	}
     	
     	AST[] children = ast.getChildren();
     	for (int i = 0; i < children.length; i++) {  		
