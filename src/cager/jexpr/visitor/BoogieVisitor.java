@@ -444,19 +444,61 @@ public class BoogieVisitor extends NullVisitor {
      	   String currentNamePred = j.next().getKey();
      	    FieldTypePredbody paramsPred = paramsPredicateBody.get(currentNamePred);
      		String predBodyUnprocessed = paramsPred.getPredicateBody();
-     		//need to do more processing of the predBody
-     		//TODO
-     		int i=0;
-     		while (predBodyUnprocessed.charAt(i)=='&') i++;
-     		String predBody = predBodyUnprocessed.substring(i);
      		
+     		//processing of the predBody
+     		int i=0;
+     		while ((predBodyUnprocessed.charAt(i)=='&') ||
+     				(predBodyUnprocessed.charAt(i)=='(') ||
+     				(predBodyUnprocessed.charAt(i)==')') ) i++;
+     		String lastPartPredBody = predBodyUnprocessed.substring(i);
+     		String firstPartPredBody = predBodyUnprocessed.substring(0, i);
+     		StringBuilder sb = new StringBuilder(firstPartPredBody);
+     		int numberOfAmb=0;
+     		int k=0;
+     		while (k<i) {
+     			if (sb.charAt(k)=='&') {
+     				numberOfAmb++;
+     				sb = sb.deleteCharAt(k);
+     				if (k>0) k--;
+     				i--;
+     			} else {
+     				k++;
+     			}
+     		}
+     		
+     		int numDeleteParam = (int)(numberOfAmb/2)-1;
+     		
+     		System.out.println(numDeleteParam + " " + sb.toString());
+     		int numLeftParamToDelete = numDeleteParam;
+     		int numRightParamToDelete = numDeleteParam;
+     		k=0;
+     		while (k<i) {
+     			if ((sb.charAt(k) == '(') && (numLeftParamToDelete > 0)) {
+     				sb = sb.deleteCharAt(k);
+     				numLeftParamToDelete--;
+     				if (k>0) k--;
+     				i--;
+     			}
+     			else if ((sb.charAt(k)==')') && (numRightParamToDelete > 0)) {
+     				sb = sb.deleteCharAt(k);
+     				numRightParamToDelete--;
+     				if (k>0) k--;
+     				i--;
+     			}
+     			else {
+     				k++;
+     			}
+     		}
+     		
+     		
+     		String predBody = sb.toString().concat(lastPartPredBody);
      		try {
 			//will need to do something about formal parameters
 			out.write("procedure Pack"+currentNamePred+"(");
 			writePredParamsOut(currentNamePred, 1);
 			out.write("this:Ref);\n"); 
 			out.write("\t requires (packed"+currentNamePred+"[this] == false) && \n");
-			out.write("\t \t(" + predBody + ");\n"); 
+			out.write("\t \t" + predBody + ";\n"); 
 			out.write("\n");
 			out.write("procedure Unpack"+currentNamePred+"(");
 			writePredParamsOut(currentNamePred, 1);
@@ -470,7 +512,7 @@ public class BoogieVisitor extends NullVisitor {
 			out.write("(frac"+currentNamePred+"[");
 			writePredParamsOut(currentNamePred, 2);
 			out.write("this] > 0.0);\n");
-			out.write("\t ensures ("+predBody+");\n");
+			out.write("\t ensures "+predBody+";\n");
 			out.write("\n");
      		}
      		
@@ -844,9 +886,17 @@ public class BoogieVisitor extends NullVisitor {
     		concatToStatementObjProp("modulo(");
     	}
     	AST[] children = ast.getChildren();
+    	 
+    	if (!namePredicate.equals("")) {
+    		concatToStatementObjProp("(");
+    	}
+    	
 		  children[0].accept(this );
 		  concatToStatementObjProp(operatorSymbol);
 		  children[1].accept(this );
+	    	if (!namePredicate.equals("")) {
+	    		concatToStatementObjProp(")");
+	    	}
 		  
 	    	if (operatorSymbol == ",") {
 	    		//TODO this is a modulo binary expression
@@ -963,6 +1013,8 @@ public class BoogieVisitor extends NullVisitor {
     	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, objectString);
     	String fieldName = quantifiedVars.get(pv);
         String bodyMethodOrPredicate = "";
+        
+        String bodyPredicate = "";
         fracString.setNameFrac("frac"+predName);
         
     	if (fieldName == null){
@@ -971,11 +1023,13 @@ public class BoogieVisitor extends NullVisitor {
     		// but only when we are inside a predicate.
     	bodyMethodOrPredicate = "packed"+predName+"[" + objectString+
     			          "] && \n \t \t(frac"+predName+"["+ objectString+ "] > 0.0";
+    	bodyPredicate = "frac"+predName+"["+ objectString+ "] > 0.0";
     	}
     	else {
     		
     		bodyMethodOrPredicate ="packed"+predName+"[" + fieldName +
 			          "[this]] && \n \t \t(frac"+predName+"["+ fieldName + "[this]] > 0.0"; 
+    		bodyPredicate ="frac"+predName+"["+ fieldName + "[this]] > 0.0"; 
     		fracString.setField(fieldName);
     		objProp.setObject(fieldName+"[this]");
     				
@@ -999,7 +1053,7 @@ public class BoogieVisitor extends NullVisitor {
     		}
     	}
     	else if (currentMethod == "") {
-    		modifyPredicateBody(bodyMethodOrPredicate);
+    		modifyPredicateBody(bodyPredicate);
     		//We want to add the FracString to predicateFrac for
     		//the current predicate and the FracString 
     		//frac+predName[fieldname] >0.0.
