@@ -961,15 +961,15 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	AST[] children = ast.getChildren();
     	 
-    	if (!namePredicate.equals("")) {
+    	if (!namePredicate.equals("") || insidePrecondition) {
     		concatToStatementObjProp("(");
     	}
     	
 		  children[0].accept(this );
 		  concatToStatementObjProp(operatorSymbol);
 		  children[1].accept(this );
-	    	if (!namePredicate.equals("")) {
-	    		concatToStatementObjProp(")");
+	    if (!namePredicate.equals("") || insidePrecondition) {
+	    	concatToStatementObjProp(")");
 	    	}
 		  
 	    	if (operatorSymbol == ",") {
@@ -1012,6 +1012,10 @@ public class BoogieVisitor extends NullVisitor {
 		  if ((currentMethod != "") && (!inStatement) && (inArgumentList) ) {
 			 modifyMethodBody(astvalue + ",");
 		  }
+		  
+		   if ((currentMethod != "") && !insideObjectProposition && insidePrecondition) {
+			   modifyMethodSpec(astvalue);
+		   }
     	}
 		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
@@ -1072,6 +1076,9 @@ public class BoogieVisitor extends NullVisitor {
     	objectObjProp = objectString;
     	predicateNameObjProp = predName;
     	fractionObjProp = fracInObjProp;
+    	if (fracInObjProp.equals("1")) {
+    		fracInObjProp = fracInObjProp.concat(".0");
+    	}
     	
     	ObjPropString objProp =
     			new ObjPropString(objectString, fracInObjProp, 
@@ -1090,24 +1097,44 @@ public class BoogieVisitor extends NullVisitor {
         
         String bodyPredicate = "";
         fracString.setNameFrac("frac"+predName);
-        
+        if (isNumeric(fracInObjProp)) {
     	if (fieldName == null){
     		
     		// This is where FracString is updated
     		// but only when we are inside a predicate.
     	bodyMethodOrPredicate = "packed"+predName+"[" + objectString+
-    			          "] && \n \t \t(frac"+predName+"["+ objectString+ "] > 0.0";
-    	bodyPredicate = "frac"+predName+"["+ objectString+ "] > 0.0";
+    			          "] && \n \t \t(frac"+predName+"["+ objectString+ "] == " + fracInObjProp+")";
+    	bodyPredicate = "frac"+predName+"["+ objectString+ "] == " + fracInObjProp;
     	}
     	else {
     		
     		bodyMethodOrPredicate ="packed"+predName+"[" + fieldName +
-			          "[this]] && \n \t \t(frac"+predName+"["+ fieldName + "[this]] > 0.0"; 
-    		bodyPredicate ="frac"+predName+"["+ fieldName + "[this]] > 0.0"; 
+			          "[this]] && \n \t \t(frac"+predName+"["+ fieldName + "[this]] == " + fracInObjProp +")"; 
+    		bodyPredicate ="frac"+predName+"["+ fieldName + "[this]] == " + fracInObjProp; 
     		fracString.setField(fieldName);
     		objProp.setObject(fieldName+"[this]");
     				
+    	} 
+    	} else {
+        	if (fieldName == null){
+        		
+        		// This is where FracString is updated
+        		// but only when we are inside a predicate.
+        	bodyMethodOrPredicate = "packed"+predName+"[" + objectString+
+        			          "] && \n \t \t(frac"+predName+"["+ objectString+ "] > 0.0)";
+        	bodyPredicate = "frac"+predName+"["+ objectString+ "] > 0.0";
+        	}
+        	else {
+        		
+        		bodyMethodOrPredicate ="packed"+predName+"[" + fieldName +
+    			          "[this]] && \n \t \t(frac"+predName+"["+ fieldName + "[this]] > 0.0)"; 
+        		bodyPredicate ="frac"+predName+"["+ fieldName + "[this]] > 0.0"; 
+        		fracString.setField(fieldName);
+        		objProp.setObject(fieldName+"[this]");
+        				
+        	} 
     	}
+    	
     	
     	// The minBound is the same if the fieldName is null or not. 
     	// We do not need to set this inside the if branches.
@@ -1444,6 +1471,11 @@ public class BoogieVisitor extends NullVisitor {
     			   !inArgumentList && !inMethodSelectionStatement ) {
     				  statementContent = statementContent.concat(identifierName);
     			  }
+    		   
+    		   if ((currentMethod != "") && !insideObjectProposition && insidePrecondition) {
+    			   modifyMethodSpec(identifierName);
+    		   }
+
     		   }
     			   //modify object proposition parts
     		   if (insideObjectProposition) {
@@ -1560,7 +1592,7 @@ public class BoogieVisitor extends NullVisitor {
     	modifyMethodSpec("\t requires ");
     	insidePrecondition = true;
     	precondition.accept(this );
-    	modifyMethodSpec(");\n");
+    	modifyMethodSpec(";\n");
     	}
     	
     	//TODO
@@ -1569,7 +1601,7 @@ public class BoogieVisitor extends NullVisitor {
     	modifyMethodSpec("\t ensures ");
     	insidePrecondition = false;
     	postcondition.accept(this );
-    	modifyMethodSpec(");\n");
+    	modifyMethodSpec(";\n");
     	}
     	
     	}
