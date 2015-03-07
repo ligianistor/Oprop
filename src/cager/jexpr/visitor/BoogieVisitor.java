@@ -98,6 +98,12 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<PackObjMods>> packedMods = 
 			new HashMap<String, LinkedList<PackObjMods>>();
 	
+	//For each predicate, this map tells us which are the parameters
+	//in that predicate, and their types.
+	HashMap<String, LinkedList<FieldAndTypePair>> predicateParams = 
+			new HashMap<String, LinkedList<FieldAndTypePair>>();
+	
+	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, FieldTypePredbody> paramsPredicateBody = new HashMap<String, FieldTypePredbody>();
 	
@@ -122,24 +128,8 @@ public class BoogieVisitor extends NullVisitor {
 	//A statement is a child of a block.
 	Set<String> fieldsInStatement = new TreeSet<String>();
 	
-	//Holds the packed object propositions of a method, starting with 
-	//the object propositions in the pre-condition of the method.
-	LinkedList<ObjPropString> GammaPacked = new LinkedList<ObjPropString>();
 	
-	//Holds the unpacked object propositions of a method, starting with 
-	//the object propositions that are unpacked in the pre-condition of the method.
-	LinkedList<ObjPropString> GammaUnpacked = new LinkedList<ObjPropString>();
 	
-	//Holds the constituent pieces of an object proposition for a method, starting with 
-	//pieces in the pre-condition of the method.
-	//We can think of the strings in this linked list as being concatenated by 
-	//&&. When we use a pieces, we manipulate the string that contains it.
-	LinkedList<String> GammaPiecesOfObjProp = new LinkedList<String>();
-	
-	//Holds the binary expressions that come from unpacking a predicate,
-	//for a method.
-	LinkedList<BinExprString> GammaBinExpr = new LinkedList<BinExprString>();
-		
 	//For each method, this map tells us which are the
 	//packed object propositions in the precondition of that method.  
 	HashMap<String, LinkedList<ObjPropString>> methodPreconditionsPacked = 
@@ -244,8 +234,9 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<FieldAndTypePair>> methodsInMethod = 
 			new HashMap<String, LinkedList<FieldAndTypePair>>();
 	
-	
-	
+	//The set of input parameters for the current method.
+	Set<String> parametersMethod = new TreeSet<String>();
+
 	//This boolean is true iff we are currently parsing an object proposition. 
 	boolean insideObjectProposition;
 	
@@ -264,7 +255,6 @@ public class BoogieVisitor extends NullVisitor {
 	BoogieVisitor[] bv;
 	
 	int numberFilesBefore;
-	
 	
 	public BoogieVisitor(BufferedWriter boogieFile, int n, BoogieVisitor[] bv0) {
 		out = boogieFile;
@@ -410,6 +400,7 @@ public class BoogieVisitor extends NullVisitor {
  //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
     {    	
+    	parametersMethod.clear();
     	stringOfVarDecls = "";
 		String moduloTranslation = "function modulo(x:int, y:int) returns (int); \n" +
 		"axiom (forall x:int, y:int :: {modulo(x,y)}\n" +
@@ -421,9 +412,6 @@ public class BoogieVisitor extends NullVisitor {
 	    "\t&&\n" +
 	    "\t((x <= 0) &&(y < 0) ==> (y <= modulo(x,y) ) && (modulo(x,y) <= 0) )\n" +
 	   "\t);\n\n";
-		
-    	
-    	GammaPacked.clear();
   	
     	namePredicate = "";
     	String methodName = ast.getIdentifier().name;
@@ -620,10 +608,13 @@ public class BoogieVisitor extends NullVisitor {
 				//then it means that all are packed.
 				String requiresPacked = "";
 				if (methodPreconditionsUnpacked.isEmpty()) {
+					String forallParameter = getNewForallParameter();
+					
 					//requires (forall x:Ref :: packedOK[x]);
 					for (String p : predicates) {
 						requiresPacked = 
-						  requiresPacked.concat("requires (forall x:Ref :: packed"+p+"[x]);\n");
+						  requiresPacked.concat("requires (forall "+forallParameter+
+								  ":Ref :: packed"+p+"["+forallParameter+"]);\n");
 					}
 					
 					//I also write for the predicates of the previous classes that were translated.
@@ -631,7 +622,8 @@ public class BoogieVisitor extends NullVisitor {
 			    		Set<String> bvPredicates = bv[i].getPredicates();
 			    		for (String p : bvPredicates) {
 							requiresPacked = 
-							  requiresPacked.concat("requires (forall x:Ref :: packed"+p+"[x]);\n");
+							  requiresPacked.concat("requires (forall "+forallParameter+":Ref :: packed"+p+
+									  "["+forallParameter+"]);\n");
 						}
 			    	}
 					
@@ -662,10 +654,12 @@ public class BoogieVisitor extends NullVisitor {
 		        			modifiedObjects.add(p.getObjectString());
 		        		}	
 		        	}
-		        	String ensuresForall = "\t ensures (forall x:Ref :: (";
+		        	
+		        	String forallParameter = getNewForallParameter();
+		        	String ensuresForall = "\t ensures (forall "+forallParameter+":Ref :: (";
 		        	if (modifiedObjects.isEmpty()) {
 		        		ensuresForall = ensuresForall.concat("packed"+nameOfPredicate + 
-		        				"[x] == old(packed" + nameOfPredicate +"[x])));");
+		        				"["+forallParameter+"] == old(packed" + nameOfPredicate +"["+forallParameter+"])));");
 		        	} else {
 		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
 		        		int len = modifiedObjectsArray.length;
@@ -673,16 +667,18 @@ public class BoogieVisitor extends NullVisitor {
 		        			ensuresForall = ensuresForall.concat("(");
 		        		}
 		        		for (int k = 0; k < len - 1; k++) {
-		        			ensuresForall = ensuresForall.concat("(x!="+modifiedObjectsArray[k]+") &&");
+		        			ensuresForall = ensuresForall.concat(
+		        					"("+forallParameter+"!="+modifiedObjectsArray[k]+") &&");
 		        		}
 		        		
-		        		ensuresForall = ensuresForall.concat("(x!="+modifiedObjectsArray[len-1]+") ==> ");
+		        		ensuresForall = ensuresForall.concat(
+		        				"("+forallParameter+"!="+modifiedObjectsArray[len-1]+") ==> ");
 		        		if (len > 1) {
 		        			ensuresForall = ensuresForall.concat("(");
 		        		}
 		        		
 		        		ensuresForall = ensuresForall.concat("(packed"+ nameOfPredicate + 
-		        				"[x] == old(packed"+nameOfPredicate+"[x]))));");
+		        				"[x] == old(packed"+nameOfPredicate+"["+forallParameter+"]))));");
 		        	}
 		        	
 		        	out.write(ensuresForall+"\n");
@@ -708,6 +704,16 @@ public class BoogieVisitor extends NullVisitor {
 		}
     		
     		isFirstMethod = false;
+    }
+    
+String getNewForallParameter() {
+    String forallParameter = "x";
+	int i=0;
+	while (parametersMethod.contains(forallParameter)) {
+		forallParameter = forallParameter.concat(i+"");
+		i++;		
+	}
+	return forallParameter;
     }
 
     public void visitReturnStatement(ReturnStatement ast) throws ParseException
@@ -761,34 +767,8 @@ public class BoogieVisitor extends NullVisitor {
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
-    	System.out.println(lastPrimaryExpressionType+ "XXX");
     	modifyMethodsInMethod(new FieldAndTypePair(methodName, lastPrimaryExpressionType));
-    	
-    	//TODO
-    	//We first need to add to GammaPacked the object propositions that we get from 
-    	//unpacking the object propositions that we do unpack.
-    	//We add these object propositions here and we might need to 
-    	//decide what to unpack right here.
-    	//We might need to duplicate the unpack code that is now in visitBlock()
-    	//and check in that method if the statement is a call to a method,
-    	//so that we don't write "unpack" twice to the out string.
-    	
-    	//The copies of global variables as they were before visiting the children
-    	//of the methodSelection node.
-    	
-    	
-    	
-    	// When there is a procedure "call" statement in the code, 
-    	// we look in the "requires" of that procedure and decide which 
-    	// of the object propositions need to be packed and 
-    	// which "Pack" needs to be called.
-    	// I currently call the Pack procedure for all the object propositions
-    	// in the "requires" of the procedure.
-    	// In order to find the "requires" of "methodName" we first look in the
-    	// "requires" of this class. If the "requires" for "methodName" is empty,
-    	// we then look at the previous Boogie visitors and look for the one for 
-    	// the class = "lastPrimaryExpressionType".
-    	
+    	   	
     	LinkedList<ObjPropString> callMethodPreconditions = 
     			methodPreconditionsPacked.get(methodName);
     	if (callMethodPreconditions == null) {
@@ -799,21 +779,7 @@ public class BoogieVisitor extends NullVisitor {
         	}
         	callMethodPreconditions = bv[classOfCallMethod].getMethodPreconditionsPacked().get(methodName);		
     	}
-    	/*
-    	if (callMethodPreconditions != null) {
-    		String objPropMethPrecondString = objPropForMethodPrecond(
-		        	GammaPacked,	
-		        	callMethodPreconditions,
-		        	identifierBeforeMethSel,
-		        	//this has to be modified to the list of parameters
-		        	//TODO
-		        	new LinkedList<String>()
-		        		);
-    		statementContent = statementContent.concat(objPropMethPrecondString);
 
-
-    	}
-    	*/
     	//TODO I need to modify here.
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
@@ -1084,9 +1050,6 @@ public class BoogieVisitor extends NullVisitor {
     			new ObjPropString(objectString, fracInObjProp, 
     	    			predName, args);
     	if (isNumeric(fracInObjProp)) {
-    		//TODO
-    		//We only had ints so far,
-    		//but need to deal with actual fractions on an example.
     		double d = Double.parseDouble(fracInObjProp); 
     		objProp.setExactFrac(d);
     	}
@@ -1144,7 +1107,6 @@ public class BoogieVisitor extends NullVisitor {
     		modifyMethodSpec(bodyMethodOrPredicate);
  
     		if (insidePrecondition) {
-    			GammaPacked.add(objProp);
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString);
     		} 
@@ -1204,6 +1166,7 @@ public class BoogieVisitor extends NullVisitor {
     {
     	if (ast!=null) {
     		String name = ast.getName();
+    		parametersMethod.add(name);
     		String type = ast.getType().toString();
     	if (namePredicate!="") {
     		modifyFormalParams(name, type); 
@@ -1420,13 +1383,13 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	
     	toWrite = toWrite.concat(objectObjProp + ");\n"); 
+    	
     	toWrite = toWrite.concat("packed" + predicateNameObjProp+"[");
-    	
-    	
     	for (int i=0;i<argumentsObjProp.size();i++) {
     		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
     	}
     	toWrite = toWrite.concat(objectObjProp + "] := "); 
+    	
        	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("true"); 
     	}
@@ -1594,9 +1557,7 @@ public class BoogieVisitor extends NullVisitor {
     	precondition.accept(this );
     	modifyMethodSpec(";\n");
     	}
-    	
-    	//TODO
-    	//need to createObjPropString and add it to GammaPacked
+
     	if (postcondition != null) {
     	modifyMethodSpec("\t ensures ");
     	insidePrecondition = false;
@@ -1620,68 +1581,10 @@ public class BoogieVisitor extends NullVisitor {
     		visitedMethSel = false;
     		inMethodSelectionStatement = false;
     	    children[i].accept(this);
-    	    //write what we are packing or unpacking 
-    	    //before writing the statement
-    	    //This is for pack/unpack search problem.
-    	    /*
-    	    if (visitedMethSel == false) {
-            for (String fieldName : fieldsInStatement) {
-                if (fieldName != null) {   
-                	LinkedList<String> predicatesOfField = fieldWhichPredicates.get(fieldName); 
-                	if (predicatesOfField != null) {
-                		for (int k = 0; k < predicatesOfField.size(); k++) {
-                			ObjPropString temp = new ObjPropString("this", "k", 
-                			predicatesOfField.get(k), new LinkedList<String>());
-                			if (GammaPacked.contains(temp)) {
-                				String localNameOfPredicate = predicatesOfField.get(k);
-                				modifyMethodBody("\t call Unpack"+localNameOfPredicate+"(this);\n");
-                				modifyMethodBody("\t packed"+localNameOfPredicate+"[this]:=false;\n");
-                				//TODO
-                				//Here I need to add to GammaPacked the object propositions from the body of the
-                				//unpacked predicate.
-                				//Maybe this should be added at the end of visiMethodSelection().
-                				addObjPropToGamma(localNameOfPredicate);              				
-                				fieldsInMethod.add("packed"+localNameOfPredicate);
-                				modifyPackedMods(localNameOfPredicate, "this", -1);
-                				GammaPacked.remove(temp);
-                			}
-                		} 	
-                	}
-            }
-            }
-    	    }
-    	    */
 
     	    modifyMethodBody(statementContent);
     	  }
-    	
-    	if (!inIfStatement) {
-    		LinkedList<ObjPropString> thisMethodPostCond = 
-    				methodPostconditionsPacked.get(currentMethod);
-    		if (thisMethodPostCond != null) {
-    			//Pack the object propositions
-    			//that are in the postcondition.
-    			for (int i = 0; i < thisMethodPostCond.size(); i++) {
-    				//TODO
-    				//Need to check if this object proposition is also in GammaPacked
-    				//if it's not, then might throw an error or send a message
-    		
-    				//This for the pack/unpack search problem.
-    				/*
-    				ObjPropString o = thisMethodPostCond.get(i);
-    				String obj = o.getObject();
-    				String name = o.getName();
-    				
-    				//need to take care of the OK, ok uppercase issue
-    				modifyMethodBody("\t call Pack"+name+"("+obj+");\n");
-    				modifyMethodBody("\t packed"+name+"["+obj+"]:=true;\n");
-    				fieldsInMethod.add("packed"+name);
-    				modifyPackedMods(name, obj, 1);
-    				*/
-    			}
-    		}
-    	}
-    	
+    	    	
     	modifyMethodBody("}\n ");
   		  }
     
@@ -1835,6 +1738,17 @@ public class BoogieVisitor extends NullVisitor {
     	predicateBinExpr.put(namePredicate, currentPredicateBinExpr);    	
     }
     
+    void addPredicateParams(FieldAndTypePair s) {
+    	LinkedList<FieldAndTypePair> currentPredicateParams = 
+    			predicateParams.get(namePredicate);
+    	if (currentPredicateParams == null) {
+    		currentPredicateParams = new LinkedList<FieldAndTypePair>();
+    	}
+    	currentPredicateParams.add(s);
+    	predicateParams.put(namePredicate, currentPredicateParams);    	
+    }
+   
+    
     void makeConstructors(BufferedWriter out) {
     	//I also declare the packed and frac global variables for this class.
     	try {
@@ -1914,58 +1828,7 @@ public class BoogieVisitor extends NullVisitor {
       // Match a number with optional '-' and decimal.
       return str.matches("-?\\d+(\\.\\d+)?");  
     }
-        
-    LinkedList<ObjPropString> objPropToUnpackForFrac(
-    	LinkedList<ObjPropString> Gamma0,
-    	String namePredicate0,
-    	String object0,
-    	double needFrac,
-    	double haveFrac
-    		) {
-    	LinkedList<ObjPropString> result = new LinkedList<ObjPropString>();
-    	// We assume that haveFrac < needFrac.
-    	// We need to check for this before entering this function.
-    	Iterator<Entry<String, FieldTypePredbody>> it = paramsPredicateBody.entrySet().iterator();
-    	String iterPredicateName = "";
-        while (it.hasNext()) {
-        	Entry<String, FieldTypePredbody> pairs = (Entry<String, FieldTypePredbody>)it.next();
-        	FieldTypePredbody iterParamsPredicateBody = pairs.getValue();
-        	String iterPredicateBody = iterParamsPredicateBody.getPredicateBody();
-        	//I'm not sure if this should use toLowerCase or not.
-        	//It shouldn't, after I fix everything about the name of the predicates.
-        	if (iterPredicateBody.toLowerCase().contains("frac" + namePredicate0.toLowerCase())) {
-        		iterPredicateName = pairs.getKey();
-        		// This break is for the while.
-        		// This is just temporary, it should return *all* the predicateBody's 
-        		// that contain that predicateName.
-        		break;
-        	}
-        	
-            // it.remove(); // avoids a ConcurrentModificationException
-            // We do not need this line because at the moment we are not in a 
-            // concurrent setting.
-           
-        }
-        if (iterPredicateName != "") {
-        	// I assume here that the fraction is the one that I'm looking for.
-        	// but actually, if the fraction is not enough, we need to call this
-        	// function recursively.
-        	ObjPropString temp = new ObjPropString("this", "k", 
-        			iterPredicateName, new LinkedList<String>());
-        			
-        			if (Gamma0.contains(temp)) {
-        				result.add(temp);
-        				return result;
-        			
-        			//This needs to be removed from the actual GammaPacked.
-        			//Might be able to us the actual GammaPacked, and not Gamma0.	
-        				
-        			}	
-        }
-        
-    	return null;
-   	
-    	}
+
     
     
     // A result of -1 means that the object was not found in the 
@@ -2006,270 +1869,11 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	packedMods.put(name, currentPackObjMods);
 	}
-	
-	//This adds to Gamma the object propositions that are in the body of
-	//the predicate nameOfPredicate.
-	void addObjPropToGamma(String nameOfPredicate) {
-		LinkedList<ObjPropString> currentPredicateObjProp = 
-    			predicateObjProp.get(nameOfPredicate);
-    	if (currentPredicateObjProp != null) {
-    		for (int i=0; i<currentPredicateObjProp.size(); i++) {
-    			ObjPropString o = currentPredicateObjProp.get(i);
-    			GammaPacked.add(o);
-    		}
-    		
-    	}		
-	}
-	
-	StateOfGammas unpackToGetPiece(
-			LinkedList<ObjPropString> GammaPacked0, 
-			String piece) {
-		return new StateOfGammas();
-	}
-	
-	StateOfGammas unpackToGetUnpacked(
-			LinkedList<ObjPropString> GammaPacked0, 
-			ObjPropString unpackedObjProp) {
-		return new StateOfGammas();
-	}
-	
-	StateOfGammas packPiecesToGetPacked(
-			LinkedList<String> GammaPiecesOfObjProp0, 
-			ObjPropString packedObjProp
-			) {
-		return new StateOfGammas();
-	}
+
 //I am not inferring the calling of pack/unpack.
 //The programmer now puts the annotations in the body of the Java files.
 //The inference of the pack/unpack can be done as a side project.
 //That would be a search problem + heuristics.
-/*	
-	StateOfGammas unpackToGetPacked(
-			LinkedList<ObjPropString> GammaPacked0,
-        	LinkedList<ObjPropString> GammaUnpacked0,
-        	LinkedList<String> GammaPiecesOfObjProp0,
-        	ObjPropString packedObjProp
-			) {
-		String result = "";
-		StateOfGammas state = new StateOfGammas();
-		//I make a copy of the original state of the Gammas
-		//in case I need to eventually write a backtracking algorithm that
-		//tries to do a series of unpackings in multiple ways.
-		//Right now I am only trying out one series of unpackings.
-		LinkedList<ObjPropString> originalGammaPacked0 = new LinkedList<ObjPropString>();
-    	LinkedList<ObjPropString> originalGammaUnpacked0 = new LinkedList<ObjPropString>();
-    	LinkedList<String> originalGammaPiecesOfObjProp0 = new LinkedList<String>();
-    	originalGammaPacked0 = GammaPacked0;
-    	originalGammaUnpacked0 = GammaUnpacked0;
-    	originalGammaPiecesOfObjProp0 = GammaPiecesOfObjProp0;
-    	
-    	//For the predicate in packedObjProp,
-    	//look to see which other predicates contain this predicate.
-    	//Might need to look at the predicates from previous Boogie 
-    	//visitors.
-    	//We need to use this:
-    	//For each predicate, this map 
-    	//tells us which ObjPropString are in the body of the predicate
-    	//HashMap<String, LinkedList<ObjPropString>>  predicateObjProp = 
-    	//		new HashMap<String, LinkedList<ObjPropString>>();
-    	//Might need to check each object proposition in a for loop
-    	//because the callers might not be the same
-    	//and we only want to know if the predicate of that object proposition,
-    	//with the right params,
-    	//is in this predicate.
-    	
-    	//The set of predicates that contain the predicate in packedObjProp.
-    	LinkedList<String> predicateSet = new LinkedList<String>();
-    	//The predicates for objprop in this set are all the target predicate.
-    	LinkedList<ObjPropString> objPropForPredicateSet = new LinkedList<ObjPropString>();
-    	
-    	String targetPredicate = packedObjProp.getName();
-    	
-        Iterator<Entry<String, LinkedList<ObjPropString>>> it = predicateObjProp.entrySet().iterator();
-        while (it.hasNext()) {
-        	Entry<String, LinkedList<ObjPropString>> pair = 
-        			(Entry<String, LinkedList<ObjPropString>>)it.next();
-        	String nameOfPredicate = pair.getKey();
-        	LinkedList<ObjPropString> objPropStrings = pair.getValue();
-        	
-        	for (int i=0;i<objPropStrings.size();i++) {
-        		String nameOfPred = objPropStrings.get(i).getName();
-        		if (nameOfPred == targetPredicate) {
-        			predicateSet.add(nameOfPredicate);
-        			objPropForPredicateSet.add(objPropStrings.get(i));
-        		}
-        	}
-
-        	it.remove(); // avoids a ConcurrentModificationException
-        }
-        
-        //We need to do the same algorithm as above for the predicateObjProp
-        //in the previous Boogie visitors.
-        
-    	for (int i=0; i < numberFilesBefore; i++) {
-    		HashMap<String, LinkedList<ObjPropString>> bvPredicateObjProp =
-    				bv[i].getPredicateObjProp();
-    		 Iterator<Entry<String, LinkedList<ObjPropString>>> it2 = bvPredicateObjProp.entrySet().iterator();
-    	        while (it2.hasNext()) {
-    	        	Entry<String, LinkedList<ObjPropString>> pair = 
-    	        			(Entry<String, LinkedList<ObjPropString>>)it2.next();
-    	        	String nameOfPredicate = pair.getKey();
-    	        	LinkedList<ObjPropString> objPropStrings = pair.getValue();
-    	        	
-    	        	for (int j=0;j<objPropStrings.size();j++) {
-    	        		String nameOfPred = objPropStrings.get(j).getName();
-    	        		if (nameOfPred == targetPredicate) {
-    	        			predicateSet.add(nameOfPredicate);
-    	        			objPropForPredicateSet.add(objPropStrings.get(j));
-    	        		}
-    	        	}
-
-    	        	it2.remove(); // avoids a ConcurrentModificationException
-    	        }
-    	}
-    	
-    	//The set of object propositions in GammaPacked0 that contain the predicate in packedObjProp.
-    	Set<ObjPropString> objPropSet = new TreeSet<ObjPropString>();
-    	
-    	for (int k=0;k<GammaPacked0.size();k++) {
-    		ObjPropString o = GammaPacked0.get(k);
-    		String caller = o.getObject();
-    		//Replace [this] with [caller] in the corresponding object proposition 
-    		//inside objPropForPredicateSet.
-    		for (int l=0;l<predicateSet.size();l++) {
-    			if (predicateSet.get(l) == o.getName())
-    			{
-    				//Here we replace [this] with [caller]
-    				ObjPropString temp = objPropForPredicateSet.get(l);
-    				String newCaller = (temp.getObject()).replaceAll("[this]", "["+caller+"]");
-    				temp.setObject(newCaller);
-    				if (temp.equals(packedObjProp)) {
-    				objPropSet.add(o);
-    				}
-    			}
-    		}
-    	}
-    	
-    	//Now objPropSet contains all the viable object propositions that
-    	//are in GammaPAcked0 and could be unpacked to get the desired object proposition.
-    	//We might try all the possibilities or do it randomly.
-    	
-    	
-		/*
-		 *  	
-    		for (int j=0; j < methPreconditions.size(); j++) {
-    			//TODO
-    			// Need to check if these object propositions are in GammaPacked.
-    			// Might need another map for knowing which object propositions are packed and which are
-    			// unpacked. Or a more general way of writing the class ObjPropString.
-    			// Or another GammaUnpacked that is like Gamma, but for the current unpacked object propositions.
-    			ObjPropString o = methPreconditions.get(j);
-    			o.setObject(caller);
-    			String name = o.getName();
-    			
-    			//Only call packing if this object proposition is not already packed and in Gamma.
-    			if (!GammaPacked.contains(o)) {
-    				//need to take care of the OK, ok uppercase issue
-    				statementContent = statementContent + "\t call Pack"+name+"("+caller+");\n";
-    				statementContent = statementContent + "\t packed"+name+"["+caller+"]:=true;\n";
-    				fieldsInMethod.add("packed"+name);
-    				modifyPackedMods(name, caller, 1);
-    			}	    			
-    		}
-        	return result;	
-	}	
-
-    String objPropForMethodPrecond(
-    		LinkedList<ObjPropString> GammaPacked0,
-        	LinkedList<ObjPropString> GammaUnpacked0,
-        	LinkedList<String> GammaPiecesOfObjProp0,
-        	LinkedList<ObjPropString> methodPreconditionsPacked0,
-        	LinkedList<ObjPropString> methodPreconditionsUnpacked0,
-        	LinkedList<String> methodPreconditionsPieces0,
-        	String caller,
-        	LinkedList<String> params
-        		) {
-    	String result = "";
-    	
-    	//First try to obtain the pieces in our method precondition.
-    	//We might have to unpack some object propositions to get to them.
-    	if (methodPreconditionsPieces0.size() != 0) {
-    		for (int i=0;i<methodPreconditionsPieces0.size();i++){
-    			if (!GammaPiecesOfObjProp0.contains(methodPreconditionsPieces0.get(i))){
-    				//Try to unpack an object proposition and see if it contains this piece.
-    				//TODO
-    				//Need to update the state of the Gammas after the call to the method below.
-    				result = result.concat(
-    						unpackToGetPiece(GammaPacked0, methodPreconditionsPieces0.get(i)).getResultString()
-    				);
-    				
-    			}
-    		}
-    	}
-    	
-    	//Second try to obtain the unpacked object propositions in our method precondition.
-    	//We might have to unpack some object propositions to get to them.
-    	if (methodPreconditionsUnpacked0.size() != 0) {
-    		for (int i=0;i<methodPreconditionsUnpacked0.size();i++){
-    			ObjPropString unpackedObjProp = methodPreconditionsUnpacked0.get(i);
-    			unpackedObjProp.setObject(caller);
-    			if (!GammaPiecesOfObjProp0.contains(unpackedObjProp)){
-    				//Try to unpack an object proposition and see if it contains this 
-    				//unpacked object proposition.
-    				//TODO
-    				//Need to update the state of the Gammas after the call to the method below.
-    				result = result.concat(
-    						unpackToGetUnpacked(GammaPacked0, unpackedObjProp).getResultString()
-    				);
-    				
-    			}
-    		}
-    	}
-    	
-    	//Third try to obtain the packed object propositions in our method precondition.
-    	//First try to pack.
-    	//If you can't, try to unpack by looking bottom up for what to unpack.
-    	//This is the most common case from what I have seen.
-    	//We might need to unpack a few times to get to the packed object
-    	//proposition that we want.
-    	if (methodPreconditionsPacked0.size() != 0) {
-    		for (int i=0;i<methodPreconditionsPacked0.size();i++){
-    			ObjPropString packedObjProp = methodPreconditionsPacked0.get(i);
-    			packedObjProp.setObject(caller);
-    			
-    			if (!GammaPiecesOfObjProp0.contains(packedObjProp)){
-
-    				//First try to pack to this object proposition.
-    				String couldPackString = packPiecesToGetPacked(
-    						GammaPiecesOfObjProp0, 
-    						packedObjProp
-    						).getResultString();
-    				
-    				if (couldPackString==""){
-    				//If packing didn't work, try to unpack repeatedly.
-    				
-    					StateOfGammas multipleUnpacking = unpackToGetPacked(
-    						GammaPacked0,
-    			        	GammaUnpacked0,
-    			        	GammaPiecesOfObjProp0,
-    			        	packedObjProp
-    						);
-    					
-    					result = result.concat(multipleUnpacking.getResultString());
-
-    				}
-    				
-    				else {
-    					result = result.concat(couldPackString);
-    					
-    				}
-    				
-    			}
-    		}
-    	}
- return result;
-        }
-    */
     
     //k=1 is for writing nameParam: type
     //k=2 is for writing the current value of the parameters
