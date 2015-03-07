@@ -1,10 +1,14 @@
 package cager.jexpr.visitor;
 
+import java.util.LinkedList;
+
 public class FracString {
 	String nameFrac;
 	String field;
 	//The formal parameter is always "this".
 	//The actual object has to be passed in to the getStatementFracString() method.
+	
+	LinkedList<String> parameters;
 	double minBound;
 	double maxBound;
 	
@@ -13,6 +17,7 @@ public class FracString {
 		field = null;
 		minBound = -1;
 		maxBound = -1;
+		parameters = new LinkedList<String>();
 	}
 	
 	public FracString(String n, String f, double min) {
@@ -41,6 +46,14 @@ public class FracString {
 		maxBound = m;
 	}
 	
+	void setParameters(LinkedList<String> params) {
+		parameters = params;
+	}
+	
+	void addParameter(String s) {
+		parameters.add(s);
+	}
+	
 	String getNameFrac() {
 		return nameFrac;
 	}
@@ -55,6 +68,10 @@ public class FracString {
 	
 	double getMaxBound() {
 		return maxBound;
+	}
+	
+	LinkedList<String> getParameters() {
+		return parameters;
 	}
 	
 	@Override
@@ -87,13 +104,19 @@ public boolean equals(Object obj) {
 	// I need to substitute this or field[this] with the actual parameter
 	// if the method is being called when the constructor is called.
 	String getStatementFracString(boolean inRequires, String actualObject) {
+		String stringParams = "";
+		for (int i=0; i<parameters.size();i++) {
+			stringParams = stringParams.concat(parameters.get(i)+",");
+		}
+		
 		String statement = "\t";
 		statement = statement.concat(nameFrac);
 		if (field == null) {
-			statement = statement.concat("["+actualObject+ "] := " + nameFrac + "["+actualObject+ "]");
+			statement = statement.concat("["+stringParams + actualObject+ "] := " + nameFrac + "["+
+						stringParams + actualObject+ "]");
 		} else {
-			statement = statement.concat("[" + field + "["+actualObject+ "]] := " + 
-						nameFrac + "[" + field + "["+actualObject+ "]]");
+			statement = statement.concat("[" + stringParams + field + "["+actualObject+ "]] := " + 
+						nameFrac + "[" + stringParams + field + "["+ actualObject+ "]]");
 		}
 		
 		//TODO We need to consider more cases about the values of min and max.

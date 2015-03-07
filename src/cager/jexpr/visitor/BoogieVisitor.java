@@ -98,12 +98,6 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<PackObjMods>> packedMods = 
 			new HashMap<String, LinkedList<PackObjMods>>();
 	
-	//For each predicate, this map tells us which are the parameters
-	//in that predicate, and their types.
-	HashMap<String, LinkedList<FieldAndTypePair>> predicateParams = 
-			new HashMap<String, LinkedList<FieldAndTypePair>>();
-	
-	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, FieldTypePredbody> paramsPredicateBody = new HashMap<String, FieldTypePredbody>();
 	
@@ -612,18 +606,23 @@ public class BoogieVisitor extends NullVisitor {
 					
 					//requires (forall x:Ref :: packedOK[x]);
 					for (String p : predicates) {
+						String formalParamsAndType = getStringPredParams(p, 1);
+			        	String formalParamsNoType = getStringPredParams(p, 2);
 						requiresPacked = 
-						  requiresPacked.concat("requires (forall "+forallParameter+
-								  ":Ref :: packed"+p+"["+forallParameter+"]);\n");
+						  requiresPacked.concat("requires (forall "+ formalParamsAndType + forallParameter+
+								  ":Ref :: packed"+p+"["+formalParamsNoType + forallParameter+"]);\n");
 					}
 					
 					//I also write for the predicates of the previous classes that were translated.
 			    	for (int i=0; i<numberFilesBefore; i++) {
 			    		Set<String> bvPredicates = bv[i].getPredicates();
 			    		for (String p : bvPredicates) {
+							String formalParamsAndType = getStringPredParams(p, 1);
+				        	String formalParamsNoType = getStringPredParams(p, 2);
 							requiresPacked = 
-							  requiresPacked.concat("requires (forall "+forallParameter+":Ref :: packed"+p+
-									  "["+forallParameter+"]);\n");
+							  requiresPacked.concat("requires (forall "+formalParamsAndType + 
+									  forallParameter+":Ref :: packed"+p+
+									  "["+formalParamsNoType + forallParameter+"]);\n");
 						}
 			    	}
 					
@@ -656,10 +655,16 @@ public class BoogieVisitor extends NullVisitor {
 		        	}
 		        	
 		        	String forallParameter = getNewForallParameter();
-		        	String ensuresForall = "\t ensures (forall "+forallParameter+":Ref :: (";
+		        	String formalParamsAndType = getStringPredParams(nameOfPredicate, 1);
+		        	String formalParamsNoType = getStringPredParams(nameOfPredicate, 2);
+		        	
+		        	String ensuresForall = "\t ensures (forall "+ formalParamsAndType + forallParameter+":Ref:: (";
+		        	
 		        	if (modifiedObjects.isEmpty()) {
 		        		ensuresForall = ensuresForall.concat("packed"+nameOfPredicate + 
-		        				"["+forallParameter+"] == old(packed" + nameOfPredicate +"["+forallParameter+"])));");
+		        				"["+formalParamsNoType +forallParameter+
+		        				"] == old(packed" + nameOfPredicate +"["+formalParamsNoType +
+		        				forallParameter+"])));");
 		        	} else {
 		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
 		        		int len = modifiedObjectsArray.length;
@@ -678,7 +683,9 @@ public class BoogieVisitor extends NullVisitor {
 		        		}
 		        		
 		        		ensuresForall = ensuresForall.concat("(packed"+ nameOfPredicate + 
-		        				"[x] == old(packed"+nameOfPredicate+"["+forallParameter+"]))));");
+		        				"["+formalParamsNoType + forallParameter+
+		        				"] == old(packed"+nameOfPredicate+"["+
+		        				formalParamsNoType + forallParameter+"]))));");
 		        	}
 		        	
 		        	out.write(ensuresForall+"\n");
@@ -795,7 +802,8 @@ String getNewForallParameter() {
     		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
                 FracString fracString = currentRequiresFrac.get(pf);
         		statementContent = 
-        			statementContent.concat(fracString.getStatementFracString(true, identifierBeforeMethSel));
+        			statementContent.concat(
+        					fracString.getStatementFracString(true, identifierBeforeMethSel));
         		modifyFieldsInMethod(fracString.getNameFrac());
         	}
     	}
@@ -1060,6 +1068,7 @@ String getNewForallParameter() {
         
         String bodyPredicate = "";
         fracString.setNameFrac("frac"+predName);
+        fracString.setParameters(args);
         if (isNumeric(fracInObjProp)) {
     	if (fieldName == null){
     		
@@ -1620,7 +1629,8 @@ String getNewForallParameter() {
 				currentParamsPredicateBody.addParam(name, type)
 		);
 		} 
-		//TODO else
+		//For the else branch, it means this predicate does not exist.
+		//We should not end up on this branch.
     }
         
     void modifyMethodSpec(String s) {
@@ -1737,18 +1747,7 @@ String getNewForallParameter() {
     	currentPredicateBinExpr.add(s);
     	predicateBinExpr.put(namePredicate, currentPredicateBinExpr);    	
     }
-    
-    void addPredicateParams(FieldAndTypePair s) {
-    	LinkedList<FieldAndTypePair> currentPredicateParams = 
-    			predicateParams.get(namePredicate);
-    	if (currentPredicateParams == null) {
-    		currentPredicateParams = new LinkedList<FieldAndTypePair>();
-    	}
-    	currentPredicateParams.add(s);
-    	predicateParams.put(namePredicate, currentPredicateParams);    	
-    }
    
-    
     void makeConstructors(BufferedWriter out) {
     	//I also declare the packed and frac global variables for this class.
     	try {
@@ -1908,5 +1907,38 @@ String getNewForallParameter() {
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}  	
-    }    		
+    }    
+    
+    //k=1 is for writing nameParam: type
+    //k=2 is for writing the current value of the parameters
+    //k=3 is for writing the types of the parameters
+    String getStringPredParams(String pred, int k) { 
+    	String result = "";
+    	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
+		if (currentParamsPredicateBody != null) {
+			LinkedList<FieldAndTypePair> formalParamsList =
+					currentParamsPredicateBody.getFormalParameters();
+			if (!formalParamsList.isEmpty()) {
+				for (int i=0;i<formalParamsList.size();i++) {
+					FieldAndTypePair f = formalParamsList.get(i);
+					switch (k) {
+		            case 1:  
+		            	result = result.concat(f.getName() + ":"+f.getType()+", ");
+		                break; 
+		            case 2: 
+		            	result = result.concat(f.getName() + ", ");
+		            	break;
+		            case 3: 
+		            	result = result.concat(f.getType() + ", ");
+		            	break;
+		            default: 
+		            	break;
+					}	
+				}
+			}	
+		} 
+		return result;
+    }
+    
+    
     }
