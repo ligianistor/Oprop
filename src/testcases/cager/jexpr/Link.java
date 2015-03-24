@@ -35,10 +35,10 @@ class Link {
     {
     	unpack(this#1 UniRange(x,y));
     	this.val = this.val + z;
-    	pack(this#1 UniRange(x+z,y+z));
     	if (this.next != null) {
     		this.next.add(z);
     	}
+    	pack(this#1 UniRange(x+z,y+z));
     }
  
     
