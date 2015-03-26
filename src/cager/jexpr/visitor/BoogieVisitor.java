@@ -621,7 +621,8 @@ public class BoogieVisitor extends NullVisitor {
 						String formalParamsAndType = getStringPredParams(p, 1);
 			        	String formalParamsNoType = getStringPredParams(p, 2);
 			        	
-			        	if (localFieldsInMethod.contains("packed"+p)) {
+			        	if (localFieldsInMethod.contains("packed"+p) && 
+			        			!setFracEq1.contains(p)) {
 			        		
 						requiresPacked = 
 						  requiresPacked.concat("requires (forall "+ formalParamsAndType + forallParameter+
@@ -635,7 +636,8 @@ public class BoogieVisitor extends NullVisitor {
 			    		for (String p : bvPredicates) {
 							String formalParamsAndType = getStringPredParams(p, 1);
 				        	String formalParamsNoType = getStringPredParams(p, 2);
-				        	if (localFieldsInMethod.contains(p)) {
+				        	if (localFieldsInMethod.contains(p) &&
+				        			!setFracEq1.contains(p) ) {
 							requiresPacked = 
 							  requiresPacked.concat("requires (forall "+formalParamsAndType + 
 									  forallParameter+":Ref :: packed"+p+
@@ -676,7 +678,8 @@ public class BoogieVisitor extends NullVisitor {
 		        	String formalParamsAndType = getStringPredParams(nameOfPredicate, 1);
 		        	String formalParamsNoType = getStringPredParams(nameOfPredicate, 2);
 		        	String ensuresForall = "";
-		        	if (localFieldsInMethod.contains("packed"+nameOfPredicate)) {
+		        	if (localFieldsInMethod.contains("packed"+nameOfPredicate) &&
+		        			!setFracEq1.contains(nameOfPredicate)) {
 		        	ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+ formalParamsAndType + forallParameter+":Ref:: (");
 		        	if (modifiedObjects.isEmpty()) {
@@ -1072,6 +1075,9 @@ String getNewForallParameter() {
     	fractionObjProp = fracInObjProp;
     	if (fracInObjProp.equals("1")) {
     		fracInObjProp = fracInObjProp.concat(".0");
+    		if (insidePrecondition || insidePostcondition) {
+    			setFracEq1.add(predName);
+    		}
     	}
     	
     	ObjPropString objProp =
@@ -1096,26 +1102,26 @@ String getNewForallParameter() {
     		// This is where FracString is updated
     		// but only when we are inside a predicate.
     	bodyMethodOrPredicate = "packed"+predName+"[";
-    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
     	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
     			          "] && \n \t \t(frac"+predName+"[");
-    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
     	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] == " + fracInObjProp+")");
     	bodyPredicate = "frac"+predName+"[";
-    	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+    	bodyPredicate = bodyPredicate.concat(writeActualParams(argumentsObjProp));
     	bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp);
     	}
     	else {
     		
         	bodyMethodOrPredicate = "packed"+predName+"[";
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
 			          "[this]] && \n \t \t(frac"+predName+"[");
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] == " + fracInObjProp+")");
 
         	bodyPredicate = "frac"+predName+"[";
-        	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+        	bodyPredicate = bodyPredicate.concat(writeActualParams(argumentsObjProp));
         	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] == " + fracInObjProp);
     		fracString.setField(fieldName);
     		objProp.setObject(fieldName+"[this]");
@@ -1127,10 +1133,10 @@ String getNewForallParameter() {
         		// This is where FracString is updated
         		// but only when we are inside a predicate.       	
         	bodyMethodOrPredicate = "packed"+predName+"[";
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
         			          "] && \n \t \t(frac"+predName+"[");
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
         	bodyPredicate = "frac"+predName+"[";
         	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
@@ -1139,14 +1145,14 @@ String getNewForallParameter() {
         	else {
         		
             	bodyMethodOrPredicate = "packed"+predName+"[";
-            	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+            	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
     			          "[this]] && \n \t \t(frac"+predName+"[");
-            	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+            	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
 
             	bodyPredicate = "frac"+predName+"[";
-            	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+            	bodyPredicate = bodyPredicate.concat(writeActualParams(argumentsObjProp));
             	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] > 0.0)");
         		fracString.setField(fieldName);
         		objProp.setObject(fieldName+"[this]");
@@ -1922,6 +1928,14 @@ String getNewForallParameter() {
 //The programmer now puts the annotations in the body of the Java files.
 //The inference of the pack/unpack can be done as a side project.
 //That would be a search problem + heuristics.
+	
+	String writeActualParams(LinkedList<String> argsObjProp) {
+		String result = "";
+		for (int i=0;i<argsObjProp.size();i++){
+			result = result.concat(argsObjProp.get(i)+",");
+		}
+		return result;
+	}
     
     //k=1 is for writing nameParam: type
     //k=2 is for writing the current value of the parameters
