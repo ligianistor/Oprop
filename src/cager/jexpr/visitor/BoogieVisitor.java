@@ -619,8 +619,8 @@ public class BoogieVisitor extends NullVisitor {
 					
 					//requires (forall x:Ref :: packedOK[x]);
 					for (String p : predicates) {
-						String formalParamsAndType = getStringPredParams(p, 1);
-			        	String formalParamsNoType = getStringPredParams(p, 2);
+						String formalParamsAndType = getStringPredParams(p, 1, true);
+			        	String formalParamsNoType = getStringPredParams(p, 2, true);
 			        	
 			        	if (localFieldsInMethod.contains("packed"+p) && 
 			        			!setFracEq1.contains(p)) {
@@ -635,8 +635,8 @@ public class BoogieVisitor extends NullVisitor {
 			    	for (int i=0; i<numberFilesBefore; i++) {
 			    		Set<String> bvPredicates = bv[i].getPredicates();
 			    		for (String p : bvPredicates) {
-							String formalParamsAndType = getStringPredParams(p, 1);
-				        	String formalParamsNoType = getStringPredParams(p, 2);
+							String formalParamsAndType = getStringPredParams(p, 1, true);
+				        	String formalParamsNoType = getStringPredParams(p, 2, true);
 				        	if (localFieldsInMethod.contains(p) &&
 				        			!setFracEq1.contains(p) ) {
 							requiresPacked = 
@@ -676,8 +676,8 @@ public class BoogieVisitor extends NullVisitor {
 		        	}
 		        	
 		        	String forallParameter = getNewForallParameter();
-		        	String formalParamsAndType = getStringPredParams(nameOfPredicate, 1);
-		        	String formalParamsNoType = getStringPredParams(nameOfPredicate, 2);
+		        	String formalParamsAndType = getStringPredParams(nameOfPredicate, 1, true);
+		        	String formalParamsNoType = getStringPredParams(nameOfPredicate, 2, true);
 		        	String ensuresForall = "";
 		        	if (localFieldsInMethod.contains("packed"+nameOfPredicate) &&
 		        			!setFracEq1.contains(nameOfPredicate)) {
@@ -793,11 +793,18 @@ String getNewForallParameter() {
     
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
+    
+ 	
+    	
+    	
+    	
     	String identifierBeforeMethSel = currentIdentifier;
     	visitedMethSel = true;
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
+    	
+    	
     	modifyMethodsInMethod(new FieldAndTypePair(methodName, lastPrimaryExpressionType));
     	   	
     	LinkedList<ObjPropString> callMethodPreconditions = 
@@ -815,8 +822,8 @@ String getNewForallParameter() {
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
     	statementContent = statementContent +identifierBeforeMethSel+");\n";
-    	LinkedList<FracString> currentRequiresFrac = null;
-    	LinkedList<FracString> currentEnsuresFrac = null;
+    	LinkedList<FracString> currentRequiresFrac = new LinkedList<FracString>();
+    	LinkedList<FracString> currentEnsuresFrac = new LinkedList<FracString>();
     	
     	// Modify the frac variables corresponding to the requires and ensures of 
     	// this method.
@@ -838,7 +845,8 @@ String getNewForallParameter() {
     		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
                 FracString fracString = currentEnsuresFrac.get(pf);
         		statementContent = 
-        			statementContent.concat(fracString.getStatementFracString(false, identifierBeforeMethSel));
+        			statementContent.concat(
+        					fracString.getStatementFracString(false, identifierBeforeMethSel));
         		modifyFieldsInMethod(fracString.getNameFrac());
         	}
     	}
@@ -924,9 +932,14 @@ String getNewForallParameter() {
   		  try{
   			 if (insideObjectProposition && (currentMethod != "")) {
 				  objectPropString = objectPropString.concat(symbol);
-			  } else if (!insideObjectProposition && (currentMethod != "") && !insidePrecondition) {
+			  } else 
+				  if (!insideObjectProposition && 
+				      (currentMethod != "") && 
+				      !insidePrecondition &&
+				      !insidePostcondition) {
   				  statementContent = statementContent.concat(symbol);  				
-  			           } else if(!insideObjectProposition && (currentMethod != "") && insidePrecondition) {
+  			           } else if(!insideObjectProposition && (currentMethod != "") && 
+  			        		    (insidePrecondition || insidePostcondition)) {
   			        	   modifyMethodSpec(symbol);
   			           } 
   			           else
@@ -959,14 +972,14 @@ String getNewForallParameter() {
     	}
     	AST[] children = ast.getChildren();
     	 
-    	if (!namePredicate.equals("") || insidePrecondition) {
+    	if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
     		concatToStatementObjProp("(");
     	}
     	
 		  children[0].accept(this );
 		  concatToStatementObjProp(operatorSymbol);
 		  children[1].accept(this );
-	    if (!namePredicate.equals("") || insidePrecondition) {
+	    if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
 	    	concatToStatementObjProp(")");
 	    	}
 		  
@@ -1011,7 +1024,7 @@ String getNewForallParameter() {
 			 modifyMethodBody(astvalue + ",");
 		  }
 		  
-		   if ((currentMethod != "") && !insideObjectProposition && insidePrecondition) {
+		   if ((currentMethod != "") && !insideObjectProposition && (insidePrecondition || insidePostcondition)) {
 			   modifyMethodSpec(astvalue);
 		   }
     	}
@@ -1095,8 +1108,9 @@ String getNewForallParameter() {
         
         String bodyPredicate = "";
         fracString.setNameFrac("frac"+predName);
-        fracString.setParameters(args);
-       //TODO
+        
+        fracString.setParameters(argumentsObjProp);
+
         if (isNumeric(fracInObjProp)) {
     	if (fieldName == null){
     		
@@ -1156,8 +1170,7 @@ String getNewForallParameter() {
             	bodyPredicate = bodyPredicate.concat(writeActualParams(argumentsObjProp));
             	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] > 0.0)");
         		fracString.setField(fieldName);
-        		objProp.setObject(fieldName+"[this]");
-        				
+        		objProp.setObject(fieldName+"[this]");		
         	} 
     	}
     	
@@ -1173,7 +1186,7 @@ String getNewForallParameter() {
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString);
     		} 
-    		else {
+    		else if (insidePostcondition){
     			modifyMethodPostconditions(objProp);
     			modifyEnsuresFrac(fracString);
     		}
@@ -1213,7 +1226,7 @@ String getNewForallParameter() {
     	// when it is the parent of methodSelection because that
     	// is when we are going to use the type.
     	if (ast.getType() != null) {
-    	lastPrimaryExpressionType = ast.getType().toString();
+    		lastPrimaryExpressionType = ast.getType().toString();
     	}
         visitChildren(ast);
     }
@@ -1430,6 +1443,7 @@ String getNewForallParameter() {
     	objectObjProp = "";
     	predicateNameObjProp = "";
     	argumentsObjProp.clear();
+ 
     	visitChildren(ast); 
     	
     	if (annotationName.equals("pack")) {
@@ -1463,7 +1477,7 @@ String getNewForallParameter() {
     	
     	modifyMethodBody(toWrite);
     	inPackUnpackAnnotation = false;
-    	
+    	    	
   		}
  
     public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
@@ -1498,7 +1512,8 @@ String getNewForallParameter() {
     				  statementContent = statementContent.concat(identifierName);
     			  }
     		   
-    		   if ((currentMethod != "") && !insideObjectProposition && insidePrecondition) {
+    		   if ((currentMethod != "") && !insideObjectProposition && 
+    				   (insidePrecondition || insidePostcondition)) {
     			   modifyMethodSpec(identifierName);
     		   }
 
@@ -1758,6 +1773,7 @@ String getNewForallParameter() {
     	}
     	currentEnsuresFrac.add(s);
     	ensuresFrac.put(currentMethod, currentEnsuresFrac);
+    	
     }
     
     void addToFieldWhichPredicates(String field, String predicate) {
@@ -2026,7 +2042,10 @@ String getNewForallParameter() {
     //k=1 is for writing nameParam: type
     //k=2 is for writing the current value of the parameters
     //k=3 is for writing the types of the parameters
-    String getStringPredParams(String pred, int k) { 
+    //If alterName is true then I add "497" to the end of getName(). 
+    //I chose "497" because it is unlikely that the programmer 
+    //will write an input parameter of this form.
+    String getStringPredParams(String pred, int k, boolean alterName) { 
     	String result = "";
     	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
 		if (currentParamsPredicateBody != null) {
@@ -2037,10 +2056,18 @@ String getNewForallParameter() {
 					FieldAndTypePair f = formalParamsList.get(i);
 					switch (k) {
 		            case 1:  
+		            	if (alterName) {
+		            	result = result.concat(f.getName() + "497:"+f.getType()+", ");
+		            	} else {
 		            	result = result.concat(f.getName() + ":"+f.getType()+", ");
+		            	}
 		                break; 
 		            case 2: 
+		            	if (alterName) {
+		            	result = result.concat(f.getName() + "497, ");
+		            	} else {
 		            	result = result.concat(f.getName() + ", ");
+		            	}
 		            	break;
 		            case 3: 
 		            	result = result.concat(f.getType() + ", ");

@@ -47,8 +47,10 @@ public class FracString {
 	}
 	
 	void setParameters(LinkedList<String> params) {
-		parameters = params;
-	}
+    		for (int pf = 0; pf < params.size(); pf++) {
+    			addParameter(params.get(pf));        
+    		}
+    	}
 	
 	void addParameter(String s) {
 		parameters.add(s);
@@ -100,6 +102,16 @@ public boolean equals(Object obj) {
 	    return (nameFrac.hashCode() * field.hashCode());
 	  }
 	
+	public void printParams() {
+		String stringParams = "";
+		for (int i=0; i<parameters.size();i++) {
+			stringParams = stringParams.concat(parameters.get(i)+",");
+		}
+		System.out.println("params:"+stringParams);
+		System.out.println("nameFrac" + nameFrac);
+		System.out.println("field" + field);
+	}
+	
 	//TODO 
 	// I need to substitute this or field[this] with the actual parameter
 	// if the method is being called when the constructor is called.
@@ -122,11 +134,13 @@ public boolean equals(Object obj) {
 		//TODO We need to consider more cases about the values of min and max.
 		if (inRequires) {
 			if (minBound == 0) {
+				System.out.println(stringParams);
 				statement = statement.concat(" / 2.0;\n");
 			}
 		} // If we go on the else branch, we are in Ensures. 
 		else {
 			if (minBound == 0) {
+				System.out.println(stringParams);
 				statement = statement.concat(" * 2.0;\n");
 			}
 			
