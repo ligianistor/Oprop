@@ -112,8 +112,8 @@ public class JExpr implements JExprConstants {
         }
         else
         {
-            System.out.println("Java Parser Version 1.1 (for Java1.2 code):  Usage:");
-            System.out.println("         java JExpr inputfile outputDirectory");
+            System.out.println("Oprop tool usage:");
+            System.out.println("  java -jar oprop.jar numberOfFiles inputfile1 inputfile2 .. ");
             return;
         }
     }

@@ -643,7 +643,7 @@ public class BoogieVisitor extends NullVisitor {
 			    		for (String p : bvPredicates) {
 							String formalParamsAndType = getStringPredParams(p, 1, true);
 				        	String formalParamsNoType = getStringPredParams(p, 2, true);
-				        	System.out.println(p);
+				        	
 				        	if (localFieldsInMethod.contains("packed"+p) &&
 				        			!setFracEq1.contains(p) ) {
 				        		
