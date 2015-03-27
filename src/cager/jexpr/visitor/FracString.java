@@ -134,13 +134,11 @@ public boolean equals(Object obj) {
 		//TODO We need to consider more cases about the values of min and max.
 		if (inRequires) {
 			if (minBound == 0) {
-				System.out.println(stringParams);
 				statement = statement.concat(" / 2.0;\n");
 			}
 		} // If we go on the else branch, we are in Ensures. 
 		else {
 			if (minBound == 0) {
-				System.out.println(stringParams);
 				statement = statement.concat(" * 2.0;\n");
 			}
 			

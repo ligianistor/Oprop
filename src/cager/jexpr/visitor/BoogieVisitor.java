@@ -253,6 +253,9 @@ public class BoogieVisitor extends NullVisitor {
 	String fractionObjProp;
 	LinkedList<String> argumentsObjProp = new LinkedList<String>();
 	
+	//The actual arguments for the constructor that is currently called.
+	LinkedList<String> argumentsConstructor = new LinkedList<String>();
+	
 	//The Boogie Visitors of the files that have been translated before this one.
 	BoogieVisitor[] bv;
 	
@@ -1037,6 +1040,10 @@ String getNewForallParameter() {
 			  );
     	}
     	
+        if (inArgumentList) {
+ 		   argumentsConstructor.add(astvalue);
+       }
+    	
     	visitChildren(ast); }
     
     public void visitObjectProposition(ObjectProposition ast) throws ParseException
@@ -1258,13 +1265,18 @@ String getNewForallParameter() {
     public void visitAllocationExpression(AllocationExpression ast) throws ParseException
     {
     	String predicateOfConstruct = ast.getPredicate();
+    	LinkedList<String> localArgumentsConstructor = new LinkedList<String>();
     	
     	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+"(");
     	AST[] children = ast.getChildren();
     	//This is the ArgumentList that contains the arguments
     	//for the fields.
+    	argumentsConstructor.clear();
         children[1].accept(this);
-       
+        for (int i=0;i<argumentsConstructor.size();i++) {
+        	localArgumentsConstructor.add(argumentsConstructor.get(i));
+        }
+              
         modifyMethodBody(localVariableName + ");\n");
         modifyMethodBody("packed" +predicateOfConstruct+"[");
         
@@ -1282,16 +1294,39 @@ String getNewForallParameter() {
         modifyFieldsInMethod("frac" +predicateOfConstruct);
         
         
-        // We want to modify the frac that we find in the predicate
-        // corresponding to this constructor.
-        
         LinkedList<FracString> currentPredicateFrac = 
     			predicateFrac.get(predicateOfConstruct);
         if (currentPredicateFrac != null) {
         	
         	for (int pf = 0; pf < currentPredicateFrac.size(); pf++) {
                 FracString fracString = currentPredicateFrac.get(pf);
+                //replace the formal parameters with the actual ones
+                String field = fracString.getField();
+                fracString.printParams();
+                System.out.println(localArgumentsConstructor.size()+" "+
+                		predicateOfConstruct);
+                int positionInListOfFields=-1;
+                if (field!=null) {
+                	for (int i=0;i<fieldsTypes.size();i++) {
+                		if (fieldsTypes.get(i).getName().equals(field)) {
+                			positionInListOfFields = i;
+                		}
+                	}
+                }
+                if (positionInListOfFields == -1){
+                
                 modifyMethodBody(fracString.getStatementFracString(true, "this"));
+                }
+                else {
+                	
+                	//I only need to set the field to null temporarily,
+                	//then I set it back to the original field.
+                    fracString.setField(null);
+                    modifyMethodBody(fracString.getStatementFracString(true, 
+                    		localArgumentsConstructor.get(positionInListOfFields)));
+                    fracString.setField(field);
+                    		
+                }
         	}
         }
     }
@@ -1369,6 +1404,10 @@ String getNewForallParameter() {
       		   
       	   }
     }
+        
+        if (inArgumentList) {
+ 		   argumentsConstructor.add(keywordString);
+       }
 }
     
     public void visitFractionAnnotation(FractionAnnotation ast) 
@@ -1485,7 +1524,8 @@ String getNewForallParameter() {
     	currentIdentifier = ast.name;
     try {
       
-       String identifierName = currentIdentifier;      
+       String identifierName = currentIdentifier;  
+       
        PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
        String fieldName = quantifiedVars.get(pv);
        
@@ -1557,10 +1597,16 @@ String getNewForallParameter() {
      	   }
     	   }
        }
+       
+       if (inArgumentList) {
+ 		   argumentsConstructor.add(identifierName);
+       }
     }
       catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
       };
+      
+
       
     	visitChildren(ast);
     }
