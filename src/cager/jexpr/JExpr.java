@@ -225,7 +225,7 @@ public class JExpr implements JExprConstants {
     ClassDeclaration cd = null;
     String packageName = null;
     packageName = PackageDeclaration();
-                                       //System.out.println("package: " + packageName);
+    //System.out.println("package: " + packageName);
     cd = ClassDeclaration();
     jj_consume_token(0);
     return new CompilationUnit(packageName, cd);
@@ -1145,7 +1145,6 @@ FieldDeclaration FieldDeclaration() : //jhlee
   final public MethodSpecFracVariable MethodSpecFracVariable() throws ParseException {
 	    Type t;
 	    String id;
-	    System.out.println("XX");
 	    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 	    case FINAL:
 	      jj_consume_token(FINAL);
@@ -1156,7 +1155,6 @@ FieldDeclaration FieldDeclaration() : //jhlee
 	    }
 	    t = Type();
 	    id = VariableDeclaratorId();
-	    System.out.println(id);
 	    return new MethodSpecFracVariable(id, t);
 	  }
 

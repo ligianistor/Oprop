@@ -256,6 +256,9 @@ public class BoogieVisitor extends NullVisitor {
 	//The actual arguments for the constructor that is currently called.
 	LinkedList<String> argumentsConstructor = new LinkedList<String>();
 	
+	//The actual arguments for the predicate in the constructor that is currently called.
+	LinkedList<String> argumentsPredicate = new LinkedList<String>();
+	
 	//The Boogie Visitors of the files that have been translated before this one.
 	BoogieVisitor[] bv;
 	
@@ -562,7 +565,7 @@ public class BoogieVisitor extends NullVisitor {
 				out.write("procedure "+ast.getIdentifier().getName()+"(");
 				
 				visitChildren(ast);
-				
+				//TODO add all parameters when calling function
 				out.write(methodParams.get(currentMethod));
 				out.write("this:Ref)\n");
 							
@@ -640,8 +643,10 @@ public class BoogieVisitor extends NullVisitor {
 			    		for (String p : bvPredicates) {
 							String formalParamsAndType = getStringPredParams(p, 1, true);
 				        	String formalParamsNoType = getStringPredParams(p, 2, true);
-				        	if (localFieldsInMethod.contains(p) &&
+				        	System.out.println(p);
+				        	if (localFieldsInMethod.contains("packed"+p) &&
 				        			!setFracEq1.contains(p) ) {
+				        		
 							requiresPacked = 
 							  requiresPacked.concat("requires (forall "+formalParamsAndType + 
 									  forallParameter+":Ref :: packed"+p+
@@ -682,6 +687,11 @@ public class BoogieVisitor extends NullVisitor {
 		        	String formalParamsAndType = getStringPredParams(nameOfPredicate, 1, true);
 		        	String formalParamsNoType = getStringPredParams(nameOfPredicate, 2, true);
 		        	String ensuresForall = "";
+		        	
+		        	//We only need to add "ensures forall" and "requires forall" for the
+		        	//other procedures that are not main.
+		        	if (!ast.getIdentifier().getName().equals("main")) {
+		        	//This is for writing "ensures forall for packed.
 		        	if (localFieldsInMethod.contains("packed"+nameOfPredicate) &&
 		        			!setFracEq1.contains(nameOfPredicate)) {
 		        	ensuresForall = ensuresForall.concat(
@@ -690,7 +700,7 @@ public class BoogieVisitor extends NullVisitor {
 		        		ensuresForall = ensuresForall.concat("packed"+nameOfPredicate + 
 		        				"["+formalParamsNoType +forallParameter+
 		        				"] == old(packed" + nameOfPredicate +"["+formalParamsNoType +
-		        				forallParameter+"])));");
+		        				forallParameter+"])));\n");
 		        	} else {
 		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
 		        		int len = modifiedObjectsArray.length;
@@ -711,13 +721,49 @@ public class BoogieVisitor extends NullVisitor {
 		        		ensuresForall = ensuresForall.concat("(packed"+ nameOfPredicate + 
 		        				"["+formalParamsNoType + forallParameter+
 		        				"] == old(packed"+nameOfPredicate+"["+
-		        				formalParamsNoType + forallParameter+"]))));");
+		        				formalParamsNoType + forallParameter+"]))));\n");
+		        	}
+		        }
+		        	
+		        	//This is for writing "ensures forall for frac.
+		        	if (localFieldsInMethod.contains("frac"+nameOfPredicate) &&
+		        			!setFracEq1.contains(nameOfPredicate)) {
+		        	ensuresForall = ensuresForall.concat(
+		        			"\t ensures (forall "+ formalParamsAndType + forallParameter+":Ref:: (");
+		        	if (modifiedObjects.isEmpty()) {
+		        		ensuresForall = ensuresForall.concat("frac"+nameOfPredicate + 
+		        				"["+formalParamsNoType +forallParameter+
+		        				"] == old(frac" + nameOfPredicate +"["+formalParamsNoType +
+		        				forallParameter+"])));\n");
+		        	} else {
+		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
+		        		int len = modifiedObjectsArray.length;
+		        		if (len > 1) {
+		        			ensuresForall = ensuresForall.concat("(");
+		        		}
+		        		for (int k = 0; k < len - 1; k++) {
+		        			ensuresForall = ensuresForall.concat(
+		        					"("+forallParameter+"!="+modifiedObjectsArray[k]+") &&");
+		        		}
+		        		
+		        		ensuresForall = ensuresForall.concat(
+		        				"("+forallParameter+"!="+modifiedObjectsArray[len-1]+") ==> ");
+		        		if (len > 1) {
+		        			ensuresForall = ensuresForall.concat("(");
+		        		}
+		        		
+		        		ensuresForall = ensuresForall.concat("(frac"+ nameOfPredicate + 
+		        				"["+formalParamsNoType + forallParameter+
+		        				"] == old(frac"+nameOfPredicate+"["+
+		        				formalParamsNoType + forallParameter+"]))));\n");
 		        	}
 		        }
 		        	
 		        	if (!ensuresForall.equals(""))
 		        		out.write(ensuresForall+"\n");
 		                 }
+		        	
+		        }
 		        
 				//write here the function for modulo, if modulo was found in the 
 				//body of the procedure.
@@ -796,11 +842,7 @@ String getNewForallParameter() {
     
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
-    
- 	
-    	
-    	
-    	
+
     	String identifierBeforeMethSel = currentIdentifier;
     	visitedMethSel = true;
     	// It might be that some object propositions in the "requires" of the call procedure
@@ -821,7 +863,6 @@ String getNewForallParameter() {
         	callMethodPreconditions = bv[classOfCallMethod].getMethodPreconditionsPacked().get(methodName);		
     	}
 
-    	//TODO I need to modify here.
     	statementContent= statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
     	statementContent = statementContent +identifierBeforeMethSel+");\n";
@@ -1042,6 +1083,7 @@ String getNewForallParameter() {
     	
         if (inArgumentList) {
  		   argumentsConstructor.add(astvalue);
+ 		  argumentsPredicate.add(astvalue);
        }
     	
     	visitChildren(ast); }
@@ -1160,7 +1202,7 @@ String getNewForallParameter() {
         			          "] && \n \t \t(frac"+predName+"[");
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
-        	bodyPredicate = "frac"+predName+"[";
+        	bodyPredicate = "(frac"+predName+"[";
         	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
         	bodyPredicate = bodyPredicate.concat(objectString+ "] > 0.0)");
         	}
@@ -1173,7 +1215,7 @@ String getNewForallParameter() {
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(writeActualParams(argumentsObjProp));
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
 
-            	bodyPredicate = "frac"+predName+"[";
+            	bodyPredicate = "(frac"+predName+"[";
             	bodyPredicate = bodyPredicate.concat(writeActualParams(argumentsObjProp));
             	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] > 0.0)");
         		fracString.setField(fieldName);
@@ -1266,6 +1308,7 @@ String getNewForallParameter() {
     {
     	String predicateOfConstruct = ast.getPredicate();
     	LinkedList<String> localArgumentsConstructor = new LinkedList<String>();
+    	LinkedList<String> localArgumentsPredicate = new LinkedList<String>();
     	
     	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+"(");
     	AST[] children = ast.getChildren();
@@ -1280,7 +1323,11 @@ String getNewForallParameter() {
         modifyMethodBody(localVariableName + ");\n");
         modifyMethodBody("packed" +predicateOfConstruct+"[");
         
+        argumentsPredicate.clear();
         children[0].accept(this);
+        for (int i=0;i<argumentsPredicate.size();i++) {
+        	localArgumentsPredicate.add(argumentsPredicate.get(i));
+        }
         
         modifyMethodBody(localVariableName + "] := true;\n");
         
@@ -1302,9 +1349,7 @@ String getNewForallParameter() {
                 FracString fracString = currentPredicateFrac.get(pf);
                 //replace the formal parameters with the actual ones
                 String field = fracString.getField();
-                fracString.printParams();
-                System.out.println(localArgumentsConstructor.size()+" "+
-                		predicateOfConstruct);
+            
                 int positionInListOfFields=-1;
                 if (field!=null) {
                 	for (int i=0;i<fieldsTypes.size();i++) {
@@ -1313,20 +1358,31 @@ String getNewForallParameter() {
                 		}
                 	}
                 }
+                LinkedList<String> initialParameters = new LinkedList<String>();
+                initialParameters = fracString.getParameters();
+                if (localArgumentsPredicate!=null) {
+                fracString.setParameters(localArgumentsPredicate);
+                }
+                
+                
                 if (positionInListOfFields == -1){
                 
                 modifyMethodBody(fracString.getStatementFracString(true, "this"));
                 }
                 else {
+                	String actualField = localArgumentsConstructor.get(positionInListOfFields);
+                	if (!actualField.equals("null")) {
                 	
                 	//I only need to set the field to null temporarily,
                 	//then I set it back to the original field.
                     fracString.setField(null);
-                    modifyMethodBody(fracString.getStatementFracString(true, 
-                    		localArgumentsConstructor.get(positionInListOfFields)));
+                    modifyMethodBody(fracString.getStatementFracString(true, actualField));
                     fracString.setField(field);
+                	}
                     		
                 }
+                
+                fracString.setParameters(initialParameters);
         	}
         }
     }
@@ -1407,6 +1463,7 @@ String getNewForallParameter() {
         
         if (inArgumentList) {
  		   argumentsConstructor.add(keywordString);
+ 		  argumentsPredicate.add(keywordString);
        }
 }
     
@@ -1600,6 +1657,7 @@ String getNewForallParameter() {
        
        if (inArgumentList) {
  		   argumentsConstructor.add(identifierName);
+ 		  argumentsPredicate.add(identifierName);
        }
     }
       catch (Exception e) {

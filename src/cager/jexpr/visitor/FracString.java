@@ -8,7 +8,7 @@ public class FracString {
 	//The formal parameter is always "this".
 	//The actual object has to be passed in to the getStatementFracString() method.
 	
-	LinkedList<String> parameters;
+	LinkedList<String> parameters = new LinkedList<String>();
 	double minBound;
 	double maxBound;
 	
@@ -47,6 +47,7 @@ public class FracString {
 	}
 	
 	void setParameters(LinkedList<String> params) {
+		    parameters.clear();
     		for (int pf = 0; pf < params.size(); pf++) {
     			addParameter(params.get(pf));        
     		}
