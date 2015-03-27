@@ -13,6 +13,7 @@ import cager.jexpr.visitor.Visitor;
 
 public class MethodSpecExpression extends Expression
 {
+	private MethodSpecFracVariables fracvariables;
 	private MethodSpecVariables msvariables;
 	private Expression precondition;
 	private Expression postcondition;
@@ -25,6 +26,16 @@ public class MethodSpecExpression extends Expression
     public void setMethodSpecVariables(MethodSpecVariables p)
     {
     	msvariables = p;
+    }
+    
+    public MethodSpecFracVariables getFracVariables()
+    {
+        return fracvariables;
+    }
+
+    public void setFracVariables(MethodSpecFracVariables p)
+    {
+    	fracvariables = p;
     }
     
     public Expression getPrecondition() {
@@ -46,6 +57,8 @@ public class MethodSpecExpression extends Expression
     public AST[] getChildren()
     {
     	List<AST> result = new ArrayList<AST>();
+    	if (fracvariables != null)
+    		result.add(fracvariables);
     	if (msvariables != null)
     		result.add(msvariables);
     	if (precondition != null)

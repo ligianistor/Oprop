@@ -18,6 +18,8 @@ import cager.jexpr.ast.ForStatement;
 import cager.jexpr.ast.LocalVariableDeclaration;
 import cager.jexpr.ast.MethodSelection;
 import cager.jexpr.ast.MethodSpecExpression;
+import cager.jexpr.ast.MethodSpecFracVariable;
+import cager.jexpr.ast.MethodSpecFracVariables;
 import cager.jexpr.ast.MethodSpecVariable;
 import cager.jexpr.ast.MethodSpecVariables;
 import cager.jexpr.ast.ObjectProposition;
@@ -219,5 +221,15 @@ public class NullVisitor implements Visitor
   public void visitMethodSelection(MethodSelection ast) 
 		  throws ParseException 
 		  { visitChildren(ast); }
+
+  public void visitMethodSpecFracVariable(
+		MethodSpecFracVariable ast) 
+				throws ParseException 
+		  { visitChildren(ast); }
+
+
+  public void visitMethodSpecFracVariables(MethodSpecFracVariables ast) 
+		throws ParseException 
+		{ visitChildren(ast); }
 
 }

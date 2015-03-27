@@ -257,7 +257,7 @@ public class JExpr implements JExprConstants {
       ;
     }
     jj_consume_token(SEMICOLON);
-                                     {if (true) throw new NotImplementedException("import");}
+    throw new NotImplementedException("import");
   }
 
   final public void TypeDeclaration() throws ParseException {
@@ -598,7 +598,7 @@ public class JExpr implements JExprConstants {
       }
     }
     UnmodifiedInterfaceDeclaration();
-                                     {if (true) throw new NotImplementedException("interface");}
+    throw new NotImplementedException("interface");
   }
 
   final public void NestedInterfaceDeclaration() throws ParseException {
@@ -1075,6 +1075,57 @@ FieldDeclaration FieldDeclaration() : //jhlee
     return params;
   }
 
+  final public MethodSpecFracVariables MethodSpecFracVariables() throws ParseException {
+	    MethodSpecFracVariables params = new MethodSpecFracVariables();
+	    MethodSpecFracVariable p;
+	    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+	    case TILDE: {
+	    	 jj_consume_token(TILDE);
+	    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+	    case BOOLEAN:
+	    case BYTE:
+	    case CHAR:
+	    case DOUBLE:
+	    case FINAL:
+	    case FLOAT:
+	    case INT:
+	    case LONG:
+	    case SHORT:
+	    case IDENTIFIER:
+	      p = MethodSpecFracVariable();
+	      params.add(p);
+	      label_13:
+	      while (true) {
+	        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+	        case COMMA:
+	          ;
+	          break;
+	        default:
+	          jj_la1[29] = jj_gen;
+	          break label_13;
+	        }
+	        jj_consume_token(COMMA);
+	        p = MethodSpecFracVariable();
+	        params.add(p);
+	      }
+	      jj_consume_token(COLON);
+	      break;
+	    default:
+	      jj_la1[30] = jj_gen;
+	      ;
+	    }
+	    }
+	    //lnistor added 114
+	    //might need to modify in other places
+	    break;
+	    default:
+	        jj_la1[114] = jj_gen;
+	        ;
+	    }
+	    return params;
+	  }
+
+  
   final public MethodSpecVariable MethodSpecVariable() throws ParseException {
     Type t;
     String id;
@@ -1090,12 +1141,32 @@ FieldDeclaration FieldDeclaration() : //jhlee
     id = VariableDeclaratorId();
     return new MethodSpecVariable(id, t);
   }
+  
+  final public MethodSpecFracVariable MethodSpecFracVariable() throws ParseException {
+	    Type t;
+	    String id;
+	    System.out.println("XX");
+	    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+	    case FINAL:
+	      jj_consume_token(FINAL);
+	      throw new NotImplementedException();
+	    default:
+	      jj_la1[31] = jj_gen;
+	      ;
+	    }
+	    t = Type();
+	    id = VariableDeclaratorId();
+	    System.out.println(id);
+	    return new MethodSpecFracVariable(id, t);
+	  }
 
   final public MethodSpecExpression MethodSpecExpression() throws ParseException {
   MethodSpecExpression msexp = new MethodSpecExpression();
   MethodSpecVariables msvs = null;
+  MethodSpecFracVariables fracVariables = null;
   Expression precond = null;
   Expression postcond = null;
+  fracVariables = MethodSpecFracVariables();
     msvs = MethodSpecVariables();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case REQUIRES:
@@ -1115,6 +1186,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
       jj_la1[33] = jj_gen;
       ;
     }
+    msexp.setFracVariables(fracVariables);
     msexp.setMethodSpecVariables(msvs);
     msexp.setPrecondition(precond);
     msexp.setPostcondition(postcond);
@@ -1294,7 +1366,7 @@ void ConstructorDeclaration() :
       ;
     }
     Block();
-                         {if (true) throw new NotImplementedException("Initializer");}
+    throw new NotImplementedException("Initializer");
   }
 
 /*
@@ -1344,7 +1416,7 @@ void ConstructorDeclaration() :
   final public Type TypeName() throws ParseException {
     StringBuffer sb;
     jj_consume_token(IDENTIFIER);
-                   sb = new StringBuffer(getToken(0).image);
+    sb = new StringBuffer(getToken(0).image);
     label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1487,11 +1559,11 @@ void ConstructorDeclaration() :
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                          op = getToken(0).image;
+      op = getToken(0).image;
       qvs = QuantifierVariables();
       jj_consume_token(COLON);
       e2 = Expression();
-                  e = new QuantificationExpression(op, qvs, e2);
+      e = new QuantificationExpression(op, qvs, e2);
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BOOLEAN:
@@ -5346,7 +5418,7 @@ void ForUpdate() :
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[114];
+  final private int[] jj_la1 = new int[115];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;

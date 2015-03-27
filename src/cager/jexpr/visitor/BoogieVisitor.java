@@ -37,6 +37,7 @@ import cager.jexpr.ast.LocalVariableDeclaration;
 import cager.jexpr.ast.MethodDeclaration;
 import cager.jexpr.ast.MethodSelection;
 import cager.jexpr.ast.MethodSpecExpression;
+import cager.jexpr.ast.MethodSpecFracVariable;
 import cager.jexpr.ast.MethodSpecVariable;
 import cager.jexpr.ast.MethodSpecVariables;
 import cager.jexpr.ast.ObjectProposition;
@@ -1599,7 +1600,16 @@ String getNewForallParameter() {
     public void visitMethodSpecVariable(MethodSpecVariable ast) 
   		  throws ParseException 
   		  {
-    	visitChildren(ast); 
+    	if (ast!=null) {
+    		String name = ast.getName();
+    		parametersMethod.add(name);
+    		String type = ast.getType().toString();
+    	if (currentMethod !="") {
+    		modifyMethodParams(name+ ":" + type +",");
+    	}
+    		//I don't think this node has any children.
+    		visitChildren(ast);
+    	} 
     	}
     
     public void visitMethodSpecVariables(MethodSpecVariables ast)
@@ -1608,11 +1618,19 @@ String getNewForallParameter() {
     	visitChildren(ast); 
     	}
     
+    public void visitMethodSpecFracVariable(MethodSpecFracVariable ast) 
+    				throws ParseException 
+    		  { visitChildren(ast); }
+    
     public void visitMethodSpecExpression(MethodSpecExpression ast) 
   		  throws ParseException 
   		  { 
+    	MethodSpecVariables methodVariables = ast.getMethodSpecVariables();
     	Expression precondition = ast.getPrecondition();
     	Expression postcondition = ast.getPostcondition();
+    	
+    	methodVariables.accept(this);
+    	
     	if (precondition != null) {
     	modifyMethodSpec("\t requires ");
     	insidePrecondition = true;

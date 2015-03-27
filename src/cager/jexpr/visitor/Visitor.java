@@ -50,4 +50,7 @@ public interface Visitor {
   public abstract void visitQuantifierVariables(QuantifierVariables quantifierVariables ) throws ParseException;
   public abstract void visitWhileStatement(WhileStatement whileStatement ) throws ParseException;
   public abstract void visitForStatement(ForStatement forStatement ) throws ParseException;
+  public abstract void visitMethodSpecFracVariable(MethodSpecFracVariable methodSpecFracVariable) throws ParseException;
+  public abstract void visitMethodSpecFracVariables(MethodSpecFracVariables methodSpecFracVariables)
+  		throws ParseException;
 }
