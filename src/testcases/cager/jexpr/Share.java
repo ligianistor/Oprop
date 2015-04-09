@@ -3,11 +3,12 @@ package testcases.cager.jexpr;
 class Share {
 	DoubleCount dc;
 	
-	predicate ShareCount() = exists DoubleCount d : 
-		       this.dc -> d && (d#1 OK())
+	predicate ShareCount() = 
+	  exists DoubleCount d : 
+	  this.dc -> d && (d#0.1 OK())
 		       
 	void touch() 
-	double k:
+	~ double k:
 	requires this#k ShareCount()
 	ensures this#k ShareCount()
 	{
