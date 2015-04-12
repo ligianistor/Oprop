@@ -246,6 +246,8 @@ public interface JExprConstants {
   int KEYACCESS = 126;
   /** RegularExpression Id. */
   int FRACTION = 127;
+  /** RegularExpression Id. */
+  int IMPLIES = 128;  
 
   /** Lexical state. */
   int DEFAULT = 0;

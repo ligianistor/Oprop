@@ -71,6 +71,7 @@ public class Operator
 
         putBinary(JExprConstants.SC_AND, "&&", bt);
         putBinary(JExprConstants.SC_OR, "||", bt);
+        putBinary(JExprConstants.IMPLIES, "~=>", bt);
         putBinary(JExprConstants.GT, ">", ct);
         putBinary(JExprConstants.GE, ">=", ct);
         putBinary(JExprConstants.EQ, "==", ct);

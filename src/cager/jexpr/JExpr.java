@@ -293,7 +293,7 @@ public class JExpr implements JExprConstants {
     MethodDeclaration md;
     jj_consume_token(CLASS);
     jj_consume_token(IDENTIFIER);
-                         cd.setIdentifier(new Identifier(getToken(0).image));
+    cd.setIdentifier(new Identifier(getToken(0).image));
     jj_consume_token(LBRACE);
     label_1:
     while (true) {
@@ -321,7 +321,7 @@ public class JExpr implements JExprConstants {
         case VOID:
         case IDENTIFIER:
           md = MethodDeclaration();
-                                           cd.add(md);
+          cd.add(md);
           break;
         default:
           jj_la1[2] = jj_gen;
@@ -1004,7 +1004,7 @@ FieldDeclaration FieldDeclaration() : //jhlee
     Identifier ider;
     Expression ex;
     jj_consume_token(IDENTIFIER);
-                 ider = new Identifier(getToken(0).image);
+    ider = new Identifier(getToken(0).image);
     params = FormalParameters();
     jj_consume_token(ASSIGN);
     ex = Expression();
@@ -1593,6 +1593,20 @@ void ConstructorDeclaration() :
       case MINUS:
         e = ObjectProposition();
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case TILDE:
+        	jj_consume_token(TILDE);
+        	switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        	case ASSIGN:
+        		jj_consume_token(ASSIGN);
+        		//At this point we know that it is ~=>.
+        		jj_consume_token(GT);
+                e2 = Expression();
+                e = new BinaryExpression(e, "~=>", e2);
+                break;
+            default:
+                jj_la1[49] = jj_gen;
+        	}
+        break;	
         case ASSIGN:
         case PLUSASSIGN:
         case MINUSASSIGN:
@@ -1611,7 +1625,6 @@ void ConstructorDeclaration() :
           break;
         default:
           jj_la1[49] = jj_gen;
-          ;
         }
         break;
       default:
@@ -1674,7 +1687,7 @@ void ConstructorDeclaration() :
   final public Expression ObjectProposition() throws ParseException {
     Expression e = null;
     Expression frac = null;
-        Expression pd;
+    Expression pd;
     e = ConditionalExpression();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FRACTION:
@@ -2964,6 +2977,7 @@ void LocalVariableDeclaration() :
       case LSHIFTASSIGN:
       case RSIGNEDSHIFTASSIGN:
       case RUNSIGNEDSHIFTASSIGN:
+      
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case INCR:
           jj_consume_token(INCR);

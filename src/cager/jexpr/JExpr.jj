@@ -454,6 +454,7 @@ TOKEN :
 | < RUNSIGNEDSHIFTASSIGN: ">>>=" >
 | < KEYACCESS: "->" >
 | < FRACTION: "#" >
+| < IMPLIES: "~=>" >
 }
 
 
