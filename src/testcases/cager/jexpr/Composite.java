@@ -46,6 +46,14 @@ class Composite {
 		this.left = null;
 		this.right = null;
 		this.parent = null; 
+		pack(this#1 right(null, 0));
+		pack(this#1 left(null, 0));
+		splitFrac(this#1 right(null, 0), 2);
+		splitFrac(this#1 left(null, 0), 2);
+		pack(this#1 count(0));
+		splitFrac(this#1 count(0), 2);
+		pack(this#1 parent());
+		splitFrac(this#1 parent(), 2);	
 	}
 
 	void updateCountRec() 
@@ -66,11 +74,17 @@ class Composite {
 	   (this#0.5 right(or, rc))
 	ensures (this#k2 parent())
 	{
+			
 	if (this.parent != null) {
+		
 		this.updateCount();
+		
 		this.parent.updateCountRec();
+		
 	 } else {
-		 this.updateCount(); 
+		 
+		 this.updateCount();
+		 
 	 }
 	}
 
@@ -82,12 +96,23 @@ class Composite {
 		(this#0.5 right(or, c2))
 	ensures (this#1.0 count(newc))
 	{
-	int newc = 1;
-	if (this.left != null)
-	  newc = newc + left.count;
-	if (this.right != null)
-	  newc = newc + right.count;
+	
+		int newc = 1;
+	
+	if (this.left != null) {
+	 
+		newc = newc + left.count;
+	
+	}
+	
+	if (this.right != null) {
+	 
+		newc = newc + right.count;
+	
+	}
+	
 	this.count = newc; 
+	
 	}
 
 	void setLeft(Composite l) 
@@ -100,9 +125,13 @@ class Composite {
 	ensures (this#k parent())
 	{
 		if (l.parent==null) {
+			
 			l.parent= this;
+			
 			this.left = l;
+			
 			this.updateCountRec(); 
+		
 		}
 	}
 
@@ -115,10 +144,15 @@ class Composite {
 		)
 	ensures (this#k parent())
 	{
+		
 		if (r.parent==null) {
+			
 			r.parent = this;
+			
 			this.right = r;
+			
 			this.updateCountRec(); 
+		
 		}
 	}
 

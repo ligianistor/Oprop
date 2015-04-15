@@ -2369,6 +2369,10 @@ void ConstructorDeclaration() :
         	  e = new FractionAnnotation(nameOfIdentifier); 
         	  Expression objPropArgs = Arguments();
         	  ((FractionAnnotation)e).add(objPropArgs);
+          }  else if ("splitFrac".equals(nameOfIdentifier)) {
+        	  e = new FractionAnnotation(nameOfIdentifier); 
+        	  Expression objPropArgs = Arguments();
+        	  ((FractionAnnotation)e).add(objPropArgs);
           }
           else {
           e = new IdentifierExpression(getToken(0).image); 
