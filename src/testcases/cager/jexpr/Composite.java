@@ -95,8 +95,7 @@ if (this.parent != null) {
 	addFrac(opp#0.5 right(this, lcc), opp#0.5 right(orr, rrc));
 	//Explain why do we need the full fraction!!!
 	unpack(opp#1.0 right(this, lcc));
-	pack(this#0.5 count(lcc));
-	addFrac(this#0.5 count(lcc), this#0.5 count(lcc));
+	addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
 	unpack(this#1.0 count(lcc));
 	
 	this.updateCount();
@@ -155,14 +154,20 @@ requires (this != l) &&
 ensures (this#k parent())
 {
 unpack(l#k2 parent());
-if (l.parent==null) {
-			
+if (l.parent==null) {	
 	l.parent= this;
-			
+	unpack(this#k1 parent());
+	int lcc;
+	unpack(this#0.5 count(lcc));
+	instantiate(ol, null);
+	instantiate(llc, 0);
+	addFrac(this#0.5 left(null, 0), this#0.5 left(null, 0));
+	unpack(this#1.0 left(null, 0));	
 	this.left = l;
-			
+	int lc;
+	pack(this#1.0 left(l, lc));	
 	this.updateCountRec(); 
-		
+	pack(l#k2 parent());	
 	}
 }
 
