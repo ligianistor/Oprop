@@ -76,13 +76,11 @@ if (this.parent != null) {
 	unpack(opp#k/2 parent());
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
 	int lccc;
-	unpack(opp#1/2 count(lccc));
+	unpack(opp#0.5 count(lccc));
 	//These variables are for existentially quantified variables inside the 
 	//count predicate that we just unpacked.
 	int rrc;
 	Composite orr;
-	//Assume this is the right child of opp.
-	assume (right[opp] == this);
 	//These instantiates are because the programmer knows what to
 	//instantiate to what.
 	//Instantiate the existentially quantified variable to this.
