@@ -117,19 +117,15 @@ public boolean equals(Object obj) {
 	// I need to substitute this or field[this] with the actual parameter
 	// if the method is being called when the constructor is called.
 	String getStatementFracString(boolean inRequires, String actualObject) {
-		String stringParams = "";
-		for (int i=0; i<parameters.size();i++) {
-			stringParams = stringParams.concat(parameters.get(i)+",");
-		}
-		
+	
 		String statement = "\t";
 		statement = statement.concat(nameFrac);
 		if (field == null) {
-			statement = statement.concat("["+stringParams + actualObject+ "] := " + nameFrac + "["+
-						stringParams + actualObject+ "]");
+			statement = statement.concat("["+ actualObject+ "] := " + nameFrac + "["+
+						 actualObject+ "]");
 		} else {
-			statement = statement.concat("[" + stringParams + field + "["+actualObject+ "]] := " + 
-						nameFrac + "[" + stringParams + field + "["+ actualObject+ "]]");
+			statement = statement.concat("[" +  field + "["+actualObject+ "]] := " + 
+						nameFrac + "[" +  field + "["+ actualObject+ "]]");
 		}
 		
 		//TODO We need to consider more cases about the values of min and max.
