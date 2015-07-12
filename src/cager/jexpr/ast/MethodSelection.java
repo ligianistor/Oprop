@@ -9,7 +9,8 @@ public class MethodSelection extends Expression
 {
     private Identifier id;
     private Expression[] parameters = null;
-    private Expression[] children = new Expression[1];
+    private Expression[] existentialParameters = null;
+    private Expression[] children = new Expression[2];
 
     public MethodSelection(Identifier id)
     {
@@ -19,6 +20,11 @@ public class MethodSelection extends Expression
     public void add(Expression e)
     {
         children[0] = e;
+    }
+    
+    public void addExistentialParameters(Expression e)
+    {
+        children[1] = e;
     }
 
     public Identifier getIdentifier()
@@ -34,6 +40,16 @@ public class MethodSelection extends Expression
     public Expression[] getParameters()
     {
         return parameters;
+    }
+    
+    public void setExistentialParameters(Expression[] p)
+    {
+        existentialParameters = p;
+    }
+
+    public Expression[] getExistentialParameters()
+    {
+        return existentialParameters;
     }
 
     public AST[] getChildren()

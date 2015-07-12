@@ -2400,7 +2400,9 @@ void ConstructorDeclaration() :
             	MethodSelection ms = new MethodSelection(new Identifier(getToken(0).image));
             	pe.add(ms);
             	el = Arguments();
-                ms.add(el); /* lnistor */        	
+                ms.add(el);
+                el = ExistentialArguments();
+                ms.addExistentialParameters(el);/* lnistor */        	
             }
             else {
             	
@@ -2444,9 +2446,10 @@ void ConstructorDeclaration() :
         if (jj_ntk == LPAREN) {
         	
         	MethodSelection ms = new MethodSelection(new Identifier(getToken(0).image)); { pe.add(ms);}
-        	
         	el = Arguments();
-            ms.add(el); /* lnistor */        	
+            ms.add(el); 
+            el = ExistentialArguments();
+            ms.addExistentialParameters(el);/* lnistor */        	
         }
         else {
         	
@@ -2550,7 +2553,7 @@ void ConstructorDeclaration() :
     case PLUS:
     case MINUS:
       a = Expression();
-                           al.add(a);
+      al.add(a);
       label_31:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2574,6 +2577,76 @@ void ConstructorDeclaration() :
     return al;
   }
 
+  final public ArgumentList ExistentialArguments() throws ParseException {
+	    ArgumentList al = new ArgumentList();
+	    Expression a;
+	    
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case LBRACKET:
+        	jj_consume_token(LBRACKET);
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    	    case BOOLEAN:
+    	    case BYTE:
+    	    case CHAR:
+    	    case DOUBLE:
+    	    case FALSE:
+    	    case FLOAT:
+    	    case INT:
+    	    case LONG:
+    	    case NEW:
+    	    case NULL:
+    	    case SHORT:
+    	    case SUPER:
+    	    case THIS:
+    	    case TRUE:
+    	    case VOID:
+    	    case EXISTS:
+    	    case FORALL:
+    	    case INTEGER_LITERAL:
+    	    case FLOATING_POINT_LITERAL:
+    	    case CHARACTER_LITERAL:
+    	    case STRING_LITERAL:
+    	    case IDENTIFIER:
+    	    case LPAREN:
+    	    case BANG:
+    	    case TILDE:
+    	    case INCR:
+    	    case DECR:
+    	    case PLUS:
+    	    case MINUS:
+    	      a = Expression();
+    	      al.add(a);
+    	      label_31:
+    	      while (true) {
+    	        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    	        case COMMA:
+    	          ;
+    	          break;
+    	        default:
+    	          jj_la1[86] = jj_gen;
+    	          break label_31;
+    	        }
+    	        jj_consume_token(COMMA);
+    	        a = Expression();
+    	        al.add(a);
+    	      }
+    	      break;
+    	    default:
+    	      jj_la1[87] = jj_gen;
+    	      ;
+    	    }
+    	    jj_consume_token(RBRACKET);
+        	break;
+        
+        default:
+          jj_la1[115] = jj_gen;
+          break;
+        }
+	    return al;
+	  }
+
+  
+  
   //TODO modify this
   final public Expression AllocationExpression() throws ParseException {
     String n = null;
@@ -5434,7 +5507,7 @@ void ForUpdate() :
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[115];
+  final private int[] jj_la1 = new int[116];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
