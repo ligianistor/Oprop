@@ -40,7 +40,7 @@ class Link {
     		// We add the x and y here whenever we call a function
     		// that needs to instantiate the forall variables.
     		// But not the k's, which are fractions.
-    		this.next.add(z, x, y);
+    		this.next.add(z)[x,y];
     	}
     	pack(this#1 UniRange(x+z,y+z));
     }
