@@ -43,14 +43,47 @@ predicate parent() =
 		
 		
 void Composite() 
-ensures (this#0.5 parent()) &&
-	(this#0.5 left(null,0)) &&
-	(this#0.5 right(null, 0))	
+ensures this.count->c && (c==1) &&
+	this.left->l && (l==null) &&
+	this.right->r && (r==null) &&
+	this.parent->p && (p==null)
 {
 	this.count = 1;
 	this.left = null;
 	this.right = null;
 	this.parent = null; 
+}
+
+
+void updateCount() 
+int k,
+int c, int c1, int c2, int c3,
+Composite ol, Composite or, Composite opp:	
+requires this.parent -> opp &&
+	unpacked(this#1.0 count(c)) &&
+	(this#0.5 left(ol, c1)) &&
+	(this#0.5 right(or, c2)) &&
+	unpacked(opp#k count(c3))
+ensures (this#1.0 count(c1+c2+1))
+{
+int newc = 1;
+unpack(this#0.5 left(ol, c1));
+if (this.left != null) {
+	unpack(ol#0.5 count(c1));	 
+	newc = newc + left.count;
+	pack(ol#0.5 count(c1));
+}
+pack(this#0.5 left(ol, c1));
+
+unpack(this#0.5 right(or, c2));	
+if (this.right != null) {
+	unpack(or#0.5 count(c2));
+	newc = newc + right.count;
+	pack(or#0.5 count(c2));
+}
+pack(this#0.5 right(or, c2));		
+this.count = newc; 
+pack(this#1.0 count(newc));
 }
 
 //This version assumes this is the right child of opp.
@@ -118,34 +151,6 @@ if (this.parent != null) {
 	}
 }
 
-void updateCount() 
-int c, int c1, int c2, int newc,
-Composite ol, Composite or:	
-requires unpacked(this#1.0 count(c)) &&
-	(this#0.5 left(ol, c1)) &&
-	(this#0.5 right(or, c2))
-ensures (this#1.0 count(newc))
-{
-	
-int newc = 1;
-unpack(this#0.5 left(ol, c1));
-if (this.left != null) {
-	unpack(ol#0.5 count(c1));	 
-	newc = newc + left.count;
-	pack(ol#0.5 count(c1));
-}
-pack(this#0.5 left(ol, c1));
-
-unpack(this#0.5 right(or, c2));	
-if (this.right != null) {
-	unpack(or#0.5 count(c2));
-	newc = newc + right.count;
-	pack(or#0.5 count(c2));
-}
-pack(this#0.5 right(or, c2));		
-this.count = newc; 
-pack(this#1.0 count(newc));
-}
 
 void setLeft(Composite l) 
 ~ double k1, double k2, double k:
