@@ -63,7 +63,7 @@ requires this.parent -> opp &&
 	unpacked(this#1.0 count(c)) &&
 	(this#0.5 left(ol, c1)) &&
 	(this#0.5 right(or, c2)) &&
-	unpacked(opp#k count(c3))
+	(opp!=null ~=> unpacked(opp#k count(c3)))
 ensures (this#1.0 count(c1+c2+1))
 {
 int newc = 1;
