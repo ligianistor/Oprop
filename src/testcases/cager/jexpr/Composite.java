@@ -58,32 +58,49 @@ ensures this.count->c && (c==1) &&
 void updateCount() 
 int k,
 int c, int c1, int c2, int c3,
-Composite ol, Composite or, Composite opp:	
-requires this.parent -> opp &&
+Composite ol, Composite or, Composite op:	
+requires this.parent -> op &&
 	unpacked(this#1.0 count(c)) &&
 	(this#0.5 left(ol, c1)) &&
 	(this#0.5 right(or, c2)) &&
-	(opp!=null ~=> unpacked(opp#k count(c3)))
+	(op!=null ~=> unpacked(op#k count(c3)))
 ensures (this#1.0 count(c1+c2+1))
 {
-int newc = 1;
-unpack(this#0.5 left(ol, c1));
-if (this.left != null) {
-	unpack(ol#0.5 count(c1));	 
-	newc = newc + left.count;
-	pack(ol#0.5 count(c1));
-}
-pack(this#0.5 left(ol, c1));
+// Existential variables for 
+// unpack(ol#0.5 count(c1)).
+// The programmer should put all the 
+// existential variables the he/she declares in the
+//beginning of the program.
+Composite ol1;
+Composite or1;
+int lc1;
+int rc1;
 
-unpack(this#0.5 right(or, c2));	
-if (this.right != null) {
-	unpack(or#0.5 count(c2));
-	newc = newc + right.count;
-	pack(or#0.5 count(c2));
+// Existential variables for 
+// unpack(or#0.5 count(c2)).
+Composite ol2;
+Composite or2;
+int lc2;
+int rc2;
+
+int newc = 1;
+unpack(this#0.5 left(ol, c1)[op]);
+if (this.left != null) {
+	unpack(ol#0.5 count(c1)[ol1, or1, lc1, rc1]);	 
+	newc = newc + this.left.count;
+	pack(ol#0.5 count(c1)[ol1, or1, lc1, rc1]);
 }
-pack(this#0.5 right(or, c2));		
+pack(this#0.5 left(ol, c1)[op]);
+
+unpack(this#0.5 right(or, c2)[op]);	
+if (this.right != null) {
+	unpack(or#0.5 count(c2)[ol2, or2, lc2, rc2]);
+	newc = newc + this.right.count;
+	pack(or#0.5 count(c2)[ol2, or2, lc2, rc2]);
+}
+pack(this#0.5 right(or, c2)[op]);		
 this.count = newc; 
-pack(this#1.0 count(newc));
+pack(this#1.0 count(newc)[ol, or, c1, c2]);
 }
 
 //This version assumes this is the right child of opp.
@@ -107,98 +124,87 @@ requires unpacked(this#k1 parent()) &&
    (this#0.5 right(or, rc))
 ensures (this#k2 parent())
 {
+// Existential variables for unpack(opp#0.5 count(opp.count))
+Composite oll;
+Composite orr;
+int llc;
+int rrc;
+
+
 //We already have access to this.parent from the precondition of 
 //this function.
 if (this.parent != null) {
 	splitFrac(opp#k parent(), 2);
-	unpack(opp#k/2 parent());
+	unpack(opp#k/2 parent()[opp.parent, opp.count]);
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
-	int lccc;
-	unpack(opp#0.5 count(lccc));
-	//These variables are for existentially quantified variables inside the 
-	//count predicate that we just unpacked.
-	int rrc;
-	Composite orr;
-	//These instantiates are because the programmer knows what to
-	//instantiate to what.
-	//Instantiate the existentially quantified variable to this.
-	//Maybe we do not need these instantiate()
-	instantiate(orr, this);
-	instantiate(rrc, lcc);
-	//The rule in the formal system should be that
-	//if we have two object propositions with different parameters
-	//that are both packed, then the parameters should be the same.
-	addFrac(opp#0.5 right(this, lcc), opp#0.5 right(orr, rrc));
-	//Explain why do we need the full fraction!!!
-	unpack(opp#1.0 right(this, lcc));
-	addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
-	unpack(this#1.0 count(lcc));
-	
-	this.updateCount();
-	pack(opp#1.0 right(this, lcc));
+	unpack(opp#0.5 count(opp.count)[oll, this, llc, lcc]);
+	if (this == right[parent[this]]) {
+		//The rule in the formal system should be that
+		//if we have two object propositions with different parameters
+		//that are both packed, then the parameters should be the same.
+		addFrac(opp#0.5 right(this, lcc), opp#0.5 right(orr, rrc));
+		//Explain why we need the full fraction!!!
+		unpack(opp#1.0 right(this, lcc)[opp.parent]);
+		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
 		
-	this.parent.updateCountRec();
-	k3:real;
-	pack(opp#k3 parent());
-	pack(this#k2 parent());
+		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
+		pack(this#k2 parent()[opp, lc + rc + 1]);
+		pack(opp#1.0 right(this, lcc)[opp.parent]);
+			
+		this.parent.updateCountRec()[opp.parent, opp.count, opp.left, this, opp.left.count, lc + rc + 1];	
+	} else if (this == left[parent[this]]){
+		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(oll, llc));
+		//Explain why we need the full fraction!!!
+		unpack(opp#1.0 left(this, lcc));
+		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
 		
+		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
+		pack(this#k2 parent()[opp, lc + rc + 1]);
+		pack(opp#1.0 left(this, lcc)[opp.parent]);
+			
+		this.parent.updateCountRec()[opp.parent, opp.count, this, opp.right, opp.left.count, lc + rc + 1];
+
+	}		
  } else {
 	addFrac(this#0.5 count(lcc), unpacked(this#0.5 count(lcc)));
 	//After this addFrac, we know that this is unpacked in count()
-	 this.updateCount();
+	 this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
 	splitFrac(unpacked(this#1.0 count(lcc)), 2);
-	pack(this#k2 parent());
+	pack(this#k2 parent()[this.parent, lc + rc + 1]);
 	}
 }
 
 
 void setLeft(Composite l) 
 ~ double k1, double k2, double k:
-requires (this != l) &&
-	(this#0.5 left(null, 0)) &&
-	( (this#k1 parent()) ||
-	 (l#k2 parent())	
-	)
-ensures (this#k parent())
+requires (this != l);
+// TODO Might need to add !=null for other objects too
+requires (l != null);
+requires this.right != this.parent;
+requires l != this.parent;
+requires this != this.right;
+requires this#k1 parent();
+requires unpacked (l#k2 parent());	
+ensures (this#k parent());
 {
-unpack(l#k2 parent());
+// Existentially quantified variable for UnpackParent(this,lcc)
+int lcc;
+// Existentially quantified variables for UnpackCount(this,lcc)
+// The variable rc is also used in the call to updateCountRec()
+Composite or;
+int rc;
+
 if (l.parent==null) {	
-	l.parent= this;
-	unpack(this#k1 parent());
-	int lcc;
-	unpack(this#0.5 count(lcc));
-	instantiate(ol, null);
-	instantiate(llc, 0);
+	l.parent = this;
+	unpack(this#k1 parent()[this.parent, lcc]);
+	unpack(this#0.5 count(lcc)[null, or, 0, rc]);
 	addFrac(this#0.5 left(null, 0), this#0.5 left(null, 0));
-	unpack(this#1.0 left(null, 0));	
+	unpack(this#1.0 left(null, 0)[this.parent]);	
 	this.left = l;
 	int lc;
 	pack(this#1.0 left(l, lc));	
 	this.updateCountRec(); 
 	pack(l#k2 parent());	
-	}
-}
-
-//We do not need to prove this,
-//it is analogous to setLeft
-void setRight(Composite r) 
-~ double k1, double k2, double k:
-requires (this != r) &&
-	(this#0.5 right(null, 0)) &&
-	( (this#k1 parent()) ||
-	 (r#k2 parent())	
-	)
-ensures (this#k parent())
-{
-		
-if (r.parent==null) {
-			
-	r.parent = this;
-			
-	this.right = r;
-			
-	this.updateCountRec(); 
-		
 	}
 }
 
