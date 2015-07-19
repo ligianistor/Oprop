@@ -192,19 +192,18 @@ int lcc;
 // Existentially quantified variables for UnpackCount(this,lcc)
 // The variable rc is also used in the call to updateCountRec()
 Composite or;
-int rc;
 
 if (l.parent==null) {	
 	l.parent = this;
 	unpack(this#k1 parent()[this.parent, lcc]);
-	unpack(this#0.5 count(lcc)[null, or, 0, rc]);
+	unpack(this#0.5 count(lcc)[null, or, 0, this.right.count]);
 	addFrac(this#0.5 left(null, 0), this#0.5 left(null, 0));
 	unpack(this#1.0 left(null, 0)[this.parent]);	
 	this.left = l;
-	int lc;
-	pack(this#1.0 left(l, lc));	
-	this.updateCountRec(); 
-	pack(l#k2 parent());	
+	this.left.count := l.left.count;
+	pack(this#1.0 left(l, l.left.count)[this.parent]);
+	pack(l#k2 parent()[l.parent, l.left.count]);	
+	this.updateCountRec()[this.parent, lcc, l, this.right, l.left.count, this.right.count]; 	
 	}
 }
 
