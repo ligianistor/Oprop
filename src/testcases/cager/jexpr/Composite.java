@@ -202,6 +202,7 @@ if (l.parent==null) {
 	this.left = l;
 	this.left.count := l.left.count;
 	pack(this#1.0 left(l, l.left.count)[this.parent]);
+	splitFrac(this#1.0 left(l, l.left.count));
 	pack(l#k2 parent()[l.parent, l.left.count]);	
 	this.updateCountRec()[this.parent, lcc, l, this.right, l.left.count, this.right.count]; 	
 	}
