@@ -2363,6 +2363,8 @@ void ConstructorDeclaration() :
         	  Expression objProp = ObjectProposition();
         	  jj_consume_token(RPAREN);
         	  ((PackUnpackAnnotation)e).add(objProp);
+              el = ExistentialArguments();
+              ((PackUnpackAnnotation)e).addExistentialParameters(el);/* lnistor */     
         	  
           }
           else if ("addFrac".equals(nameOfIdentifier)) {

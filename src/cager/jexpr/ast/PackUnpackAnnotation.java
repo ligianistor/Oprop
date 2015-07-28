@@ -10,6 +10,8 @@ public class PackUnpackAnnotation extends Expression
     public String name;
     private VariableDeclaration declaration;
     private Expression objPropChild;
+    private Expression[] existentialParameters = null;
+    private Expression[] children = new Expression[2];
 
 
     public PackUnpackAnnotation(String name)
@@ -21,6 +23,12 @@ public class PackUnpackAnnotation extends Expression
     public void add(Expression e)
     {
     	objPropChild = e;
+    	children[0] = e;
+    }
+    
+    public void addExistentialParameters(Expression e)
+    {
+        children[1] = e;
     }
 
     public String getName()
@@ -32,6 +40,14 @@ public class PackUnpackAnnotation extends Expression
     {
         return declaration;
     }
+    
+    public Expression getObjPropChild() {
+    	return objPropChild;
+    }
+    
+    public Expression[] getExistentialParameters() {
+    	return existentialParameters;
+    }
 
     public void setDeclaration(VariableDeclaration d)
     {
@@ -39,10 +55,13 @@ public class PackUnpackAnnotation extends Expression
     }
 
     public AST[] getChildren()
-    { 
-    	AST[] children = new AST[1];
-    	children[0] = objPropChild;
-    	return children;
+    {
+        if (children == null)
+        {
+            children = new Expression[] { };
+        }
+
+        return children;
     }
 
     public void accept(Visitor v) throws ParseException
