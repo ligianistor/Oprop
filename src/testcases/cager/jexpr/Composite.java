@@ -43,7 +43,7 @@ predicate parent() =
 		
 		
 void Composite() 
-ensures this.count->c && (c==1) &&
+ensures this.count->1 &&
 	this.left->l && (l==null) &&
 	this.right->r && (r==null) &&
 	this.parent->p && (p==null)

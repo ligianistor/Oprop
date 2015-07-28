@@ -326,7 +326,7 @@ public class ContextVisitor extends NullVisitor
             	}
                 Type t1 = ast.E1.getType();
                 Type t2 = ast.E2.getType();
-
+                
                 OperatorTypeInfo ti = ast.op.getTypeInfo(t1, t2, out);
                 try {
                 out.write("Type Info is " + ti+ "\n");
@@ -336,7 +336,6 @@ public class ContextVisitor extends NullVisitor
                 }
 
                 ast.setType(ti.getResultType());
-
                 if (ti.getImplicitCast1() != null)
                 {
                     CastExpression cast = new CastExpression(ti.getImplicitCast1(), ast.E1);

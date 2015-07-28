@@ -282,7 +282,7 @@ class ComparatorTypeResolver extends NumericTypeResolver
 {
     public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
-        if (Types.isNumericType(t1) && Types.isNumericType(t2))
+        if ((Types.isNumericType(t1) && Types.isNumericType(t2)) ) 
         {
             OperatorTypeInfo opInfo = super.binaryOperatorType(op, t1, t2, out);
             opInfo.resultType = Type.BOOLEAN;
@@ -290,7 +290,8 @@ class ComparatorTypeResolver extends NumericTypeResolver
             return opInfo;
         }
         else if (((!Types.isNumericType(t1) && t2.equals(Type.OBJECT)) 
-        		|| (!Types.isNumericType(t2) && t1.equals(Type.OBJECT))) && 
+        		|| (!Types.isNumericType(t2) && t1.equals(Type.OBJECT)) 
+        		|| (t1.toString().equals(t2.toString())) ) &&  //lnistor
         		(op == Operator.getBinary("==") || op == Operator.getBinary("!="))) //jhlee
         {
         	//Checks the case where we check the null equivalence. e.g. "Hi" == null 
