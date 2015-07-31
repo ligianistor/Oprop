@@ -420,6 +420,13 @@ public class ContextVisitor extends NullVisitor
             	}
             	return;
             }
+        	
+        	if (component instanceof IdentifierExpression) {
+        		if (((IdentifierExpression)component).getName().equals("unpacked")) {
+        			ast.setType(Type.BOOLEAN);
+        			return;
+        		}
+        	}
         }
         
         Expression e1 = (Expression)(ast.getChildren()[0]);

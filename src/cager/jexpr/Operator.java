@@ -82,6 +82,7 @@ public class Operator
         putBinary(JExprConstants.DOT, ".", new DotTypeResolver());
         
         putBinary(JExprConstants.KEYACCESS, "->", new KeyAccessTypeResolver()); //jhlee
+        putBinary(JExprConstants.SLASH, "/", new SlashTypeResolver()); //lnistor
         
         putBinary(JExprConstants.ASSIGN, "=", new AssignTypeResolver()); //jhlee
 
@@ -322,7 +323,8 @@ class KeyAccessTypeResolver extends TypeResolver
 {
     public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
-    	if (t1.equals(t2))
+    	if (t1.equals(t2) || 
+    			t2.equals(Type.OBJECT)) 
         {
     		info.resultType = Type.BOOLEAN;
             return info;
@@ -331,6 +333,18 @@ class KeyAccessTypeResolver extends TypeResolver
         {
             throw new ParseException("Non-matching Types: " + t1 + ", " + t2 + " for op " + op.getName());
         }
+    }
+}
+
+/*
+ * lnistor
+ */
+class SlashTypeResolver extends TypeResolver
+{
+    public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
+    {
+    		info.resultType = Type.DOUBLE;
+            return info;    
     }
 }
 

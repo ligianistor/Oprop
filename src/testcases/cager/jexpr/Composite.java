@@ -138,7 +138,7 @@ if (this.parent != null) {
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
 	unpack(opp#0.5 count(opp.count))[oll, this, llc, lcc];
-	if (this == right[parent[this]]) {
+	if (this == this.parent.right) {
 		//The rule in the formal system should be that
 		//if we have two object propositions with different parameters
 		//that are both packed, then the parameters should be the same.
@@ -152,7 +152,7 @@ if (this.parent != null) {
 		pack(opp#1.0 right(this, lcc))[opp.parent];
 			
 		this.parent.updateCountRec()[opp.parent, opp.count, opp.left, this, opp.left.count, lc + rc + 1];	
-	} else if (this == left[parent[this]]){
+	} else if (this == this.parent.left){
 		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(oll, llc));
 		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 left(this, lcc));

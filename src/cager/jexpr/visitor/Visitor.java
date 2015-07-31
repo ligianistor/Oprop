@@ -53,4 +53,4 @@ public interface Visitor {
   public abstract void visitMethodSpecFracVariable(MethodSpecFracVariable methodSpecFracVariable) throws ParseException;
   public abstract void visitMethodSpecFracVariables(MethodSpecFracVariables methodSpecFracVariables)
   		throws ParseException;
-}
+  }

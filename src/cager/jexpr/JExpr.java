@@ -1688,13 +1688,36 @@ void ConstructorDeclaration() :
     Expression e = null;
     Expression frac = null;
     Expression pd;
+    boolean isUnpacked = false;
+ /*
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case DOLLAR:
+      jj_consume_token(DOLLAR);
+      jj_consume_token(IDENTIFIER);
+      //lnistor
+      String nameOfIdentifier = getToken(0).image;
+      if ("unpacked".equals(nameOfIdentifier) ) {
+    	  isUnpacked = true;
+    	  jj_consume_token(LPAREN);
+      }
+      break;
+    default:
+    	 jj_la1[116] = jj_gen;
+    	 break;
+    }
+    */
+    
     e = ConditionalExpression();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FRACTION:
       jj_consume_token(FRACTION);
       frac = ConditionalExpression();
       pd = ConditionalExpression();
-      e = new ObjectProposition(e, frac, pd);
+      e = new ObjectProposition(isUnpacked, e, frac, pd);
+      if (isUnpacked) {
+    	  jj_consume_token(RPAREN);
+      }
+      
       break;
     default:
       jj_la1[52] = jj_gen;
@@ -2293,7 +2316,6 @@ void ConstructorDeclaration() :
   }
 
   final public Expression PrimaryExpression() throws ParseException {
-	
     PrimaryExpression e = new PrimaryExpression();
     PrimaryPrefix(e);
     label_29:
@@ -2307,6 +2329,7 @@ void ConstructorDeclaration() :
     }
     return e;
   }
+  
 
   final public void PrimaryPrefix(PrimaryExpression pe) throws ParseException {
 	ArgumentList el;
@@ -5509,7 +5532,7 @@ void ForUpdate() :
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[116];
+  final private int[] jj_la1 = new int[117];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;

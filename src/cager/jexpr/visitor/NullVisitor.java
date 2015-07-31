@@ -232,4 +232,5 @@ public class NullVisitor implements Visitor
 		throws ParseException 
 		{ visitChildren(ast); }
 
+
 }
