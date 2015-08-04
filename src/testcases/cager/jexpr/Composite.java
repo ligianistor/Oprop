@@ -44,9 +44,9 @@ predicate parent() =
 		
 void Composite() 
 ensures this.count->1 &&
-	this.left->l && (l==null) &&
-	this.right->r && (r==null) &&
-	this.parent->p && (p==null)
+	this.left->null &&
+	this.right->null &&
+	this.parent->null
 {
 	this.count = 1;
 	this.left = null;
