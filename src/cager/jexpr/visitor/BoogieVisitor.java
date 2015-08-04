@@ -936,11 +936,18 @@ String getNewForallParameter() {
     		if (namePredicate != "" ) {
     			addToFieldWhichPredicates(nameField, namePredicate);
     		}
+
+    		String fieldValue="";
+    		if (e2.getChildren()[0] instanceof IdentifierExpression) {
     		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
-    		String fieldValue = i.getName();
+    		fieldValue = i.getName();
+    		} else if (e2.getChildren()[0] instanceof LiteralExpression) {
+    			LiteralExpression i = (LiteralExpression)(e2.getChildren()[0]);
+    			fieldValue = i.getValue() + "";
+    		}
     		
         	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, fieldValue);
-        	quantifiedVars.put(pv, nameField);     	
+        	quantifiedVars.put(pv, nameField); 
     		return;
     	}
     	
