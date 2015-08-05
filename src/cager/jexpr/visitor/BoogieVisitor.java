@@ -86,7 +86,7 @@ public class BoogieVisitor extends NullVisitor {
 	boolean inMethodSelectionStatement = false;
 	
 	//The name of the latest identifier or field[this].
-	//Its use is in visitMethodSelection.
+	//Its use is in visitMethodSelection and in visitFieldSelection.
 	String currentIdentifier = "";
 		
 	String lastPrimaryExpressionType = "";
@@ -799,8 +799,16 @@ String getNewForallParameter() {
         if (currentMethod != "") {
      		   modifyFieldsInMethod(identifierName);   
         }
-    	
-    	String fieldName = identifierName +"[this]";
+        // This is currentIdentifier before being overwritten 
+        // a couple of lines below.
+    	String originalIdentifier = currentIdentifier;
+    	String fieldName;
+    	if (originalIdentifier.equals("")){
+    	fieldName = identifierName +"[this]";
+    	}
+    	else {
+    		fieldName = identifierName +"["+ originalIdentifier +"]";
+    	}
     	fieldsInStatement.add(identifierName);
     	currentIdentifier = fieldName;
     	if (insideObjectProposition) {
@@ -811,7 +819,13 @@ String getNewForallParameter() {
 			  !inArgumentList && !inMethodSelectionStatement) {
 			  //First remove the last 4 characters in the string statementContent
 			  //because they == "this", which shouldn't be there.
-			  statementContent = statementContent.substring(0, statementContent.length()-4);
+			  // TODO this is where the error is
+			  if (originalIdentifier.equals("")){
+				  statementContent = statementContent.substring(0, statementContent.length()-4);
+			  }
+			  else {
+				  statementContent = statementContent.substring(0, statementContent.length()-originalIdentifier.length()); 
+			  }
 			  statementContent = statementContent.concat(fieldName);  
 		  }
 		  
