@@ -86,8 +86,12 @@ public class BoogieVisitor extends NullVisitor {
 	boolean inMethodSelectionStatement = false;
 	
 	//The name of the latest identifier or field[this].
-	//Its use is in visitMethodSelection and in visitFieldSelection.
+	//Its use is in visitMethodSelection.
 	String currentIdentifier = "";
+	
+	//The name of the last identifier or keyword expression (for "this").
+	//It is used in visitFieldSelection.
+	String lastIdentifierOrKeyword = "";	
 		
 	String lastPrimaryExpressionType = "";
 	
@@ -507,22 +511,22 @@ public class BoogieVisitor extends NullVisitor {
      		String predBody = sb.toString().concat(lastPartPredBody);
      		try {
 			//will need to do something about formal parameters
-			out.write("procedure Pack"+currentNamePred+"(");
+			out.write("procedure Pack"+upperCaseFirstLetter(currentNamePred)+"(");
 			writePredParamsOutOrToString(currentNamePred, 1, false);
 			out.write("this:Ref);\n"); 
-			out.write("\t requires packed"+currentNamePred+"[");
+			out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
 			out.write("this]==false &&\n");
 			out.write("\t \t" + predBody + ";\n"); 
 			out.write("\n");
-			out.write("procedure Unpack"+currentNamePred+"(");
+			out.write("procedure Unpack"+upperCaseFirstLetter(currentNamePred)+"(");
 			writePredParamsOutOrToString(currentNamePred, 1, false);
 			out.write("this:Ref);\n");
-			out.write("\t requires packed"+currentNamePred+"[");
+			out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
 			out.write("this] &&\n\t \t ");
 			//TODO we don't do this for Pack because 
 			//we do it in the code after we call the Pack procedure
 			
-			out.write("(frac"+currentNamePred+"[");
+			out.write("(frac"+upperCaseFirstLetter(currentNamePred)+"[");
 			out.write("this] > 0.0);\n");
 			out.write("\t ensures "+predBody+";\n");
 			out.write("\n");
@@ -717,14 +721,14 @@ public class BoogieVisitor extends NullVisitor {
 		        }
 		        	
 		        	//This is for writing "ensures forall for frac.
-		        	if (localFieldsInMethod.contains("frac"+nameOfPredicate) &&
+		        	if (localFieldsInMethod.contains("frac"+upperCaseFirstLetter(nameOfPredicate)) &&
 		        			!setFracEq1.contains(nameOfPredicate)) {
 		        	ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
 		        	if (modifiedObjects.isEmpty()) {
-		        		ensuresForall = ensuresForall.concat("frac"+nameOfPredicate + 
+		        		ensuresForall = ensuresForall.concat("frac"+upperCaseFirstLetter(nameOfPredicate) + 
 		        				"["+ forallParameter+
-		        				"] == old(frac" + nameOfPredicate +"["+
+		        				"] == old(frac" + upperCaseFirstLetter(nameOfPredicate) +"["+
 		        				forallParameter+"])));\n");
 		        	} else {
 		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
@@ -743,9 +747,9 @@ public class BoogieVisitor extends NullVisitor {
 		        			ensuresForall = ensuresForall.concat("(");
 		        		}
 		        		
-		        		ensuresForall = ensuresForall.concat("(frac"+ nameOfPredicate + 
+		        		ensuresForall = ensuresForall.concat("(frac"+ upperCaseFirstLetter(nameOfPredicate) + 
 		        				"["+ forallParameter+
-		        				"] == old(frac"+nameOfPredicate+"["+
+		        				"] == old(frac"+upperCaseFirstLetter(nameOfPredicate)+"["+
 		        				 forallParameter+"]))));\n");
 		        	}
 		        }
@@ -799,16 +803,9 @@ String getNewForallParameter() {
         if (currentMethod != "") {
      		   modifyFieldsInMethod(identifierName);   
         }
-        // This is currentIdentifier before being overwritten 
-        // a couple of lines below.
-    	String originalIdentifier = currentIdentifier;
-    	String fieldName;
-    	if (originalIdentifier.equals("")){
-    	fieldName = identifierName +"[this]";
-    	}
-    	else {
-    		fieldName = identifierName +"["+ originalIdentifier +"]";
-    	}
+
+        // TODO add aditional checks for lastIDentifierOrKeyword
+    	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
     	fieldsInStatement.add(identifierName);
     	currentIdentifier = fieldName;
     	if (insideObjectProposition) {
@@ -820,12 +817,14 @@ String getNewForallParameter() {
 			  //First remove the last 4 characters in the string statementContent
 			  //because they == "this", which shouldn't be there.
 			  // TODO this is where the error is
-			  if (originalIdentifier.equals("")){
-				  statementContent = statementContent.substring(0, statementContent.length()-4);
-			  }
-			  else {
-				  statementContent = statementContent.substring(0, statementContent.length()-originalIdentifier.length()); 
-			  }
+			  // Need to see why do I need to subtract this!!
+         if (statementContent.length() > 0) {
+		      statementContent = statementContent.substring(
+		    		  0, 
+		    		  statementContent.length()-lastIdentifierOrKeyword.length()
+		      ); 
+         }
+			  
 			  statementContent = statementContent.concat(fieldName);  
 		  }
 		  
@@ -1168,7 +1167,7 @@ String getNewForallParameter() {
         String bodyMethodOrPredicate = "";
         
         String bodyPredicate = "";
-        fracString.setNameFrac("frac"+predName);
+        fracString.setNameFrac("frac"+upperCaseFirstLetter(predName));
         
         fracString.setParameters(argumentsObjProp);
 
@@ -1179,20 +1178,22 @@ String getNewForallParameter() {
     		// but only when we are inside a predicate.
     	bodyMethodOrPredicate = "packed"+predName+"[";
     	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-    			          "] && \n \t \t(frac"+predName+"[");
+    			          "] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
     	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] == " + fracInObjProp+")");
-    	bodyPredicate = "frac"+predName+"[";
+    	bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
     	bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp);
     	}
     	else {
     		
         	bodyMethodOrPredicate = "packed"+predName+"[";
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-			          "[this]] && \n \t \t(frac"+predName+"[");
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] == " + fracInObjProp+")");
+			          "[this]] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
+        			"[this]] == " + fracInObjProp+")");
 
-        	bodyPredicate = "frac"+predName+"[";
-        	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] == " + fracInObjProp);
+        	bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
+        	bodyPredicate = bodyPredicate.concat(fieldName + 
+        			"[this]] == " + fracInObjProp);
     		fracString.setField(fieldName);
     		objProp.setObject(fieldName+"[this]");
     				
@@ -1204,9 +1205,9 @@ String getNewForallParameter() {
         		// but only when we are inside a predicate.       	
         	bodyMethodOrPredicate = "packed"+predName+"[";
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-        			          "] && \n \t \t(frac"+predName+"[");
+        			          "] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
-        	bodyPredicate = "(frac"+predName+"[";
+        	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
         	bodyPredicate = bodyPredicate.concat(objectString+ "] > 0.0)");
         	}
@@ -1214,10 +1215,10 @@ String getNewForallParameter() {
         		
             	bodyMethodOrPredicate = "packed"+predName+"[";
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-    			          "[this]] && \n \t \t(frac"+predName+"[");
+    			          "[this]] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
 
-            	bodyPredicate = "(frac"+predName+"[";
+            	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
             	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] > 0.0)");
         		fracString.setField(fieldName);
         		objProp.setObject(fieldName+"[this]");		
@@ -1332,14 +1333,14 @@ String getNewForallParameter() {
         
         modifyMethodBody(localVariableName + "] := true;\n");
         
-        modifyMethodBody("frac" +predicateOfConstruct+"[");
+        modifyMethodBody("frac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
         
         children[0].accept(this);
         
         modifyMethodBody(localVariableName + "] := 1.0;\n");
         
-        modifyFieldsInMethod("packed" +predicateOfConstruct);
-        modifyFieldsInMethod("frac" +predicateOfConstruct);
+        modifyFieldsInMethod("packed" +upperCaseFirstLetter(predicateOfConstruct));
+        modifyFieldsInMethod("frac" +upperCaseFirstLetter(predicateOfConstruct));
         
         
         LinkedList<FracString> currentPredicateFrac = 
@@ -1428,6 +1429,8 @@ String getNewForallParameter() {
     	else {
     		keywordString = value.toString();
     	}
+    	
+    	lastIdentifierOrKeyword = keywordString;
     		
         if (namePredicate.equals("")) {
      	   //we are not inside a predicate
@@ -1495,14 +1498,14 @@ String getNewForallParameter() {
     	//localFractionObjProp = fractionObjProp;
     	//localArgumentsObjProp = argumentsObjProp;
     
-    	toWrite = toWrite.concat("frac"+predicateNameObjProp+"[");
+    	toWrite = toWrite.concat("frac"+upperCaseFirstLetter(predicateNameObjProp)+"[");
     	for (int i=0;i<argumentsObjProp.size();i++) {
     		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
     	}
     	toWrite = toWrite.concat(objectObjProp + "] := ");
     	//Same code as above
     	//TODO remove duplicate code
-    	toWrite = toWrite.concat("frac"+predicateNameObjProp+"[");
+    	toWrite = toWrite.concat("frac"+upperCaseFirstLetter(predicateNameObjProp)+"[");
     	for (int i=0;i<argumentsObjProp.size();i++) {
     		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
     	}
@@ -1580,6 +1583,7 @@ String getNewForallParameter() {
     public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
     {    	
     	currentIdentifier = ast.name;
+    	lastIdentifierOrKeyword = ast.name;
     try {
       
        String identifierName = currentIdentifier;  
@@ -1941,14 +1945,18 @@ String getNewForallParameter() {
     	currentPredicateBinExpr.add(s);
     	predicateBinExpr.put(namePredicate, currentPredicateBinExpr);    	
     }
+    
+    String upperCaseFirstLetter(String input) {
+    	return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
    
     void makeConstructors(BufferedWriter out) {
     	//I also declare the packed and frac global variables for this class.
     	try {
 
     		for (String p : predicates) {
-    			out.write("var packed" + p + ": [Ref] bool;\n");
-    			out.write("var frac" + p + ": [Ref] real;\n");
+    			out.write("var packed" + upperCaseFirstLetter(p) + ": [Ref] bool;\n");
+    			out.write("var frac" + upperCaseFirstLetter(p) + ": [Ref] real;\n");
     			
     			 /*
             	//write constructors for each predicate
