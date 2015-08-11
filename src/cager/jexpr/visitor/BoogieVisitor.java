@@ -45,6 +45,7 @@ import cager.jexpr.ast.PackUnpackAnnotation;
 import cager.jexpr.ast.PredicateDeclaration;
 import cager.jexpr.ast.PrimaryExpression;
 import cager.jexpr.ast.QuantifierVariable;
+import cager.jexpr.ast.QuantifierVariables;
 import cager.jexpr.ast.ReturnStatement;
 import cager.jexpr.ast.StatementExpression;
 import cager.jexpr.ast.TypedAST;
@@ -115,6 +116,10 @@ public class BoogieVisitor extends NullVisitor {
 	//This maps each method name to the parameters of that method.
 	//I think they are separated by commas.
 	HashMap<String, String> methodParams = new HashMap<String, String>();
+	
+	//This maps each method name to the existential variables of that method.
+	//I think they are separated by commas.
+	HashMap<String, String> methodExistentialParams = new HashMap<String, String>();
 	
 	//For each name of a field, this map tells us which is the predicate that 
 	//has the permission to the field.
@@ -403,9 +408,31 @@ public class BoogieVisitor extends NullVisitor {
     	children[1].accept(this);	
     }
     
+    public void visitQuantifierVariables(QuantifierVariables ast) throws ParseException
+  	{  
+    	visitChildren(ast);
+  	}
+    
     public void visitQuantifierVariable(QuantifierVariable ast) throws ParseException
-  	{    	   	    	
-    	visitChildren(ast); 
+  	{    	   	    
+    	System.out.println("in visit");
+    	if (ast!=null) {
+    		
+    		String name = ast.getName();
+    	
+    		//TODO do we always need to add to parametersMethod, even if we are not
+    		//inside a method?
+    		parametersMethod.add(name);
+    		String type = ast.getType().toString();
+    	if (namePredicate!="") {
+    		System.out.println(name);
+    		modifyExistentialParams(name, type); 
+    	}
+    	else if (currentMethod !="") {
+    		modifyMethodExistentialParams(name+ ":" + type +",");
+    	}
+    		visitChildren(ast);
+    	}
     }
     
     
@@ -1829,6 +1856,18 @@ String getNewForallParameter() {
 		//For the else branch, it means this predicate does not exist.
 		//We should not end up on this branch.
     }
+    
+    void modifyExistentialParams(String name, String type) {
+		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+		if (currentParamsPredicateBody != null) {
+		paramsPredicateBody.put(
+				namePredicate, 
+				currentParamsPredicateBody.addExistentialParam(name, type)
+		);
+		} 
+		//For the else branch, it means this predicate does not exist.
+		//We should not end up on this branch.
+    }
         
     void modifyMethodSpec(String s) {
     	String currentMethodSpec = methodSpec.get(currentMethod);
@@ -1840,6 +1879,12 @@ String getNewForallParameter() {
     	String currentMethodParams = methodParams.get(currentMethod);
 		currentMethodParams = currentMethodParams.concat(s);
 		methodParams.put(currentMethod, currentMethodParams);
+    }
+    
+    void modifyMethodExistentialParams(String s) {
+    	String currentMethodExistentialParams = methodExistentialParams.get(currentMethod);
+    	currentMethodExistentialParams = currentMethodExistentialParams.concat(s);
+		methodExistentialParams.put(currentMethod, currentMethodExistentialParams);
     }
         
     void modifyMethodPreconditions(ObjPropString s) {
@@ -2090,11 +2135,36 @@ String getNewForallParameter() {
     	if (toString) {
         	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
     		if (currentParamsPredicateBody != null) {
+    			//Write formal parameters out.
     			LinkedList<FieldAndTypePair> formalParamsList =
     					currentParamsPredicateBody.getFormalParameters();
     			if (!formalParamsList.isEmpty()) {
     				for (int i=0;i<formalParamsList.size();i++) {
     					FieldAndTypePair f = formalParamsList.get(i);
+    					switch (k) {
+    		            case 1:  
+    		            	result = result.concat(f.getName() + ":"+f.getType()+", ");
+    		                break; 
+    		            case 2: 
+    		            	result = result.concat(f.getName() + ", ");
+    		            	break;
+    		            case 3: 
+    		            	result = result.concat(f.getType() + ", ");
+    		            	break;
+    		            default: 
+    		            	break;
+    					}
+    					
+    				}
+    			}	
+    			
+    			//Write existential parameters out.
+    			LinkedList<FieldAndTypePair> existentialParamsList =
+    					currentParamsPredicateBody.getExistentialParameters();
+    			if (!existentialParamsList.isEmpty()) {
+    				System.out.println("not empty\n");
+    				for (int i=0;i<existentialParamsList.size();i++) {
+    					FieldAndTypePair f = existentialParamsList.get(i);
     					switch (k) {
     		            case 1:  
     		            	result = result.concat(f.getName() + ":"+f.getType()+", ");
@@ -2117,6 +2187,10 @@ String getNewForallParameter() {
     	try{
     	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
 		if (currentParamsPredicateBody != null) {
+			//TODO need to restructure this and put the repeating code in one 
+			//method.
+			
+			//Write formal parameters out.
 			LinkedList<FieldAndTypePair> formalParamsList =
 					currentParamsPredicateBody.getFormalParameters();
 			if (!formalParamsList.isEmpty()) {
@@ -2138,6 +2212,29 @@ String getNewForallParameter() {
 					
 				}
 			}	
+			
+			//Write existential parameters out.
+			LinkedList<FieldAndTypePair> existentialParamsList =
+					currentParamsPredicateBody.getExistentialParameters();
+			if (!existentialParamsList.isEmpty()) {
+				for (int i=0;i<existentialParamsList.size();i++) {
+					FieldAndTypePair f = existentialParamsList.get(i);
+					switch (k) {
+		            case 1:  
+		            	out.write(f.getName() + ":"+f.getType()+", ");
+		                break; 
+		            case 2: 
+		            	out.write(f.getName() + ", ");
+		            	break;
+		            case 3: 
+		            	out.write(f.getType() + ", ");
+		            	break;
+		            default: 
+		            	break;
+					}
+					
+				}
+			}
 		}
     	}
     	catch (Exception e) {
