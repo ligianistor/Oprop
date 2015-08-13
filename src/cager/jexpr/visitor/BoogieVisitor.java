@@ -14,6 +14,7 @@ import cager.jexpr.ParseException;
 import cager.jexpr.PredicateAndFieldValue;
 import cager.jexpr.ast.AST;
 import cager.jexpr.ast.AllocationExpression;
+import cager.jexpr.ast.ArgumentAndFieldPair;
 import cager.jexpr.ast.ArgumentList;
 import cager.jexpr.ast.BinaryExpression;
 import cager.jexpr.ast.Block;
@@ -104,6 +105,12 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<PackObjMods>> packedMods = 
 			new HashMap<String, LinkedList<PackObjMods>>();
 	
+	//For each predicate, this gives the list of the field that each argument of the 
+	//predicate represents. If the argument does not represent the current value of a 
+	//field, then I put "null" in this list.
+	HashMap<String, LinkedList<ArgumentAndFieldPair>> predArgWhichField = 
+			new HashMap<String, LinkedList<ArgumentAndFieldPair>>();
+	
 	//For each predicate name, this maps it to its body represented as a String.
 	HashMap<String, FieldTypePredbody> paramsPredicateBody = new HashMap<String, FieldTypePredbody>();
 	
@@ -123,7 +130,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//For each name of a field, this map tells us which is the predicate that 
 	//has the permission to the field.
-	//Might not be correct because there might be more than one predicate for the same
+	//There might be more than one predicate for the same
 	//field, but they don't exist at the same time in a method. 
 	HashMap<String, LinkedList<String>> fieldWhichPredicates = new HashMap<String, LinkedList<String>>();
 	
@@ -2124,6 +2131,31 @@ String getNewForallParameter() {
 		}
 		return result;
 	}
+	
+	// This is a helper function for the function
+	// writePredParamsOutOrToString()
+	String helperWriteToResult(LinkedList<FieldAndTypePair> paramsList, int k, String result) {
+		if (!paramsList.isEmpty()) {
+			for (int i=0;i<paramsList.size();i++) {
+				FieldAndTypePair f = paramsList.get(i);
+				switch (k) {
+	            case 1:  
+	            	result = result.concat(f.getName() + ":"+f.getType()+", ");
+	                break; 
+	            case 2: 
+	            	result = result.concat(f.getName() + ", ");
+	            	break;
+	            case 3: 
+	            	result = result.concat(f.getType() + ", ");
+	            	break;
+	            default: 
+	            	break;
+				}		
+			}
+		}
+		return result;
+	}
+	
     
     //k=1 is for writing nameParam: type
     //k=2 is for writing the current value of the parameters
@@ -2138,103 +2170,28 @@ String getNewForallParameter() {
     			//Write formal parameters out.
     			LinkedList<FieldAndTypePair> formalParamsList =
     					currentParamsPredicateBody.getFormalParameters();
-    			if (!formalParamsList.isEmpty()) {
-    				for (int i=0;i<formalParamsList.size();i++) {
-    					FieldAndTypePair f = formalParamsList.get(i);
-    					switch (k) {
-    		            case 1:  
-    		            	result = result.concat(f.getName() + ":"+f.getType()+", ");
-    		                break; 
-    		            case 2: 
-    		            	result = result.concat(f.getName() + ", ");
-    		            	break;
-    		            case 3: 
-    		            	result = result.concat(f.getType() + ", ");
-    		            	break;
-    		            default: 
-    		            	break;
-    					}
-    					
-    				}
-    			}	
+    			 helperWriteToResult(formalParamsList, k, result);
     			
     			//Write existential parameters out.
     			LinkedList<FieldAndTypePair> existentialParamsList =
     					currentParamsPredicateBody.getExistentialParameters();
-    			if (!existentialParamsList.isEmpty()) {
-    				System.out.println("not empty\n");
-    				for (int i=0;i<existentialParamsList.size();i++) {
-    					FieldAndTypePair f = existentialParamsList.get(i);
-    					switch (k) {
-    		            case 1:  
-    		            	result = result.concat(f.getName() + ":"+f.getType()+", ");
-    		                break; 
-    		            case 2: 
-    		            	result = result.concat(f.getName() + ", ");
-    		            	break;
-    		            case 3: 
-    		            	result = result.concat(f.getType() + ", ");
-    		            	break;
-    		            default: 
-    		            	break;
-    					}
-    					
-    				}
-    			}	
+    			helperWriteToResult(existentialParamsList, k, result);
     		}
     		
     	} else {
     	try{
     	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
 		if (currentParamsPredicateBody != null) {
-			//TODO need to restructure this and put the repeating code in one 
-			//method.
 			
 			//Write formal parameters out.
 			LinkedList<FieldAndTypePair> formalParamsList =
 					currentParamsPredicateBody.getFormalParameters();
-			if (!formalParamsList.isEmpty()) {
-				for (int i=0;i<formalParamsList.size();i++) {
-					FieldAndTypePair f = formalParamsList.get(i);
-					switch (k) {
-		            case 1:  
-		            	out.write(f.getName() + ":"+f.getType()+", ");
-		                break; 
-		            case 2: 
-		            	out.write(f.getName() + ", ");
-		            	break;
-		            case 3: 
-		            	out.write(f.getType() + ", ");
-		            	break;
-		            default: 
-		            	break;
-					}
-					
-				}
-			}	
+			out.write(helperWriteToResult(formalParamsList, k, ""));	
 			
 			//Write existential parameters out.
 			LinkedList<FieldAndTypePair> existentialParamsList =
 					currentParamsPredicateBody.getExistentialParameters();
-			if (!existentialParamsList.isEmpty()) {
-				for (int i=0;i<existentialParamsList.size();i++) {
-					FieldAndTypePair f = existentialParamsList.get(i);
-					switch (k) {
-		            case 1:  
-		            	out.write(f.getName() + ":"+f.getType()+", ");
-		                break; 
-		            case 2: 
-		            	out.write(f.getName() + ", ");
-		            	break;
-		            case 3: 
-		            	out.write(f.getType() + ", ");
-		            	break;
-		            default: 
-		            	break;
-					}
-					
-				}
-			}
+			out.write(helperWriteToResult(existentialParamsList, k, ""));	
 		}
     	}
     	catch (Exception e) {
