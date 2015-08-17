@@ -9,12 +9,24 @@ public class ArgumentAndFieldPair {
 		field = t;
 	}
 	
+	//Constructor for when we only know the name
+	//of the argument and we do not know which field 
+	//it corresponds to.
+	public ArgumentAndFieldPair(String n) {
+		argument = n;
+		field = "";
+	}
+	
 	public String getArgument() {
 		return argument;
 	}
 	
 	public String getField() {
 		return field;
+	}
+	
+	public void setField(String f) {
+		field = f;
 	}
 	
 	@Override

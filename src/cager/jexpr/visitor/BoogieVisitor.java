@@ -107,7 +107,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//For each predicate, this gives the list of the field that each argument of the 
 	//predicate represents. If the argument does not represent the current value of a 
-	//field, then I put "null" in this list.
+	//field, then I put "" in this list.
 	HashMap<String, LinkedList<ArgumentAndFieldPair>> predArgWhichField = 
 			new HashMap<String, LinkedList<ArgumentAndFieldPair>>();
 	
@@ -223,6 +223,7 @@ public class BoogieVisitor extends NullVisitor {
 	BufferedWriter out;
 	
 	//The name of the current predicate that we are parsing.
+	//If we are not inside a predicate, this variable will be "".
 	String namePredicate;
 	
 	//The name of the current method that we are parsing in Oprop 
@@ -988,6 +989,11 @@ String getNewForallParameter() {
     		if (e2.getChildren()[0] instanceof IdentifierExpression) {
     		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
     		fieldValue = i.getName();
+    		 if (namePredicate != "") {
+    			 //This only has a side effect if fieldValue is 
+    			 //an argument of the predicate.
+    			 addFieldToPredArgWhichField(fieldValue, nameField);
+    		 }
     		} else if (e2.getChildren()[0] instanceof LiteralExpression) {
     			LiteralExpression i = (LiteralExpression)(e2.getChildren()[0]);
     			fieldValue = i.getValue() + "";
@@ -1331,6 +1337,7 @@ String getNewForallParameter() {
     		String type = ast.getType().toString();
     	if (namePredicate!="") {
     		modifyFormalParams(name, type); 
+    		addArgToPredArgWhichField(name);
     	}
     	else if (currentMethod !="") {
     		modifyMethodParams(name+ ":" + type +",");
@@ -1862,6 +1869,36 @@ String getNewForallParameter() {
 		} 
 		//For the else branch, it means this predicate does not exist.
 		//We should not end up on this branch.
+    }
+    
+    //Adds the pair (argument name, "") to 
+    //the list of pairs (argument, corresponding field)
+    void addArgToPredArgWhichField(String arg) {
+    	LinkedList<ArgumentAndFieldPair> list =
+    			predArgWhichField.get(namePredicate);
+    	if (list==null) {
+    		list = new LinkedList<ArgumentAndFieldPair>();
+    	}
+		list.add(new ArgumentAndFieldPair(arg));
+    	predArgWhichField.put(
+    			namePredicate,
+    			list
+    			);
+    }
+    
+    //Adds the field corresponding to 
+    //the argument 
+    void addFieldToPredArgWhichField(String arg, String field) {
+    	LinkedList<ArgumentAndFieldPair> list =
+    			predArgWhichField.get(namePredicate);
+    	if (list!=null) {
+    		for (int i=0; i < list.size(); i++) {
+    			ArgumentAndFieldPair o = list.get(i);
+    			if (o.getArgument().equals(arg)) {
+    				o.setField(field);
+    			}
+    		}
+    	}
     }
     
     void modifyExistentialParams(String name, String type) {
