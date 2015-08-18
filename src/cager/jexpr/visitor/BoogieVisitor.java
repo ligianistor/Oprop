@@ -407,6 +407,7 @@ public class BoogieVisitor extends NullVisitor {
     	namePredicate = ast.getIdentifier().getName();
     	predicates.add(namePredicate);
     	paramsPredicateBody.put(namePredicate, new FieldTypePredbody());
+    	predArgWhichField.put(namePredicate, null);
     	AST[] children = ast.getChildren();
     	//Visit formal parameters.
     	children[0].accept(this);
@@ -1137,7 +1138,28 @@ String getNewForallParameter() {
  		  argumentsPredicate.add(astvalue);
        }
     	
-    	visitChildren(ast); }
+    	visitChildren(ast); 
+    }
+    
+    String writeToStringPredArgWhichField(
+    		LinkedList<ArgumentAndFieldPair> listArgsToFields, 
+    		LinkedList<String> args, 
+    		String objectString) {
+    	String result = "";
+    	for (int i=0;i<args.size();i++) {
+    		ArgumentAndFieldPair argField = listArgsToFields.get(i);
+    		//This can be null for predicates that have no arguments.
+    		if (argField!=null){
+    			if (!(argField.equals(""))) {
+    				result = 
+    					result.concat(" && ("+argField.getField() + "["+objectString+"]=="+args.get(i)+")");
+    			}
+    		}
+    	}
+    	return result;
+    }
+    
+    
     
     public void visitObjectProposition(ObjectProposition ast) throws ParseException
     {    	
@@ -1165,16 +1187,18 @@ String getNewForallParameter() {
     	childrenPredDecl[0].accept(this);
     	String predName = objectPropString;
     	
+    	// The list of which field each argument of 
+    	// this predicate represents.
 
+    	LinkedList<ArgumentAndFieldPair> listArgsToFields =
+    			predArgWhichField.get(predName);
+    	
     	objectPropString = "";
     	ArgumentList argList = (ArgumentList)childrenPredDecl[1];
     	
     	LinkedList<String> args = new LinkedList<String>();
     	if (!argList.isEmpty()) {
-    	//this is ArgumentList but for this example 
-    	//there are no arguments so we set it to empty with new
-    	//currentMethod
-
+    	// This is ArgumentList.
     		AST[] childrenArgList = argList.getChildren();
     		for (int i=0; i<childrenArgList.length; i++){
     			objectPropString = "";
@@ -1182,6 +1206,14 @@ String getNewForallParameter() {
     			args.add(objectPropString);
     		}
     	}
+    	
+    	// I write to a returned String the output
+    	// representing the field that each argument of the predicate represents.
+    	String argsToFieldsString = writeToStringPredArgWhichField(
+    			listArgsToFields, 
+    			args, 
+    			objectString
+    	);
     	
     	argumentsObjProp = args;
     	objectObjProp = objectString;
@@ -1269,6 +1301,7 @@ String getNewForallParameter() {
     	// The minBound is the same if the fieldName is null or not. 
     	// We do not need to set this inside the if branches.
     	fracString.setMinBound(0);
+    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(argsToFieldsString);
     	
     	if ((currentMethod != "") && !inPackUnpackAnnotation) {
     		modifyMethodSpec(bodyMethodOrPredicate);
