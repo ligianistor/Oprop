@@ -444,6 +444,30 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
+    void writeOutAllPredArgWhichField(String namePred) {
+    	// The list of object propositions in the predicate
+    	// named "namePred".
+    	LinkedList<ObjPropString>  listObjProp = 
+    			predicateObjProp.get(namePred);
+    	
+    	if (listObjProp != null) {
+    	for (int i = 0; i < listObjProp.size(); i++) {
+    		ObjPropString objProp = listObjProp.get(i);
+    		
+        	// The list of which field each argument of 
+        	// this predicate represents.
+        	LinkedList<ArgumentAndFieldPair> listArgsToFields =
+        			predArgWhichField.get(objProp.getName());
+    		
+    		writeOutPredArgWhichField(
+    	    		listArgsToFields, 
+    	    		objProp.getParams(), 
+    	    		objProp.getObject());
+    	}
+    	}
+	
+    }
+    
     
  //Since methods are not children of 
  //Predicate, we might not need namePredicate here
@@ -552,8 +576,10 @@ public class BoogieVisitor extends NullVisitor {
 			out.write("this:Ref);\n"); 
 			out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
 			out.write("this]==false &&\n");
-			out.write("\t \t" + predBody + ";\n"); 
-			out.write("\n");
+			out.write("\t \t" + predBody + "\n \t \t"); 
+			writeOutAllPredArgWhichField(currentNamePred);
+			out.write(";\n \n");
+			
 			out.write("procedure Unpack"+upperCaseFirstLetter(currentNamePred)+"(");
 			writePredParamsOutOrToString(currentNamePred, 1, false);
 			out.write("this:Ref);\n");
@@ -563,7 +589,10 @@ public class BoogieVisitor extends NullVisitor {
 			//we do it in the code after we call the Pack procedure
 			
 			out.write("(frac"+upperCaseFirstLetter(currentNamePred)+"[");
-			out.write("this] > 0.0);\n");
+			out.write("this] > 0.0)\n \t \t");
+			writeOutAllPredArgWhichField(currentNamePred);
+			out.write(";\n");
+			
 			out.write("\t ensures "+predBody+";\n");
 			out.write("\n");
      		}
@@ -1061,8 +1090,12 @@ String getNewForallParameter() {
     
     void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException
     {
+    	// We replace the linear implies ~=> with ==>.
+    	if (operatorSymbol.equals("~=>")) {
+    		operatorSymbol = "==>";
+    	}
     	int initialStatementLength = statementContent.length();
-    	if (operatorSymbol == ",") {
+    	if (operatorSymbol.equals(",")) {
     		//TODO this is a modulo binary expression
     		concatToStatementObjProp("modulo(");
     	}
@@ -1079,7 +1112,7 @@ String getNewForallParameter() {
 	    	concatToStatementObjProp(")");
 	    	}
 		  
-	    	if (operatorSymbol == ",") {
+	    	if (operatorSymbol.equals(",")) {
 	    		//TODO this is a modulo binary expression
 	    		concatToStatementObjProp(")");
 	    	}
@@ -1141,22 +1174,25 @@ String getNewForallParameter() {
     	visitChildren(ast); 
     }
     
-    String writeToStringPredArgWhichField(
+    void writeOutPredArgWhichField(
     		LinkedList<ArgumentAndFieldPair> listArgsToFields, 
     		LinkedList<String> args, 
     		String objectString) {
-    	String result = "";
     	for (int i=0;i<args.size();i++) {
     		ArgumentAndFieldPair argField = listArgsToFields.get(i);
     		//This can be null for predicates that have no arguments.
     		if (argField!=null){
     			if (!(argField.equals(""))) {
-    				result = 
-    					result.concat(" && ("+argField.getField() + "["+objectString+"]=="+args.get(i)+")");
+    				try{
+    					out.write(" && ("+argField.getField() + 
+    							"["+objectString+"]=="+args.get(i)+")");
+    				}
+    				catch(Exception e) {
+    					System.err.println("Error: " + e.getMessage());
+    				}
     			}
     		}
     	}
-    	return result;
     }
     
     
@@ -1190,8 +1226,8 @@ String getNewForallParameter() {
     	// The list of which field each argument of 
     	// this predicate represents.
 
-    	LinkedList<ArgumentAndFieldPair> listArgsToFields =
-    			predArgWhichField.get(predName);
+    	/*LinkedList<ArgumentAndFieldPair> listArgsToFields =
+    			predArgWhichField.get(predName);*/
     	
     	objectPropString = "";
     	ArgumentList argList = (ArgumentList)childrenPredDecl[1];
@@ -1209,11 +1245,11 @@ String getNewForallParameter() {
     	
     	// I write to a returned String the output
     	// representing the field that each argument of the predicate represents.
-    	String argsToFieldsString = writeToStringPredArgWhichField(
+    	/*String argsToFieldsString = writeToStringPredArgWhichField(
     			listArgsToFields, 
     			args, 
     			objectString
-    	);
+    	);*/
     	
     	argumentsObjProp = args;
     	objectObjProp = objectString;
@@ -1301,7 +1337,6 @@ String getNewForallParameter() {
     	// The minBound is the same if the fieldName is null or not. 
     	// We do not need to set this inside the if branches.
     	fracString.setMinBound(0);
-    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(argsToFieldsString);
     	
     	if ((currentMethod != "") && !inPackUnpackAnnotation) {
     		modifyMethodSpec(bodyMethodOrPredicate);
