@@ -424,7 +424,6 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitQuantifierVariable(QuantifierVariable ast) throws ParseException
   	{    	   	    
-    	System.out.println("in visit");
     	if (ast!=null) {
     		
     		String name = ast.getName();
@@ -434,7 +433,6 @@ public class BoogieVisitor extends NullVisitor {
     		parametersMethod.add(name);
     		String type = ast.getType().toString();
     	if (namePredicate!="") {
-    		System.out.println(name);
     		modifyExistentialParams(name, type); 
     	}
     	else if (currentMethod !="") {
@@ -444,13 +442,16 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
-    void writeOutAllPredArgWhichField(String namePred) {
+    //TODO debug this
+    String writeAllPredArgWhichField(String namePred, String predBody) {
+    	//As I modify predBody with the new additions,
+    	//I keep count of the length of the strings that I add.
+    	int offset=0;
     	// The list of object propositions in the predicate
     	// named "namePred".
     	LinkedList<ObjPropString>  listObjProp = 
     			predicateObjProp.get(namePred);
     	
-    	if (listObjProp != null) {
     	for (int i = 0; i < listObjProp.size(); i++) {
     		ObjPropString objProp = listObjProp.get(i);
     		
@@ -459,12 +460,21 @@ public class BoogieVisitor extends NullVisitor {
         	LinkedList<ArgumentAndFieldPair> listArgsToFields =
         			predArgWhichField.get(objProp.getName());
     		
-    		writeOutPredArgWhichField(
+    		String oneObjProp = writePredArgWhichField(
     	    		listArgsToFields, 
     	    		objProp.getParams(), 
     	    		objProp.getObject());
+    		
+    		int location = objProp.getLocation();
+    		String firstHalf = predBody.substring(0, location+ offset-1);
+    		
+    		String secondHalf = predBody.substring(location+offset-1, predBody.length());
+    	
+    		predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
+    		offset += oneObjProp.length();	
     	}
-    	}
+    	
+    	return predBody;
 	
     }
     
@@ -576,8 +586,8 @@ public class BoogieVisitor extends NullVisitor {
 			out.write("this:Ref);\n"); 
 			out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
 			out.write("this]==false &&\n");
+			predBody = writeAllPredArgWhichField(currentNamePred, predBody);
 			out.write("\t \t" + predBody + "\n \t \t"); 
-			writeOutAllPredArgWhichField(currentNamePred);
 			out.write(";\n \n");
 			
 			out.write("procedure Unpack"+upperCaseFirstLetter(currentNamePred)+"(");
@@ -589,10 +599,11 @@ public class BoogieVisitor extends NullVisitor {
 			//we do it in the code after we call the Pack procedure
 			
 			out.write("(frac"+upperCaseFirstLetter(currentNamePred)+"[");
-			out.write("this] > 0.0)\n \t \t");
-			writeOutAllPredArgWhichField(currentNamePred);
-			out.write(";\n");
+			out.write("this] > 0.0);\n");
 			
+			
+			//TODO need to update predBody in the appropriate map.
+			predBody = writeAllPredArgWhichField(currentNamePred, predBody);
 			out.write("\t ensures "+predBody+";\n");
 			out.write("\n");
      		}
@@ -697,7 +708,7 @@ public class BoogieVisitor extends NullVisitor {
 			        		
 						requiresPacked = 
 						  requiresPacked.concat("requires (forall " + forallParameter+
-								  ":Ref :: packed"+p+"[" + forallParameter+"]);\n");
+								  ":Ref :: packed"+upperCaseFirstLetter(p)+"[" + forallParameter+"]);\n");
 			        	}
 					}
 					
@@ -711,7 +722,7 @@ public class BoogieVisitor extends NullVisitor {
 				        		
 							requiresPacked = 
 							  requiresPacked.concat("requires (forall "+ 
-									  forallParameter+":Ref :: packed"+p+
+									  forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
 									  "["+ forallParameter+"]);\n");
 						}
 			    		}
@@ -757,9 +768,9 @@ public class BoogieVisitor extends NullVisitor {
 		        	ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
 		        	if (modifiedObjects.isEmpty()) {
-		        		ensuresForall = ensuresForall.concat("packed"+nameOfPredicate + 
+		        		ensuresForall = ensuresForall.concat("packed"+upperCaseFirstLetter(nameOfPredicate) + 
 		        				"["+forallParameter+
-		        				"] == old(packed" + nameOfPredicate +"["+
+		        				"] == old(packed" + upperCaseFirstLetter(nameOfPredicate) +"["+
 		        				forallParameter+"])));\n");
 		        	} else {
 		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
@@ -778,9 +789,9 @@ public class BoogieVisitor extends NullVisitor {
 		        			ensuresForall = ensuresForall.concat("(");
 		        		}
 		        		
-		        		ensuresForall = ensuresForall.concat("(packed"+ nameOfPredicate + 
+		        		ensuresForall = ensuresForall.concat("(packed"+ upperCaseFirstLetter(nameOfPredicate) + 
 		        				"["+ forallParameter+
-		        				"] == old(packed"+nameOfPredicate+"["+
+		        				"] == old(packed"+upperCaseFirstLetter(nameOfPredicate)+"["+
 		        				 forallParameter+"]))));\n");
 		        	}
 		        }
@@ -1174,25 +1185,22 @@ String getNewForallParameter() {
     	visitChildren(ast); 
     }
     
-    void writeOutPredArgWhichField(
+    String writePredArgWhichField(
     		LinkedList<ArgumentAndFieldPair> listArgsToFields, 
     		LinkedList<String> args, 
     		String objectString) {
+    	String result = "";
     	for (int i=0;i<args.size();i++) {
     		ArgumentAndFieldPair argField = listArgsToFields.get(i);
     		//This can be null for predicates that have no arguments.
     		if (argField!=null){
     			if (!(argField.equals(""))) {
-    				try{
-    					out.write(" && ("+argField.getField() + 
+    					result = result.concat(" && ("+argField.getField() + 
     							"["+objectString+"]=="+args.get(i)+")");
-    				}
-    				catch(Exception e) {
-    					System.err.println("Error: " + e.getMessage());
-    				}
     			}
     		}
     	}
+    	return result;
     }
     
     
@@ -1351,11 +1359,14 @@ String getNewForallParameter() {
     		}
     	}
     	else if (currentMethod == "") {
-    		modifyPredicateBody(bodyPredicate);
+    		int locationEndObjProp = modifyPredicateBody(bodyPredicate);
     		//We want to add the FracString to predicateFrac for
     		//the current predicate and the FracString 
     		//frac+predName[fieldname] >0.0.
     		modifyPredicateFrac(fracString);
+    		//We set the location of where this object proposition ends in the 
+    		//string of the body of this predicate.
+    		objProp.setLocation(locationEndObjProp);
     		modifyPredicateObjProp(objProp);
     	}
     	insideObjectProposition = false;
@@ -1919,12 +1930,13 @@ String getNewForallParameter() {
 		methodBody.put(currentMethod, currentMethodBody);
     }
     
-    void modifyPredicateBody(String s) {
+    int modifyPredicateBody(String s) {
 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 		paramsPredicateBody.put(
 				namePredicate, 
 				currentParamsPredicateBody.concatToPredicateBody(s)
 		);
+		return currentParamsPredicateBody.getPredicateBody().length();
     }
     
     void modifyFormalParams(String name, String type) {
@@ -2070,6 +2082,7 @@ String getNewForallParameter() {
     		currentPredicateObjProp = new LinkedList<ObjPropString>();
     	}
     	currentPredicateObjProp.add(s);
+    	
     	predicateObjProp.put(namePredicate, currentPredicateObjProp);    	
     }
     

@@ -10,6 +10,10 @@ public class ObjPropString {
 	String fracParam;
 	String predicateName;
 	LinkedList<String> params;
+	//This is the location in the predicate where
+	//the string representation of this object proposition
+	//ends.
+	int location;
 	
 	ObjPropString(String object_, String fracParam_,String predicateName_, LinkedList<String> params_) 
 		{
@@ -24,10 +28,19 @@ public class ObjPropString {
 		maxFrac = -1;
 		minFrac = -1;
 		exactFrac = -1;		
+		location = -1;
 	}
 	
 	String getObject() {
 		return object;
+	}
+	
+	int getLocation() {
+		return location;
+	}
+	
+	void setLocation(int l) {
+		location = l;
 	}
 	
 	public LinkedList<String> getParams() {
