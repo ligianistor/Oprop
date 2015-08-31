@@ -459,16 +459,16 @@ public class BoogieVisitor extends NullVisitor {
         	// this predicate represents.
         	LinkedList<ArgumentAndFieldPair> listArgsToFields =
         			predArgWhichField.get(objProp.getName());
-    		
+        
     		String oneObjProp = writePredArgWhichField(
     	    		listArgsToFields, 
     	    		objProp.getParams(), 
     	    		objProp.getObject());
     		
     		int location = objProp.getLocation();
-    		String firstHalf = predBody.substring(0, location+ offset-1);
+    		String firstHalf = predBody.substring(0, location+ offset-2);
     		
-    		String secondHalf = predBody.substring(location+offset-1, predBody.length());
+    		String secondHalf = predBody.substring(location+offset-2, predBody.length());
     	
     		predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
     		offset += oneObjProp.length();	
@@ -1195,8 +1195,36 @@ String getNewForallParameter() {
     		//This can be null for predicates that have no arguments.
     		if (argField!=null){
     			if (!(argField.equals(""))) {
+    				String localField = argField.getField();
+    				if (localField.contains(" ")){
+    					//If the field contains " " it means
+    					//it is of the form 
+    					//name_predicate object number 
+    					//and it needs to be deconstructed.
+    					int firstIndexSpace = localField.indexOf(' ');
+    					String localNamePred = localField.substring(0, firstIndexSpace);  					
+    					String leftoverString = localField.substring(firstIndexSpace+1, localField.length());  					
+    					int secondIndexSpace =  leftoverString.indexOf(' ');
+    					String localObject = leftoverString.substring(0, secondIndexSpace);  					
+    					int localNumber = Integer.parseInt(
+    							leftoverString.substring(secondIndexSpace+1, leftoverString.length()));
+    		        	// The list of which field each argument of 
+    		        	// this predicate represents.
+    					//TODO
+    					// This recursive idea only works for one level down, 
+    					// it is not generally recursive.
+    		        	LinkedList<ArgumentAndFieldPair> listArgsToFieldsRecursive =
+    		        			predArgWhichField.get(localNamePred);
+    		            					
+    					result = result.concat(" && ("+ 
+    							listArgsToFieldsRecursive.get(localNumber).getField()+
+    							"["+localObject+"]=="+args.get(i)+")"
+    							);
+    					
+    				} else {
     					result = result.concat(" && ("+argField.getField() + 
     							"["+objectString+"]=="+args.get(i)+")");
+    				}
     			}
     		}
     	}
@@ -1360,6 +1388,11 @@ String getNewForallParameter() {
     	}
     	else if (currentMethod == "") {
     		int locationEndObjProp = modifyPredicateBody(bodyPredicate);
+    		// TODO this is where I need to write
+    		// add count_ol_2 to the map
+    		// to be searched for recursively
+    		addObjPropToPredArgWhichField(objProp);
+    		
     		//We want to add the FracString to predicateFrac for
     		//the current predicate and the FracString 
     		//frac+predName[fieldname] >0.0.
@@ -1979,6 +2012,35 @@ String getNewForallParameter() {
     			}
     		}
     	}
+    }
+    
+    //Adds the object proposition corresponding to 
+    //the argument. An argument of a predicate 
+    //can only be the right side of -> or used as a parameter in
+    //another predicate.
+    void addObjPropToPredArgWhichField(ObjPropString ops) {
+    	LinkedList<ArgumentAndFieldPair> listArgField =
+    			predArgWhichField.get(namePredicate);
+    	LinkedList<String> listParams = ops.getParams();
+    	if (listParams != null) {
+    	for (int i=0; i<listParams.size(); i++) {
+    		String name = listParams.get(i);
+    		if (listArgField != null) {
+    		for (int j=0; j<listArgField.size(); j++) {
+    			ArgumentAndFieldPair o = listArgField.get(j);
+    			if (name.equals(o.getArgument())) {
+    				// This is the compact representation of
+    				// an object proposition that has the argument as one of its
+    				// parameters.
+    				String compactObjProp = ops.getName()+" "+ops.getObject()+" "+i;   				
+    				o.setField(compactObjProp);
+    				break;
+    			}
+    		}
+    		}
+    	}
+    	}
+
     }
     
     void modifyExistentialParams(String name, String type) {
