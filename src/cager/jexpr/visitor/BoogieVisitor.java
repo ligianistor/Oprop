@@ -466,10 +466,11 @@ public class BoogieVisitor extends NullVisitor {
     	    		objProp.getObject());
     		
     		int location = objProp.getLocation();
-    		String firstHalf = predBody.substring(0, location+ offset-2);
     		
-    		String secondHalf = predBody.substring(location+offset-2, predBody.length());
-    	
+    		String firstHalf = predBody.substring(0, location+ offset+1);
+    		
+    		String secondHalf = predBody.substring(location+offset+1, predBody.length());
+    		
     		predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
     		offset += oneObjProp.length();	
     	}
@@ -532,6 +533,7 @@ public class BoogieVisitor extends NullVisitor {
      	   String currentNamePred = j.next().getKey();
      	    FieldTypePredbody paramsPred = paramsPredicateBody.get(currentNamePred);
      		String predBodyUnprocessed = paramsPred.getPredicateBody();
+     		predBodyUnprocessed = writeAllPredArgWhichField(currentNamePred, predBodyUnprocessed);
      		
      		//processing of the predBody
      		int i=0;
@@ -555,7 +557,7 @@ public class BoogieVisitor extends NullVisitor {
      		}
      		
      		int numDeleteParam = (int)(numberOfAmb/2)-1;
-     		
+     		//int totalDeletedChars = numberOfAmb + numDeleteParam;
      		int numLeftParamToDelete = numDeleteParam;
      		int numRightParamToDelete = numDeleteParam;
      		k=0;
@@ -586,9 +588,8 @@ public class BoogieVisitor extends NullVisitor {
 			out.write("this:Ref);\n"); 
 			out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
 			out.write("this]==false &&\n");
-			predBody = writeAllPredArgWhichField(currentNamePred, predBody);
-			out.write("\t \t" + predBody + "\n \t \t"); 
-			out.write(";\n \n");
+			
+			out.write("\t \t" + predBody + "; \n \n"); 
 			
 			out.write("procedure Unpack"+upperCaseFirstLetter(currentNamePred)+"(");
 			writePredParamsOutOrToString(currentNamePred, 1, false);
@@ -603,7 +604,6 @@ public class BoogieVisitor extends NullVisitor {
 			
 			
 			//TODO need to update predBody in the appropriate map.
-			predBody = writeAllPredArgWhichField(currentNamePred, predBody);
 			out.write("\t ensures "+predBody+";\n");
 			out.write("\n");
      		}
@@ -1399,7 +1399,7 @@ String getNewForallParameter() {
     		modifyPredicateFrac(fracString);
     		//We set the location of where this object proposition ends in the 
     		//string of the body of this predicate.
-    		objProp.setLocation(locationEndObjProp);
+    		objProp.setLocation(locationEndObjProp-1);
     		modifyPredicateObjProp(objProp);
     	}
     	insideObjectProposition = false;
@@ -1964,6 +1964,7 @@ String getNewForallParameter() {
     }
     
     int modifyPredicateBody(String s) {
+    	
 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 		paramsPredicateBody.put(
 				namePredicate, 
