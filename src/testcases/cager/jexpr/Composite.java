@@ -41,22 +41,8 @@ predicate parent() =
 		 (op==null ~=> (this#0.5 count(c)))
 	)
 		
-		
-void Composite() 
-ensures this.count->1 &&
-	this.left->null &&
-	this.right->null &&
-	this.parent->null
-{
-	this.count = 1;
-	this.left = null;
-	this.right = null;
-	this.parent = null; 
-}
-
-
 void updateCount() 
-int k,
+~double k:
 int c, int c1, int c2, int c3,
 Composite ol, Composite or, Composite op:	
 requires this.parent -> op &&

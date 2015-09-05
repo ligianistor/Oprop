@@ -57,6 +57,7 @@ import cager.jexpr.ast.UnaryExpression;
  */
 public class BoogieVisitor extends NullVisitor {
 	
+	//This maps the (predicate, identifier) to the field that that identifier represents.
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = new HashMap<PredicateAndFieldValue, String> ();
 	
 	//The name of the Java class.
@@ -703,11 +704,11 @@ public class BoogieVisitor extends NullVisitor {
 					//requires (forall x:Ref :: packedOK[x]);
 					for (String p : predicates) {
 								        	
-			        	if (localFieldsInMethod.contains("packed"+p) && 
+			        	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
 			        			!setFracEq1.contains(p)) {
 			        		
 						requiresPacked = 
-						  requiresPacked.concat("requires (forall " + forallParameter+
+						  requiresPacked.concat("\t requires (forall " + forallParameter+
 								  ":Ref :: packed"+upperCaseFirstLetter(p)+"[" + forallParameter+"]);\n");
 			        	}
 					}
@@ -717,11 +718,11 @@ public class BoogieVisitor extends NullVisitor {
 			    		Set<String> bvPredicates = bv[i].getPredicates();
 			    		for (String p : bvPredicates) {
 											        	
-				        	if (localFieldsInMethod.contains("packed"+p) &&
+				        	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) &&
 				        			!setFracEq1.contains(p) ) {
 				        		
 							requiresPacked = 
-							  requiresPacked.concat("requires (forall "+ 
+							  requiresPacked.concat("\t requires (forall "+ 
 									  forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
 									  "["+ forallParameter+"]);\n");
 						}
@@ -763,7 +764,7 @@ public class BoogieVisitor extends NullVisitor {
 		        	//other procedures that are not main.
 		        	if (!ast.getIdentifier().getName().equals("main")) {
 		        	//This is for writing "ensures forall for packed.
-		        	if (localFieldsInMethod.contains("packed"+nameOfPredicate) &&
+		        	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(nameOfPredicate)) &&
 		        			!setFracEq1.contains(nameOfPredicate)) {
 		        	ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
@@ -909,6 +910,13 @@ String getNewForallParameter() {
 			  
 		  }
 		  
+		  //TODO maybe I should add something to fieldName here
+		  if (insidePrecondition || insidePostcondition ) {
+			  modifyMethodSpec(fieldName);
+			  
+		  }
+		  
+		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
     		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 			paramsPredicateBody.put(
@@ -1042,6 +1050,10 @@ String getNewForallParameter() {
     		
         	PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, fieldValue);
         	quantifiedVars.put(pv, nameField); 
+        	
+        	if (namePredicate.equals("")){
+        		helperBinaryExpression(ast , "==");
+        	}
     		return;
     	}
     	
@@ -1237,6 +1249,12 @@ String getNewForallParameter() {
     {    	
     	insideObjectProposition = true;
     	
+        String packedOrUnpacked = "";
+        if (lastIdentifierOrKeyword.equals("unpacked")) {
+        	
+        	packedOrUnpacked = "==false";
+        }
+    	
     	FracString fracString = new FracString();
     	TypedAST object  = ast.getObject();
     	objectPropString = "";
@@ -1313,25 +1331,26 @@ String getNewForallParameter() {
         String bodyPredicate = "";
         fracString.setNameFrac("frac"+upperCaseFirstLetter(predName));
         
-        fracString.setParameters(argumentsObjProp);
+        fracString.setParameters(argumentsObjProp);       
 
         if (isNumeric(fracInObjProp)) {
     	if (fieldName == null){
     		
     		// This is where FracString is updated
     		// but only when we are inside a predicate.
-    	bodyMethodOrPredicate = "packed"+predName+"[";
+    	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
     	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-    			          "] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+    			          "]"+ packedOrUnpacked+" && \n \t \t(frac"+
+    			          upperCaseFirstLetter(predName)+"[");
     	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] == " + fracInObjProp+")");
     	bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
     	bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp);
     	}
     	else {
     		
-        	bodyMethodOrPredicate = "packed"+predName+"[";
+        	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-			          "[this]] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+			          "[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
         			"[this]] == " + fracInObjProp+")");
 
@@ -1347,9 +1366,9 @@ String getNewForallParameter() {
         		
         		// This is where FracString is updated
         		// but only when we are inside a predicate.       	
-        	bodyMethodOrPredicate = "packed"+predName+"[";
+        	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-        			          "] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        			          "] "+ packedOrUnpacked+"&& \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
         	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
@@ -1357,9 +1376,9 @@ String getNewForallParameter() {
         	}
         	else {
         		
-            	bodyMethodOrPredicate = "packed"+predName+"[";
+            	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-    			          "[this]] && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+    			          "[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
 
             	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
@@ -1596,6 +1615,10 @@ String getNewForallParameter() {
      			   !inArgumentList && !inMethodSelectionStatement ) {
      				  statementContent = statementContent.concat(keywordString);
      			  }
+     		   
+     		   if ((insidePrecondition || insidePostcondition) && (keywordString.equals("null"))) {
+     			   modifyMethodSpec(keywordString);
+     		   }
      		   }
      			   //modify object proposition parts
      		   if (insideObjectProposition) {
@@ -1726,7 +1749,7 @@ String getNewForallParameter() {
     	else {
     		toWrite = toWrite.concat("false"); 
     	}
-       	modifyFieldsInMethod("packed"+predicateNameObjProp);
+       	modifyFieldsInMethod("packed"+upperCaseFirstLetter(predicateNameObjProp));
     	
     	modifyMethodBody(toWrite);
     	inPackUnpackAnnotation = false;
@@ -1737,6 +1760,8 @@ String getNewForallParameter() {
     {    	
     	currentIdentifier = ast.name;
     	lastIdentifierOrKeyword = ast.name;
+    	if (currentIdentifier.equals("unpacked")) 
+    		return;
     try {
       
        String identifierName = currentIdentifier;  
@@ -1750,9 +1775,17 @@ String getNewForallParameter() {
     		   if (insideObjectProposition) {
   				  objectPropString = objectPropString.concat(identifierName);
   			  }
-  			  modifyMethodBody(fieldName+ "[this]"); 
+  			  modifyMethodBody(fieldName+ "[this]");
+  			  //error op goes here but it shouldn't for method spec
+  			  
+  			  //this should go in the else
+  			  if ((insidePrecondition || insidePostcondition) && !insideObjectProposition) {
+  				 modifyMethodSpec(identifierName); 
+  			  }
+  			  
     	   }
     	   else {
+    		 
     		   if (!inPackUnpackAnnotation) {
     		   if ((currentMethod != "") && (inArgumentList) && (inStatement)) {
     			   statementContent = statementContent.concat(identifierName + ",");
@@ -1767,7 +1800,7 @@ String getNewForallParameter() {
     				  statementContent = statementContent.concat(identifierName);
     			  }
     		   
-    		   if ((currentMethod != "") && !insideObjectProposition && 
+    		   if (!insideObjectProposition && 
     				   (insidePrecondition || insidePostcondition)) {
     			   modifyMethodSpec(identifierName);
     		   }
@@ -2068,6 +2101,7 @@ String getNewForallParameter() {
 		methodParams.put(currentMethod, currentMethodParams);
     }
     
+    //TODO add comments to all these methods
     void modifyMethodExistentialParams(String s) {
     	String currentMethodExistentialParams = methodExistentialParams.get(currentMethod);
     	currentMethodExistentialParams = currentMethodExistentialParams.concat(s);
