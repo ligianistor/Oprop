@@ -50,7 +50,7 @@ public class FieldSelection extends Expression
     {
     	try {
         out.write(dumpPrefix(level) + "FieldSelection (Type: " + ( type == null ? "" : type.toString()) + ")\n");
-        out.write(dumpPrefix(level + 1) + "ID=" + id+"\n");}
+        out.write(dumpPrefix(level + 1) + "Identifier: " + id+"\n");}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}

@@ -453,6 +453,7 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<ObjPropString>  listObjProp = 
     			predicateObjProp.get(namePred);
     	
+    	if (listObjProp != null) {
     	for (int i = 0; i < listObjProp.size(); i++) {
     		ObjPropString objProp = listObjProp.get(i);
     		
@@ -474,6 +475,7 @@ public class BoogieVisitor extends NullVisitor {
     		
     		predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
     		offset += oneObjProp.length();	
+    	}
     	}
     	
     	return predBody;
@@ -881,7 +883,7 @@ String getNewForallParameter() {
      		   modifyFieldsInMethod(identifierName);   
         }
 
-        // TODO add aditional checks for lastIDentifierOrKeyword
+        // TODO add additional checks for lastIDentifierOrKeyword
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
     	fieldsInStatement.add(identifierName);
     	currentIdentifier = fieldName;
@@ -905,10 +907,10 @@ String getNewForallParameter() {
 			  statementContent = statementContent.concat(fieldName);  
 		  }
 		  
-		  if ((currentMethod != "") && (inArgumentList) ) {
-			  modifyMethodBody(fieldName + ",");
-			  
-		  }
+		  //TODO see if this is needed
+		//  if ((currentMethod != "") && (inArgumentList) ) {
+		//	  modifyMethodBody(fieldName + ",");	  
+		 // }
 		  
 		  //TODO maybe I should add something to fieldName here
 		  if (insidePrecondition || insidePostcondition ) {
@@ -1197,6 +1199,9 @@ String getNewForallParameter() {
     	visitChildren(ast); 
     }
     
+    // Write the fields corresponding to each argument
+    // for one object proposition, which has the arguments args
+    // and has the object objectString.
     String writePredArgWhichField(
     		LinkedList<ArgumentAndFieldPair> listArgsToFields, 
     		LinkedList<String> args, 
@@ -1222,9 +1227,9 @@ String getNewForallParameter() {
     							leftoverString.substring(secondIndexSpace+1, leftoverString.length()));
     		        	// The list of which field each argument of 
     		        	// this predicate represents.
-    					//TODO
     					// This recursive idea only works for one level down, 
-    					// it is not generally recursive.
+    					// it is not generally recursive. 
+    					// It should be made generally recursive in future work.
     		        	LinkedList<ArgumentAndFieldPair> listArgsToFieldsRecursive =
     		        			predArgWhichField.get(localNamePred);
     		            					
@@ -1394,7 +1399,20 @@ String getNewForallParameter() {
     	fracString.setMinBound(0);
     	
     	if ((currentMethod != "") && !inPackUnpackAnnotation) {
-    		modifyMethodSpec(bodyMethodOrPredicate);
+    		if (insidePrecondition || insidePostcondition) {
+    			modifyMethodSpec(bodyMethodOrPredicate);
+    			// The list of which field each argument of 
+            	// this predicate (the predicate of this object proposition) represents.
+            	LinkedList<ArgumentAndFieldPair> listArgsToFields =
+            			predArgWhichField.get(predName);
+            	
+    			String oneObjProp = writePredArgWhichField(
+    					listArgsToFields,
+    					args,
+    					objectString
+    					);
+    			modifyMethodSpec(oneObjProp);
+    		}
  
     		if (insidePrecondition) {
     			modifyMethodPreconditions(objProp);
@@ -1407,9 +1425,9 @@ String getNewForallParameter() {
     	}
     	else if (currentMethod == "") {
     		int locationEndObjProp = modifyPredicateBody(bodyPredicate);
-    		// TODO this is where I need to write
+    		// This is where I write
     		// add count_ol_2 to the map
-    		// to be searched for recursively
+    		// to be searched for recursively.
     		addObjPropToPredArgWhichField(objProp);
     		
     		//We want to add the FracString to predicateFrac for
@@ -1729,7 +1747,7 @@ String getNewForallParameter() {
     		toWrite = toWrite.concat("call Unpack"); 
     	}
     	
-    	toWrite = toWrite.concat(predicateNameObjProp + "("); 
+    	toWrite = toWrite.concat(upperCaseFirstLetter(predicateNameObjProp) + "("); 
     	
     	for (int i=0;i<argumentsObjProp.size();i++) {
     		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
@@ -1737,7 +1755,7 @@ String getNewForallParameter() {
     	
     	toWrite = toWrite.concat(objectObjProp + ");\n"); 
     	
-    	toWrite = toWrite.concat("packed" + predicateNameObjProp+"[");
+    	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
     	for (int i=0;i<argumentsObjProp.size();i++) {
     		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
     	}
@@ -1984,7 +2002,12 @@ String getNewForallParameter() {
     public void visitArgumentList(ArgumentList ast)
   		  throws ParseException 
   		  {  
-    	inArgumentList = true;
+    	// If we are inside unpacked(...)
+    	// then this is not really an argument list.
+    	// It is actually only a single object proposition.
+    	if (!lastIdentifierOrKeyword.equals("unpacked")) {
+    			inArgumentList = true;
+    	}
     	visitChildren(ast); 
     	inArgumentList = false;
     	}

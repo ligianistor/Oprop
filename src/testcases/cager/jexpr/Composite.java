@@ -69,7 +69,8 @@ Composite or2;
 int lc2;
 int rc2;
 
-int newc = 1;
+int newc;
+newc = 1;
 unpack(this#0.5 left(ol, c1)[op]);
 if (this.left != null) {
 	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];	 
