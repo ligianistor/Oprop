@@ -874,36 +874,19 @@ String getNewForallParameter() {
     {
         visitChildren(ast);
     }
+    
+    public void helperFieldSelection(String identifierName) {
 
-    public void visitFieldSelection(FieldSelection ast) throws ParseException
-    {
-    	String identifierName = ast.getIdentifier().name;
-    	
-        if (currentMethod != "") {
-     		   modifyFieldsInMethod(identifierName);   
-        }
-
-        // TODO add additional checks for lastIDentifierOrKeyword
-    	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
-    	fieldsInStatement.add(identifierName);
-    	currentIdentifier = fieldName;
-    	if (insideObjectProposition) {
+     // TODO add additional checks for lastIdentifierOrKeyword
+ 	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
+ 	fieldsInStatement.add(identifierName);
+ 	currentIdentifier = fieldName;
+ 	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(fieldName);
 			  }
-    	
+ 	
 		  if ((currentMethod != "") && (inStatement) && 
-			  !inArgumentList && !inMethodSelectionStatement) {
-			  //First remove the last 4 characters in the string statementContent
-			  //because they == "this", which shouldn't be there.
-			  // TODO this is where the error is
-			  // Need to see why do I need to subtract this!!
-         if (statementContent.length() > 0) {
-		      statementContent = statementContent.substring(
-		    		  0, 
-		    		  statementContent.length()-lastIdentifierOrKeyword.length()
-		      ); 
-         }
-			  
+			  !inArgumentList && !inMethodSelectionStatement) {  
 			  statementContent = statementContent.concat(fieldName);  
 		  }
 		  
@@ -919,14 +902,26 @@ String getNewForallParameter() {
 		  }
 		  
 		  
-    	if (!namePredicate.equals("") && !insideObjectProposition){
-    		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+ 	if (!namePredicate.equals("") && !insideObjectProposition){
+ 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 			paramsPredicateBody.put(
 					namePredicate, 
 					currentParamsPredicateBody.concatToPredicateBody(fieldName)
 			);
 			 			 
-    	}
+ 	}
+    }
+
+    // TODO We shouldn't end up in this method anymore.
+    public void visitFieldSelection(FieldSelection ast) throws ParseException
+    {
+    	String identifierName = ast.getIdentifier().name;
+    	System.out.println("inFieldSelection " + identifierName);
+        if (currentMethod != "") {
+  		   modifyFieldsInMethod(identifierName);   
+     }
+    	helperFieldSelection(identifierName);
+
     	visitChildren(ast);
     }
     
@@ -1468,6 +1463,47 @@ String getNewForallParameter() {
     	if (ast.getType() != null) {
     		lastPrimaryExpressionType = ast.getType().toString();
     	}
+    	
+    	// If the second child is FieldSelection
+    	// we treat this case separately.
+    	if (children.length == 2) {
+    		if (children[1] instanceof FieldSelection) {
+    			FieldSelection fieldSel1 = (FieldSelection)children[1];
+    			String stringField1 = fieldSel1.getIdentifier().getName();
+                if (currentMethod != "") {
+            		   modifyFieldsInMethod(stringField1);     
+               }
+         		helperFieldSelection(stringField1);
+         		
+         		return;
+    		}
+    	}
+    	
+    	// If the last two children are both FieldSelection,
+    	// we treat this case separately.
+    	// TODO: in the future we should include here the case 
+    	// when we have more than 2 FieldSelection nodes in a row.
+    	if (children.length == 3) {
+    	if ((children[1] instanceof FieldSelection) && 
+    		(children[2] instanceof FieldSelection)) {
+    		FieldSelection fieldSel1 = (FieldSelection)children[1];
+    		FieldSelection fieldSel2 = (FieldSelection)children[2];
+    		String stringField1 = fieldSel1.getIdentifier().getName();
+    		String stringField2 = fieldSel2.getIdentifier().getName();
+    		
+    		String identifierName = stringField2 + "[" + stringField1;
+            if (currentMethod != "") {
+       		   modifyFieldsInMethod(stringField1);   
+       		   modifyFieldsInMethod(stringField2);   
+          }
+    		helperFieldSelection(identifierName);
+    		//TODO need to add ] at this point
+    		
+    		return;
+    	}
+    	}
+    	
+    	
         visitChildren(ast);
     }
     
@@ -1793,10 +1829,15 @@ String getNewForallParameter() {
     		   if (insideObjectProposition) {
   				  objectPropString = objectPropString.concat(identifierName);
   			  }
-  			  modifyMethodBody(fieldName+ "[this]");
-  			  //error op goes here but it shouldn't for method spec
+    		   //TODO this is where the error is
+  			  if (inStatement && !inPackUnpackAnnotation) {
+  				  modifyMethodBody(fieldName+ "[this]");
+  			  }
+  			 
   			  
-  			  //this should go in the else
+  			  //This should go in the else.
+  			  //op goes here but it shouldn't for method spec. 
+  			  //This if tries to fix the error.
   			  if ((insidePrecondition || insidePostcondition) && !insideObjectProposition) {
   				 modifyMethodSpec(identifierName); 
   			  }
