@@ -88,6 +88,9 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we inside a method selection statement?
 	boolean inMethodSelectionStatement = false;
 	
+	//Are we inside a field selection statement?
+	boolean inFieldSelection = false;
+	
 	//The name of the latest identifier or field[this].
 	//Its use is in visitMethodSelection.
 	String currentIdentifier = "";
@@ -352,23 +355,21 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitCompilationUnit(CompilationUnit ast) throws ParseException
     {
-    	
     	ClassDeclaration c = (ClassDeclaration)(ast.getChildren()[0]);
     	className = c.getIdentifier().getName();
-    		try {
-    			if (numberFilesBefore == 0) {
+    	try {
+    		if (numberFilesBefore == 0) {
     			out.write("type Ref;\n");
     			out.write("const null: Ref;\n");
     			out.write("\n");
-    			} else {
-    				out.write("//----------------------------------\n");
-    				out.write("//new class\n\n");
-    			}
-    			
-    		}
-    		catch (Exception e) {
-    			System.err.println("Error: " + e.getMessage());
-    		}
+    		} else {
+    			out.write("//----------------------------------\n");
+    			out.write("//new class\n\n");
+    		}	
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+    	}
         visitChildren(ast);
     }
     
@@ -387,15 +388,15 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	for (int i=0; i<numberFilesBefore; i++) {
     		if (bv[i].getClassName().equals(fieldType) )
-    				isClass = true;
+    			isClass = true;
     	}
     	
     	try {
     		if (isClass) {
-    		out.write("var "+ fieldName +": [Ref]Ref;\n");
+    			out.write("var "+ fieldName +": [Ref]Ref;\n");
     		}
     		else 
-    		out.write("var "+ fieldName +": [Ref]"+fieldType+";\n");
+    			out.write("var "+ fieldName +": [Ref]"+fieldType+";\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
@@ -426,24 +427,22 @@ public class BoogieVisitor extends NullVisitor {
     public void visitQuantifierVariable(QuantifierVariable ast) throws ParseException
   	{    	   	    
     	if (ast!=null) {
-    		
     		String name = ast.getName();
     	
     		//TODO do we always need to add to parametersMethod, even if we are not
     		//inside a method?
     		parametersMethod.add(name);
     		String type = ast.getType().toString();
-    	if (namePredicate!="") {
-    		modifyExistentialParams(name, type); 
-    	}
-    	else if (currentMethod !="") {
-    		modifyMethodExistentialParams(name+ ":" + type +",");
-    	}
+    		if (namePredicate!="") {
+    			modifyExistentialParams(name, type); 
+    		}
+    		else if (currentMethod !="") {
+    			modifyMethodExistentialParams(name+ ":" + type +",");
+    		}
     		visitChildren(ast);
     	}
     }
     
-    //TODO debug this
     String writeAllPredArgWhichField(String namePred, String predBody) {
     	//As I modify predBody with the new additions,
     	//I keep count of the length of the strings that I add.
@@ -454,28 +453,27 @@ public class BoogieVisitor extends NullVisitor {
     			predicateObjProp.get(namePred);
     	
     	if (listObjProp != null) {
-    	for (int i = 0; i < listObjProp.size(); i++) {
-    		ObjPropString objProp = listObjProp.get(i);
+    		for (int i = 0; i < listObjProp.size(); i++) {
+    			ObjPropString objProp = listObjProp.get(i);
     		
-        	// The list of which field each argument of 
-        	// this predicate represents.
-        	LinkedList<ArgumentAndFieldPair> listArgsToFields =
-        			predArgWhichField.get(objProp.getName());
+    			// The list of which field each argument of 
+    			// this predicate represents.
+    			LinkedList<ArgumentAndFieldPair> listArgsToFields =
+    					predArgWhichField.get(objProp.getName());
         
-    		String oneObjProp = writePredArgWhichField(
-    	    		listArgsToFields, 
-    	    		objProp.getParams(), 
-    	    		objProp.getObject());
+    			String oneObjProp = writePredArgWhichField(
+    					listArgsToFields, 
+    					objProp.getParams(), 
+    					objProp.getObject()
+    					);
     		
-    		int location = objProp.getLocation();
+    			int location = objProp.getLocation();
+    			String firstHalf = predBody.substring(0, location+ offset+1);
+    			String secondHalf = predBody.substring(location+offset+1, predBody.length());
     		
-    		String firstHalf = predBody.substring(0, location+ offset+1);
-    		
-    		String secondHalf = predBody.substring(location+offset+1, predBody.length());
-    		
-    		predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
-    		offset += oneObjProp.length();	
-    	}
+    			predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
+    			offset += oneObjProp.length();	
+    		}
     	}
     	
     	return predBody;
@@ -483,8 +481,8 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     
- //Since methods are not children of 
- //Predicate, we might not need namePredicate here
+    //Since methods are not children of 
+    //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
     {    	
     	parametersMethod.clear();
@@ -513,151 +511,146 @@ public class BoogieVisitor extends NullVisitor {
     	//When we hit the first method, we write out the constructors for this 
     	//class and the Pack and Unpack procedures. 
     	if (isFirstMethod) {   	
-    	//This if is for when the modulo symbol is in the body of a predicate.
-		if (programContainsModulo && !writtenModuloFunction){
-			try{
-			out.write(moduloTranslation);
-			}
-			catch(Exception e) {
-				System.err.println("Error: " + e.getMessage());
-			}
-			//We only want to write out the modulo function once.
-			writtenModuloFunction = true;
-		}
+    		//This if is for when the modulo symbol is in the body of a predicate.
+    		if (programContainsModulo && !writtenModuloFunction){
+    			try{
+    				out.write(moduloTranslation);
+    			}
+    			catch(Exception e) {
+    				System.err.println("Error: " + e.getMessage());
+    			}
+    			//We only want to write out the modulo function once.
+    			writtenModuloFunction = true;
+    		}
 		
-    	//Write the constructors to out. The constructor that does not pack to anything
-    	//and the ones that pack to predicates.
-    	makeConstructors(out);
+    		//Write the constructors to out. The constructor that does not pack to anything
+    		//and the ones that pack to predicates.
+    		makeConstructors(out);
     	
-    	Iterator<Entry<String, FieldTypePredbody>> j = 
+    		Iterator<Entry<String, FieldTypePredbody>> j = 
     			paramsPredicateBody.entrySet().iterator(); 
     
-        while(j.hasNext()) {
-     	   String currentNamePred = j.next().getKey();
-     	    FieldTypePredbody paramsPred = paramsPredicateBody.get(currentNamePred);
-     		String predBodyUnprocessed = paramsPred.getPredicateBody();
-     		predBodyUnprocessed = writeAllPredArgWhichField(currentNamePred, predBodyUnprocessed);
+    		while(j.hasNext()) {
+    			String currentNamePred = j.next().getKey();
+    			FieldTypePredbody paramsPred = paramsPredicateBody.get(currentNamePred);
+    			String predBodyUnprocessed = paramsPred.getPredicateBody();
+    			predBodyUnprocessed = writeAllPredArgWhichField(currentNamePred, predBodyUnprocessed);
      		
-     		//processing of the predBody
-     		int i=0;
-     		while ((predBodyUnprocessed.charAt(i)=='&') ||
+    			//processing of the predBody
+    			int i=0;
+    			while ((predBodyUnprocessed.charAt(i)=='&') ||
      				(predBodyUnprocessed.charAt(i)=='(') ||
      				(predBodyUnprocessed.charAt(i)==')') ) i++;
-     		String lastPartPredBody = predBodyUnprocessed.substring(i);
-     		String firstPartPredBody = predBodyUnprocessed.substring(0, i);
-     		StringBuilder sb = new StringBuilder(firstPartPredBody);
-     		int numberOfAmb=0;
-     		int k=0;
-     		while (k<i) {
-     			if (sb.charAt(k)=='&') {
-     				numberOfAmb++;
-     				sb = sb.deleteCharAt(k);
-     				if (k>0) k--;
-     				i--;
-     			} else {
-     				k++;
-     			}
-     		}
+    			String lastPartPredBody = predBodyUnprocessed.substring(i);
+    			String firstPartPredBody = predBodyUnprocessed.substring(0, i);
+    			StringBuilder sb = new StringBuilder(firstPartPredBody);
+    			int numberOfAmb=0;
+    			int k=0;
+    			while (k<i) {
+    				if (sb.charAt(k)=='&') {
+    					numberOfAmb++;
+    					sb = sb.deleteCharAt(k);
+    					if (k>0) k--;
+    					i--;
+    				} else {
+    					k++;
+    				}
+    			}
      		
-     		int numDeleteParam = (int)(numberOfAmb/2)-1;
-     		//int totalDeletedChars = numberOfAmb + numDeleteParam;
-     		int numLeftParamToDelete = numDeleteParam;
-     		int numRightParamToDelete = numDeleteParam;
-     		k=0;
-     		while (k<i) {
-     			if ((sb.charAt(k) == '(') && (numLeftParamToDelete > 0)) {
-     				sb = sb.deleteCharAt(k);
-     				numLeftParamToDelete--;
-     				if (k>0) k--;
-     				i--;
-     			}
-     			else if ((sb.charAt(k)==')') && (numRightParamToDelete > 0)) {
-     				sb = sb.deleteCharAt(k);
-     				numRightParamToDelete--;
-     				if (k>0) k--;
-     				i--;
-     			}
-     			else {
-     				k++;
-     			}
-     		}
+    			int numDeleteParam = (int)(numberOfAmb/2)-1;
+    			//int totalDeletedChars = numberOfAmb + numDeleteParam;
+    			int numLeftParamToDelete = numDeleteParam;
+    			int numRightParamToDelete = numDeleteParam;
+    			k=0;
+    			while (k<i) {
+    				if ((sb.charAt(k) == '(') && (numLeftParamToDelete > 0)) {
+    					sb = sb.deleteCharAt(k);
+    					numLeftParamToDelete--;
+    					if (k>0) k--;
+    					i--;
+    				}
+    				else 
+    					if ((sb.charAt(k)==')') && (numRightParamToDelete > 0)) {
+    						sb = sb.deleteCharAt(k);
+    						numRightParamToDelete--;
+    						if (k>0) k--;
+    						i--;
+    					} else {
+    						k++;
+    					}
+    			}
      		
      		
-     		String predBody = sb.toString().concat(lastPartPredBody);
-     		try {
-			//will need to do something about formal parameters
-			out.write("procedure Pack"+upperCaseFirstLetter(currentNamePred)+"(");
-			writePredParamsOutOrToString(currentNamePred, 1, false);
-			out.write("this:Ref);\n"); 
-			out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
-			out.write("this]==false &&\n");
+    			String predBody = sb.toString().concat(lastPartPredBody);
+    			try {
+    				//will need to do something about formal parameters
+    				out.write("procedure Pack"+upperCaseFirstLetter(currentNamePred)+"(");
+    				writePredParamsOutOrToString(currentNamePred, 1, false);
+    				out.write("this:Ref);\n"); 
+    				out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
+    				out.write("this]==false &&\n");
 			
-			out.write("\t \t" + predBody + "; \n \n"); 
+    				out.write("\t \t" + predBody + "; \n \n"); 
 			
-			out.write("procedure Unpack"+upperCaseFirstLetter(currentNamePred)+"(");
-			writePredParamsOutOrToString(currentNamePred, 1, false);
-			out.write("this:Ref);\n");
-			out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
-			out.write("this] &&\n\t \t ");
-			//TODO we don't do this for Pack because 
-			//we do it in the code after we call the Pack procedure
+    				out.write("procedure Unpack"+upperCaseFirstLetter(currentNamePred)+"(");
+    				writePredParamsOutOrToString(currentNamePred, 1, false);
+    				out.write("this:Ref);\n");
+    				out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
+    				out.write("this] &&\n\t \t ");
+    				//TODO we don't do this for Pack because 
+    				//we do it in the code after we call the Pack procedure
 			
-			out.write("(frac"+upperCaseFirstLetter(currentNamePred)+"[");
-			out.write("this] > 0.0);\n");
+    				out.write("(frac"+upperCaseFirstLetter(currentNamePred)+"[");
+    				out.write("this] > 0.0);\n");
 			
-			
-			//TODO need to update predBody in the appropriate map.
-			out.write("\t ensures "+predBody+";\n");
-			out.write("\n");
-     		}
-     		
-    		catch (Exception e) {
-    			System.err.println("Error: " + e.getMessage());
+    				//TODO need to update predBody in the appropriate map.
+    				out.write("\t ensures "+predBody+";\n");
+    				out.write("\n");
+    			}
+    			catch (Exception e) {
+    				System.err.println("Error: " + e.getMessage());
+    			}
+    			//We are initializing packedMods here, with the names of all predicates.
+    			packedMods.put(currentNamePred, new LinkedList<PackObjMods>());   
     		}
-     		//We are initializing packedMods here, with the names of all predicates.
-     		packedMods.put(currentNamePred, new LinkedList<PackObjMods>());   
-        }
         
-        //We have to initialize packedMods with the names of the predicates in the 
-        //previous classes too.
-        for (int i=0; i<numberFilesBefore; i++) {
-        	Set<String> predicatesOfi = bv[i].getPredicates();
-        	for (String namePredicateOfi : predicatesOfi) {
-        		packedMods.put(namePredicateOfi, new LinkedList<PackObjMods>());   
-        	}
-    				
-    	}
-          
+    		// We have to initialize packedMods with the names of the predicates in the 
+    		// previous classes too.
+    		for (int i=0; i<numberFilesBefore; i++) {
+    			Set<String> predicatesOfi = bv[i].getPredicates();
+    			for (String namePredicateOfi : predicatesOfi) {
+    				packedMods.put(namePredicateOfi, new LinkedList<PackObjMods>());   
+    			}	
+    		}
     	}
     	     		
         //Writing the current procedure out.
-    		try {
-    			
-    			// We reset packedMods here.
-    			// Before we enter the body of the current method.
-    			Iterator<Entry<String, FieldTypePredbody>> j = paramsPredicateBody.entrySet().iterator(); 
+    	try {		
+    		// We reset packedMods here.
+    		// Before we enter the body of the current method.
+    		Iterator<Entry<String, FieldTypePredbody>> j = paramsPredicateBody.entrySet().iterator(); 
     	    	
-    	        while(j.hasNext()) {
-    	     	  String currentNamePred = j.next().getKey();
-    	     	  packedMods.put(currentNamePred, new LinkedList<PackObjMods>()); 
-    	        }
+    	    while(j.hasNext()) {
+    	    	String currentNamePred = j.next().getKey();
+    	     	packedMods.put(currentNamePred, new LinkedList<PackObjMods>()); 
+    	    }
     			
-				out.write("procedure "+ast.getIdentifier().getName()+"(");
+    	    out.write("procedure "+ast.getIdentifier().getName()+"(");
 				
-				visitChildren(ast);
-				//TODO add all parameters when calling function
-				out.write(methodParams.get(currentMethod));
-				out.write("this:Ref)\n");
+    	    visitChildren(ast);
+    	    //TODO add all parameters when calling function
+    	    out.write(methodParams.get(currentMethod));
+    	    out.write("this:Ref)\n");
 							
-				//Need to automatically detect what is being modified, according to the Boogie manual.
-				//We do this after we parse and translate the body of the current method.
-				Set<String> localFieldsInMethod = fieldsInMethod.get(currentMethod);
+    	    //Need to automatically detect what is being modified, according to the Boogie manual.
+    	    //We do this after we parse and translate the body of the current method.
+    	    Set<String> localFieldsInMethod = fieldsInMethod.get(currentMethod);
 				
-        		//Put in modifies the fields that were in the modifies of 
-        		//the methods that were called in this method.
-        		LinkedList<FieldAndTypePair> currentMethodsInMethod = 
-            			methodsInMethod.get(currentMethod);
-        		if (currentMethodsInMethod !=null) {
+    	    //Put in modifies the fields that were in the modifies of 
+    	    //the methods that were called in this method.
+    	    LinkedList<FieldAndTypePair> currentMethodsInMethod = 
+    	    		methodsInMethod.get(currentMethod);
+        	if (currentMethodsInMethod !=null) {
         		for (int i=0;i<currentMethodsInMethod.size();i++) {
         			FieldAndTypePair ft = currentMethodsInMethod.get(i);
         			Set<String> callMethodsSetOfFields = new TreeSet<String>();
@@ -673,95 +666,81 @@ public class BoogieVisitor extends NullVisitor {
         			}
         			localFieldsInMethod.addAll(callMethodsSetOfFields);
         		}
-        		}
+        	}
  
-        		//localFieldsInMethod is the set of elements that are modified.
-				String[] fieldsInMethodArray = localFieldsInMethod.toArray(new String[0]);
-        		int leng = fieldsInMethodArray.length;
-        		if (leng > 0) {
-				String modifies = "\t modifies ";
+        	//localFieldsInMethod is the set of elements that are modified.
+			String[] fieldsInMethodArray = localFieldsInMethod.toArray(new String[0]);
+        	int leng = fieldsInMethodArray.length;
+        	if (leng > 0) {
+			String modifies = "\t modifies ";
 				
+        	for (int k = 0; k < leng - 1; k++) {
+        		modifies = modifies.concat(fieldsInMethodArray[k]+",");
+        	}
+        	modifies = modifies.concat(fieldsInMethodArray[leng-1]+";\n");
+      			
+			out.write(modifies);
+        }		
+		out.write(methodSpec.get(currentMethod));
 				
-
-        		for (int k = 0; k < leng - 1; k++) {
-        			modifies = modifies.concat(fieldsInMethodArray[k]+",");
-        		}
-
-        		modifies = modifies.concat(fieldsInMethodArray[leng-1]+";\n");
-      		
-        		
-			    out.write(modifies);
-        		}
-				
-				out.write(methodSpec.get(currentMethod));
-				
-				
-				//Here I want to say that if there are no unpacked object propositions 
-				//which are specified explicitly,
-				//then it means that all are packed.
-				String requiresPacked = "";
-				if (methodPreconditionsUnpacked.isEmpty()) {
-					String forallParameter = getNewForallParameter();
+		//Here I want to say that if there are no unpacked object propositions 
+		//which are specified explicitly,
+		//then it means that all are packed.
+		String requiresPacked = "";
+		if (methodPreconditionsUnpacked.isEmpty()) {
+			String forallParameter = getNewForallParameter();		
 					
-					//requires (forall x:Ref :: packedOK[x]);
-					for (String p : predicates) {
-								        	
-			        	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
-			        			!setFracEq1.contains(p)) {
-			        		
-						requiresPacked = 
-						  requiresPacked.concat("\t requires (forall " + forallParameter+
+			//requires (forall x:Ref :: packedOK[x]);
+			for (String p : predicates) {					        	
+				if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
+						!setFracEq1.contains(p)) {
+					requiresPacked = 
+							requiresPacked.concat("\t requires (forall " + forallParameter+
 								  ":Ref :: packed"+upperCaseFirstLetter(p)+"[" + forallParameter+"]);\n");
-			        	}
+			    }
+			}
+					
+			//I also write for the predicates of the previous classes that were translated.
+			for (int i=0; i<numberFilesBefore; i++) {
+				Set<String> bvPredicates = bv[i].getPredicates();
+			    for (String p : bvPredicates) {							        	
+			    	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) &&
+				        			!setFracEq1.contains(p) ) {	
+			    		requiresPacked = requiresPacked.concat("\t requires (forall "+ 
+			    				forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
+								"["+ forallParameter+"]);\n");
 					}
-					
-					//I also write for the predicates of the previous classes that were translated.
-			    	for (int i=0; i<numberFilesBefore; i++) {
-			    		Set<String> bvPredicates = bv[i].getPredicates();
-			    		for (String p : bvPredicates) {
-											        	
-				        	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) &&
-				        			!setFracEq1.contains(p) ) {
-				        		
-							requiresPacked = 
-							  requiresPacked.concat("\t requires (forall "+ 
-									  forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
-									  "["+ forallParameter+"]);\n");
-						}
-			    		}
-			    	}
-					
-				} else {
-					//TODO
-					//Need an example with what happens when 
-					//there are unpacked object propositions
-					//in the precondition.
-				}
-				out.write(requiresPacked);
+			    }
+			}
+		} else {
+			//TODO
+			//Need an example with what happens when 
+			//there are unpacked object propositions
+			//in the precondition.
+		}
+		out.write(requiresPacked);
 				
-				//Here I generate 
-				//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
-				// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) ==> (packedOK[x] == old(packedOK[x]))));"
-				// and the others.
-				
-		        Iterator<Entry<String, LinkedList<PackObjMods>>> it = packedMods.entrySet().iterator();
-		        while (it.hasNext()) {
-		        	Entry<String, LinkedList<PackObjMods>> pairs = 
-		        			(Entry<String, LinkedList<PackObjMods>>)it.next();
-		        	String nameOfPredicate = pairs.getKey();
-		        	LinkedList<PackObjMods> objMods = pairs.getValue();
-		        	Set<String> modifiedObjects = new TreeSet<String>();
-		        	for (int i = 0; i < objMods.size(); i++)
-		        	{
-		        		PackObjMods p = objMods.get(i);
-		        		if (p.isPackedModified()) {
-		        			modifiedObjects.add(p.getObjectString());
-		        		}	
-		        	}
+		//Here I generate 
+		//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
+		// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) ==> (packedOK[x] == old(packedOK[x]))));"
+		// and the others.		
+		Iterator<Entry<String, LinkedList<PackObjMods>>> it = packedMods.entrySet().iterator();
+		while (it.hasNext()) {
+		   	Entry<String, LinkedList<PackObjMods>> pairs = 
+		        (Entry<String, LinkedList<PackObjMods>>)it.next();
+		    String nameOfPredicate = pairs.getKey();
+		    LinkedList<PackObjMods> objMods = pairs.getValue();
+		    Set<String> modifiedObjects = new TreeSet<String>();
+		    for (int i = 0; i < objMods.size(); i++) {
+		        PackObjMods p = objMods.get(i);
+		        if (p.isPackedModified()) {
+		        	modifiedObjects.add(p.getObjectString());
+		        }	
+		    }
 		        	
-		        	String forallParameter = getNewForallParameter();
-		        	String ensuresForall = "";
-		        	
+		    String forallParameter = getNewForallParameter();
+		    String ensuresForall = "";
+		    //TODO this is where I left off indentation    	
 		        	//We only need to add "ensures forall" and "requires forall" for the
 		        	//other procedures that are not main.
 		        	if (!ast.getIdentifier().getName().equals("main")) {
@@ -879,12 +858,14 @@ String getNewForallParameter() {
 
      // TODO add additional checks for lastIdentifierOrKeyword
  	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
+ 	if (identifierName.contains("[")) fieldName = fieldName.concat("]");
  	fieldsInStatement.add(identifierName);
  	currentIdentifier = fieldName;
+ 	if (!inPackUnpackAnnotation) {
  	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(fieldName);
 			  }
- 	
+ 	//TODO this is where the error is.
 		  if ((currentMethod != "") && (inStatement) && 
 			  !inArgumentList && !inMethodSelectionStatement) {  
 			  statementContent = statementContent.concat(fieldName);  
@@ -911,12 +892,13 @@ String getNewForallParameter() {
 			 			 
  	}
     }
+ 	
+    }
 
-    // TODO We shouldn't end up in this method anymore.
+    // We shouldn't end up in this method anymore.
     public void visitFieldSelection(FieldSelection ast) throws ParseException
     {
     	String identifierName = ast.getIdentifier().name;
-    	System.out.println("inFieldSelection " + identifierName);
         if (currentMethod != "") {
   		   modifyFieldsInMethod(identifierName);   
      }
@@ -1331,6 +1313,7 @@ String getNewForallParameter() {
         String bodyPredicate = "";
         fracString.setNameFrac("frac"+upperCaseFirstLetter(predName));
         
+        //TODO does fracString need parameters?
         fracString.setParameters(argumentsObjProp);       
 
         if (isNumeric(fracInObjProp)) {
@@ -1473,6 +1456,13 @@ String getNewForallParameter() {
                 if (currentMethod != "") {
             		   modifyFieldsInMethod(stringField1);     
                }
+                // We need to signal that we are 
+                // inside a field selection because we do not want
+                // the string of children[0] (usually a keyword or an identifier) 
+                // to be written out twice.
+                inFieldSelection = true;
+                children[0].accept(this);
+                inFieldSelection = false;
          		helperFieldSelection(stringField1);
          		
          		return;
@@ -1496,11 +1486,36 @@ String getNewForallParameter() {
        		   modifyFieldsInMethod(stringField1);   
        		   modifyFieldsInMethod(stringField2);   
           }
+            inFieldSelection = true;
+            children[0].accept(this);
+            inFieldSelection = false;
     		helperFieldSelection(identifierName);
-    		//TODO need to add ] at this point
     		
     		return;
-    	}
+    	} else 
+        	// If the second child is FieldSelection
+        	// and the third is MethodSelection 
+        	// we treat this case separately.
+        		if (children[1] instanceof FieldSelection &&
+        			children[2] instanceof MethodSelection) {
+        			FieldSelection fieldSel1 = (FieldSelection)children[1];
+        			String stringField1 = fieldSel1.getIdentifier().getName();
+                    if (currentMethod != "") {
+                		   modifyFieldsInMethod(stringField1);     
+                   }
+                    // We need to signal that we are 
+                    // inside a field selection because we do not want
+                    // the string of children[0] (usually a keyword or an identifier) 
+                    // to be written out twice.
+                    inFieldSelection = true;
+                    children[0].accept(this);
+                    inFieldSelection = false;
+             		helperFieldSelection(stringField1);
+             		
+             		children[2].accept(this);
+             		
+             		return;
+        		}
     	}
     	
     	
@@ -1550,7 +1565,7 @@ String getNewForallParameter() {
               
         modifyMethodBody(localVariableName + ");\n");
         modifyMethodBody("packed" +predicateOfConstruct+"[");
-        
+        //TODO with the right example to see, packed only has one argument.
         argumentsPredicate.clear();
         children[0].accept(this);
         for (int i=0;i<argumentsPredicate.size();i++) {
@@ -1661,12 +1676,15 @@ String getNewForallParameter() {
         if (namePredicate.equals("")) {
      	   //we are not inside a predicate
      		   if (!inPackUnpackAnnotation) {
-     		   if ((currentMethod != "") && (inArgumentList)) {
+     		   if ((currentMethod != "") && inArgumentList && 
+     				   !inMethodSelectionStatement &&
+         			   !inFieldSelection) {
      			   modifyMethodBody(keywordString + ",");
      		   }
      		   
      		   if ((currentMethod != "") && (inStatement) && 
-     			   !inArgumentList && !inMethodSelectionStatement ) {
+     			   !inArgumentList && !inMethodSelectionStatement &&
+     			   !inFieldSelection) {
      				  statementContent = statementContent.concat(keywordString);
      			  }
      		   
@@ -1729,16 +1747,10 @@ String getNewForallParameter() {
     	//localArgumentsObjProp = argumentsObjProp;
     
     	toWrite = toWrite.concat("frac"+upperCaseFirstLetter(predicateNameObjProp)+"[");
-    	for (int i=0;i<argumentsObjProp.size();i++) {
-    		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
-    	}
     	toWrite = toWrite.concat(objectObjProp + "] := ");
     	//Same code as above
     	//TODO remove duplicate code
     	toWrite = toWrite.concat("frac"+upperCaseFirstLetter(predicateNameObjProp)+"[");
-    	for (int i=0;i<argumentsObjProp.size();i++) {
-    		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
-    	}
     	toWrite = toWrite.concat(objectObjProp + "]");
     	
   	  for (int i = 1; i < children.length; i++) {
@@ -1792,9 +1804,6 @@ String getNewForallParameter() {
     	toWrite = toWrite.concat(objectObjProp + ");\n"); 
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
-    	for (int i=0;i<argumentsObjProp.size();i++) {
-    		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
-    	}
     	toWrite = toWrite.concat(objectObjProp + "] := "); 
     	
        	if (annotationName.equals("pack")) {
@@ -1829,8 +1838,10 @@ String getNewForallParameter() {
     		   if (insideObjectProposition) {
   				  objectPropString = objectPropString.concat(identifierName);
   			  }
-    		   //TODO this is where the error is
-  			  if (inStatement && !inPackUnpackAnnotation) {
+    		   // When we are inside FieldSelection or MethodSelection,
+    		   // we have already written the field out in another place.
+  			  if (inStatement && !inPackUnpackAnnotation && !inFieldSelection &&
+  					  !inMethodSelectionStatement) {
   				  modifyMethodBody(fieldName+ "[this]");
   			  }
   			 
@@ -1855,7 +1866,7 @@ String getNewForallParameter() {
     		   }
     		   
     		   if ((currentMethod != "") && (inStatement) && 
-    			   !inArgumentList && !inMethodSelectionStatement ) {
+    			   !inArgumentList && !inMethodSelectionStatement && !inFieldSelection) {
     				  statementContent = statementContent.concat(identifierName);
     			  }
     		   

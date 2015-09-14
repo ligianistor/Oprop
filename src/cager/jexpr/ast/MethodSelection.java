@@ -71,7 +71,7 @@ public class MethodSelection extends Expression
     {
     	try {
         out.write(dumpPrefix(level) + "MethodSelection (Type: " + ( type == null ? "" : type.toString()) + ")\n");
-        out.write(dumpPrefix(level + 1) + "ID=" + id+"\n");}
+        out.write(dumpPrefix(level + 1) + "Identifier=" + id+"\n");}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
