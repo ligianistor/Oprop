@@ -483,8 +483,7 @@ public class BoogieVisitor extends NullVisitor {
     
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here
-    public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
-    {    	
+    public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException {    	
     	parametersMethod.clear();
     	setFracEq1.clear();
     	stringOfVarDecls = "";
@@ -740,14 +739,14 @@ public class BoogieVisitor extends NullVisitor {
 		        	
 		    String forallParameter = getNewForallParameter();
 		    String ensuresForall = "";
-		    //TODO this is where I left off indentation    	
-		        	//We only need to add "ensures forall" and "requires forall" for the
-		        	//other procedures that are not main.
-		        	if (!ast.getIdentifier().getName().equals("main")) {
-		        	//This is for writing "ensures forall for packed.
-		        	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(nameOfPredicate)) &&
-		        			!setFracEq1.contains(nameOfPredicate)) {
-		        	ensuresForall = ensuresForall.concat(
+		        	
+		    //We only need to add "ensures forall" and "requires forall" for the
+		    //other procedures that are not main.
+		    if (!ast.getIdentifier().getName().equals("main")) {
+		       	//This is for writing "ensures forall for packed.
+		       	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(nameOfPredicate)) &&
+		       			!setFracEq1.contains(nameOfPredicate)) {
+		       		ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
 		        	if (modifiedObjects.isEmpty()) {
 		        		ensuresForall = ensuresForall.concat("packed"+upperCaseFirstLetter(nameOfPredicate) + 
@@ -778,8 +777,8 @@ public class BoogieVisitor extends NullVisitor {
 		        	}
 		        }
 		        	
-		        	//This is for writing "ensures forall for frac.
-		        	if (localFieldsInMethod.contains("frac"+upperCaseFirstLetter(nameOfPredicate)) &&
+		        //This is for writing "ensures forall for frac.
+		        if (localFieldsInMethod.contains("frac"+upperCaseFirstLetter(nameOfPredicate)) &&
 		        			!setFracEq1.contains(nameOfPredicate)) {
 		        	ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
@@ -812,87 +811,78 @@ public class BoogieVisitor extends NullVisitor {
 		        	}
 		        }
 		        	
-		        	if (!ensuresForall.equals(""))
-		        		out.write(ensuresForall+"\n");
-		                 }
-		        	
+		        if (!ensuresForall.equals(""))
+		        	out.write(ensuresForall+"\n");
 		        }
+		    }
 		        
-				//write here the function for modulo, if modulo was found in the 
-				//body of the procedure.
-		        //It is OK for modulo to be added after it was used in the procedure.
+			//write here the function for modulo, if modulo was found in the 
+			//body of the procedure.
+		    //It is OK for modulo to be added after it was used in the procedure.
 				
-				if (programContainsModulo && !writtenModuloFunction){
-					//add the modulo function to the Beginning of this method
-					modifyMethodBody(moduloTranslation);
-					//We only want to write out the modulo function once.
-					writtenModuloFunction = true;
-				}
-				out.write("{\n"+stringOfVarDecls);
-				out.write(methodBody.get(currentMethod));
-							
+			if (programContainsModulo && !writtenModuloFunction){
+				//add the modulo function to the Beginning of this method
+				modifyMethodBody(moduloTranslation);
+				//We only want to write out the modulo function once.
+				writtenModuloFunction = true;
 			}
+			out.write("{\n"+stringOfVarDecls);
+			out.write(methodBody.get(currentMethod));				
+		}
 		catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 		}
-    		
-    		isFirstMethod = false;
+    	isFirstMethod = false;
     }
-    
-String getNewForallParameter() {
-    String forallParameter = "x";
-	int i=0;
-	while (parametersMethod.contains(forallParameter)) {
-		forallParameter = forallParameter.concat(i+"");
-		i++;		
-	}
-	return forallParameter;
+ 
+    String getNewForallParameter() {
+    	String forallParameter = "x";
+    	int i=0;
+    	while (parametersMethod.contains(forallParameter)) {
+    		forallParameter = forallParameter.concat(i+"");
+    		i++;		
+    	}
+    	return forallParameter;
     }
 
-    public void visitReturnStatement(ReturnStatement ast) throws ParseException
-    {
+    public void visitReturnStatement(ReturnStatement ast) throws ParseException {
         visitChildren(ast);
     }
     
     public void helperFieldSelection(String identifierName) {
-
-     // TODO add additional checks for lastIdentifierOrKeyword
- 	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
- 	if (identifierName.contains("[")) fieldName = fieldName.concat("]");
- 	fieldsInStatement.add(identifierName);
- 	currentIdentifier = fieldName;
- 	if (!inPackUnpackAnnotation) {
- 	if (insideObjectProposition) {
-			  objectPropString = objectPropString.concat(fieldName);
-			  }
- 	//TODO this is where the error is.
-		  if ((currentMethod != "") && (inStatement) && 
-			  !inArgumentList && !inMethodSelectionStatement) {  
-			  statementContent = statementContent.concat(fieldName);  
-		  }
+    	// TODO add additional checks for lastIdentifierOrKeyword
+    	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
+    	if (identifierName.contains("[")) fieldName = fieldName.concat("]");
+    	fieldsInStatement.add(identifierName);
+    	currentIdentifier = fieldName;
+    	if (!inPackUnpackAnnotation) {
+    		if (insideObjectProposition) {
+    			objectPropString = objectPropString.concat(fieldName);
+    		}
+    		// TODO this is where the error is.
+    		if ((currentMethod != "") && (inStatement) && 
+    				!inArgumentList && !inMethodSelectionStatement) {  
+			  		statementContent = statementContent.concat(fieldName);  
+    		}
 		  
-		  //TODO see if this is needed
-		//  if ((currentMethod != "") && (inArgumentList) ) {
-		//	  modifyMethodBody(fieldName + ",");	  
-		 // }
+    		// TODO see if this is needed
+    		//  if ((currentMethod != "") && (inArgumentList) ) {
+    		//	  modifyMethodBody(fieldName + ",");	  
+    		// }
 		  
-		  //TODO maybe I should add something to fieldName here
-		  if (insidePrecondition || insidePostcondition ) {
-			  modifyMethodSpec(fieldName);
-			  
-		  }
-		  
-		  
- 	if (!namePredicate.equals("") && !insideObjectProposition){
- 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
-			paramsPredicateBody.put(
+    		// TODO maybe I should add something to fieldName here
+    		if (insidePrecondition || insidePostcondition ) {
+    			modifyMethodSpec(fieldName);  
+    		}
+  
+    		if (!namePredicate.equals("") && !insideObjectProposition){
+    			FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+    			paramsPredicateBody.put(
 					namePredicate, 
 					currentParamsPredicateBody.concatToPredicateBody(fieldName)
-			);
-			 			 
- 	}
-    }
- 	
+    			); 			 
+    		}
+    	}
     }
 
     // We shouldn't end up in this method anymore.
@@ -901,21 +891,18 @@ String getNewForallParameter() {
     	String identifierName = ast.getIdentifier().name;
         if (currentMethod != "") {
   		   modifyFieldsInMethod(identifierName);   
-     }
+        }
     	helperFieldSelection(identifierName);
-
     	visitChildren(ast);
     }
-    
+
     public void visitMethodSelection(MethodSelection ast) throws ParseException
     {
-
     	String identifierBeforeMethSel = currentIdentifier;
     	visitedMethSel = true;
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
-    	
     	
     	modifyMethodsInMethod(new FieldAndTypePair(methodName, lastPrimaryExpressionType));
     	   	
@@ -1015,13 +1002,13 @@ String getNewForallParameter() {
 
     		String fieldValue="";
     		if (e2.getChildren()[0] instanceof IdentifierExpression) {
-    		IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
-    		fieldValue = i.getName();
-    		 if (namePredicate != "") {
-    			 //This only has a side effect if fieldValue is 
-    			 //an argument of the predicate.
-    			 addFieldToPredArgWhichField(fieldValue, nameField);
-    		 }
+    			IdentifierExpression i = (IdentifierExpression)(e2.getChildren()[0]);
+    			fieldValue = i.getName();
+    			if (namePredicate != "") {
+    				//This only has a side effect if fieldValue is 
+    				//an argument of the predicate.
+    				addFieldToPredArgWhichField(fieldValue, nameField);
+    			}
     		} else if (e2.getChildren()[0] instanceof LiteralExpression) {
     			LiteralExpression i = (LiteralExpression)(e2.getChildren()[0]);
     			fieldValue = i.getValue() + "";
@@ -1050,48 +1037,41 @@ String getNewForallParameter() {
     	}
     	    		
     	helperBinaryExpression(ast , ast.op.getName());
-    	return;
-    		
+    	return; 		
     }
     
     void concatToStatementObjProp(String symbol) {
     	if (namePredicate.equals("")) {
-  		  try{
-  			 if (insideObjectProposition && (currentMethod != "")) {
-				  objectPropString = objectPropString.concat(symbol);
-			  } else 
-				  if (!insideObjectProposition && 
-				      (currentMethod != "") && 
-				      !insidePrecondition &&
-				      !insidePostcondition) {
-  				  statementContent = statementContent.concat(symbol);  				
-  			           } else if(!insideObjectProposition && (currentMethod != "") && 
-  			        		    (insidePrecondition || insidePostcondition)) {
-  			        	   modifyMethodSpec(symbol);
-  			           } 
-  			           else
-  			           {
-  			             out.write(symbol);
-  			       }
-  			  
-  		  }
-  	      catch (Exception e) {
-  	    		System.err.println("Error: " + e.getMessage());
-  	      }
-  		  }
-  		  else {		
+    		try {
+    			if (insideObjectProposition && (currentMethod != "")) {
+    				objectPropString = objectPropString.concat(symbol);
+    			} else 
+    				if (!insideObjectProposition && 
+    						(currentMethod != "") && 
+    						!insidePrecondition &&
+    						!insidePostcondition) {
+    					statementContent = statementContent.concat(symbol);  				
+    				} else if(!insideObjectProposition && (currentMethod != "") && 
+    						(insidePrecondition || insidePostcondition)) {
+  			        	 		modifyMethodSpec(symbol);
+  			           		} else {
+  			           			out.write(symbol);
+  			           		}
+  		  	}
+  	      	catch (Exception e) {
+  	      		System.err.println("Error: " + e.getMessage());
+  	      	}
+    	} else {		
   			  FieldTypePredbody currentParamsPredicateBody = 
   					  paramsPredicateBody.get(namePredicate);
   			  paramsPredicateBody.put(
   					  namePredicate, 
   					  currentParamsPredicateBody.concatToPredicateBody(symbol)
   			  );
-
   		  }
     }
     
-    void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException
-    {
+    void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException {
     	// We replace the linear implies ~=> with ==>.
     	if (operatorSymbol.equals("~=>")) {
     		operatorSymbol = "==>";
@@ -1112,66 +1092,64 @@ String getNewForallParameter() {
 		  children[1].accept(this );
 	    if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
 	    	concatToStatementObjProp(")");
-	    	}
+	    }
 		  
-	    	if (operatorSymbol.equals(",")) {
-	    		//TODO this is a modulo binary expression
-	    		concatToStatementObjProp(")");
-	    	}
+	    if (operatorSymbol.equals(",")) {
+	    	//TODO this is a modulo binary expression
+	    	concatToStatementObjProp(")");
+	    }
 		  
 		  //TODO needs comment for this code
-		  if (!namePredicate.equals("")) {
-			  Set<String> operatorSet = new HashSet<String>();
-			  operatorSet.add("==");
-			  operatorSet.add("<");
-			  operatorSet.add("<=");
-			  operatorSet.add(">");
-			  operatorSet.add(">=");
-			  if (operatorSet.contains(operatorSymbol)) {
-				  String binaryExpression = statementContent.substring(initialStatementLength);
-				  BinExprString b = new BinExprString(binaryExpression, "this");
-				  modifyPredicateBinExpr(b);
-			  } 
-		  }
+		if (!namePredicate.equals("")) {
+			Set<String> operatorSet = new HashSet<String>();
+			operatorSet.add("==");
+			operatorSet.add("<");
+			operatorSet.add("<=");
+			operatorSet.add(">");
+			operatorSet.add(">=");
+			if (operatorSet.contains(operatorSymbol)) {
+				String binaryExpression = statementContent.substring(initialStatementLength);
+				BinExprString b = new BinExprString(binaryExpression, "this");
+				modifyPredicateBinExpr(b);
+			} 
+		}
     }
       
-    public void visitLiteralExpression(LiteralExpression ast)
-  		  throws ParseException
-  		  { 
+    public void visitLiteralExpression(LiteralExpression ast) throws ParseException { 
     	String astvalue = ast.value.toString();
     	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(astvalue);
-		  }
+		}
     	if (!inPackUnpackAnnotation) {
-		  if ((currentMethod != "") && (inStatement) && !inArgumentList ) {
-			  statementContent = statementContent.concat(astvalue);
-		  }
+    		if ((currentMethod != "") && (inStatement) && !inArgumentList ) {
+    			statementContent = statementContent.concat(astvalue);
+    		}
 		  
-		  if ((currentMethod != "") && (inStatement) && (inArgumentList) ) {
-			  statementContent = statementContent.concat(astvalue + ",");
-		  }
+    		if ((currentMethod != "") && (inStatement) && (inArgumentList) ) {
+    			statementContent = statementContent.concat(astvalue + ",");
+    		}
 		  
-		  if ((currentMethod != "") && (!inStatement) && (inArgumentList) ) {
-			 modifyMethodBody(astvalue + ",");
-		  }
+    		if ((currentMethod != "") && (!inStatement) && (inArgumentList) ) {
+    			modifyMethodBody(astvalue + ",");
+    		}
 		  
-		   if ((currentMethod != "") && !insideObjectProposition && (insidePrecondition || insidePostcondition)) {
-			   modifyMethodSpec(astvalue);
-		   }
+    		if ((currentMethod != "") && !insideObjectProposition && (insidePrecondition || insidePostcondition)) {
+    			modifyMethodSpec(astvalue);
+    		}
     	}
 		  
     	if (!namePredicate.equals("") && !insideObjectProposition){
-    		  FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
-			  paramsPredicateBody.put(
-					  namePredicate, 
-					  currentParamsPredicateBody.concatToPredicateBody(astvalue)
-			  );
+    		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+    		paramsPredicateBody.put(
+    				namePredicate, 
+    				currentParamsPredicateBody.concatToPredicateBody(astvalue)
+			);
     	}
     	
         if (inArgumentList) {
- 		   argumentsConstructor.add(astvalue);
- 		  argumentsPredicate.add(astvalue);
-       }
+ 		   	argumentsConstructor.add(astvalue);
+ 		   	argumentsPredicate.add(astvalue);
+        }
     	
     	visitChildren(ast); 
     }
@@ -1213,8 +1191,7 @@ String getNewForallParameter() {
     					result = result.concat(" && ("+ 
     							listArgsToFieldsRecursive.get(localNumber).getField()+
     							"["+localObject+"]=="+args.get(i)+")"
-    							);
-    					
+    							);	
     				} else {
     					result = result.concat(" && ("+argField.getField() + 
     							"["+objectString+"]=="+args.get(i)+")");
@@ -1225,15 +1202,11 @@ String getNewForallParameter() {
     	return result;
     }
     
-    
-    
     public void visitObjectProposition(ObjectProposition ast) throws ParseException
     {    	
     	insideObjectProposition = true;
-    	
         String packedOrUnpacked = "";
         if (lastIdentifierOrKeyword.equals("unpacked")) {
-        	
         	packedOrUnpacked = "==false";
         }
     	
@@ -1244,14 +1217,10 @@ String getNewForallParameter() {
     	String objectString = objectPropString;
     	
     	objectPropString = "";
-    	
     	Expression frac = ast.getFraction();
-    	
     	frac.accept(this);
 
     	String fracInObjProp = objectPropString;
-
-    	
     	Expression predDecl = ast.getPredicateDeclaration();
     	
     	AST[] childrenPredDecl = predDecl.getChildren();
@@ -1317,61 +1286,52 @@ String getNewForallParameter() {
         fracString.setParameters(argumentsObjProp);       
 
         if (isNumeric(fracInObjProp)) {
-    	if (fieldName == null){
-    		
-    		// This is where FracString is updated
-    		// but only when we are inside a predicate.
-    	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
-    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-    			          "]"+ packedOrUnpacked+" && \n \t \t(frac"+
-    			          upperCaseFirstLetter(predName)+"[");
-    	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] == " + fracInObjProp+")");
-    	bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
-    	bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp);
-    	}
-    	else {
-    		
-        	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-			          "[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
-        			"[this]] == " + fracInObjProp+")");
+        	if (fieldName == null){
+        		// This is where FracString is updated
+        		// but only when we are inside a predicate.
+        		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
+        				"]"+ packedOrUnpacked+" && \n \t \t(frac"+
+        				upperCaseFirstLetter(predName)+"[");
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] == " + fracInObjProp+")");
+        		bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
+        		bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp);
+        	} else {
+        		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
+        				"[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
+        				"[this]] == " + fracInObjProp+")");
 
-        	bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
-        	bodyPredicate = bodyPredicate.concat(fieldName + 
-        			"[this]] == " + fracInObjProp);
-    		fracString.setField(fieldName);
-    		objProp.setObject(fieldName+"[this]");
-    				
-    	} 
+        		bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
+        		bodyPredicate = bodyPredicate.concat(fieldName + 
+        				"[this]] == " + fracInObjProp);
+        		fracString.setField(fieldName);
+        		objProp.setObject(fieldName+"[this]");	
+        	} 
     	} else {
         	if (fieldName == null){
-        		
         		// This is where FracString is updated
         		// but only when we are inside a predicate.       	
-        	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-        			          "] "+ packedOrUnpacked+"&& \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
-        	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
-        	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
-        	bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
-        	bodyPredicate = bodyPredicate.concat(objectString+ "] > 0.0)");
-        	}
-        	else {
-        		
+        		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
+        				"] "+ packedOrUnpacked+"&& \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
+        		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
+        		bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
+        		bodyPredicate = bodyPredicate.concat(objectString+ "] > 0.0)");
+        	} else {
             	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
     			          "[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
-
             	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
             	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] > 0.0)");
         		fracString.setField(fieldName);
         		objProp.setObject(fieldName+"[this]");		
         	} 
     	}
-    	
-    	
+        
     	// The minBound is the same if the fieldName is null or not. 
     	// We do not need to set this inside the if branches.
     	fracString.setMinBound(0);
@@ -1383,25 +1343,22 @@ String getNewForallParameter() {
             	// this predicate (the predicate of this object proposition) represents.
             	LinkedList<ArgumentAndFieldPair> listArgsToFields =
             			predArgWhichField.get(predName);
-            	
     			String oneObjProp = writePredArgWhichField(
     					listArgsToFields,
     					args,
     					objectString
-    					);
+    			);
     			modifyMethodSpec(oneObjProp);
     		}
  
     		if (insidePrecondition) {
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString);
-    		} 
-    		else if (insidePostcondition){
+    		} else if (insidePostcondition){
     			modifyMethodPostconditions(objProp);
     			modifyEnsuresFrac(fracString);
     		}
-    	}
-    	else if (currentMethod == "") {
+    	} else if (currentMethod == "") {
     		int locationEndObjProp = modifyPredicateBody(bodyPredicate);
     		// This is where I write
     		// add count_ol_2 to the map
@@ -1421,16 +1378,13 @@ String getNewForallParameter() {
     }
 
    
-    public void visitUnaryExpression(UnaryExpression ast) throws ParseException
-    {
+    public void visitUnaryExpression(UnaryExpression ast) throws ParseException {
         visitChildren(ast);
     }
 
-    public void visitPrimaryExpression(PrimaryExpression ast) throws ParseException
-    {
+    public void visitPrimaryExpression(PrimaryExpression ast) throws ParseException {
     	Expression[] children = (Expression[])ast.getChildren();
-    	if (children.length == 2) 
-    	{
+    	if (children.length == 2) {
     		if (children[1] instanceof MethodSelection) {
     			inMethodSelectionStatement = true;
     		}
@@ -1455,7 +1409,7 @@ String getNewForallParameter() {
     			String stringField1 = fieldSel1.getIdentifier().getName();
                 if (currentMethod != "") {
             		   modifyFieldsInMethod(stringField1);     
-               }
+                }
                 // We need to signal that we are 
                 // inside a field selection because we do not want
                 // the string of children[0] (usually a keyword or an identifier) 
@@ -1496,59 +1450,49 @@ String getNewForallParameter() {
         	// If the second child is FieldSelection
         	// and the third is MethodSelection 
         	// we treat this case separately.
-        		if (children[1] instanceof FieldSelection &&
-        			children[2] instanceof MethodSelection) {
-        			FieldSelection fieldSel1 = (FieldSelection)children[1];
-        			String stringField1 = fieldSel1.getIdentifier().getName();
-                    if (currentMethod != "") {
-                		   modifyFieldsInMethod(stringField1);     
-                   }
-                    // We need to signal that we are 
-                    // inside a field selection because we do not want
-                    // the string of children[0] (usually a keyword or an identifier) 
-                    // to be written out twice.
-                    inFieldSelection = true;
-                    children[0].accept(this);
-                    inFieldSelection = false;
-             		helperFieldSelection(stringField1);
-             		
-             		children[2].accept(this);
-             		
-             		return;
-        		}
+        	if (children[1] instanceof FieldSelection &&
+        		children[2] instanceof MethodSelection) {
+        		FieldSelection fieldSel1 = (FieldSelection)children[1];
+        		String stringField1 = fieldSel1.getIdentifier().getName();
+        		if (currentMethod != "") {
+        			modifyFieldsInMethod(stringField1);     
+                }
+        		// We need to signal that we are 
+        		// inside a field selection because we do not want
+        		// the string of children[0] (usually a keyword or an identifier) 
+        		// to be written out twice.
+        		inFieldSelection = true;
+        		children[0].accept(this);
+        		inFieldSelection = false;
+        		helperFieldSelection(stringField1);	
+             	children[2].accept(this);	
+             	return;
+        	}
     	}
-    	
-    	
         visitChildren(ast);
     }
     
-    public void visitFormalParameters(FormalParameters ast) throws ParseException 
-  		  { 
-    	  	
+    public void visitFormalParameters(FormalParameters ast) throws ParseException { 
     	visitChildren(ast);
+    }
     
-    	}
-    
-    public void visitFormalParameter(FormalParameter ast) throws ParseException
-    {
+    public void visitFormalParameter(FormalParameter ast) throws ParseException {
     	if (ast!=null) {
     		String name = ast.getName();
     		parametersMethod.add(name);
     		String type = ast.getType().toString();
-    	if (namePredicate!="") {
-    		modifyFormalParams(name, type); 
-    		addArgToPredArgWhichField(name);
-    	}
-    	else if (currentMethod !="") {
-    		modifyMethodParams(name+ ":" + type +",");
-    	}
+    		if (namePredicate!="") {
+    			modifyFormalParams(name, type); 
+    			addArgToPredArgWhichField(name);
+    		} else if (currentMethod !="") {
+    			modifyMethodParams(name+ ":" + type +",");
+    		}
     		//I don't think this node has any children.
     		visitChildren(ast);
     	}
     }
     
-    public void visitAllocationExpression(AllocationExpression ast) throws ParseException
-    {
+    public void visitAllocationExpression(AllocationExpression ast) throws ParseException {
     	String predicateOfConstruct = ast.getPredicate();
     	LinkedList<String> localArgumentsConstructor = new LinkedList<String>();
     	LinkedList<String> localArgumentsPredicate = new LinkedList<String>();
@@ -1573,21 +1517,15 @@ String getNewForallParameter() {
         }
         
         modifyMethodBody(localVariableName + "] := true;\n");
-        
         modifyMethodBody("frac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
-        
         children[0].accept(this);
-        
         modifyMethodBody(localVariableName + "] := 1.0;\n");
-        
         modifyFieldsInMethod("packed" +upperCaseFirstLetter(predicateOfConstruct));
         modifyFieldsInMethod("frac" +upperCaseFirstLetter(predicateOfConstruct));
         
-        
         LinkedList<FracString> currentPredicateFrac = 
     			predicateFrac.get(predicateOfConstruct);
-        if (currentPredicateFrac != null) {
-        	
+        if (currentPredicateFrac != null) {	
         	for (int pf = 0; pf < currentPredicateFrac.size(); pf++) {
                 FracString fracString = currentPredicateFrac.get(pf);
                 //replace the formal parameters with the actual ones
@@ -1604,40 +1542,32 @@ String getNewForallParameter() {
                 LinkedList<String> initialParameters = new LinkedList<String>();
                 initialParameters = fracString.getParameters();
                 if (localArgumentsPredicate!=null) {
-                fracString.setParameters(localArgumentsPredicate);
+                	fracString.setParameters(localArgumentsPredicate);
                 }
-                
                 
                 if (positionInListOfFields == -1){
-                
-                modifyMethodBody(fracString.getStatementFracString(true, "this"));
-                }
-                else {
+                	modifyMethodBody(fracString.getStatementFracString(true, "this"));
+                } else {
                 	String actualField = localArgumentsConstructor.get(positionInListOfFields);
                 	if (!actualField.equals("null")) {
-                	
-                	//I only need to set the field to null temporarily,
-                	//then I set it back to the original field.
-                    fracString.setField(null);
-                    modifyMethodBody(fracString.getStatementFracString(true, actualField));
-                    fracString.setField(field);
+                		//I only need to set the field to null temporarily,
+                		//then I set it back to the original field.
+                		fracString.setField(null);
+                		modifyMethodBody(fracString.getStatementFracString(true, actualField));
+                		fracString.setField(field);
                 	}
                     		
                 }
-                
                 fracString.setParameters(initialParameters);
         	}
         }
     }
     
-    public void visitDeclarationStatement(DeclarationStatement ast) 
-  		  throws ParseException 
-  		  { 
-    	
+    public void visitDeclarationStatement(DeclarationStatement ast) throws ParseException { 
     	visitChildren(ast); 
     	localVariableName = "";
-  		  }
-    
+    }
+    //TODO where I left off
     public void visitLocalVariableDeclaration(LocalVariableDeclaration ast) throws ParseException
     {
     	localVariableName = ast.getName();
