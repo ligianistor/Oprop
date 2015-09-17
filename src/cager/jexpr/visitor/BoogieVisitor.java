@@ -57,8 +57,10 @@ import cager.jexpr.ast.UnaryExpression;
  */
 public class BoogieVisitor extends NullVisitor {
 	
-	//This maps the (predicate, identifier) to the field that that identifier represents.
-	HashMap<PredicateAndFieldValue, String> quantifiedVars = new HashMap<PredicateAndFieldValue, String> ();
+	// This maps the (predicate, identifier) to the field that that 
+	// identifier represents.
+	HashMap<PredicateAndFieldValue, String> quantifiedVars = 
+			new HashMap<PredicateAndFieldValue, String> ();
 	
 	//The name of the Java class.
 	String className;
@@ -109,19 +111,23 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<PackObjMods>> packedMods = 
 			new HashMap<String, LinkedList<PackObjMods>>();
 	
-	//For each predicate, this gives the list of the field that each argument of the 
-	//predicate represents. If the argument does not represent the current value of a 
-	//field, then I put "" in this list.
+	// For each predicate, this gives the list of the field that each 
+	// argument of the predicate represents. If the argument does not 
+	// represent the current value of a 
+	// field, then I put "" in this list.
 	HashMap<String, LinkedList<ArgumentAndFieldPair>> predArgWhichField = 
 			new HashMap<String, LinkedList<ArgumentAndFieldPair>>();
 	
-	//For each predicate name, this maps it to its body represented as a String.
-	HashMap<String, FieldTypePredbody> paramsPredicateBody = new HashMap<String, FieldTypePredbody>();
+	// For each predicate name, this maps it to its body represented 
+	// as a String.
+	HashMap<String, FieldTypePredbody> paramsPredicateBody = 
+			new HashMap<String, FieldTypePredbody>();
 	
-	//This maps each method name to its String method body.
+	// This maps each method name to its String method body.
 	HashMap<String, String> methodBody = new HashMap<String, String>();
 	
-	//This maps each method name to its String method specification(pre- and post-condition).
+	// This maps each method name to its String method specification
+	// (pre- and post-condition).
 	HashMap<String, String> methodSpec = new HashMap<String, String>();
 	
 	//This maps each method name to the parameters of that method.
@@ -130,17 +136,20 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//This maps each method name to the existential variables of that method.
 	//I think they are separated by commas.
-	HashMap<String, String> methodExistentialParams = new HashMap<String, String>();
+	HashMap<String, String> methodExistentialParams = 
+			new HashMap<String, String>();
 	
 	//For each name of a field, this map tells us which is the predicate that 
 	//has the permission to the field.
 	//There might be more than one predicate for the same
 	//field, but they don't exist at the same time in a method. 
-	HashMap<String, LinkedList<String>> fieldWhichPredicates = new HashMap<String, LinkedList<String>>();
+	HashMap<String, LinkedList<String>> fieldWhichPredicates = 
+			new HashMap<String, LinkedList<String>>();
 	
 	
-	//This gathers the fields in each statement. Not in each block, but in each statement.
-	//A statement is a child of a block.
+	// This gathers the fields in each statement. 
+	// Not in each block, but in each statement.
+	// A statement is a child of a block.
 	Set<String> fieldsInStatement = new TreeSet<String>();
 	
 	//Set of predicates for the corresponding frac global variables that are 1
@@ -239,7 +248,8 @@ public class BoogieVisitor extends NullVisitor {
 	Set<String> fields = new TreeSet<String>();
 	
 	//The arraylist of (field, type) pairs of this Oprop class.
-	ArrayList<FieldAndTypePair> fieldsTypes = new ArrayList<FieldAndTypePair>();
+	ArrayList<FieldAndTypePair> fieldsTypes = 
+			new ArrayList<FieldAndTypePair>();
 	
 	//The set of predicates of this Oprop class.
 	Set<String> predicates = new TreeSet<String>();
@@ -247,26 +257,33 @@ public class BoogieVisitor extends NullVisitor {
 	//The set of methods in this Oprop class.
 	Set<String> methods = new TreeSet<String>();
 	
-	//For each method, fieldsInMethod contains the set of fields in that method.
-	HashMap<String, Set<String>> fieldsInMethod = new HashMap<String, Set<String>>();
+	//For each method, fieldsInMethod contains 
+	//the set of fields in that method.
+	HashMap<String, Set<String>> fieldsInMethod = 
+			new HashMap<String, Set<String>>();
 		
-	//For each method, methodsInMethod contains the set of methods called in that method.
+	//For each method, methodsInMethod contains 
+	//the set of methods called in that method.
 	HashMap<String, LinkedList<FieldAndTypePair>> methodsInMethod = 
 			new HashMap<String, LinkedList<FieldAndTypePair>>();
 	
 	//The set of input parameters for the current method.
 	Set<String> parametersMethod = new TreeSet<String>();
 
-	//This boolean is true iff we are currently parsing an object proposition. 
+	//This boolean is true iff we are currently parsing 
+	//an object proposition. 
 	boolean insideObjectProposition;
 	
-	//This boolean is true iff we are currently inside the pre-condition of a method.
+	//This boolean is true iff we are currently inside 
+	//the pre-condition of a method.
 	boolean insidePrecondition;
 	
-	//This boolean is true iff we are currently inside the post-condition of a method.
+	//This boolean is true iff we are currently inside 
+	//the post-condition of a method.
 	boolean insidePostcondition;
 	
-	//The string of the object proposition inside which we are at the moment.
+	//The string of the object proposition inside 
+	//which we are at the moment.
 	String objectPropString;
 	
 	String objectObjProp;
@@ -277,7 +294,8 @@ public class BoogieVisitor extends NullVisitor {
 	//The actual arguments for the constructor that is currently called.
 	LinkedList<String> argumentsConstructor = new LinkedList<String>();
 	
-	//The actual arguments for the predicate in the constructor that is currently called.
+	//The actual arguments for the predicate in the constructor 
+	//that is currently called.
 	LinkedList<String> argumentsPredicate = new LinkedList<String>();
 	
 	//The Boogie Visitors of the files that have been translated before this one.
@@ -285,7 +303,11 @@ public class BoogieVisitor extends NullVisitor {
 	
 	int numberFilesBefore;
 	
-	public BoogieVisitor(BufferedWriter boogieFile, int n, BoogieVisitor[] bv0) {
+	public BoogieVisitor(
+			BufferedWriter boogieFile, 
+			int n, 
+			BoogieVisitor[] bv0
+	) {
 		out = boogieFile;
 		namePredicate = "";
 		currentMethod = ""; 
@@ -318,11 +340,13 @@ public class BoogieVisitor extends NullVisitor {
 		return methods;
 	}
 	
-	public HashMap<String, LinkedList<ObjPropString>> getMethodPreconditionsPacked() {
+	public HashMap<String, LinkedList<ObjPropString>> 
+	getMethodPreconditionsPacked() {
 		return methodPreconditionsPacked;
 	}
 
-	public HashMap<String, LinkedList<ObjPropString>> getMethodPostconditionsPacked() {
+	public HashMap<String, LinkedList<ObjPropString>> 
+	getMethodPostconditionsPacked() {
 		return methodPostconditionsPacked;
 	}
 	
@@ -348,12 +372,14 @@ public class BoogieVisitor extends NullVisitor {
 
 	//visit methods
 	
-    public void visitCompilationUnits(CompilationUnits ast) throws ParseException
+    public void visitCompilationUnits(CompilationUnits ast) 
+    		throws ParseException
     {
         visitChildren(ast);
     }
     
-    public void visitCompilationUnit(CompilationUnit ast) throws ParseException
+    public void visitCompilationUnit(CompilationUnit ast) 
+    		throws ParseException
     {
     	ClassDeclaration c = (ClassDeclaration)(ast.getChildren()[0]);
     	className = c.getIdentifier().getName();
@@ -373,12 +399,14 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast);
     }
     
-    public void visitFieldDeclaration(FieldDeclaration ast) throws ParseException 
+    public void visitFieldDeclaration(FieldDeclaration ast) 
+    		throws ParseException 
     { 
     	String fieldName = ast.getName();
 
     	fields.add(fieldName);
-    	fieldsTypes.add(new FieldAndTypePair(fieldName, ast.getType().toString()));
+    	fieldsTypes.add(
+    			new FieldAndTypePair(fieldName, ast.getType().toString()));
     	
     	String fieldType = ast.getType().toString();
     	boolean isClass = false;
@@ -404,7 +432,8 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast);  
     	}
     
-    public void visitPredicateDeclaration(PredicateDeclaration ast) throws ParseException
+    public void visitPredicateDeclaration(PredicateDeclaration ast) 
+    		throws ParseException
     { 
     	namePredicate = ast.getIdentifier().getName();
     	predicates.add(namePredicate);
@@ -419,17 +448,20 @@ public class BoogieVisitor extends NullVisitor {
     	children[1].accept(this);	
     }
     
-    public void visitQuantifierVariables(QuantifierVariables ast) throws ParseException
+    public void visitQuantifierVariables(QuantifierVariables ast) 
+    		throws ParseException
   	{  
     	visitChildren(ast);
   	}
     
-    public void visitQuantifierVariable(QuantifierVariable ast) throws ParseException
+    public void visitQuantifierVariable(QuantifierVariable ast) 
+    		throws ParseException
   	{    	   	    
     	if (ast!=null) {
     		String name = ast.getName();
     	
-    		//TODO do we always need to add to parametersMethod, even if we are not
+    		//TODO do we always need to add to parametersMethod, 
+    		//even if we are not
     		//inside a method?
     		parametersMethod.add(name);
     		String type = ast.getType().toString();
@@ -469,7 +501,8 @@ public class BoogieVisitor extends NullVisitor {
     		
     			int location = objProp.getLocation();
     			String firstHalf = predBody.substring(0, location+ offset+1);
-    			String secondHalf = predBody.substring(location+offset+1, predBody.length());
+    			String secondHalf = predBody.substring(
+    					location+offset+1, predBody.length());
     		
     			predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
     			offset += oneObjProp.length();	
@@ -483,7 +516,8 @@ public class BoogieVisitor extends NullVisitor {
     
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here
-    public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException {    	
+    public void visitMethodDeclaration(MethodDeclaration ast) 
+    		throws ParseException {    	
     	parametersMethod.clear();
     	setFracEq1.clear();
     	stringOfVarDecls = "";
@@ -522,7 +556,8 @@ public class BoogieVisitor extends NullVisitor {
     			writtenModuloFunction = true;
     		}
 		
-    		//Write the constructors to out. The constructor that does not pack to anything
+    		//Write the constructors to out. The constructor 
+    		//that does not pack to anything
     		//and the ones that pack to predicates.
     		makeConstructors(out);
     	
@@ -531,9 +566,13 @@ public class BoogieVisitor extends NullVisitor {
     
     		while(j.hasNext()) {
     			String currentNamePred = j.next().getKey();
-    			FieldTypePredbody paramsPred = paramsPredicateBody.get(currentNamePred);
+    			FieldTypePredbody paramsPred = 
+    					paramsPredicateBody.get(currentNamePred);
     			String predBodyUnprocessed = paramsPred.getPredicateBody();
-    			predBodyUnprocessed = writeAllPredArgWhichField(currentNamePred, predBodyUnprocessed);
+    			predBodyUnprocessed = writeAllPredArgWhichField(
+    					currentNamePred, 
+    					predBodyUnprocessed
+    			);
      		
     			//processing of the predBody
     			int i=0;
@@ -583,23 +622,28 @@ public class BoogieVisitor extends NullVisitor {
     			String predBody = sb.toString().concat(lastPartPredBody);
     			try {
     				//will need to do something about formal parameters
-    				out.write("procedure Pack"+upperCaseFirstLetter(currentNamePred)+"(");
+    				out.write("procedure Pack"+
+    						upperCaseFirstLetter(currentNamePred)+"(");
     				writePredParamsOutOrToString(currentNamePred, 1, false);
     				out.write("this:Ref);\n"); 
-    				out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
+    				out.write("\t requires packed"+
+    						upperCaseFirstLetter(currentNamePred)+"[");
     				out.write("this]==false &&\n");
 			
     				out.write("\t \t" + predBody + "; \n \n"); 
 			
-    				out.write("procedure Unpack"+upperCaseFirstLetter(currentNamePred)+"(");
+    				out.write("procedure Unpack"+
+    						upperCaseFirstLetter(currentNamePred)+"(");
     				writePredParamsOutOrToString(currentNamePred, 1, false);
     				out.write("this:Ref);\n");
-    				out.write("\t requires packed"+upperCaseFirstLetter(currentNamePred)+"[");
+    				out.write("\t requires packed"+
+    						upperCaseFirstLetter(currentNamePred)+"[");
     				out.write("this] &&\n\t \t ");
     				//TODO we don't do this for Pack because 
     				//we do it in the code after we call the Pack procedure
 			
-    				out.write("(frac"+upperCaseFirstLetter(currentNamePred)+"[");
+    				out.write("(frac"+
+    						upperCaseFirstLetter(currentNamePred)+"[");
     				out.write("this] > 0.0);\n");
 			
     				//TODO need to update predBody in the appropriate map.
@@ -618,7 +662,10 @@ public class BoogieVisitor extends NullVisitor {
     		for (int i=0; i<numberFilesBefore; i++) {
     			Set<String> predicatesOfi = bv[i].getPredicates();
     			for (String namePredicateOfi : predicatesOfi) {
-    				packedMods.put(namePredicateOfi, new LinkedList<PackObjMods>());   
+    				packedMods.put(	
+    						namePredicateOfi, 
+    						new LinkedList<PackObjMods>()
+    				);   
     			}	
     		}
     	}
@@ -627,7 +674,8 @@ public class BoogieVisitor extends NullVisitor {
     	try {		
     		// We reset packedMods here.
     		// Before we enter the body of the current method.
-    		Iterator<Entry<String, FieldTypePredbody>> j = paramsPredicateBody.entrySet().iterator(); 
+    		Iterator<Entry<String, FieldTypePredbody>> j = 
+    				paramsPredicateBody.entrySet().iterator(); 
     	    	
     	    while(j.hasNext()) {
     	    	String currentNamePred = j.next().getKey();
@@ -641,9 +689,11 @@ public class BoogieVisitor extends NullVisitor {
     	    out.write(methodParams.get(currentMethod));
     	    out.write("this:Ref)\n");
 							
-    	    //Need to automatically detect what is being modified, according to the Boogie manual.
+    	    //Need to automatically detect what is being modified, 
+    	    //according to the Boogie manual.
     	    //We do this after we parse and translate the body of the current method.
-    	    Set<String> localFieldsInMethod = fieldsInMethod.get(currentMethod);
+    	    Set<String> localFieldsInMethod = 
+    	    		fieldsInMethod.get(currentMethod);
 				
     	    //Put in modifies the fields that were in the modifies of 
     	    //the methods that were called in this method.
@@ -661,14 +711,16 @@ public class BoogieVisitor extends NullVisitor {
         	        		if (bv[l].getClassName().equals(ft.getType()))
         	        			classOfCallMethod = l;
         	        	}
-        	        	callMethodsSetOfFields = bv[classOfCallMethod].getFieldsInMethod().get(ft.getName());	
+        	        	callMethodsSetOfFields = 
+        	        		bv[classOfCallMethod].getFieldsInMethod().get(ft.getName());	
         			}
         			localFieldsInMethod.addAll(callMethodsSetOfFields);
         		}
         	}
  
         	//localFieldsInMethod is the set of elements that are modified.
-			String[] fieldsInMethodArray = localFieldsInMethod.toArray(new String[0]);
+			String[] fieldsInMethodArray = 
+					localFieldsInMethod.toArray(new String[0]);
         	int leng = fieldsInMethodArray.length;
         	if (leng > 0) {
 			String modifies = "\t modifies ";
@@ -682,7 +734,8 @@ public class BoogieVisitor extends NullVisitor {
         }		
 		out.write(methodSpec.get(currentMethod));
 				
-		//Here I want to say that if there are no unpacked object propositions 
+		//Here I want to say that if there are 
+		//no unpacked object propositions 
 		//which are specified explicitly,
 		//then it means that all are packed.
 		String requiresPacked = "";
@@ -694,12 +747,17 @@ public class BoogieVisitor extends NullVisitor {
 				if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
 						!setFracEq1.contains(p)) {
 					requiresPacked = 
-							requiresPacked.concat("\t requires (forall " + forallParameter+
-								  ":Ref :: packed"+upperCaseFirstLetter(p)+"[" + forallParameter+"]);\n");
+							requiresPacked.concat("\t requires (forall " + 
+									forallParameter+
+									":Ref :: packed"+
+									upperCaseFirstLetter(p)+"[" +
+									forallParameter+"]);\n"
+							);
 			    }
 			}
 					
-			//I also write for the predicates of the previous classes that were translated.
+			//I also write for the predicates of the 
+			//previous classes that were translated.
 			for (int i=0; i<numberFilesBefore; i++) {
 				Set<String> bvPredicates = bv[i].getPredicates();
 			    for (String p : bvPredicates) {							        	
@@ -721,9 +779,11 @@ public class BoogieVisitor extends NullVisitor {
 				
 		//Here I generate 
 		//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
-		// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) ==> (packedOK[x] == old(packedOK[x]))));"
+		// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) 
+		//==> (packedOK[x] == old(packedOK[x]))));"
 		// and the others.		
-		Iterator<Entry<String, LinkedList<PackObjMods>>> it = packedMods.entrySet().iterator();
+		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
+				packedMods.entrySet().iterator();
 		while (it.hasNext()) {
 		   	Entry<String, LinkedList<PackObjMods>> pairs = 
 		        (Entry<String, LinkedList<PackObjMods>>)it.next();
@@ -744,36 +804,47 @@ public class BoogieVisitor extends NullVisitor {
 		    //other procedures that are not main.
 		    if (!ast.getIdentifier().getName().equals("main")) {
 		       	//This is for writing "ensures forall for packed.
-		       	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(nameOfPredicate)) &&
+		       	if (localFieldsInMethod.contains("packed"+
+		       			upperCaseFirstLetter(nameOfPredicate)) &&
 		       			!setFracEq1.contains(nameOfPredicate)) {
 		       		ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
 		        	if (modifiedObjects.isEmpty()) {
-		        		ensuresForall = ensuresForall.concat("packed"+upperCaseFirstLetter(nameOfPredicate) + 
+		        		ensuresForall = ensuresForall.concat(
+		        				"packed"+upperCaseFirstLetter(nameOfPredicate) + 
 		        				"["+forallParameter+
-		        				"] == old(packed" + upperCaseFirstLetter(nameOfPredicate) +"["+
+		        				"] == old(packed" + 
+		        				upperCaseFirstLetter(nameOfPredicate) +"["+
 		        				forallParameter+"])));\n");
 		        	} else {
-		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
+		        		String[] modifiedObjectsArray = 
+		        				modifiedObjects.toArray(new String[0]);
 		        		int len = modifiedObjectsArray.length;
 		        		if (len > 1) {
 		        			ensuresForall = ensuresForall.concat("(");
 		        		}
 		        		for (int k = 0; k < len - 1; k++) {
 		        			ensuresForall = ensuresForall.concat(
-		        					"("+forallParameter+"!="+modifiedObjectsArray[k]+") &&");
+		        							"("+forallParameter+"!="+
+		        							modifiedObjectsArray[k]+") &&"
+		        			);
 		        		}
 		        		
 		        		ensuresForall = ensuresForall.concat(
-		        				"("+forallParameter+"!="+modifiedObjectsArray[len-1]+") ==> ");
+		        						"("+forallParameter+"!="+
+		        						modifiedObjectsArray[len-1]+") ==> "
+		        		);
 		        		if (len > 1) {
 		        			ensuresForall = ensuresForall.concat("(");
 		        		}
 		        		
-		        		ensuresForall = ensuresForall.concat("(packed"+ upperCaseFirstLetter(nameOfPredicate) + 
-		        				"["+ forallParameter+
-		        				"] == old(packed"+upperCaseFirstLetter(nameOfPredicate)+"["+
-		        				 forallParameter+"]))));\n");
+		        		ensuresForall = ensuresForall.concat("(packed"+ 
+		        							upperCaseFirstLetter(nameOfPredicate) + 
+		        							"["+ forallParameter+
+		        							"] == old(packed"+
+		        							upperCaseFirstLetter(nameOfPredicate)+"["+
+		        							forallParameter+"]))));\n"
+		        		);
 		        	}
 		        }
 		        	
@@ -845,7 +916,9 @@ public class BoogieVisitor extends NullVisitor {
     	return forallParameter;
     }
 
-    public void visitReturnStatement(ReturnStatement ast) throws ParseException {
+    public void visitReturnStatement(ReturnStatement ast) 
+    		throws ParseException 
+    {
         visitChildren(ast);
     }
     
@@ -876,7 +949,8 @@ public class BoogieVisitor extends NullVisitor {
     		}
   
     		if (!namePredicate.equals("") && !insideObjectProposition){
-    			FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+    			FieldTypePredbody currentParamsPredicateBody = 
+    					paramsPredicateBody.get(namePredicate);
     			paramsPredicateBody.put(
 					namePredicate, 
 					currentParamsPredicateBody.concatToPredicateBody(fieldName)
@@ -886,7 +960,8 @@ public class BoogieVisitor extends NullVisitor {
     }
 
     // We shouldn't end up in this method anymore.
-    public void visitFieldSelection(FieldSelection ast) throws ParseException
+    public void visitFieldSelection(FieldSelection ast) 
+    		throws ParseException
     {
     	String identifierName = ast.getIdentifier().name;
         if (currentMethod != "") {
@@ -896,7 +971,8 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast);
     }
 
-    public void visitMethodSelection(MethodSelection ast) throws ParseException
+    public void visitMethodSelection(MethodSelection ast) 
+    		throws ParseException
     {
     	String identifierBeforeMethSel = currentIdentifier;
     	visitedMethSel = true;
@@ -904,7 +980,8 @@ public class BoogieVisitor extends NullVisitor {
     	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
     	
-    	modifyMethodsInMethod(new FieldAndTypePair(methodName, lastPrimaryExpressionType));
+    	modifyMethodsInMethod(
+    			new FieldAndTypePair(methodName, lastPrimaryExpressionType));
     	   	
     	LinkedList<ObjPropString> callMethodPreconditions = 
     			methodPreconditionsPacked.get(methodName);
@@ -914,7 +991,8 @@ public class BoogieVisitor extends NullVisitor {
         		if (bv[i].getClassName().equals(lastPrimaryExpressionType))
         			classOfCallMethod = i;
         	}
-        	callMethodPreconditions = bv[classOfCallMethod].getMethodPreconditionsPacked().get(methodName);		
+        	callMethodPreconditions = 
+        		bv[classOfCallMethod].getMethodPreconditionsPacked().get(methodName);		
     	}
 
     	statementContent= statementContent + "\t call "+ methodName + "(";
@@ -986,7 +1064,8 @@ public class BoogieVisitor extends NullVisitor {
     	statementContent = statementContent.substring(0, statementContent.length() - 2); 	
     }
 
-    public void visitBinaryExpression(BinaryExpression ast) throws ParseException
+    public void visitBinaryExpression(BinaryExpression ast) 
+    		throws ParseException
     {
     	if (ast.op.getId() == JExprConstants.KEYACCESS){
     		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
@@ -1071,7 +1150,9 @@ public class BoogieVisitor extends NullVisitor {
   		  }
     }
     
-    void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) throws ParseException {
+    void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) 
+    		throws ParseException 
+    {
     	// We replace the linear implies ~=> with ==>.
     	if (operatorSymbol.equals("~=>")) {
     		operatorSymbol = "==>";
@@ -1115,7 +1196,9 @@ public class BoogieVisitor extends NullVisitor {
 		}
     }
       
-    public void visitLiteralExpression(LiteralExpression ast) throws ParseException { 
+    public void visitLiteralExpression(LiteralExpression ast) 
+    		throws ParseException 
+    { 
     	String astvalue = ast.value.toString();
     	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(astvalue);
@@ -1202,7 +1285,8 @@ public class BoogieVisitor extends NullVisitor {
     	return result;
     }
     
-    public void visitObjectProposition(ObjectProposition ast) throws ParseException
+    public void visitObjectProposition(ObjectProposition ast) 
+    		throws ParseException
     {    	
     	insideObjectProposition = true;
         String packedOrUnpacked = "";
@@ -1378,11 +1462,15 @@ public class BoogieVisitor extends NullVisitor {
     }
 
    
-    public void visitUnaryExpression(UnaryExpression ast) throws ParseException {
+    public void visitUnaryExpression(UnaryExpression ast) 
+    		throws ParseException 
+    {
         visitChildren(ast);
     }
 
-    public void visitPrimaryExpression(PrimaryExpression ast) throws ParseException {
+    public void visitPrimaryExpression(PrimaryExpression ast) 
+    		throws ParseException 
+    {
     	Expression[] children = (Expression[])ast.getChildren();
     	if (children.length == 2) {
     		if (children[1] instanceof MethodSelection) {
@@ -1472,11 +1560,15 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast);
     }
     
-    public void visitFormalParameters(FormalParameters ast) throws ParseException { 
+    public void visitFormalParameters(FormalParameters ast) 
+    		throws ParseException 
+    { 
     	visitChildren(ast);
     }
     
-    public void visitFormalParameter(FormalParameter ast) throws ParseException {
+    public void visitFormalParameter(FormalParameter ast) 
+    		throws ParseException 
+    {
     	if (ast!=null) {
     		String name = ast.getName();
     		parametersMethod.add(name);
@@ -1492,7 +1584,9 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
-    public void visitAllocationExpression(AllocationExpression ast) throws ParseException {
+    public void visitAllocationExpression(AllocationExpression ast) 
+    		throws ParseException 
+    {
     	String predicateOfConstruct = ast.getPredicate();
     	LinkedList<String> localArgumentsConstructor = new LinkedList<String>();
     	LinkedList<String> localArgumentsPredicate = new LinkedList<String>();
@@ -1563,12 +1657,15 @@ public class BoogieVisitor extends NullVisitor {
         }
     }
     
-    public void visitDeclarationStatement(DeclarationStatement ast) throws ParseException { 
+    public void visitDeclarationStatement(DeclarationStatement ast) 
+    		throws ParseException 
+    { 
     	visitChildren(ast); 
     	localVariableName = "";
     }
-    //TODO where I left off
-    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast) throws ParseException
+    
+    public void visitLocalVariableDeclaration(LocalVariableDeclaration ast) 
+    		throws ParseException
     {
     	localVariableName = ast.getName();
     	
@@ -1577,7 +1674,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	for (int i=0; i<numberFilesBefore; i++) {
     		if (bv[i].getClassName().equals(fieldType) )
-    				isClass = true;
+    			isClass = true;
     	}
 
     		if (isClass) {
@@ -1589,7 +1686,8 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast);
       }
     
-    public void visitKeywordExpression(KeywordExpression ast) throws ParseException
+    public void visitKeywordExpression(KeywordExpression ast) 
+    		throws ParseException
     { 
     	String keywordString;
     	Object value= ast.getValue();
@@ -1605,57 +1703,51 @@ public class BoogieVisitor extends NullVisitor {
     		
         if (namePredicate.equals("")) {
      	   //we are not inside a predicate
-     		   if (!inPackUnpackAnnotation) {
-     		   if ((currentMethod != "") && inArgumentList && 
-     				   !inMethodSelectionStatement &&
-         			   !inFieldSelection) {
-     			   modifyMethodBody(keywordString + ",");
+        	if (!inPackUnpackAnnotation) {
+        		if ((currentMethod != "") && inArgumentList && 
+        				!inMethodSelectionStatement &&
+         			   	!inFieldSelection) {
+     			   	modifyMethodBody(keywordString + ",");
      		   }
      		   
      		   if ((currentMethod != "") && (inStatement) && 
-     			   !inArgumentList && !inMethodSelectionStatement &&
-     			   !inFieldSelection) {
-     				  statementContent = statementContent.concat(keywordString);
-     			  }
+     				   !inArgumentList && !inMethodSelectionStatement &&
+     				   !inFieldSelection) {
+     				  	statementContent = statementContent.concat(keywordString);
+     		   }
      		   
      		   if ((insidePrecondition || insidePostcondition) && (keywordString.equals("null"))) {
      			   modifyMethodSpec(keywordString);
      		   }
-     		   }
-     			   //modify object proposition parts
-     		   if (insideObjectProposition) {
-     			   objectPropString = objectPropString.concat(keywordString);
-     				  }	   
-        }
-        else { 
-     	   //we are inside a predicate	  
- 		   FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+        	}
+     	
+        	//modify object proposition parts
+        	if (insideObjectProposition) {
+        		objectPropString = objectPropString.concat(keywordString);
+        	}	   
+        } else { 
+     	   	//we are inside a predicate	  
+ 		   	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
      	      	 
-     		   if (insideObjectProposition) {
-  				  objectPropString = objectPropString.concat(keywordString);
-  			  }
-      	   else {
-      		  paramsPredicateBody.put(
- 					  namePredicate, 
- 					  currentParamsPredicateBody.concatToPredicateBody(keywordString)
- 			  );
-      		   
-      	   }
-    }
+ 		   	if (insideObjectProposition) {
+ 		   		objectPropString = objectPropString.concat(keywordString);
+  			} else {
+  				paramsPredicateBody.put(
+  						namePredicate, 
+  						currentParamsPredicateBody.concatToPredicateBody(keywordString)
+  				); 
+  			}
+        }
         
         if (inArgumentList) {
- 		   argumentsConstructor.add(keywordString);
- 		  argumentsPredicate.add(keywordString);
-       }
-}
+        	argumentsConstructor.add(keywordString);
+        	argumentsPredicate.add(keywordString);
+        }
+    }
     
     public void visitFractionAnnotation(FractionAnnotation ast) 
-  		  throws ParseException
-  		  { 
-    	
-    	String localObjectObjProp;
-    	String localPredicateNameObjProp;
-    	
+    		throws ParseException 
+    { 
     	//LinkedList<String> localArgumentsObjProp = new LinkedList<String>();
     	
     	String annotationName = ast.getName();
@@ -1665,16 +1757,11 @@ public class BoogieVisitor extends NullVisitor {
     	ArgumentList argAst = (ArgumentList)(children0[0]);
     	AST[] children = argAst.getChildren();
     	
-
     	objectObjProp = "";
     	predicateNameObjProp = "";
     	argumentsObjProp.clear();
     	fractionObjProp = "";
     	children[0].accept(this);
-    	localObjectObjProp = objectObjProp;
-    	localPredicateNameObjProp = predicateNameObjProp;
-    	//localFractionObjProp = fractionObjProp;
-    	//localArgumentsObjProp = argumentsObjProp;
     
     	toWrite = toWrite.concat("frac"+upperCaseFirstLetter(predicateNameObjProp)+"[");
     	toWrite = toWrite.concat(objectObjProp + "] := ");
@@ -1683,31 +1770,27 @@ public class BoogieVisitor extends NullVisitor {
     	toWrite = toWrite.concat("frac"+upperCaseFirstLetter(predicateNameObjProp)+"[");
     	toWrite = toWrite.concat(objectObjProp + "]");
     	
-  	  for (int i = 1; i < children.length; i++) {
-  		objectObjProp = "";
-    	predicateNameObjProp = "";
-    	argumentsObjProp.clear();
-    	fractionObjProp = "";
-		children[i].accept(this);
-		assert(localObjectObjProp == objectObjProp);
-		assert(localPredicateNameObjProp == predicateNameObjProp);
-		if (annotationName.equals("addFrac")) {
-		toWrite = toWrite.concat("+" + fractionObjProp);
-		} else {
-			
-		}
-		  //TODO
-		  //need to add assert for LinkedList too
-	  }
+  	  	for (int i = 1; i < children.length; i++) {
+  	  		objectObjProp = "";
+  	  		predicateNameObjProp = "";
+  	  		argumentsObjProp.clear();
+  	  		fractionObjProp = "";
+  	  		children[i].accept(this);
+  	  		if (annotationName.equals("addFrac")) {
+  	  			toWrite = toWrite.concat("+" + fractionObjProp);
+  	  		} else {
+  	  			//TODO need to write something here
+  	  		}
+  	  	}
     	
-  	modifyMethodBody(toWrite);
-  	inPackUnpackAnnotation = false;
-  		  }
+  	  	modifyMethodBody(toWrite);
+  	  	inPackUnpackAnnotation = false;
+    }
     
     
     public void visitPackUnpackAnnotation(PackUnpackAnnotation ast) 
-  		  throws ParseException
-  		  { 
+    		throws ParseException 
+    { 
     	String annotationName = ast.getName();
     	String toWrite = "";
     	inPackUnpackAnnotation = true;
@@ -1720,11 +1803,9 @@ public class BoogieVisitor extends NullVisitor {
     	
     	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("call Pack"); 
-    	}
-    	else {
+    	} else {
     		toWrite = toWrite.concat("call Unpack"); 
     	}
-    	
     	toWrite = toWrite.concat(upperCaseFirstLetter(predicateNameObjProp) + "("); 
     	
     	for (int i=0;i<argumentsObjProp.size();i++) {
@@ -1732,135 +1813,117 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	
     	toWrite = toWrite.concat(objectObjProp + ");\n"); 
-    	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
     	toWrite = toWrite.concat(objectObjProp + "] := "); 
     	
        	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("true"); 
-    	}
-    	else {
+    	} else {
     		toWrite = toWrite.concat("false"); 
     	}
        	modifyFieldsInMethod("packed"+upperCaseFirstLetter(predicateNameObjProp));
     	
     	modifyMethodBody(toWrite);
-    	inPackUnpackAnnotation = false;
-    	    	
-  		}
+    	inPackUnpackAnnotation = false;    	
+  	}
  
-    public void visitIdentifierExpression(IdentifierExpression ast) throws ParseException
+    public void visitIdentifierExpression(IdentifierExpression ast) 
+    		throws ParseException
     {    	
     	currentIdentifier = ast.name;
     	lastIdentifierOrKeyword = ast.name;
     	if (currentIdentifier.equals("unpacked")) 
     		return;
-    try {
-      
-       String identifierName = currentIdentifier;  
+    	try {
+    		String identifierName = currentIdentifier;  
+    		PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
+    		String fieldName = quantifiedVars.get(pv);
        
-       PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
-       String fieldName = quantifiedVars.get(pv);
-       
-       if (namePredicate.equals("")) {
-    	   //we are not inside a predicate
-    	   if (!(fieldName == null)) {
-    		   if (insideObjectProposition) {
-  				  objectPropString = objectPropString.concat(identifierName);
-  			  }
-    		   // When we are inside FieldSelection or MethodSelection,
-    		   // we have already written the field out in another place.
-  			  if (inStatement && !inPackUnpackAnnotation && !inFieldSelection &&
-  					  !inMethodSelectionStatement) {
-  				  modifyMethodBody(fieldName+ "[this]");
-  			  }
-  			 
+    		if (namePredicate.equals("")) {
+    			//we are not inside a predicate
+    			if (!(fieldName == null)) {
+    				if (insideObjectProposition) {
+    					objectPropString = objectPropString.concat(identifierName);
+    				}
+    				// When we are inside FieldSelection or MethodSelection,
+    				// we have already written the field out in another place.
+    				if (inStatement && !inPackUnpackAnnotation && !inFieldSelection &&
+    						!inMethodSelectionStatement) {
+    					modifyMethodBody(fieldName+ "[this]");
+    				}
   			  
-  			  //This should go in the else.
-  			  //op goes here but it shouldn't for method spec. 
-  			  //This if tries to fix the error.
-  			  if ((insidePrecondition || insidePostcondition) && !insideObjectProposition) {
-  				 modifyMethodSpec(identifierName); 
-  			  }
-  			  
-    	   }
-    	   else {
-    		 
-    		   if (!inPackUnpackAnnotation) {
-    		   if ((currentMethod != "") && (inArgumentList) && (inStatement)) {
-    			   statementContent = statementContent.concat(identifierName + ",");
-    		   }
+    				// This should go in the else.
+    				// op goes here but it shouldn't for method spec. 
+    				// This if tries to fix the error.
+    				if ((insidePrecondition || insidePostcondition) && !insideObjectProposition) {
+    					modifyMethodSpec(identifierName); 
+    				} 
+    			} else {
+    				if (!inPackUnpackAnnotation) {
+    					if ((currentMethod != "") && (inArgumentList) && (inStatement)) {
+    						statementContent = statementContent.concat(identifierName + ",");
+    					}
     		   
-    		   if ((currentMethod != "") && (inArgumentList) && (!inStatement)) {
-    			   modifyMethodBody(identifierName + ",");
-    		   }
+    					if ((currentMethod != "") && (inArgumentList) && (!inStatement)) {
+    						modifyMethodBody(identifierName + ",");
+    					}
     		   
-    		   if ((currentMethod != "") && (inStatement) && 
-    			   !inArgumentList && !inMethodSelectionStatement && !inFieldSelection) {
-    				  statementContent = statementContent.concat(identifierName);
-    			  }
+    					if ((currentMethod != "") && (inStatement) && 
+    							!inArgumentList && !inMethodSelectionStatement &&
+    							!inFieldSelection) {
+    						statementContent = statementContent.concat(identifierName);
+    					}
     		   
-    		   if (!insideObjectProposition && 
-    				   (insidePrecondition || insidePostcondition)) {
-    			   modifyMethodSpec(identifierName);
-    		   }
-
-    		   }
-    			   //modify object proposition parts
-    		   if (insideObjectProposition) {
-    			   objectPropString = objectPropString.concat(identifierName);
-    				  }	
-    	   
-    	   }
-       }
-       
-       else {
-    	   
-    	   //we are inside a predicate
-			  
-		   FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+    					if (!insideObjectProposition && 
+    							(insidePrecondition || insidePostcondition)) {
+    						modifyMethodSpec(identifierName);
+    					}
+    				}
+    				//modify object proposition parts
+    				if (insideObjectProposition) {
+    					objectPropString = objectPropString.concat(identifierName);
+    				}	
+    			}
+    		} else {
+    			//we are inside a predicate
+    			FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
     	      	 
-    	   if (!(fieldName == null)) {
-    	   
-    	   if (insideObjectProposition) {
-				  objectPropString = objectPropString.concat(identifierName);
-			  }
-     	   if (!insideObjectProposition) {
-     		   
-     		  paramsPredicateBody.put(
-					  namePredicate, 
-					  currentParamsPredicateBody.concatToPredicateBody(fieldName+ "[this]")
-			  );
-     	   }
-    	   }
-    	   else {
-    		   if (insideObjectProposition) {
- 				  objectPropString = objectPropString.concat(identifierName);
- 			  }
-     	   else {
-     		  paramsPredicateBody.put(
-					  namePredicate, 
-					  currentParamsPredicateBody.concatToPredicateBody(identifierName)
-			  ); 		   
-     	   }
-    	   }
-       }
+    			if (!(fieldName == null)) {
+    				if (insideObjectProposition) {
+    					objectPropString = objectPropString.concat(identifierName);
+    				}
+    				if (!insideObjectProposition) {
+    					paramsPredicateBody.put(
+    							namePredicate, 
+    							currentParamsPredicateBody.concatToPredicateBody(fieldName+ "[this]")
+    					);
+    				}
+    			} else {
+    				if (insideObjectProposition) {
+    					objectPropString = objectPropString.concat(identifierName);
+    				} else {
+    					paramsPredicateBody.put(
+    							namePredicate, 
+    							currentParamsPredicateBody.concatToPredicateBody(identifierName)
+    					); 		   
+    				}
+    			}
+    		}
        
-       if (inArgumentList) {
- 		   argumentsConstructor.add(identifierName);
- 		  argumentsPredicate.add(identifierName);
-       }
-    }
-      catch (Exception e) {
+    		if (inArgumentList) {
+    			argumentsConstructor.add(identifierName);
+    			argumentsPredicate.add(identifierName);
+    		}
+    	}
+    	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
-      };
-      
+    	};
 
-      
     	visitChildren(ast);
     }
     
-    public void visitIfStatement(IfStatement ast) throws ParseException
+    public void visitIfStatement(IfStatement ast) 
+    		throws ParseException
     {
     	inMethodSelectionStatement = false;
     	inIfStatement = true;
@@ -1890,26 +1953,25 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitStatementExpression(StatementExpression ast)
   		  throws ParseException
-  		  { 
+  	{ 
     	inStatement = true;
-    		visitChildren(ast);
-    		try {
-    			if (currentMethod != "") {
-    				statementContent = statementContent.concat(";\n");
-    			}
-  			  else {
-  				  out.write(";\n");
-  			  }
-        	}
-        	catch (Exception e) {
-        		System.err.println("Error: " + e.getMessage());
-        	}
-    		inStatement = false;
-  		  }
+    	visitChildren(ast);
+    	try {
+    		if (currentMethod != "") {
+    			statementContent = statementContent.concat(";\n");
+    		} else {
+    			out.write(";\n");
+  			}
+        }
+    	catch (Exception e) {
+    		System.err.println("Error: " + e.getMessage());
+        }
+    	inStatement = false;
+  	}
     
     public void visitMethodSpecVariable(MethodSpecVariable ast) 
   		  throws ParseException 
-  		  {
+  	{
     	if (ast!=null) {
     		String name = ast.getName();
     		parametersMethod.add(name);
@@ -1920,21 +1982,23 @@ public class BoogieVisitor extends NullVisitor {
     		//I don't think this node has any children.
     		visitChildren(ast);
     	} 
-    	}
+    }
     
     public void visitMethodSpecVariables(MethodSpecVariables ast)
   		  throws ParseException 
-  		  { 
+  	{ 
     	visitChildren(ast); 
-    	}
+    }
     
     public void visitMethodSpecFracVariable(MethodSpecFracVariable ast) 
-    				throws ParseException 
-    		  { visitChildren(ast); }
+    		throws ParseException 
+    { 
+    	visitChildren(ast); 
+    }
     
     public void visitMethodSpecExpression(MethodSpecExpression ast) 
   		  throws ParseException 
-  		  { 
+  	{ 
     	MethodSpecVariables methodVariables = ast.getMethodSpecVariables();
     	Expression precondition = ast.getPrecondition();
     	Expression postcondition = ast.getPostcondition();
@@ -1942,28 +2006,27 @@ public class BoogieVisitor extends NullVisitor {
     	methodVariables.accept(this);
     	
     	if (precondition != null) {
-    	modifyMethodSpec("\t requires ");
-    	insidePrecondition = true;
-    	precondition.accept(this);
-    	insidePrecondition = false;
-    	modifyMethodSpec(";\n");
+    		modifyMethodSpec("\t requires ");
+    		insidePrecondition = true;
+    		precondition.accept(this);
+    		insidePrecondition = false;
+    		modifyMethodSpec(";\n");
     	}
 
     	if (postcondition != null) {
-    	modifyMethodSpec("\t ensures ");
-    	insidePostcondition = true;
-    	postcondition.accept(this);
-    	insidePostcondition = false;
-    	modifyMethodSpec(";\n");
+    		modifyMethodSpec("\t ensures ");
+    		insidePostcondition = true;
+    		postcondition.accept(this);
+    		insidePostcondition = false;
+    		modifyMethodSpec(";\n");
     	}
-    	
-    	}
+    }
     
     public void visitBlock(Block ast) 
-  		  throws ParseException 
-  		  { 
+    		throws ParseException 
+  	{ 
     	if (inIfStatement) {
-    	modifyMethodBody("{\n");
+    		modifyMethodBody("{\n");
     	}
     	
     	AST[] children = ast.getChildren();
@@ -1978,21 +2041,21 @@ public class BoogieVisitor extends NullVisitor {
     	  }
     	    	
     	modifyMethodBody("}\n ");
-  		  }
+  	}
     
     
     public void visitArgumentList(ArgumentList ast)
   		  throws ParseException 
-  		  {  
+  	{  
     	// If we are inside unpacked(...)
     	// then this is not really an argument list.
     	// It is actually only a single object proposition.
     	if (!lastIdentifierOrKeyword.equals("unpacked")) {
-    			inArgumentList = true;
+    		inArgumentList = true;
     	}
     	visitChildren(ast); 
     	inArgumentList = false;
-    	}
+    }
     
     
     void modifyMethodBody(String s) {
@@ -2002,7 +2065,6 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     int modifyPredicateBody(String s) {
-    	
 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 		paramsPredicateBody.put(
 				namePredicate, 
@@ -2014,10 +2076,10 @@ public class BoogieVisitor extends NullVisitor {
     void modifyFormalParams(String name, String type) {
 		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
 		if (currentParamsPredicateBody != null) {
-		paramsPredicateBody.put(
-				namePredicate, 
-				currentParamsPredicateBody.addParam(name, type)
-		);
+			paramsPredicateBody.put(
+					namePredicate, 
+					currentParamsPredicateBody.addParam(name, type)
+			);
 		} 
 		//For the else branch, it means this predicate does not exist.
 		//We should not end up on this branch.
@@ -2035,7 +2097,7 @@ public class BoogieVisitor extends NullVisitor {
     	predArgWhichField.put(
     			namePredicate,
     			list
-    			);
+    	);
     }
     
     //Adds the field corresponding to 
@@ -2062,33 +2124,33 @@ public class BoogieVisitor extends NullVisitor {
     			predArgWhichField.get(namePredicate);
     	LinkedList<String> listParams = ops.getParams();
     	if (listParams != null) {
-    	for (int i=0; i<listParams.size(); i++) {
-    		String name = listParams.get(i);
-    		if (listArgField != null) {
-    		for (int j=0; j<listArgField.size(); j++) {
-    			ArgumentAndFieldPair o = listArgField.get(j);
-    			if (name.equals(o.getArgument())) {
-    				// This is the compact representation of
-    				// an object proposition that has the argument as one of its
-    				// parameters.
-    				String compactObjProp = ops.getName()+" "+ops.getObject()+" "+i;   				
-    				o.setField(compactObjProp);
-    				break;
+    		for (int i=0; i<listParams.size(); i++) {
+    			String name = listParams.get(i);
+    			if (listArgField != null) {
+    				for (int j=0; j<listArgField.size(); j++) {
+    					ArgumentAndFieldPair o = listArgField.get(j);
+    					if (name.equals(o.getArgument())) {
+    						// This is the compact representation of
+    						// an object proposition that has the argument as one of its
+    						// parameters.
+    						String compactObjProp = ops.getName()+" "+ops.getObject()+" "+i;   				
+    						o.setField(compactObjProp);
+    						break;
+    					}
+    				}
     			}
     		}
-    		}
     	}
-    	}
-
     }
     
     void modifyExistentialParams(String name, String type) {
-		FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
+		FieldTypePredbody currentParamsPredicateBody = 
+				paramsPredicateBody.get(namePredicate);
 		if (currentParamsPredicateBody != null) {
-		paramsPredicateBody.put(
-				namePredicate, 
-				currentParamsPredicateBody.addExistentialParam(name, type)
-		);
+			paramsPredicateBody.put(
+					namePredicate, 
+					currentParamsPredicateBody.addExistentialParam(name, type)
+			);
 		} 
 		//For the else branch, it means this predicate does not exist.
 		//We should not end up on this branch.
@@ -2184,7 +2246,6 @@ public class BoogieVisitor extends NullVisitor {
     		currentPredicateObjProp = new LinkedList<ObjPropString>();
     	}
     	currentPredicateObjProp.add(s);
-    	
     	predicateObjProp.put(namePredicate, currentPredicateObjProp);    	
     }
     
@@ -2225,7 +2286,6 @@ public class BoogieVisitor extends NullVisitor {
     void makeConstructors(BufferedWriter out) {
     	//I also declare the packed and frac global variables for this class.
     	try {
-
     		for (String p : predicates) {
     			out.write("var packed" + upperCaseFirstLetter(p) + ": [Ref] bool;\n");
     			out.write("var frac" + upperCaseFirstLetter(p) + ": [Ref] real;\n");
@@ -2264,42 +2324,35 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	    	
     	try {
-   		
     		//write a constructor that doesn't pack to any predicate
     		out.write("procedure Construct" + className + "(");
             for (FieldAndTypePair s : fieldsTypes) {
             	String type = s.getType();
-            	if (type.equals("int") || type.equals("double") || type.equals("boolean")) {
-            	out.write(s.getName() + "1 :"+ type + ", ");
-            	}
-            	else {
-            		out.write(s.getName() + "1 : Ref, ");
-            	}
-        	}
-            out.write("this: Ref);\n");
-            out.write("\t ensures ");
-    		for (int i = 0; i < fieldsTypes.size()-1; i++) {
-            	out.write("(" + fieldsTypes.get(i).getName() + "[this] == "+ 
+            		if (type.equals("int") || type.equals("double") || type.equals("boolean")) {
+            			out.write(s.getName() + "1 :"+ type + ", ");
+            		} else {
+            			out.write(s.getName() + "1 : Ref, ");
+            		}
+        		}
+            	out.write("this: Ref);\n");
+            	out.write("\t ensures ");
+            	for (int i = 0; i < fieldsTypes.size()-1; i++) {
+            		out.write("(" + fieldsTypes.get(i).getName() + "[this] == "+ 
             				fieldsTypes.get(i).getName() + "1) &&\n \t \t ");
-        	}
-    		out.write("(" + fieldsTypes.get(fieldsTypes.size()-1).getName() + "[this] == "+ 
-    				fieldsTypes.get(fieldsTypes.size()-1).getName() + "1); \n \n");
-    		
-    	}
+            	}
+            	out.write("(" + fieldsTypes.get(fieldsTypes.size()-1).getName() + "[this] == "+ 
+            			fieldsTypes.get(fieldsTypes.size()-1).getName() + "1); \n \n");
+    		}
         	catch (Exception e) {
         		System.err.println("Error: " + e.getMessage());
         	}
-    	
-    	
     }
         
     static boolean isNumeric(String str) {
-      // Match a number with optional '-' and decimal.
-      return str.matches("-?\\d+(\\.\\d+)?");  
+    	// Match a number with optional '-' and decimal.
+    	return str.matches("-?\\d+(\\.\\d+)?");  
     }
 
-    
-    
     // A result of -1 means that the object was not found in the 
     // LinkedList as the first element of some PackObjMods.
     // A PackObjMods has 2 elements: objectString and modifications.
@@ -2332,18 +2385,17 @@ public class BoogieVisitor extends NullVisitor {
     		o.addModification(boo);
     		currentPackObjMods.add(o); 		
     	} else {
-    	PackObjMods o = currentPackObjMods.get(position);
-    	o.addModification(boo);
-    	currentPackObjMods.set(position, o);
+    		PackObjMods o = currentPackObjMods.get(position);
+    		o.addModification(boo);
+    		currentPackObjMods.set(position, o);
     	}
     	packedMods.put(name, currentPackObjMods);
 	}
 
-//I am not inferring the calling of pack/unpack.
-//The programmer now puts the annotations in the body of the Java files.
-//The inference of the pack/unpack can be done as a side project.
-//That would be a search problem + heuristics.
-	
+	//I am not inferring the calling of pack/unpack.
+	//The programmer now puts the annotations in the body of the Java files.
+	//The inference of the pack/unpack can be done as a side project.
+	//That would be a search problem + heuristics.
 	String writeActualParams(LinkedList<String> argsObjProp) {
 		String result = "";
 		for (int i=0;i<argsObjProp.size();i++){
@@ -2376,7 +2428,6 @@ public class BoogieVisitor extends NullVisitor {
 		return result;
 	}
 	
-    
     //k=1 is for writing nameParam: type
     //k=2 is for writing the current value of the parameters
     //k=3 is for writing the types of the parameters
@@ -2399,26 +2450,25 @@ public class BoogieVisitor extends NullVisitor {
     		}
     		
     	} else {
-    	try{
-    	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
-		if (currentParamsPredicateBody != null) {
+    		try {
+    			FieldTypePredbody currentParamsPredicateBody = 
+    					paramsPredicateBody.get(pred);
+    			if (currentParamsPredicateBody != null) {
+    				//Write formal parameters out.
+    				LinkedList<FieldAndTypePair> formalParamsList =
+    						currentParamsPredicateBody.getFormalParameters();
+    				out.write(helperWriteToResult(formalParamsList, k, ""));	
 			
-			//Write formal parameters out.
-			LinkedList<FieldAndTypePair> formalParamsList =
-					currentParamsPredicateBody.getFormalParameters();
-			out.write(helperWriteToResult(formalParamsList, k, ""));	
-			
-			//Write existential parameters out.
-			LinkedList<FieldAndTypePair> existentialParamsList =
-					currentParamsPredicateBody.getExistentialParameters();
-			out.write(helperWriteToResult(existentialParamsList, k, ""));	
-		}
+    				//Write existential parameters out.
+    				LinkedList<FieldAndTypePair> existentialParamsList =
+    						currentParamsPredicateBody.getExistentialParameters();
+    				out.write(helperWriteToResult(existentialParamsList, k, ""));	
+    			}
+    		}
+    		catch (Exception e) {
+    			System.err.println("Error: " + e.getMessage());
+    		}  
     	}
-    	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
-    	}  
-    	}
-    	
     	return result;
     }    
     
@@ -2463,6 +2513,5 @@ public class BoogieVisitor extends NullVisitor {
 		} 
 		return result;
     }
-    
-    
-    }
+
+}
