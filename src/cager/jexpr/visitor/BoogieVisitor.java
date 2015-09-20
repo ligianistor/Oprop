@@ -92,11 +92,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//Are we inside a field selection statement?
 	boolean inFieldSelection = false;
-	
-	//The name of the latest identifier or field[this].
-	//Its use is in visitMethodSelection.
-	String currentIdentifier = "";
-	
+		
 	//The name of the last identifier or keyword expression (for "this").
 	//It is used in visitFieldSelection.
 	String lastIdentifierOrKeyword = "";	
@@ -927,7 +923,6 @@ public class BoogieVisitor extends NullVisitor {
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
     	if (identifierName.contains("[")) fieldName = fieldName.concat("]");
     	fieldsInStatement.add(identifierName);
-    	currentIdentifier = fieldName;
     	if (!inPackUnpackAnnotation) {
     		if (insideObjectProposition) {
     			objectPropString = objectPropString.concat(fieldName);
@@ -939,9 +934,10 @@ public class BoogieVisitor extends NullVisitor {
     		}
 		  
     		// TODO see if this is needed
-    		//  if ((currentMethod != "") && (inArgumentList) ) {
-    		//	  modifyMethodBody(fieldName + ",");	  
-    		// }
+    		  if ((currentMethod != "") && (inArgumentList) && inStatement 
+    				  && inMethodSelectionStatement) {
+    			  statementContent = statementContent.concat(fieldName + ", ");  	  
+    		 }
 		  
     		// TODO maybe I should add something to fieldName here
     		if (insidePrecondition || insidePostcondition ) {
@@ -974,7 +970,9 @@ public class BoogieVisitor extends NullVisitor {
     public void visitMethodSelection(MethodSelection ast) 
     		throws ParseException
     {
-    	String identifierBeforeMethSel = currentIdentifier;
+    	//TODO might need to make lastIdentifierOrKeyword
+    	// retain last field[this] also.
+    	String identifierBeforeMethSel = lastIdentifierOrKeyword;
     	visitedMethSel = true;
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
@@ -1705,9 +1703,8 @@ public class BoogieVisitor extends NullVisitor {
      	   //we are not inside a predicate
         	if (!inPackUnpackAnnotation) {
         		if ((currentMethod != "") && inArgumentList && 
-        				!inMethodSelectionStatement &&
          			   	!inFieldSelection) {
-     			   	modifyMethodBody(keywordString + ",");
+        			statementContent = statementContent.concat(keywordString + ", ");
      		   }
      		   
      		   if ((currentMethod != "") && (inStatement) && 
@@ -1830,12 +1827,11 @@ public class BoogieVisitor extends NullVisitor {
     public void visitIdentifierExpression(IdentifierExpression ast) 
     		throws ParseException
     {    	
-    	currentIdentifier = ast.name;
     	lastIdentifierOrKeyword = ast.name;
-    	if (currentIdentifier.equals("unpacked")) 
+    	if (lastIdentifierOrKeyword.equals("unpacked")) 
     		return;
     	try {
-    		String identifierName = currentIdentifier;  
+    		String identifierName = lastIdentifierOrKeyword;  
     		PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
     		String fieldName = quantifiedVars.get(pv);
        
@@ -1860,8 +1856,11 @@ public class BoogieVisitor extends NullVisitor {
     				} 
     			} else {
     				if (!inPackUnpackAnnotation) {
-    					if ((currentMethod != "") && (inArgumentList) && (inStatement)) {
-    						statementContent = statementContent.concat(identifierName + ",");
+    					// If we are in FieldSelection, this already 
+    					// is written to the statementContent in another place.
+    					if ((currentMethod != "") && (inArgumentList) 
+    							&& (inStatement) && !inFieldSelection) {
+    						statementContent = statementContent.concat(identifierName + ", ");
     					}
     		   
     					if ((currentMethod != "") && (inArgumentList) && (!inStatement)) {
