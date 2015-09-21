@@ -74,6 +74,9 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
+	//Are we in a binary expression?
+	boolean inBinaryExpression = false;
+	
 	//Are we inside an IfStatement?
 	//We need this because there are Blocks inside an IfStatement and 
 	//they get confused with the Blocks at the beginning of 
@@ -280,12 +283,18 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//The string of the object proposition inside 
 	//which we are at the moment.
+	//This can also represent just components of 
+	//an object proposition.
 	String objectPropString;
 	
 	String objectObjProp;
 	String predicateNameObjProp;
 	String fractionObjProp;
+	//The actual arguments of the current object proposition.
 	LinkedList<String> argumentsObjProp = new LinkedList<String>();
+	
+	//The actual existential arguments of the current object proposition.
+	LinkedList<String> existentialArgsObjProp = new LinkedList<String>();
 	
 	//The actual arguments for the constructor that is currently called.
 	LinkedList<String> argumentsConstructor = new LinkedList<String>();
@@ -933,7 +942,6 @@ public class BoogieVisitor extends NullVisitor {
 			  		statementContent = statementContent.concat(fieldName);  
     		}
 		  
-    		// TODO see if this is needed
     		  if ((currentMethod != "") && (inArgumentList) && inStatement 
     				  && inMethodSelectionStatement) {
     			  statementContent = statementContent.concat(fieldName + ", ");  	  
@@ -952,7 +960,13 @@ public class BoogieVisitor extends NullVisitor {
 					currentParamsPredicateBody.concatToPredicateBody(fieldName)
     			); 			 
     		}
+    	} else {
+    		// We are inside a pack/unpack annotation.
+    		if (!insideObjectProposition && inArgumentList) {
+    			objectPropString = objectPropString.concat(fieldName);
+    		}	
     	}
+    	
     }
 
     // We shouldn't end up in this method anymore.
@@ -1065,6 +1079,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitBinaryExpression(BinaryExpression ast) 
     		throws ParseException
     {
+    	inBinaryExpression = true;
     	if (ast.op.getId() == JExprConstants.KEYACCESS){
     		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
     		PrimaryExpression e2 = (PrimaryExpression)ast.E2;
@@ -1114,6 +1129,7 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	    		
     	helperBinaryExpression(ast , ast.op.getName());
+    	inBinaryExpression = false;
     	return; 		
     }
     
@@ -1207,15 +1223,26 @@ public class BoogieVisitor extends NullVisitor {
     		}
 		  
     		if ((currentMethod != "") && (inStatement) && (inArgumentList) ) {
-    			statementContent = statementContent.concat(astvalue + ",");
+    			//This is a special case when an argument is of the form a+b+c.
+    			if (inBinaryExpression) {
+    				statementContent = statementContent.concat(astvalue);
+    			} else {
+    				statementContent = statementContent.concat(astvalue + ",");
+    			}
     		}
 		  
     		if ((currentMethod != "") && (!inStatement) && (inArgumentList) ) {
     			modifyMethodBody(astvalue + ",");
     		}
 		  
-    		if ((currentMethod != "") && !insideObjectProposition && (insidePrecondition || insidePostcondition)) {
+    		if ((currentMethod != "") && !insideObjectProposition 
+    				&& (insidePrecondition || insidePostcondition)) {
     			modifyMethodSpec(astvalue);
+    		}
+    	} else {
+    		// We are inside a pack/unpack annotation.
+    		if (!insideObjectProposition && inArgumentList) {
+    			objectPropString = objectPropString.concat(astvalue);
     		}
     	}
 		  
@@ -1716,6 +1743,11 @@ public class BoogieVisitor extends NullVisitor {
      		   if ((insidePrecondition || insidePostcondition) && (keywordString.equals("null"))) {
      			   modifyMethodSpec(keywordString);
      		   }
+        	}  else {
+        		// We are inside a pack/unpack annotation.
+        		if (!insideObjectProposition && inArgumentList) {
+        			objectPropString = objectPropString.concat(keywordString);
+        		}
         	}
      	
         	//modify object proposition parts
@@ -1795,7 +1827,7 @@ public class BoogieVisitor extends NullVisitor {
     	objectObjProp = "";
     	predicateNameObjProp = "";
     	argumentsObjProp.clear();
- 
+    	existentialArgsObjProp.clear();
     	visitChildren(ast); 
     	
     	if (annotationName.equals("pack")) {
@@ -1807,6 +1839,10 @@ public class BoogieVisitor extends NullVisitor {
     	
     	for (int i=0;i<argumentsObjProp.size();i++) {
     		toWrite = toWrite.concat(argumentsObjProp.get(i)+", ");
+    	}
+    	
+    	for (int i=0;i<existentialArgsObjProp.size();i++) {
+    		toWrite = toWrite.concat(existentialArgsObjProp.get(i)+", ");
     	}
     	
     	toWrite = toWrite.concat(objectObjProp + ");\n"); 
@@ -1860,7 +1896,11 @@ public class BoogieVisitor extends NullVisitor {
     					// is written to the statementContent in another place.
     					if ((currentMethod != "") && (inArgumentList) 
     							&& (inStatement) && !inFieldSelection) {
-    						statementContent = statementContent.concat(identifierName + ", ");
+    						if (inBinaryExpression) {
+    							statementContent = statementContent.concat(identifierName);
+    						} else {
+    							statementContent = statementContent.concat(identifierName + ", ");
+    						}
     					}
     		   
     					if ((currentMethod != "") && (inArgumentList) && (!inStatement)) {
