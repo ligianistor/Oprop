@@ -1827,8 +1827,20 @@ public class BoogieVisitor extends NullVisitor {
     	objectObjProp = "";
     	predicateNameObjProp = "";
     	argumentsObjProp.clear();
+    	
+    	AST[] children = ast.getChildren();
+    	children[0].accept(this);
+    	
     	existentialArgsObjProp.clear();
-    	visitChildren(ast); 
+    	ArgumentList argList = (ArgumentList)children[1];
+    	inArgumentList = true;
+    	AST[] childrenArgList = argList.getChildren();
+    	for (int i=0;i<childrenArgList.length; i++){
+    		objectPropString = "";
+    		childrenArgList[i].accept(this);
+    		existentialArgsObjProp.add(objectPropString);
+    	}
+    	inArgumentList = false;
     	
     	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("call Pack"); 
@@ -1916,6 +1928,11 @@ public class BoogieVisitor extends NullVisitor {
     					if (!insideObjectProposition && 
     							(insidePrecondition || insidePostcondition)) {
     						modifyMethodSpec(identifierName);
+    					}
+    				} else {
+    					// We are in pack/unpack annotation
+    					if (!insideObjectProposition && inArgumentList){
+    						objectPropString = objectPropString.concat(identifierName);
     					}
     				}
     				//modify object proposition parts
