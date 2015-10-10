@@ -465,10 +465,9 @@ public class BoogieVisitor extends NullVisitor {
     	if (ast!=null) {
     		String name = ast.getName();
     	
-    		//TODO do we always need to add to parametersMethod, 
-    		//even if we are not
-    		//inside a method?
-    		parametersMethod.add(name);
+    		if (currentMethod != "") {
+    			parametersMethod.add(name);
+    		}
     		String type = ast.getType().toString();
     		if (namePredicate!="") {
     			modifyExistentialParams(name, type); 
@@ -936,7 +935,7 @@ public class BoogieVisitor extends NullVisitor {
     		if (insideObjectProposition) {
     			objectPropString = objectPropString.concat(fieldName);
     		}
-    		// TODO this is where the error is.
+    		
     		if ((currentMethod != "") && (inStatement) && 
     				!inArgumentList && !inMethodSelectionStatement) {  
 			  		statementContent = statementContent.concat(fieldName);  
@@ -1536,9 +1535,9 @@ public class BoogieVisitor extends NullVisitor {
     		}
     	}
     	
-    	// If the last two children are both FieldSelection,
-    	// we treat this case separately.
-    	// TODO: in the future we should include here the case 
+    	// Because FieldSelection has many special cases, each
+    	// of these cases is treated separately here.
+    	// Future work: include here the case 
     	// when we have more than 2 FieldSelection nodes in a row.
     	if (children.length == 3) {
     	if ((children[1] instanceof FieldSelection) && 
@@ -1628,7 +1627,6 @@ public class BoogieVisitor extends NullVisitor {
               
         modifyMethodBody(localVariableName + ");\n");
         modifyMethodBody("packed" +predicateOfConstruct+"[");
-        //TODO with the right example to see, packed only has one argument.
         argumentsPredicate.clear();
         children[0].accept(this);
         for (int i=0;i<argumentsPredicate.size();i++) {
@@ -1740,7 +1738,13 @@ public class BoogieVisitor extends NullVisitor {
      				  	statementContent = statementContent.concat(keywordString);
      		   }
      		   
-     		   if ((insidePrecondition || insidePostcondition) && (keywordString.equals("null"))) {
+     		   // We put in all the cases when "this" should be written down.
+     		   if ((insidePrecondition || insidePostcondition) && 
+     				  ((keywordString.equals("null") 
+     						  || 
+     				  (keywordString.equals("this") && 
+     						  !inFieldSelection && !insideObjectProposition ) 
+     						  ) ) ) {
      			   modifyMethodSpec(keywordString);
      		   }
         	}  else {
@@ -2224,7 +2228,10 @@ public class BoogieVisitor extends NullVisitor {
 		methodParams.put(currentMethod, currentMethodParams);
     }
     
-    //TODO add comments to all these methods
+    // Adds name+ ":" + type +",", representing the name of
+    // the existential parameter and its type to the list 
+    // of existential parameters of each method.
+    // This method works only on currentMethod.
     void modifyMethodExistentialParams(String s) {
     	String currentMethodExistentialParams = methodExistentialParams.get(currentMethod);
     	currentMethodExistentialParams = currentMethodExistentialParams.concat(s);
@@ -2422,19 +2429,18 @@ public class BoogieVisitor extends NullVisitor {
 		return -1;
 	}
 	
+	// This method helps to keep track of which "packedPredicate"
+	// variableshave been assigned to, so that we know what to put in the 
+	// "modifies" of methods.
 	//boo comes from boolean
 	//name is the name of the predicate
 	//obj is the name of the object. It can be this, or dc[this], etc.
-	//TODO
-	//What does this method do?
 	void modifyPackedMods(String name, String obj, int boo) {
 		LinkedList<PackObjMods> currentPackObjMods = 
     			packedMods.get(name);
-		//Maybe I don't need this if because I 
-		//initialize it to the empty LinkedList.
-    	if (currentPackObjMods == null) {
-    		currentPackObjMods = new LinkedList<PackObjMods>();
-    	}
+
+    	// All the elements of packedMods have been initialized  
+    	// to the empty lists.
     	int position = getPositionObjectName(currentPackObjMods, obj);
     	if (position == -1) {
     		PackObjMods o = new PackObjMods(obj);

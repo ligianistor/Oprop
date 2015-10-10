@@ -8,7 +8,7 @@ public class PackObjMods {
 	String objectString;
 	
 	//The Integer 1 represents true, -1 represents false.
-	//Whenever there is packedShareCount[this]:=false;
+	//Whenever there is packedPredicate[this]:=false;
 	//in the body of a method, we add a -1 to the PackObjMods modifications
 	//for "this". The objects PackObjMods correspond to the names of the predicates, 
 	//in the hashmap in BoogieVisitor.
