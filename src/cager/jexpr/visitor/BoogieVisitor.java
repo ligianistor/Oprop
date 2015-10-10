@@ -1111,11 +1111,13 @@ public class BoogieVisitor extends NullVisitor {
         	if (namePredicate.equals("")){
         		helperBinaryExpression(ast , "==");
         	}
+        	inBinaryExpression = false;
     		return;
     	}
     	
     	if (ast.op.getId() == JExprConstants.ASSIGN){
     		helperBinaryExpression(ast , ":=");
+    		inBinaryExpression = false;
     		return;
     	}
     	
@@ -1124,6 +1126,7 @@ public class BoogieVisitor extends NullVisitor {
     		programContainsModulo = true;
     		//The , is like the operator that gets put between operand 1 and 2.
     		helperBinaryExpression(ast, ",");
+    		inBinaryExpression = false;
     		return;
     	}
     	    		
@@ -1749,7 +1752,7 @@ public class BoogieVisitor extends NullVisitor {
      		   }
         	}  else {
         		// We are inside a pack/unpack annotation.
-        		if (!insideObjectProposition && inArgumentList) {
+        		if (!insideObjectProposition && inArgumentList && !inFieldSelection) {
         			objectPropString = objectPropString.concat(keywordString);
         		}
         	}
@@ -1903,7 +1906,9 @@ public class BoogieVisitor extends NullVisitor {
     				// This should go in the else.
     				// op goes here but it shouldn't for method spec. 
     				// This if tries to fix the error.
-    				if ((insidePrecondition || insidePostcondition) && !insideObjectProposition) {
+    				if ((insidePrecondition || insidePostcondition)  &&
+    					 !insideObjectProposition &&
+    					 !inFieldSelection) {
     					modifyMethodSpec(identifierName); 
     				} 
     			} else {
@@ -1935,7 +1940,7 @@ public class BoogieVisitor extends NullVisitor {
     					}
     				} else {
     					// We are in pack/unpack annotation
-    					if (!insideObjectProposition && inArgumentList){
+    					if (!insideObjectProposition && inArgumentList && !inFieldSelection){
     						objectPropString = objectPropString.concat(identifierName);
     					}
     				}
