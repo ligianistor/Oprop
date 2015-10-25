@@ -14,9 +14,9 @@ class DoubleCount {
 	requires this#k OK()
 	ensures this#k OK()
 	{
-		unpack(this#k OK());
+		unpack(this#k OK())[this.val, this.dbl];
 		this.val = this.val + 1;
 		this.dbl = this.dbl + 2;
-		pack(this#k OK());
+		pack(this#k OK())[this.val, this.dbl];
 	}
 }

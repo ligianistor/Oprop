@@ -117,7 +117,6 @@ Composite orr;
 int llc;
 int rrc;
 
-
 //We already have access to this.parent from the precondition of 
 //this function.
 if (this.parent != null) {
@@ -150,7 +149,6 @@ if (this.parent != null) {
 		pack(opp#1.0 left(this, lcc))[opp.parent];
 			
 		this.parent.updateCountRec()[opp.parent, opp.count, this, opp.right, opp.left.count, lc + rc + 1];
-
 	}		
  } else {
 	addFrac(this#0.5 count(lcc), unpacked(this#0.5 count(lcc)));
