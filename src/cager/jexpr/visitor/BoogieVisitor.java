@@ -471,6 +471,7 @@ public class BoogieVisitor extends NullVisitor {
     		String type = ast.getType().toString();
     		if (namePredicate!="") {
     			modifyExistentialParams(name, type); 
+    			addArgToPredArgWhichField(name);
     		}
     		else if (currentMethod !="") {
     			modifyMethodExistentialParams(name+ ":" + type +",");
@@ -483,12 +484,18 @@ public class BoogieVisitor extends NullVisitor {
     	//As I modify predBody with the new additions,
     	//I keep count of the length of the strings that I add.
     	int offset=0;
+    			
+    	// Now we modify predBody with the connections
+		// between the arguments of this predicate and
+		// the arguments of other object propositions that are
+		// contained in this predicate.
     	// The list of object propositions in the predicate
     	// named "namePred".
     	LinkedList<ObjPropString>  listObjProp = 
     			predicateObjProp.get(namePred);
     	
     	if (listObjProp != null) {
+
     		for (int i = 0; i < listObjProp.size(); i++) {
     			ObjPropString objProp = listObjProp.get(i);
     		
@@ -512,6 +519,29 @@ public class BoogieVisitor extends NullVisitor {
     			offset += oneObjProp.length();	
     		}
     	}
+    	
+    	// Second modify predBody with parameters representing the values
+    	// of fields in the current predicate.	
+    	// The list of which field each argument of 
+		// this predicate represents.
+		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
+				predArgWhichField.get(namePred);
+			if (listArgsToFieldsThisPred != null) {
+				String argsToFieldsString = "";
+				for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
+					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
+					String field = argField.getField();
+					// The second part of this condition says that this is a proper field
+					// of this predicate,
+					// that it is not a field of another object proposition.
+					if (!field.equals("") && (!field.contains(" ")) ) {
+						argsToFieldsString = argsToFieldsString.concat(
+								" && ("+field+ 
+								"[this]=="+argField.getArgument()+")");
+					}
+				}
+				predBody = predBody.concat(argsToFieldsString);
+		}
     	
     	return predBody;
 	
@@ -621,7 +651,6 @@ public class BoogieVisitor extends NullVisitor {
     						k++;
     					}
     			}
-     		
      		
     			String predBody = sb.toString().concat(lastPartPredBody);
     			try {
@@ -1130,7 +1159,7 @@ public class BoogieVisitor extends NullVisitor {
     		return;
     	}
     	    		
-    	helperBinaryExpression(ast , ast.op.getName());
+    	helperBinaryExpression(ast, ast.op.getName());
     	inBinaryExpression = false;
     	return; 		
     }
@@ -1278,7 +1307,7 @@ public class BoogieVisitor extends NullVisitor {
     		if (argField!=null){
     			if (!(argField.equals(""))) {
     				String localField = argField.getField();
-    				if (localField.contains(" ")){
+    				if (localField.contains(" ")) {
     					//If the field contains " " it means
     					//it is of the form 
     					//name_predicate object number 
