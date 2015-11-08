@@ -33,6 +33,7 @@ predicate count(int c) =
 predicate parent() =
 	exists Composite op, int c, double k:
 	this.parent -> op &&
+	(op != this) &&
 	(this#0.5 count(c)) &&
 	( (op != null ~=> (op#k parent())) &&
 		 ( (op#0.5 left(this, c)) ||

@@ -470,8 +470,12 @@ public class BoogieVisitor extends NullVisitor {
     		}
     		String type = ast.getType().toString();
     		if (namePredicate!="") {
-    			modifyExistentialParams(name, type); 
-    			addArgToPredArgWhichField(name);
+    			// Only fractions are of type double
+    			// and we don't need to keep track of them.
+    			if(! (type.equals("double")) ) {
+    				modifyExistentialParams(name, type); 
+    				addArgToPredArgWhichField(name);
+    			}
     		}
     		else if (currentMethod !="") {
     			modifyMethodExistentialParams(name+ ":" + type +",");
@@ -1434,8 +1438,8 @@ public class BoogieVisitor extends NullVisitor {
         				"]"+ packedOrUnpacked+" && \n \t \t(frac"+
         				upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] == " + fracInObjProp+")");
-        		bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
-        		bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp);
+        		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
+        		bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp + ")");
         	} else {
         		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
@@ -1443,9 +1447,9 @@ public class BoogieVisitor extends NullVisitor {
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
         				"[this]] == " + fracInObjProp+")");
 
-        		bodyPredicate = "frac"+upperCaseFirstLetter(predName)+"[";
+        		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(fieldName + 
-        				"[this]] == " + fracInObjProp);
+        				"[this]] == " + fracInObjProp + ")");
         		fracString.setField(fieldName);
         		objProp.setObject(fieldName+"[this]");	
         	} 
@@ -1511,7 +1515,9 @@ public class BoogieVisitor extends NullVisitor {
     		modifyPredicateFrac(fracString);
     		//We set the location of where this object proposition ends in the 
     		//string of the body of this predicate.
-    		objProp.setLocation(locationEndObjProp-1);
+    		// We subtract 2 because of the "(" and ")" that surround this 
+    		// object proposition.
+    		objProp.setLocation(locationEndObjProp-2);
     		modifyPredicateObjProp(objProp);
     	}
     	insideObjectProposition = false;
@@ -2387,32 +2393,6 @@ public class BoogieVisitor extends NullVisitor {
     			out.write("var packed" + upperCaseFirstLetter(p) + ": [Ref] bool;\n");
     			out.write("var frac" + upperCaseFirstLetter(p) + ": [Ref] real;\n");
     			
-    			 /*
-            	//write constructors for each predicate
-    			out.write("\n");
-                out.write("procedure Construct" + className + p + "(");
-                for (FieldAndTypePair s : fieldsTypes) {
-                	out.write(s.getName() + "1: "+ s.getType() + ", ");
-            	}
-                
-                //1 is for writing paramName: type
-                writePredParamsOut(p, 1);
-
-                            
-                out.write("this: Ref);\n");
-                out.write("\t ensures ");
-                for (FieldAndTypePair s : fieldsTypes) {
-                	out.write("(" + s.getName() + "[this] == "+ s.getName() + "1) &&\n \t \t");
-            	}
-                
-                out.write("(packed"+p+"[");
-                //2 is for writing the current value of the parameter in the predicate.
-                writePredParamsOut(p, 2);
-                out.write("this]) && \n \t \t");
-                out.write("(frac"+p+"[");
-                writePredParamsOut(p, 2);
-                out.write("this] == 1.0);\n \n");
-    	  	   	*/
     		}
     		out.write("\n");
     	}
@@ -2508,7 +2488,15 @@ public class BoogieVisitor extends NullVisitor {
 				FieldAndTypePair f = paramsList.get(i);
 				switch (k) {
 	            case 1:  
-	            	result = result.concat(f.getName() + ":"+f.getType()+", ");
+	            	if ((f.getType()).equals("int") || (f.getType()).equals("boolean") ){
+	            		result = result.concat(f.getName() + ":"+f.getType()+", ");
+	            	} else {
+	            		// The types of our parameters can only be int, boolean or 
+	            		// object of a certain class. 
+	            		// If we are in the "else" branch then the type was not "int"
+	            		// or "boolean".
+	            		result = result.concat(f.getName() + ": Ref, ");
+	            	}
 	                break; 
 	            case 2: 
 	            	result = result.concat(f.getName() + ", ");
