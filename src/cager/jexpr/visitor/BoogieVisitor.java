@@ -1928,9 +1928,14 @@ public class BoogieVisitor extends NullVisitor {
     		if (namePredicate.equals("")) {
     			//we are not inside a predicate
     			if (!(fieldName == null)) {
+    				// TODO need to refactor this function
     				if (insideObjectProposition) {
     					objectPropString = objectPropString.concat(identifierName);
-    				}
+    				} else if (inPackUnpackAnnotation &&
+    						inArgumentList &&
+    						!inFieldSelection){
+						objectPropString = objectPropString.concat(identifierName);
+					}
     				// When we are inside FieldSelection or MethodSelection,
     				// we have already written the field out in another place.
     				if (inStatement && !inPackUnpackAnnotation && !inFieldSelection &&

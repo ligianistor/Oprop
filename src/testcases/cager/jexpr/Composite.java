@@ -72,7 +72,7 @@ int rc2;
 
 int newc;
 newc = 1;
-unpack(this#0.5 left(ol, c1)[op]);
+unpack(this#0.5 left(ol, c1))[op];
 if (this.left != null) {
 	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];	 
 	newc = newc + this.left.count;
@@ -142,7 +142,7 @@ if (this.parent != null) {
 	} else if (this == this.parent.left){
 		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(oll, llc));
 		//Explain why we need the full fraction!!!
-		unpack(opp#1.0 left(this, lcc));
+		unpack(opp#1.0 left(this, lcc))[opp.parent];
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
 		
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
