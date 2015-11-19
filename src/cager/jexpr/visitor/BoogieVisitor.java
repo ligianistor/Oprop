@@ -1170,8 +1170,11 @@ public class BoogieVisitor extends NullVisitor {
     
     void concatToStatementObjProp(String symbol) {
     	if (namePredicate.equals("")) {
+    		// We are not inside a predicate.
     		try {
-    			if (insideObjectProposition && (currentMethod != "")) {
+    			if ((insideObjectProposition && (currentMethod != "")) ||
+    			   (inPackUnpackAnnotation && inArgumentList) )
+    			{
     				objectPropString = objectPropString.concat(symbol);
     			} else 
     				if (!insideObjectProposition && 
@@ -1189,7 +1192,8 @@ public class BoogieVisitor extends NullVisitor {
   	      	catch (Exception e) {
   	      		System.err.println("Error: " + e.getMessage());
   	      	}
-    	} else {		
+    	} else {
+    		  // We are inside a predicate.
   			  FieldTypePredbody currentParamsPredicateBody = 
   					  paramsPredicateBody.get(namePredicate);
   			  paramsPredicateBody.put(
