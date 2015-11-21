@@ -70,25 +70,53 @@ Composite or2;
 int lc2;
 int rc2;
 
-int newc;
+int newc; 
+
+//fracLocal should actually go in the translation
+// These could also be fracLocalCount[this] := fracCount[this];
+fracLocalCount[this] := 1.0; // fracLocalCount[this] :=  fracCount[this];
+fracLocalLeft[this] := 0.5; // fracLocalLeft[this] :=  fracLeft[this];
+fracLocalRight[this] := 0.5; // fracLocalRight[this] :=  fracRight[this];
+// maybe we don't need the op!=null part, maybe this always
+// takes place
+(op!=null) ~=> fracLocalCount[op] := fracCount[op];
+
 newc = 1;
 unpack(this#0.5 left(ol, c1))[op];
 if (this.left != null) {
-	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];	 
+	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];	
+	fracLocalLeft[ol] := fracLocalLeft[ol] + 0.5; 
+	fracLocalRight[ol] := fracLocalRight[ol] + 0.5; 
 	newc = newc + this.left.count;
 	pack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];
+	fracLocalLeft[ol] := fracLocalLeft[ol] - 0.5;
+	fracLocalRight[ol] := fracLocalRight[ol] - 0.5;
 }
 pack(this#0.5 left(ol, c1))[op];
+(ol!=null) ~=> fracLocalCount[ol] := fracLocalCount[ol] - 0.5;
 
 unpack(this#0.5 right(or, c2))[op];	
+// Maybe set to 0 all the fracLocals that are not explicitly mentioned
+// in the pre-conditions.
+(or!=null) ~=> fracLocalCount[or] := fracLocalCount[or] + 0.5;
+
 if (this.right != null) {
 	unpack(or#0.5 count(c2))[ol2, or2, lc2, rc2];
+	fracLocalLeft[or] := fracLocalLeft[or] + 0.5; 
+	fracLocalRight[or] := fracLocalRight[or] + 0.5; 
 	newc = newc + this.right.count;
 	pack(or#0.5 count(c2))[ol2, or2, lc2, rc2];
+	fracLocalLeft[or] := fracLocalLeft[or] - 0.5;
+	fracLocalRight[or] := fracLocalRight[or] - 0.5;
 }
-pack(this#0.5 right(or, c2))[op];		
+pack(this#0.5 right(or, c2))[op];
+(or != null ~=> fracLocalCount[or] := fracLocalCount[or] - 0.5;
 this.count = newc; 
 pack(this#1.0 count(newc))[ol, or, c1, c2];
+fracLocalLeft[this] := fracLocalLeft[this] - 0.5;
+fracLocalRight[this] := fracLocalRight[this] - 0.5;
+// At this point I need to modify somehow the frac's also, 
+// not only the fracLocal's.
 }
 
 //This version assumes this is the right child of opp.
