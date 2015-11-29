@@ -110,7 +110,7 @@ if (this.right != null) {
 	fracLocalRight[or] := fracLocalRight[or] - 0.5;
 }
 pack(this#0.5 right(or, c2))[op];
-(or != null ~=> fracLocalCount[or] := fracLocalCount[or] - 0.5;
+(or != null) ~=> (fracLocalCount[or] := fracLocalCount[or] - 0.5);
 this.count = newc; 
 pack(this#1.0 count(newc))[ol, or, c1, c2];
 fracLocalLeft[this] := fracLocalLeft[this] - 0.5;
@@ -123,6 +123,8 @@ fracLocalRight[this] := fracLocalRight[this] - 0.5;
 //We need a very similar version of updateCountRec, where
 //we assume this is the left child of opp.
 void updateCountRec() 
+// TODO 
+// Shouldn't we say that k>0 here for all such k??
 ~ double k1, double k, double k2:
 Composite opp, int lcc,
 Composite or, Composite ol,
@@ -146,10 +148,39 @@ Composite orr;
 int llc;
 int rrc;
 
+// The assignments below go only in the translation!
+// Maybe set to 0 all the frac's that are mentioned in the 
+// precondition and in a second step add to them the actual fraction.
+// In this example we have fracCount mentioned twice in the pre-condition,
+// so the second time we need to add to the existing fraction.
+
+// First set all the frac's that are mentioned in the pre-condition to 0.
+fracLocalParent[this] := 0.0;
+fracLocalParent[opp] := 0.0
+fracLocalLeft[opp] := 0.0;
+fracLocalRight[opp] := 0.0;
+
+
+fracLocalParent[this] := fracLocalParent[this] + fracParent[this];
+(opp != null)  ~=> (fracLocalParent[opp] := fracLocalParent[opp] + fracParent[opp]); // Should this be := k?
+(opp != null)  ~=> (fracLocalLeft[opp] := fracLocalLeft[opp] + 0.5);
+(opp != null)  ~=> (fracLocalRight[opp] := fracLocalRight[opp] + 0.5);
+
+(opp == null) ~=> (fracLocalCount[this] := fracLocalCount[this] + 0.5);
+
+fracLocalCount[this] :=  fracLocalCount[this] + 0.5;
+
+
 //We already have access to this.parent from the precondition of 
 //this function.
 if (this.parent != null) {
 	splitFrac(opp#k parent(), 2);
+	fracParent[opp] := fracParent[opp] / 2.0;
+	// fracLocalParent should hold whatever is left from fracParent after some of it is consumed.
+	fracLocalParent[opp] := fracLocalParent[opp] - (fracParent[opp] - fracParent[opp] / 2.0);
+	
+	// Maybe for unpack, we have to consume the k/2 to get what we get from the ensures of
+	// the unpack.
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
 	unpack(opp#0.5 count(opp.count))[oll, this, llc, lcc];
