@@ -52,6 +52,8 @@ requires this.parent -> op &&
 	(this#0.5 right(or, c2)) &&
 	(op!=null ~=> unpacked(op#k count(c3)))
 ensures (this#1.0 count(c1+c2+1))
+// For all fractions that are not mentioned in the pre-condition,
+// assume they are 0.
 {
 // Existential variables for 
 // unpack(ol#0.5 count(c1)).
@@ -128,6 +130,8 @@ requires unpacked(this#k1 parent()) &&
    unpacked(this#0.5 count(lcc)) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
+   // For all frac that are not mentioned in the pre-condition
+   // they are assumed to be 0.
 ensures (this#k2 parent())
 {
 // Existential variables for unpack(opp#0.5 count(opp.count))
@@ -135,7 +139,6 @@ Composite oll;
 Composite orr;
 int llc;
 int rrc;
-
 
 //We already have access to this.parent from the precondition of 
 //this function.
@@ -145,19 +148,33 @@ if (this.parent != null) {
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
 	fracCount[opp] := fracCount[opp] +0.5;
+	(opp.parent != null) ~=> (fracParent[opp.parent] := fracParent[opp.parent] + k);
+	(opp.parent != null) ~=> (fracLeft[opp.parent] := fracLeft[opp.parent] + 0.5);
+	(opp.parent != null) ~=> (fracRight[opp.parent] := fracRight[opp.parent] + 0.5);
+	(opp.parent == null) ~=> (fracCount[opp]:=fracCount[opp] + 0.5);
 	
 	unpack(opp#0.5 count(opp.count))[oll, this, llc, lcc];
+	fracLeft[opp] := fracLeft[opp] + 0.5;
+	fracRight[opp] := fracRight[opp] + 0.5;
+		
 	
 	if (this == this.parent.right) {
 		//The rule in the formal system should be that
 		//if we have two object propositions with different parameters
 		//that are both packed, then the parameters should be the same.
 		addFrac(opp#0.5 right(this, lcc), opp#0.5 right(orr, rrc));
+		fracRight[opp] := 0.5 + 0.5;
 		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 right(this, lcc))[opp.parent];
+		(this!=null) ~=> fracCount[this] := fracCount[this] + 0.5;
+		
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
+		fracCount[this] := 0.5 + 0.5;
 		
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
+		fracLeft[this] := fracLeft[this] - 0.5;
+		fracRight[this] := fracRight[this] - 0.5;
+		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
 		pack(this#k2 parent())[opp, lc + rc + 1];
 		pack(opp#1.0 right(this, lcc))[opp.parent];
 			
