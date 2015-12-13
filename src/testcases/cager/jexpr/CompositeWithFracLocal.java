@@ -35,12 +35,11 @@ predicate parent() =
 	this.parent -> op &&
 	(op != this) &&
 	(this#0.5 count(c)) &&
-	( (op != null ~=> (op#k parent())) &&
-		 ( (op#0.5 left(this, c)) ||
-		   (op#0.5 right(this, c))
-		  ) &&
-		 (op==null ~=> (this#0.5 count(c)))
-	)
+	(op != null ~=> (op#k parent())) &&
+	( ((op!=null) && (op.left == this)) ~=> op#0.5 left(this, c)) &&
+	( ((op!=null) && (op.right == this)) ~=> op#0.5 right(this, c)) &&
+	(op==null ~=> (this#0.5 count(c)))
+	
 		
 void updateCount() 
 ~double k:
@@ -76,7 +75,7 @@ int newc;
 
 newc = 1;
 unpack(this#0.5 left(ol, c1))[op];
-(ol != null ~=> (fracCount[ol] := fracCount[ol] + 0.5);
+(ol != null) ~=> (fracCount[ol] := fracCount[ol] + 0.5);
 if (this.left != null) {
 	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];	
 	fracLeft[ol] := fracLeft[ol] + 0.5; 
@@ -176,7 +175,29 @@ if (this.parent != null) {
 		fracRight[this] := fracRight[this] - 0.5;
 		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
 		pack(this#k2 parent())[opp, lc + rc + 1];
+		fracCount[this] := fracCount[this] - 0.5;
+		if (opp!=null) { fracParent[opp] := fracParent[opp] - k; }
+		
+		predicate parent() =
+				exists Composite op, int c, double k:
+				this.parent -> op &&
+				(op != this) &&
+				(this#0.5 count(c)) &&
+				( (op != null ~=> (op#k parent())) &&
+					 ( (op#0.5 left(this, c)) ||
+					   (op#0.5 right(this, c))
+					  ) &&
+					 (op==null ~=> (this#0.5 count(c)))
+				)
+		
 		pack(opp#1.0 right(this, lcc))[opp.parent];
+				
+				predicate right(Composite or, int rc) =
+						exists Composite op :
+						this.right -> or && 
+						this.parent -> op &&
+						(or== null ~=> (rc == 0) ) &&
+						(or != null ~=> ((or#0.5 count(rc)) && (or!=this) && (or!=op) ))
 			
 		this.parent.updateCountRec()[opp.parent, opp.count, opp.left, this, opp.left.count, lc + rc + 1];	
 	} else if (this == this.parent.left){
