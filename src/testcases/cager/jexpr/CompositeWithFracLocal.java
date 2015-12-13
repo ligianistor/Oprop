@@ -36,9 +36,9 @@ predicate parent() =
 	(op != this) &&
 	(this#0.5 count(c)) &&
 	(op != null ~=> (op#k parent())) &&
-	( ((op!=null) && (op.left == this)) ~=> op#0.5 left(this, c)) &&
-	( ((op!=null) && (op.right == this)) ~=> op#0.5 right(this, c)) &&
-	(op==null ~=> (this#0.5 count(c)))
+	(((op != null) && (op.left == this)) ~=> op#0.5 left(this, c)) &&
+	(((op != null) && (op.right == this)) ~=> op#0.5 right(this, c)) &&
+	(op == null ~=> (this#0.5 count(c)))
 	
 		
 void updateCount() 
@@ -108,9 +108,6 @@ fracLeft[this] := fracLeft[this] - 0.5;
 fracRight[this] := fracRight[this] - 0.5;
 }
 
-//This version assumes this is the right child of opp.
-//We need a very similar version of updateCountRec, where
-//we assume this is the left child of opp.
 void updateCountRec() 
 // TODO 
 // Shouldn't we say that k>0 here for all such k??
@@ -121,16 +118,15 @@ int lc, int rc:
 requires unpacked(this#k1 parent()) &&
 	this.parent -> opp &&
 	(opp != this) &&
-  (((( (opp != null) ~=> (opp#k parent()) &&
-     ((opp#0.5 left(this, lcc)) || (opp#0.5 right(this, lcc))
-     )) || 
+   ( (opp != null) ~=> (opp#k parent()) ) && 
+   ( (opp != null) &&	(opp.left == this)) ~=>	 (opp#0.5 left(this, lcc)) &&
+   ( (opp != null) && (opp.right == this)) ~=>	 (opp#0.5 right(this, lcc))
+      &&
      ((opp == null) ~=> (this#0.5 count(lcc)))
-     )))  &&
+      &&
    unpacked(this#0.5 count(lcc)) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
-   // For all frac that are not mentioned in the pre-condition
-   // they are assumed to be 0.
 ensures (this#k2 parent())
 {
 // Existential variables for unpack(opp#0.5 count(opp.count))
@@ -138,6 +134,11 @@ Composite oll;
 Composite orr;
 int llc;
 int rrc;
+
+assume (forall y:Ref :: (fracRight[y] >= 0.0) );
+assume (forall y:Ref :: (fracLeft[y] >= 0.0) );
+assume (forall y:Ref :: (fracCount[y] >= 0.0) );
+assume (forall y:Ref :: (fracParent[y] >= 0.0) );
 
 //We already have access to this.parent from the precondition of 
 //this function.
@@ -148,15 +149,14 @@ if (this.parent != null) {
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
 	fracCount[opp] := fracCount[opp] +0.5;
 	(opp.parent != null) ~=> (fracParent[opp.parent] := fracParent[opp.parent] + k);
-	(opp.parent != null) ~=> (fracLeft[opp.parent] := fracLeft[opp.parent] + 0.5);
-	(opp.parent != null) ~=> (fracRight[opp.parent] := fracRight[opp.parent] + 0.5);
+	((opp.parent != null) && (opp.parent.left == opp)) ~=> (fracLeft[opp.parent] := fracLeft[opp.parent] + 0.5);
+	((opp.parent != null) && (opp.parent.right == opp)) ~=> (fracRight[opp.parent] := fracRight[opp.parent] + 0.5);
 	(opp.parent == null) ~=> (fracCount[opp]:=fracCount[opp] + 0.5);
 	
 	unpack(opp#0.5 count(opp.count))[oll, this, llc, lcc];
 	fracLeft[opp] := fracLeft[opp] + 0.5;
 	fracRight[opp] := fracRight[opp] + 0.5;
-		
-	
+			
 	if (this == this.parent.right) {
 		//The rule in the formal system should be that
 		//if we have two object propositions with different parameters
@@ -173,33 +173,42 @@ if (this.parent != null) {
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
 		fracLeft[this] := fracLeft[this] - 0.5;
 		fracRight[this] := fracRight[this] - 0.5;
+		// Instead of k I can use 0.0001, some random very small value
 		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
 		pack(this#k2 parent())[opp, lc + rc + 1];
 		fracCount[this] := fracCount[this] - 0.5;
 		if (opp!=null) { fracParent[opp] := fracParent[opp] - k; }
-		
-		predicate parent() =
-				exists Composite op, int c, double k:
-				this.parent -> op &&
-				(op != this) &&
-				(this#0.5 count(c)) &&
-				( (op != null ~=> (op#k parent())) &&
-					 ( (op#0.5 left(this, c)) ||
-					   (op#0.5 right(this, c))
-					  ) &&
-					 (op==null ~=> (this#0.5 count(c)))
-				)
+		if ((opp != null) && (left[opp] == this)) {
+			fracLeft[opp] := fracLeft[opp] - 0.5;
+		}
+		if ((opp != null) && (right[opp] == this)) {
+			fracRight[opp] := fracRight[opp] - 0.5;
+		}
+		if (opp == null) {
+			fracCount[this] := fracCount[this] - 0.5;
+		}
 		
 		pack(opp#1.0 right(this, lcc))[opp.parent];
-				
-				predicate right(Composite or, int rc) =
-						exists Composite op :
-						this.right -> or && 
-						this.parent -> op &&
-						(or== null ~=> (rc == 0) ) &&
-						(or != null ~=> ((or#0.5 count(rc)) && (or!=this) && (or!=op) ))
+		if (this != null) { fracCount[this] := fracCount[this] - 0.5;}
 			
 		this.parent.updateCountRec()[opp.parent, opp.count, opp.left, this, opp.left.count, lc + rc + 1];	
+		if (opp.parent != null) { fracParent[opp.parent] := fracParent[opp.parent] - k; } 
+		// I don't need to subtract the fractions of the unpacked object propositions
+		// (of the pre-conditions of a method) ??
+		if ((opp.parent != null) && (opp.parent.left == opp)) {
+			fracLeft[opp.parent] := fracLeft[opp.parent] - 0.5;
+		}
+		if ((opp.parent != null) && (opp.parent.right == opp)) { 
+			fracRight[opp.parent] := fracRight[opp.parent] - 0.5;
+		}
+		if (opp.parent == null) { 
+			fracCount[this.parent] := fracCount[this.parent] - 0.5; 
+		}
+		fracLeft[this.parent] := fracLeft[this.parent] - 0.5;
+		fracRight[this.parent] := fracRight[this.parent] - 0.5;
+		
+		fracParent[this.parent] := fracParent[this.parent] + k;
+		
 	} else if (this == this.parent.left){
 		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(oll, llc));
 		//Explain why we need the full fraction!!!
