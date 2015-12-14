@@ -175,6 +175,7 @@ if (this.parent != null) {
 		fracRight[this] := fracRight[this] - 0.5;
 		// Instead of k I can use 0.0001, some random very small value
 		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
+		fracCount[this] := 1.0;
 		pack(this#k2 parent())[opp, lc + rc + 1];
 		fracCount[this] := fracCount[this] - 0.5;
 		if (opp!=null) { fracParent[opp] := fracParent[opp] - k; }
@@ -211,22 +212,84 @@ if (this.parent != null) {
 		
 	} else if (this == this.parent.left){
 		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(oll, llc));
+		fracLeft[opp] := 0.5 + 0.5;
 		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 left(this, lcc))[opp.parent];
+		(this!=null) ~=> fracCount[this] := fracCount[this] + 0.5;
+		
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
+		fracCount[this] := 0.5 + 0.5;
 		
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
+		fracLeft[this] := fracLeft[this] - 0.5;
+		fracRight[this] := fracRight[this] - 0.5;
+		// Instead of k I can use 0.0001, some random very small value
+		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
+		fracCount[this] := 1.0;
 		pack(this#k2 parent())[opp, lc + rc + 1];
-		pack(opp#1.0 left(this, lcc))[opp.parent];
+		fracCount[this] := fracCount[this] - 0.5;
+		if (opp!=null) { fracParent[opp] := fracParent[opp] - k; }
+		if ((opp != null) && (left[opp] == this)) {
+			fracLeft[opp] := fracLeft[opp] - 0.5;
+		}
+		if ((opp != null) && (right[opp] == this)) {
+			fracRight[opp] := fracRight[opp] - 0.5;
+		}
+		if (opp == null) {
+			fracCount[this] := fracCount[this] - 0.5;
+		}
 			
-		this.parent.updateCountRec()[opp.parent, opp.count, this, opp.right, opp.left.count, lc + rc + 1];
+		pack(opp#1.0 left(this, lcc))[opp.parent];
+		if (this != null) { fracCount[this] := fracCount[this] - 0.5;}
+			
+		this.parent.updateCountRec()[opp.parent, opp.count, this, opp.right, opp.left.count, lc + rc + 1];	
+		if (opp.parent != null) { fracParent[opp.parent] := fracParent[opp.parent] - k; } 
+		// I need to subtract the fractions of the unpacked object propositions
+		// (of the pre-conditions of a method) because I need to know
+		// that I have the right fraction to that object proposition,
+		// even if it's unpacked.
+		if ((opp.parent != null) && (opp.parent.left == opp)) {
+			fracLeft[opp.parent] := fracLeft[opp.parent] - 0.5;
+		}
+		if ((opp.parent != null) && (opp.parent.right == opp)) { 
+			fracRight[opp.parent] := fracRight[opp.parent] - 0.5;
+		}
+		if (opp.parent == null) { 
+			fracCount[this.parent] := fracCount[this.parent] - 0.5; 
+		}
+		fracLeft[this.parent] := fracLeft[this.parent] - 0.5;
+		fracRight[this.parent] := fracRight[this.parent] - 0.5;
+		
+		fracParent[this.parent] := fracParent[this.parent] + k;
 	}		
  } else {
 	addFrac(this#0.5 count(lcc), unpacked(this#0.5 count(lcc)));
+	fracCount[this] := 0.5 + 0.5;
 	//After this addFrac, we know that this is unpacked in count()
-	 this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
+	//TODO: the order of these is not right.
+	this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
+	// Need to add an assumes that says that all fracs are at most 1.0.
+	fracCount[this] := fracCount[this] - 1.0;
+	fracLeft[this] := fracLeft[this] - 0.5;
+	fracRight[this] := fracRight[this] - 0.5;
+	if (opp != null) {
+		fracCount[opp] := fracCount[opp] - k;
+	}
+	fracCount[this] := fracCount[this] + 1.0;
+	// I don't know if I need this splitFrac.	
 	splitFrac(unpacked(this#1.0 count(lcc)), 2);
+
 	pack(this#k2 parent())[this.parent, lc + rc + 1];
+	fracCount[this] := fracCount[this] - 0.5;
+	if (opp!=null) { fracParent[opp] := fracParent[opp] - k; }
+	if ((opp != null) && (left[opp] == this)) {
+		fracLeft[opp] := fracLeft[opp] - 0.5;
+	}
+	if ((opp != null) && (right[opp] == this)) {
+		fracRight[opp] := fracRight[opp] - 0.5;
+	}
+	if (opp == null) {
+		fracCount[this] := fracCount[this] - 0.5;
 	}
 }
 
@@ -246,16 +309,77 @@ Composite or;
 if (l.parent==null) {	
 	l.parent = this;
 	unpack(this#k1 parent())[this.parent, lcc];
+	
+	fracCount[this] := fracCount[this] + 0.5;
+	if (this.parent!=null) { 
+		fracParent[this.parent] := fracParent[this.parent] + k; 
+	}
+	if ((this.parent != null) && (left[this.parent] == this)) {
+		fracLeft[this.parent] := fracLeft[this.parent] + 0.5;
+	}
+	if ((this.parent != null) && (right[this.parent] == this)) {
+		fracRight[this.parent] := fracRight[this.parent] + 0.5;
+	}
+	if (this.parent == null) {
+		fracCount[this] := fracCount[this] + 0.5;
+	}
+	
 	unpack(this#0.5 count(lcc))[null, or, 0, this.right.count];
+	fracLeft[this] := fracLeft[this] + 0.5;
+	fracRight[this] := fracRight[this] + 0.5;
+
 	addFrac(this#0.5 left(null, 0), this#0.5 left(null, 0));
+	fracLeft[this] := 0.5 + 0.5;
+	
 	unpack(this#1.0 left(null, 0))[this.parent];	
+	if (null!=null) { fracCount[null] := fracCount[null] + 0.5;
+	
 	this.left = l;
 	this.left.count = l.left.count;
+	
 	pack(this#1.0 left(l, l.left.count))[this.parent];
-	splitFrac(this#1.0 left(l, l.left.count));
-	pack(l#k2 parent())[l.parent, l.left.count];	
-	this.updateCountRec()[this.parent, lcc, l, this.right, l.left.count, this.right.count]; 	
+	if (l != null) {
+		fracCount[l] := fracCount[l] + 0.5;
 	}
+
+	// Do I need this splitFrac?? 
+	splitFrac(this#1.0 left(l, l.left.count));
+
+	pack(l#k2 parent())[l.parent, l.left.count];
+	
+	fracCount[l] := fracCount[l] - 0.5;
+	if (l.parent!=null) { 
+		fracParent[l.parent] := fracParent[l.parent] - k; 
+	}
+	if ((l.parent != null) && (left[l.parent] == l)) {
+		fracLeft[l.parent] := fracLeft[l.parent] - 0.5;
+	}
+	if ((l.parent != null) && (right[l.parent] == l)) {
+		fracRight[l.parent] := fracRight[l.parent] - 0.5;
+	}
+	if (l.parent == null) {
+		fracCount[l] := fracCount[l] - 0.5;
+	}
+	
+	this.updateCountRec()[this.parent, lcc, l, this.right, l.left.count, this.right.count]; 
+
+	if (this.parent != null) { fracParent[this.parent] := fracParent[this.parent] - k; } 
+	if ((this.parent != null) && (this.parent.left == this)) {
+		fracLeft[this.parent] := fracLeft[this.parent] - 0.5;
+	}
+	if ((this.parent != null) && (this.parent.right == this)) { 
+		fracRight[this.parent] := fracRight[this.parent] - 0.5;
+	}
+	if (this.parent == null) { 
+		fracCount[this] := fracCount[this] - 0.5; 
+	}
+	fracLeft[this] := fracLeft[this] - 0.5;
+	fracRight[this] := fracRight[this] - 0.5;
+	
+	fracParent[this] := fracParent[this] + k;
+}		
+	
+}
 }
 
 }
