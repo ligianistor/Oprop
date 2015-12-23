@@ -77,7 +77,6 @@ int newc;
 
 newc = 1;
 unpack(this#0.5 left(ol, c1))[op];
-(ol != null) ~=> (fracCount[ol] := fracCount[ol] + 0.5);
 if (this.left != null) {
 	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];	
 	newc = newc + this.left.count;
