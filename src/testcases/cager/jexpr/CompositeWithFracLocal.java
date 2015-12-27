@@ -105,10 +105,6 @@ fracRight[this] := fracRight[this] - 0.5;
 }
 
 void updateCountRec() 
-// TODO 
-// Shouldn't we say that k>0 here for all such k??
-// Or assume that whenever we see k, it actually means a predefined very
-// small value like 0.0001.
 ~ double k1, double k, double k2:
 Composite opp, int lcc,
 Composite or, Composite ol,
@@ -163,7 +159,7 @@ if (this.parent != null) {
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
 		fracLeft[this] := fracLeft[this] - 0.5;
 		fracRight[this] := fracRight[this] - 0.5;
-		// Instead of k I can use 0.0001, some random very small value
+
 		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
 		fracCount[this] := 1.0;
 		pack(this#k2 parent())[opp, lc + rc + 1];
@@ -212,7 +208,7 @@ if (this.parent != null) {
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
 		fracLeft[this] := fracLeft[this] - 0.5;
 		fracRight[this] := fracRight[this] - 0.5;
-		// Instead of k I can use 0.0001, some random very small value
+		// Instead of k I can divide and multiply by 2 (and top at 1 if necessary)
 		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
 		fracCount[this] := 1.0;
 		pack(this#k2 parent())[opp, lc + rc + 1];
