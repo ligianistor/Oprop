@@ -1441,19 +1441,19 @@ public class BoogieVisitor extends NullVisitor {
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
         				"]"+ packedOrUnpacked+" && \n \t \t(frac"+
         				upperCaseFirstLetter(predName)+"[");
-        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] == " + fracInObjProp+")");
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] >= " + fracInObjProp+")");
         		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
-        		bodyPredicate = bodyPredicate.concat(objectString+ "] == " + fracInObjProp + ")");
+        		bodyPredicate = bodyPredicate.concat(objectString+ "] >= " + fracInObjProp + ")");
         	} else {
         		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
         				"[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
-        				"[this]] == " + fracInObjProp+")");
+        				"[this]] >= " + fracInObjProp+")");
 
         		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(fieldName + 
-        				"[this]] == " + fracInObjProp + ")");
+        				"[this]] >= " + fracInObjProp + ")");
         		fracString.setField(fieldName);
         		objProp.setObject(fieldName+"[this]");	
         	} 
