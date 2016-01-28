@@ -153,9 +153,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//Set of predicates for the corresponding frac global variables that are 1
 	//in the requires or ensures of the current method.
-	Set<String> setFracEq1 = new TreeSet<String>();
-	
-	
+	Set<String> setFracEq1 = new TreeSet<String>();	
 	
 	//For each method, this map tells us which are the
 	//packed object propositions in the precondition of that method.  
