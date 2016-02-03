@@ -30,17 +30,18 @@ predicate count(int c) =
 		&& (this#0.5 left(ol, lc)) 
 		&& (this#0.5 right(or, rc)) 
 			
+// Surround op in FractionManipulationStatement by [$op$]
+// where op can be identifier or keyword, etc.
+//We do need to surround the fraction annotations by the respective if.
 predicate parent() =
 	exists Composite op, int c, double k:
 	this.parent -> op &&
 	(op != this) &&
 	(this#0.5 count(c)) &&
-	( (op != null ~=> (op#k parent())) &&
-		 ( (op#0.5 left(this, c)) ||
-		   (op#0.5 right(this, c))
-		  ) &&
-		 (op==null ~=> (this#0.5 count(c)))
-	)
+	(op != null ~=> (op#k parent())) &&
+	(((op != null) && (op.left == this)) ~=> op#0.5 left(this, c)) &&
+	(((op != null) && (op.right == this)) ~=> op#0.5 right(this, c)) &&
+	(op == null ~=> (this#0.5 count(c)))
 		
 void updateCount() 
 ~double k:
@@ -91,9 +92,6 @@ this.count = newc;
 pack(this#1.0 count(newc))[ol, or, c1, c2];
 }
 
-//This version assumes this is the right child of opp.
-//We need a very similar version of updateCountRec, where
-//we assume this is the left child of opp.
 void updateCountRec() 
 ~ double k1, double k, double k2:
 Composite opp, int lcc,
@@ -102,11 +100,12 @@ int lc, int rc:
 requires unpacked(this#k1 parent()) &&
 	this.parent -> opp &&
 	(opp != this) &&
-  (((( (opp != null) ~=> (opp#k parent()) &&
-     ((opp#0.5 left(this, lcc)) || (opp#0.5 right(this, lcc))
-     )) || 
+   ( (opp != null) ~=> (opp#k parent()) ) && 
+   ( (opp != null) &&	(opp.left == this)) ~=>	 (opp#0.5 left(this, lcc)) &&
+   ( (opp != null) && (opp.right == this)) ~=>	 (opp#0.5 right(this, lcc))
+      &&
      ((opp == null) ~=> (this#0.5 count(lcc)))
-     )))  &&
+      &&
    unpacked(this#0.5 count(lcc)) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
