@@ -30,7 +30,7 @@ predicate count(int c) =
 		&& (this#0.5 left(ol, lc)) 
 		&& (this#0.5 right(or, rc)) 
 			
-// Surround op in FractionManipulationStatement by [$op$]
+// Surround op in FractionManipulationStatement by $op$
 // where op can be identifier or keyword, etc.
 //We do need to surround the fraction annotations by the respective if.
 predicate parent() =

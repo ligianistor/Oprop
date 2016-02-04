@@ -30,6 +30,7 @@ import cager.jexpr.ast.FieldTypePredbody;
 import cager.jexpr.ast.FormalParameter;
 import cager.jexpr.ast.FormalParameters;
 import cager.jexpr.ast.FractionAnnotation;
+import cager.jexpr.ast.FractionManipulationStatement;
 import cager.jexpr.ast.IdentifierExpression;
 import cager.jexpr.ast.IfStatement;
 import cager.jexpr.ast.KeywordExpression;
@@ -77,6 +78,27 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in a binary expression?
 	boolean inBinaryExpression = false;
 	
+	// Are we in the left part of the ~=> implies?
+	// This is for setting FractionManipulationStatement.
+	boolean inChild1OfImplies = false;
+	
+	// Are we in the right part of the ~=> implies?
+	// This is for setting FractionManipulationStatement.
+	boolean inChild2OfImplies = false;
+	
+	// All variables needed for the fractionManipulation statements
+	// that I add after a call to a pack/unpack of a predicate
+	// and after a call to a method.
+	// If the fraction manipulation is not surrounded by an if statement
+	// the first variable "ifConditionFractionManipulation" will be null.
+	// Depending on the situation, other variables from below might be null.
+	String ifConditionFractionManipulation;
+	LinkedList<String> formalParametersFractionManipulation;
+	LinkedList<String> actualParametersFractionManipulation;
+	String predNameFractionManipulation;
+	String fractionObjectFractionManipulation; 
+	double fractionFractionManipulation;
+	
 	//Are we inside an IfStatement?
 	//We need this because there are Blocks inside an IfStatement and 
 	//they get confused with the Blocks at the beginning of 
@@ -121,6 +143,16 @@ public class BoogieVisitor extends NullVisitor {
 	// as a String.
 	HashMap<String, FieldTypePredbody> paramsPredicateBody = 
 			new HashMap<String, FieldTypePredbody>();
+	
+	// For each predicate or method, I have a list of 
+	// (if condition) (fracPredicate[object], fractionAmount) 
+	// representing the fraction annotations that will be added 
+	// to the code right after packing/unpacking a predicate
+	// and right after calling a method.
+	// The String key in the HashMap is the name of the predicate or 
+	// method.
+	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsList = 
+			new HashMap<String, LinkedList<FractionManipulationStatement>>();
 	
 	// This maps each method name to its String method body.
 	HashMap<String, String> methodBody = new HashMap<String, String>();
@@ -442,6 +474,7 @@ public class BoogieVisitor extends NullVisitor {
     	predicates.add(namePredicate);
     	paramsPredicateBody.put(namePredicate, new FieldTypePredbody());
     	predArgWhichField.put(namePredicate, null);
+    	fractionManipulationsList.put(namePredicate, new LinkedList<FractionManipulationStatement>());
     	AST[] children = ast.getChildren();
     	//Visit formal parameters.
     	children[0].accept(this);
@@ -575,13 +608,14 @@ public class BoogieVisitor extends NullVisitor {
     	methodBody.put(methodName, "");
     	methodSpec.put(methodName, "");
     	methodParams.put(methodName, "");
+    	fractionManipulationsList.put(methodName, new LinkedList<FractionManipulationStatement>());
     	currentMethod = methodName;
     	
     	//When we hit the first method, we write out the constructors for this 
     	//class and the Pack and Unpack procedures. 
     	if (isFirstMethod) {   	
     		//This if is for when the modulo symbol is in the body of a predicate.
-    		if (programContainsModulo && !writtenModuloFunction){
+    		if (programContainsModulo && !writtenModuloFunction) {
     			try{
     				out.write(moduloTranslation);
     			}
@@ -1110,7 +1144,7 @@ public class BoogieVisitor extends NullVisitor {
     		throws ParseException
     {
     	inBinaryExpression = true;
-    	if (ast.op.getId() == JExprConstants.KEYACCESS){
+    	if (ast.op.getId() == JExprConstants.KEYACCESS) {
     		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
     		PrimaryExpression e2 = (PrimaryExpression)ast.E2;
     		FieldSelection f = (FieldSelection)(e1.getChildren()[1]);
@@ -1218,10 +1252,13 @@ public class BoogieVisitor extends NullVisitor {
     	if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
     		concatToStatementObjProp("(");
     	}
-    	
+    	  inChild1OfImplies = true;
 		  children[0].accept(this );
+		  inChild1OfImplies = false;
 		  concatToStatementObjProp(operatorSymbol);
+		  inChild2OfImplies = true;
 		  children[1].accept(this );
+		  inChild2OfImplies = false;
 	    if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
 	    	concatToStatementObjProp(")");
 	    }
