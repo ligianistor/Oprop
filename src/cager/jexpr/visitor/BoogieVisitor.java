@@ -93,8 +93,8 @@ public class BoogieVisitor extends NullVisitor {
 	// the first variable "ifConditionFractionManipulation" will be null.
 	// Depending on the situation, other variables from below might be null.
 	String ifConditionFractionManipulation;
-	LinkedList<String> formalParametersFractionManipulation;
-	LinkedList<String> actualParametersFractionManipulation;
+	LinkedList<String> formalParametersFractionManipulation = 
+			new LinkedList<String>();
 	String predNameFractionManipulation;
 	String fractionObjectFractionManipulation; 
 	double fractionFractionManipulation;
@@ -124,6 +124,7 @@ public class BoogieVisitor extends NullVisitor {
 		
 	String lastPrimaryExpressionType = "";
 	
+	// all the local variables declared in a method
 	String stringOfVarDecls = "";
 	
 	//For each predicate name, this maps to a list of PackObjMods. 
@@ -1253,6 +1254,8 @@ public class BoogieVisitor extends NullVisitor {
     		concatToStatementObjProp("(");
     	}
     	  inChild1OfImplies = true;
+    	  ifConditionFractionManipulation = "";
+    	  formalParametersFractionManipulation.clear();
 		  children[0].accept(this );
 		  inChild1OfImplies = false;
 		  concatToStatementObjProp(operatorSymbol);
@@ -1388,6 +1391,11 @@ public class BoogieVisitor extends NullVisitor {
     		throws ParseException
     {    	
     	insideObjectProposition = true;
+    	
+    	predNameFractionManipulation = "";
+    	fractionObjectFractionManipulation = ""; 
+    	fractionFractionManipulation = 0;
+    	
         String packedOrUnpacked = "";
         if (lastIdentifierOrKeyword.equals("unpacked")) {
         	packedOrUnpacked = "==false";
@@ -2374,6 +2382,35 @@ public class BoogieVisitor extends NullVisitor {
     	currentFieldWhichPredicates.add(predicate);
     	fieldWhichPredicates.put(field, currentFieldWhichPredicates);
     	
+    }
+    
+    
+    void addToFractionManipulationsList(
+    		String predicateName, 
+    		String ifCondition,
+    		LinkedList<String> formalParameters,
+    		String predName,
+    		String fractionObject,
+    		double fraction
+    ) {
+    	
+    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = 
+    			fractionManipulationsList.get(predicateName);
+    	if (currentPredOrMethodFracManipulation == null) {
+    		currentPredOrMethodFracManipulation = 
+    				new LinkedList<FractionManipulationStatement>();
+    	}
+    	
+    	FractionManipulationStatement newFracMani =
+    			new FractionManipulationStatement(
+    					ifCondition,
+    					formalParameters,
+    					predName,
+    					fractionObject,
+    					fraction		
+    			);
+    	currentPredOrMethodFracManipulation.add(newFracMani);
+    	fractionManipulationsList.put(predicateName, currentPredOrMethodFracManipulation);	
     }
     
     void modifyPredicateFrac(FracString s) {

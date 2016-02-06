@@ -5,10 +5,25 @@ import java.util.LinkedList;
 public class FractionManipulationStatement {
 	private String ifCondition;
 	private LinkedList<String> formalParameters  = new LinkedList<String>();
-	private LinkedList<String> actualParameters  = new LinkedList<String>();
 	private String predName;
 	private String fractionObject; 
 	private double fraction;
+	
+	public FractionManipulationStatement(
+			String ifCondition_,
+			LinkedList<String> formalParameters_,
+			String predName_,
+			String fractionObject_,
+			double fraction_		
+	) {
+		ifCondition = ifCondition_;
+		// TODO: do I need to copy the elements one by one?
+		formalParameters = formalParameters_;
+		predName = predName_;
+		fractionObject = fractionObject_;
+		fraction = fraction_;
+	}
+	
 	
 	public String getIfCondition() {
 		return ifCondition;
@@ -16,10 +31,6 @@ public class FractionManipulationStatement {
 	
 	public LinkedList<String> getFormalParameters() {
 		return formalParameters;
-	}
-	
-	public LinkedList<String> getActualParameters() {
-		return actualParameters;
 	}
 	
 	public String getPredName() {
@@ -57,7 +68,6 @@ public boolean equals(Object obj) {
 
 		if ( ifCondition.equals(o1.getIfCondition()) &&
 			areLinkedListsEqual(o1.getFormalParameters(), formalParameters) &&
-			areLinkedListsEqual(o1.getActualParameters(), actualParameters) &&
 			predName.equals(o1.getPredName()) &&
 			fractionObject.equals(o1.getFractionObject()) &&
 			(fraction == o1.getFraction()) 
@@ -75,9 +85,6 @@ public boolean equals(Object obj) {
 		int result = 1;
 		result *= ifCondition.hashCode();
 		for (int i=0; i<formalParameters.size(); i++) {
-			result *= formalParameters.get(i).hashCode();
-		}
-		for (int i=0; i<actualParameters.size(); i++) {
 			result *= formalParameters.get(i).hashCode();
 		}
 		result *= predName.hashCode();
