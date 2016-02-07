@@ -992,6 +992,7 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast);
     }
     
+    // This is instead of visitFieldSelection.
     public void helperFieldSelection(String identifierName) {
     	// TODO add additional checks for lastIdentifierOrKeyword
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
@@ -1032,9 +1033,17 @@ public class BoogieVisitor extends NullVisitor {
     		}	
     	}
     	
+		  if (inChild1OfImplies) {
+  			  ifConditionFractionManipulation = 
+  					  ifConditionFractionManipulation.concat(fieldName);
+  			  //TODO need to add also to formal list
+  		  }
+    	
+    	
     }
 
-    // We shouldn't end up in this method anymore.
+    // We shouldn't end up in this method anymore!!!
+    //TODO remove this method if it's not used!!!
     public void visitFieldSelection(FieldSelection ast) 
     		throws ParseException
     {
@@ -1239,6 +1248,7 @@ public class BoogieVisitor extends NullVisitor {
     void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) 
     		throws ParseException 
     {
+    	String localOperatorSymbol = operatorSymbol;
     	// We replace the linear implies ~=> with ==>.
     	if (operatorSymbol.equals("~=>")) {
     		operatorSymbol = "==>";
@@ -1253,15 +1263,29 @@ public class BoogieVisitor extends NullVisitor {
     	if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
     		concatToStatementObjProp("(");
     	}
-    	  inChild1OfImplies = true;
-    	  ifConditionFractionManipulation = "";
-    	  formalParametersFractionManipulation.clear();
+    	if (localOperatorSymbol.equals("==>")) {
+    		inChild1OfImplies = true;
+    		ifConditionFractionManipulation = "";
+    		formalParametersFractionManipulation.clear();
+    	}
 		  children[0].accept(this );
-		  inChild1OfImplies = false;
+		  if (localOperatorSymbol.equals("==>")) {
+			  inChild1OfImplies = false;
+		  }
+		  
+		  if (inChild1OfImplies) {
+			  ifConditionFractionManipulation = 
+					  ifConditionFractionManipulation.concat(operatorSymbol);
+		  }
+		  
 		  concatToStatementObjProp(operatorSymbol);
-		  inChild2OfImplies = true;
+		  if (localOperatorSymbol.equals("==>")) {
+			  inChild2OfImplies = true;
+		  }
 		  children[1].accept(this );
-		  inChild2OfImplies = false;
+		  if (localOperatorSymbol.equals("==>")) {
+			  inChild2OfImplies = false;
+		  }
 	    if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
 	    	concatToStatementObjProp(")");
 	    }
@@ -1335,6 +1359,12 @@ public class BoogieVisitor extends NullVisitor {
  		   	argumentsConstructor.add(astvalue);
  		   	argumentsPredicate.add(astvalue);
         }
+        
+		  if (inChild1OfImplies) {
+  			  ifConditionFractionManipulation = 
+  					  ifConditionFractionManipulation.concat(astvalue);
+  			  //TODO need to add also to formal list
+  		  }
     	
     	visitChildren(ast); 
     }
@@ -1861,6 +1891,12 @@ public class BoogieVisitor extends NullVisitor {
         	argumentsConstructor.add(keywordString);
         	argumentsPredicate.add(keywordString);
         }
+        
+		  if (inChild1OfImplies) {
+  			  ifConditionFractionManipulation = 
+  					  ifConditionFractionManipulation.concat(keywordString);
+  			  //TODO need to add also to formal list
+  		  }
     }
     
     public void visitFractionAnnotation(FractionAnnotation ast) 
@@ -2066,6 +2102,12 @@ public class BoogieVisitor extends NullVisitor {
     			argumentsConstructor.add(identifierName);
     			argumentsPredicate.add(identifierName);
     		}
+        	
+  		  if (inChild1OfImplies) {
+  			  ifConditionFractionManipulation = 
+  					  ifConditionFractionManipulation.concat(identifierName);
+  			  //TODO need to add also to formal list
+  		  }
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
@@ -2393,7 +2435,6 @@ public class BoogieVisitor extends NullVisitor {
     		String fractionObject,
     		double fraction
     ) {
-    	
     	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = 
     			fractionManipulationsList.get(predicateName);
     	if (currentPredOrMethodFracManipulation == null) {
