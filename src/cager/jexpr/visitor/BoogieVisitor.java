@@ -1077,9 +1077,19 @@ public class BoogieVisitor extends NullVisitor {
         		bv[classOfCallMethod].getMethodPreconditionsPacked().get(methodName);		
     	}
 
-    	statementContent= statementContent + "\t call "+ methodName + "(";
+    	statementContent = statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
     	statementContent = statementContent +identifierBeforeMethSel+");\n";
+    	
+    	// Add fractionManipulationStatements
+    	// First write the fraction manipulations of the preconditions
+    	statementContent = statementContent.concat(
+    			writeFractionManipulation(methodName, false, false, true));
+    	
+    	// Second write the fraction manipulations of the postconditions
+    	statementContent = statementContent.concat(
+    			writeFractionManipulation(methodName, false, false, false));
+    	
     	LinkedList<FracString> currentRequiresFrac = new LinkedList<FracString>();
     	LinkedList<FracString> currentEnsuresFrac = new LinkedList<FracString>();
     	
@@ -2001,15 +2011,62 @@ public class BoogieVisitor extends NullVisitor {
     	
        	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("true"); 
+    	 	// Add the fraction manipulations statements
+    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, true, false));
     	} else {
     		toWrite = toWrite.concat("false"); 
+    	 	// Add the fraction manipulations statements
+    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, false, false));
     	}
        	modifyFieldsInMethod("packed"+upperCaseFirstLetter(predicateNameObjProp));
-    	
+    
     	modifyMethodBody(toWrite);
     	inPackUnpackAnnotation = false;    	
   	}
- 
+    
+    String writeFractionManipulation(
+    		String namePredOrMethod, boolean isPredicate, boolean isPack, boolean isPrecond
+    ) {
+    	String result = "";
+    	 LinkedList<FractionManipulationStatement> fractionManipulationsList = null;
+    	 if (isPredicate) {
+    		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
+    	 } else if (isPrecond) {
+    		 fractionManipulationsList = fractionManipulationsListMethodPre.get(namePredOrMethod);
+    	 } else {
+    		 fractionManipulationsList = fractionManipulationsListMethodPost.get(namePredOrMethod);
+    	 }
+    		 
+    	 for (int i=0; i<fractionManipulationsList.size(); i++) {
+    		 FractionManipulationStatement fracMan = fractionManipulationsList.get(i);
+    		 if (!fracMan.getIfCondition().equals("")) {
+    			 result = result.concat("if (" + fracMan.getIfCondition() + ") {");
+    		 }
+    		 result = result.concat("frac" + fracMan.getPredName() + "[" + fracMan.getFractionObject()
+    				 +"] := frac" + fracMan.getPredName() + "[" + fracMan.getFractionObject()
+    				 +"]"); 
+    		 if (isPredicate) {
+    			 if (isPack) {
+    			 	result = result.concat("-");
+    		 	} else {
+    			 	result = result.concat("+");
+    		 	}
+    		 } else if (isPrecond) {
+    			 result = result.concat("-"); // if it's in the precondition it means we consume(subtract)
+    			 							// this part of the fraction
+    		 } else {
+    			 result = result.concat("+"); //if it's in the postcondition it means we add to the existing amount
+    			 							//this part of the fraction
+    		 }
+    		 result = result.concat(fracMan.getFraction()+";\n");
+    		 if (!fracMan.getIfCondition().equals("")) {
+    			 result = result.concat("}");
+    		 }
+    	 }
+    	
+    	return result;
+    }
+     
     public void visitIdentifierExpression(IdentifierExpression ast) 
     		throws ParseException
     {    	
@@ -2118,7 +2175,7 @@ public class BoogieVisitor extends NullVisitor {
         	
   		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat(identifierName);
+  					  ifConditionFractionManipulation.concat("[" + identifierName + "]");
   			  // The formal parameters are only identifiers.
   			  // This is what it looks like when I look at the .interm file.
   			  //TODO only add it to this list if it is one of the formal or
@@ -2455,8 +2512,8 @@ public class BoogieVisitor extends NullVisitor {
     		String fractionObject,
     		String fraction
     ) {
-    	// TODO should it be null here or new ()...?
-    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
+    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = 
+				new LinkedList<FractionManipulationStatement>();
     	switch (flag) {
          	case 1: currentPredOrMethodFracManipulation = 
          				fractionManipulationsListPredicate.get(predOrMethod);
@@ -2468,11 +2525,6 @@ public class BoogieVisitor extends NullVisitor {
  					    fractionManipulationsListMethodPost.get(predOrMethod);
  	 				break;        
     	 }
-    	 
-    	if (currentPredOrMethodFracManipulation == null) {
-    		currentPredOrMethodFracManipulation = 
-    				new LinkedList<FractionManipulationStatement>();
-    	}
     	
     	FractionManipulationStatement newFracMani =
     			new FractionManipulationStatement(
