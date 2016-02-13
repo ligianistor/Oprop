@@ -86,18 +86,15 @@ public class BoogieVisitor extends NullVisitor {
 	// This is for setting FractionManipulationStatement.
 	boolean inChild2OfImplies = false;
 	
-	// All variables needed for the fractionManipulation statements
+	// The 2 variables needed for the fractionManipulation statements
 	// that I add after a call to a pack/unpack of a predicate
 	// and after a call to a method.
 	// If the fraction manipulation is not surrounded by an if statement
 	// the first variable "ifConditionFractionManipulation" will be null.
-	// Depending on the situation, other variables from below might be null.
+	// Depending on the situation, the other variable might be null.
 	String ifConditionFractionManipulation;
 	LinkedList<String> formalParametersFractionManipulation = 
 			new LinkedList<String>();
-	String predNameFractionManipulation;
-	String fractionObjectFractionManipulation; 
-	double fractionFractionManipulation;
 	
 	//Are we inside an IfStatement?
 	//We need this because there are Blocks inside an IfStatement and 
@@ -130,6 +127,7 @@ public class BoogieVisitor extends NullVisitor {
 	//For each predicate name, this maps to a list of PackObjMods. 
 	//This map needs to be reset in the beginning of each method.
 	//The first String represents the name of the predicate.
+	//TODO add a comment here
 	HashMap<String, LinkedList<PackObjMods>> packedMods = 
 			new HashMap<String, LinkedList<PackObjMods>>();
 	
@@ -152,7 +150,11 @@ public class BoogieVisitor extends NullVisitor {
 	// and right after calling a method.
 	// The String key in the HashMap is the name of the predicate or 
 	// method.
-	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsList = 
+	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListPredicate = 
+			new HashMap<String, LinkedList<FractionManipulationStatement>>();
+	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPre = 
+			new HashMap<String, LinkedList<FractionManipulationStatement>>();
+	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPost = 
 			new HashMap<String, LinkedList<FractionManipulationStatement>>();
 	
 	// This maps each method name to its String method body.
@@ -168,6 +170,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//This maps each method name to the existential variables of that method.
 	//I think they are separated by commas.
+	//TODO remove "I think" - is it sure?
 	HashMap<String, String> methodExistentialParams = 
 			new HashMap<String, String>();
 	
@@ -475,7 +478,7 @@ public class BoogieVisitor extends NullVisitor {
     	predicates.add(namePredicate);
     	paramsPredicateBody.put(namePredicate, new FieldTypePredbody());
     	predArgWhichField.put(namePredicate, null);
-    	fractionManipulationsList.put(namePredicate, new LinkedList<FractionManipulationStatement>());
+    	fractionManipulationsListPredicate.put(namePredicate, new LinkedList<FractionManipulationStatement>());
     	AST[] children = ast.getChildren();
     	//Visit formal parameters.
     	children[0].accept(this);
@@ -507,6 +510,7 @@ public class BoogieVisitor extends NullVisitor {
     			if(! (type.equals("double")) ) {
     				modifyExistentialParams(name, type); 
     				addArgToPredArgWhichField(name);
+    				// TODO need to write a similar method for methods
     			}
     		}
     		else if (currentMethod !="") {
@@ -609,7 +613,8 @@ public class BoogieVisitor extends NullVisitor {
     	methodBody.put(methodName, "");
     	methodSpec.put(methodName, "");
     	methodParams.put(methodName, "");
-    	fractionManipulationsList.put(methodName, new LinkedList<FractionManipulationStatement>());
+    	fractionManipulationsListMethodPre.put(methodName, new LinkedList<FractionManipulationStatement>());
+    	fractionManipulationsListMethodPost.put(methodName, new LinkedList<FractionManipulationStatement>());
     	currentMethod = methodName;
     	
     	//When we hit the first method, we write out the constructors for this 
@@ -993,6 +998,8 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     // This is instead of visitFieldSelection.
+    // We  do not end up in the visitFieldSelection() method
+    // so I removed it.
     public void helperFieldSelection(String identifierName) {
     	// TODO add additional checks for lastIdentifierOrKeyword
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
@@ -1019,12 +1026,15 @@ public class BoogieVisitor extends NullVisitor {
     		}
   
     		if (!namePredicate.equals("") && !insideObjectProposition){
-    			FieldTypePredbody currentParamsPredicateBody = 
+    		/*	FieldTypePredbody currentParamsPredicateBody = 
     					paramsPredicateBody.get(namePredicate);
     			paramsPredicateBody.put(
 					namePredicate, 
 					currentParamsPredicateBody.concatToPredicateBody(fieldName)
-    			); 			 
+    			); 		*/
+    			// This is already written out in visitIdentifier
+    			//TODO make sure the logic is correct
+    			// and that this is truly duplicated.
     		}
     	} else {
     		// We are inside a pack/unpack annotation.
@@ -1036,23 +1046,9 @@ public class BoogieVisitor extends NullVisitor {
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(fieldName);
-  			  //TODO need to add also to formal list
   		  }
     	
     	
-    }
-
-    // We shouldn't end up in this method anymore!!!
-    //TODO remove this method if it's not used!!!
-    public void visitFieldSelection(FieldSelection ast) 
-    		throws ParseException
-    {
-    	String identifierName = ast.getIdentifier().name;
-        if (currentMethod != "") {
-  		   modifyFieldsInMethod(identifierName);   
-        }
-    	helperFieldSelection(identifierName);
-    	visitChildren(ast);
     }
 
     public void visitMethodSelection(MethodSelection ast) 
@@ -1363,7 +1359,6 @@ public class BoogieVisitor extends NullVisitor {
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(astvalue);
-  			  //TODO need to add also to formal list
   		  }
     	
     	visitChildren(ast); 
@@ -1422,10 +1417,6 @@ public class BoogieVisitor extends NullVisitor {
     {    	
     	insideObjectProposition = true;
     	
-    	predNameFractionManipulation = "";
-    	fractionObjectFractionManipulation = ""; 
-    	fractionFractionManipulation = 0;
-    	
         String packedOrUnpacked = "";
         if (lastIdentifierOrKeyword.equals("unpacked")) {
         	packedOrUnpacked = "==false";
@@ -1468,14 +1459,6 @@ public class BoogieVisitor extends NullVisitor {
     			args.add(objectPropString);
     		}
     	}
-    	
-    	// I write to a returned String the output
-    	// representing the field that each argument of the predicate represents.
-    	/*String argsToFieldsString = writeToStringPredArgWhichField(
-    			listArgsToFields, 
-    			args, 
-    			objectString
-    	);*/
     	
     	argumentsObjProp = args;
     	objectObjProp = objectString;
@@ -1575,9 +1558,29 @@ public class BoogieVisitor extends NullVisitor {
     		if (insidePrecondition) {
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString);
+    		    
+    		    addToFractionManipulationsList(
+    		    		1, // 1 for method precondition
+    		    		currentMethod, 
+    		    		ifConditionFractionManipulation,
+    		    		formalParametersFractionManipulation,
+    		    		predName,
+    		    		objectString,
+    		    		fracInObjProp
+    		    );
+    				
     		} else if (insidePostcondition){
     			modifyMethodPostconditions(objProp);
     			modifyEnsuresFrac(fracString);
+    		    addToFractionManipulationsList(
+ 		    			2, // 2 for method postcondition
+ 		    			currentMethod, 
+ 		    			ifConditionFractionManipulation,
+ 		    			formalParametersFractionManipulation,
+    		    		predName,
+    		    		objectString,
+    		    		fracInObjProp
+    		    );
     		}
     	} else if (currentMethod == "") {
     		int locationEndObjProp = modifyPredicateBody(bodyPredicate);
@@ -1596,6 +1599,17 @@ public class BoogieVisitor extends NullVisitor {
     		// object proposition.
     		objProp.setLocation(locationEndObjProp-2);
     		modifyPredicateObjProp(objProp);
+    		
+		    addToFractionManipulationsList(
+		    		0, // this is 0 for predicate 
+		    		namePredicate, 
+		    		ifConditionFractionManipulation,
+		    		formalParametersFractionManipulation,
+		    		predName,
+		    		objectString,
+		    		fracInObjProp
+		    );
+    		
     	}
     	insideObjectProposition = false;
     }
@@ -1895,7 +1909,6 @@ public class BoogieVisitor extends NullVisitor {
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(keywordString);
-  			  //TODO need to add also to formal list
   		  }
     }
     
@@ -2106,7 +2119,11 @@ public class BoogieVisitor extends NullVisitor {
   		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(identifierName);
-  			  //TODO need to add also to formal list
+  			  // The formal parameters are only identifiers.
+  			  // This is what it looks like when I look at the .interm file.
+  			  //TODO only add it to this list if it is one of the formal or
+  			  //quantified parameters of this predicate/method.
+  			formalParametersFractionManipulation.add(identifierName);
   		  }
     	}
     	catch (Exception e) {
@@ -2428,15 +2445,30 @@ public class BoogieVisitor extends NullVisitor {
     
     
     void addToFractionManipulationsList(
-    		String predicateName, 
+    		int flag, // this is 0 for predicate 
+    			      // 1 for method precondition
+    				 // 2 for method postcondition
+    		String predOrMethod, 
     		String ifCondition,
     		LinkedList<String> formalParameters,
     		String predName,
     		String fractionObject,
-    		double fraction
+    		String fraction
     ) {
-    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = 
-    			fractionManipulationsList.get(predicateName);
+    	// TODO should it be null here or new ()...?
+    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
+    	switch (flag) {
+         	case 1: currentPredOrMethodFracManipulation = 
+         				fractionManipulationsListPredicate.get(predOrMethod);
+                  	 break;
+         	case 2: currentPredOrMethodFracManipulation = 
+     					fractionManipulationsListMethodPre.get(predOrMethod);
+         	 		break;
+         	case 3: currentPredOrMethodFracManipulation = 
+ 					    fractionManipulationsListMethodPost.get(predOrMethod);
+ 	 				break;        
+    	 }
+    	 
     	if (currentPredOrMethodFracManipulation == null) {
     		currentPredOrMethodFracManipulation = 
     				new LinkedList<FractionManipulationStatement>();
@@ -2451,7 +2483,17 @@ public class BoogieVisitor extends NullVisitor {
     					fraction		
     			);
     	currentPredOrMethodFracManipulation.add(newFracMani);
-    	fractionManipulationsList.put(predicateName, currentPredOrMethodFracManipulation);	
+    	switch (flag) {
+     		case 1: fractionManipulationsListPredicate.put(predOrMethod, 
+     					currentPredOrMethodFracManipulation);	 
+              	 	break;
+     		case 2: fractionManipulationsListMethodPre.put(predOrMethod, 
+ 						currentPredOrMethodFracManipulation);	 
+      	 			break;
+     		case 3: fractionManipulationsListMethodPost.put(predOrMethod, 
+						currentPredOrMethodFracManipulation);	 
+	 				break;       
+	    } 	
     }
     
     void modifyPredicateFrac(FracString s) {

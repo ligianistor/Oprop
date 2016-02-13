@@ -7,21 +7,21 @@ public class FractionManipulationStatement {
 	private LinkedList<String> formalParameters  = new LinkedList<String>();
 	private String predName;
 	private String fractionObject; 
-	private double fraction;
+	private String fractionValue;
 	
 	public FractionManipulationStatement(
 			String ifCondition_,
 			LinkedList<String> formalParameters_,
 			String predName_,
 			String fractionObject_,
-			double fraction_		
+			String fractionValue_		
 	) {
 		ifCondition = ifCondition_;
 		// TODO: do I need to copy the elements one by one?
 		formalParameters = formalParameters_;
 		predName = predName_;
 		fractionObject = fractionObject_;
-		fraction = fraction_;
+		fractionValue = fractionValue_;
 	}
 	
 	
@@ -41,8 +41,8 @@ public class FractionManipulationStatement {
 		return fractionObject;
 	}
 	
-	public double getFraction() {
-		return fraction;
+	public String getFraction() {
+		return fractionValue;
 	}
 	
 	private boolean areLinkedListsEqual(LinkedList<String> other, LinkedList<String> thisList) {
@@ -70,7 +70,7 @@ public boolean equals(Object obj) {
 			areLinkedListsEqual(o1.getFormalParameters(), formalParameters) &&
 			predName.equals(o1.getPredName()) &&
 			fractionObject.equals(o1.getFractionObject()) &&
-			(fraction == o1.getFraction()) 
+			(fractionValue.equals(o1.getFraction()))
 			) 
 			// TODO maybe I don't need to compare to the actual value of the fraction
 		{
