@@ -74,7 +74,6 @@ int lc2;
 int rc2;
 
 int newc; 
-
 newc = 1;
 unpack(this#0.5 left(ol, c1))[op];
 if (this.left != null) {

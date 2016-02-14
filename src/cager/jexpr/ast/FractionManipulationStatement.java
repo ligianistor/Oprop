@@ -91,4 +91,9 @@ public boolean equals(Object obj) {
 		result *= fractionObject.hashCode();
 	    return result;
 	  }
+	
+	public void writeOut() {
+		System.out.println("FractionManipulationStatement: " + ifCondition +" "+ 
+				predName + " "+ fractionObject +"\n");
+	}
 }

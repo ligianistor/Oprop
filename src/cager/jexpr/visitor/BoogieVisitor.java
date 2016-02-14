@@ -92,7 +92,7 @@ public class BoogieVisitor extends NullVisitor {
 	// If the fraction manipulation is not surrounded by an if statement
 	// the first variable "ifConditionFractionManipulation" will be null.
 	// Depending on the situation, the other variable might be null.
-	String ifConditionFractionManipulation;
+	String ifConditionFractionManipulation = "";
 	LinkedList<String> formalParametersFractionManipulation = 
 			new LinkedList<String>();
 	
@@ -433,7 +433,7 @@ public class BoogieVisitor extends NullVisitor {
     		}	
     	}
     	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
+    		System.err.println("Error in visitCompilationUnit: " + e.getMessage());
     	}
         visitChildren(ast);
     }
@@ -466,7 +466,7 @@ public class BoogieVisitor extends NullVisitor {
     			out.write("var "+ fieldName +": [Ref]"+fieldType+";\n");
     	}
     	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
+    		System.err.println("Error in visitFieldDeclaration: " + e.getMessage());
     	}
     	visitChildren(ast);  
     	}
@@ -626,7 +626,7 @@ public class BoogieVisitor extends NullVisitor {
     				out.write(moduloTranslation);
     			}
     			catch(Exception e) {
-    				System.err.println("Error: " + e.getMessage());
+    				System.err.println("Error in visitMethodDeclaration first method: " + e.getMessage());
     			}
     			//We only want to write out the modulo function once.
     			writtenModuloFunction = true;
@@ -726,7 +726,7 @@ public class BoogieVisitor extends NullVisitor {
     				out.write("\n");
     			}
     			catch (Exception e) {
-    				System.err.println("Error: " + e.getMessage());
+    				System.err.println("Error in visitMethodDeclaration writing specifications: " + e.getMessage());
     			}
     			//We are initializing packedMods here, with the names of all predicates.
     			packedMods.put(currentNamePred, new LinkedList<PackObjMods>());   
@@ -760,6 +760,7 @@ public class BoogieVisitor extends NullVisitor {
     	    out.write("procedure "+ast.getIdentifier().getName()+"(");
 				
     	    visitChildren(ast);
+    	    
     	    //TODO add all parameters when calling function
     	    out.write(methodParams.get(currentMethod));
     	    out.write("this:Ref)\n");
@@ -792,21 +793,24 @@ public class BoogieVisitor extends NullVisitor {
         			localFieldsInMethod.addAll(callMethodsSetOfFields);
         		}
         	}
- 
+        	
         	//localFieldsInMethod is the set of elements that are modified.
-			String[] fieldsInMethodArray = 
+        	if (localFieldsInMethod!=null) {       	
+        		String[] fieldsInMethodArray = 
 					localFieldsInMethod.toArray(new String[0]);
-        	int leng = fieldsInMethodArray.length;
-        	if (leng > 0) {
-			String modifies = "\t modifies ";
+        		
+        		int leng = fieldsInMethodArray.length;
+        		if (leng > 0) {
+        			String modifies = "\t modifies ";
 				
-        	for (int k = 0; k < leng - 1; k++) {
-        		modifies = modifies.concat(fieldsInMethodArray[k]+",");
-        	}
-        	modifies = modifies.concat(fieldsInMethodArray[leng-1]+";\n");
+        			for (int k = 0; k < leng - 1; k++) {
+        				modifies = modifies.concat(fieldsInMethodArray[k]+",");
+        			}
+        			modifies = modifies.concat(fieldsInMethodArray[leng-1]+";\n");
       			
-			out.write(modifies);
-        }		
+        			out.write(modifies);
+        		}
+        	}		
 		out.write(methodSpec.get(currentMethod));
 				
 		//Here I want to say that if there are 
@@ -818,31 +822,33 @@ public class BoogieVisitor extends NullVisitor {
 			String forallParameter = getNewForallParameter();		
 					
 			//requires (forall x:Ref :: packedOK[x]);
-			for (String p : predicates) {					        	
-				if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
-						!setFracEq1.contains(p)) {
-					requiresPacked = 
-							requiresPacked.concat("\t requires (forall " + 
-									forallParameter+
-									":Ref :: packed"+
-									upperCaseFirstLetter(p)+"[" +
-									forallParameter+"]);\n"
-							);
-			    }
-			}
-					
-			//I also write for the predicates of the 
-			//previous classes that were translated.
-			for (int i=0; i<numberFilesBefore; i++) {
-				Set<String> bvPredicates = bv[i].getPredicates();
-			    for (String p : bvPredicates) {							        	
-			    	if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) &&
-				        			!setFracEq1.contains(p) ) {	
-			    		requiresPacked = requiresPacked.concat("\t requires (forall "+ 
-			    				forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
-								"["+ forallParameter+"]);\n");
+			if (localFieldsInMethod != null) {
+				for (String p : predicates) {					        	
+					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
+							!setFracEq1.contains(p)) {
+						requiresPacked = 
+								requiresPacked.concat("\t requires (forall " + 
+										forallParameter+
+										":Ref :: packed"+
+										upperCaseFirstLetter(p)+"[" +
+										forallParameter+"]);\n"
+										);
+						}
+				}
+								
+				//I also write for the predicates of the 
+				//previous classes that were translated.
+				for (int i=0; i<numberFilesBefore; i++) {
+					Set<String> bvPredicates = bv[i].getPredicates();
+					for (String p : bvPredicates) {							        	
+						if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) &&
+				        				!setFracEq1.contains(p) ) {	
+							requiresPacked = requiresPacked.concat("\t requires (forall "+ 
+									forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
+									"["+ forallParameter+"]);\n");
+							}
 					}
-			    }
+				}
 			}
 		} else {
 			//TODO
@@ -874,15 +880,15 @@ public class BoogieVisitor extends NullVisitor {
 		        	
 		    String forallParameter = getNewForallParameter();
 		    String ensuresForall = "";
-		        	
 		    //We only need to add "ensures forall" and "requires forall" for the
 		    //other procedures that are not main.
 		    if (!ast.getIdentifier().getName().equals("main")) {
 		       	//This is for writing "ensures forall for packed.
-		       	if (localFieldsInMethod.contains("packed"+
-		       			upperCaseFirstLetter(nameOfPredicate)) &&
-		       			!setFracEq1.contains(nameOfPredicate)) {
-		       		ensuresForall = ensuresForall.concat(
+		    	if (localFieldsInMethod != null) {
+		    		if (localFieldsInMethod.contains("packed"+
+		    				upperCaseFirstLetter(nameOfPredicate)) &&
+		    				!setFracEq1.contains(nameOfPredicate)) {
+		    			ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
 		        	if (modifiedObjects.isEmpty()) {
 		        		ensuresForall = ensuresForall.concat(
@@ -922,40 +928,43 @@ public class BoogieVisitor extends NullVisitor {
 		        		);
 		        	}
 		        }
-		        	
-		        //This is for writing "ensures forall for frac.
-		        if (localFieldsInMethod.contains("frac"+upperCaseFirstLetter(nameOfPredicate)) &&
-		        			!setFracEq1.contains(nameOfPredicate)) {
-		        	ensuresForall = ensuresForall.concat(
-		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
-		        	if (modifiedObjects.isEmpty()) {
-		        		ensuresForall = ensuresForall.concat("frac"+upperCaseFirstLetter(nameOfPredicate) + 
-		        				"["+ forallParameter+
-		        				"] == old(frac" + upperCaseFirstLetter(nameOfPredicate) +"["+
-		        				forallParameter+"])));\n");
-		        	} else {
-		        		String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
-		        		int len = modifiedObjectsArray.length;
-		        		if (len > 1) {
-		        			ensuresForall = ensuresForall.concat("(");
-		        		}
-		        		for (int k = 0; k < len - 1; k++) {
+		    }
+		           //This is for writing "ensures forall for frac.
+		        	if (localFieldsInMethod != null) {
+		        		if (localFieldsInMethod.contains(
+		        				"frac"+upperCaseFirstLetter(nameOfPredicate)) &&
+		        				!setFracEq1.contains(nameOfPredicate)) {
 		        			ensuresForall = ensuresForall.concat(
-		        					"("+forallParameter+"!="+modifiedObjectsArray[k]+") &&");
-		        		}
+		        					"\t ensures (forall "+  forallParameter+":Ref:: (");
+		        			if (modifiedObjects.isEmpty()) {
+		        				ensuresForall = ensuresForall.concat("frac"+upperCaseFirstLetter(nameOfPredicate) + 
+		        						"["+ forallParameter+
+		        						"] == old(frac" + upperCaseFirstLetter(nameOfPredicate) +"["+
+		        						forallParameter+"])));\n");
+		        			} else {
+		        				String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
+		        				int len = modifiedObjectsArray.length;
+		        				if (len > 1) {
+		        					ensuresForall = ensuresForall.concat("(");
+		        				}
+		        				for (int k = 0; k < len - 1; k++) {
+		        					ensuresForall = ensuresForall.concat(
+		        							"("+forallParameter+"!="+modifiedObjectsArray[k]+") &&");
+		        				}
 		        		
-		        		ensuresForall = ensuresForall.concat(
-		        				"("+forallParameter+"!="+modifiedObjectsArray[len-1]+") ==> ");
-		        		if (len > 1) {
-		        			ensuresForall = ensuresForall.concat("(");
-		        		}
+		        				ensuresForall = ensuresForall.concat(
+		        						"("+forallParameter+"!="+modifiedObjectsArray[len-1]+") ==> ");
+		        				if (len > 1) {
+		        					ensuresForall = ensuresForall.concat("(");
+		        				}
 		        		
-		        		ensuresForall = ensuresForall.concat("(frac"+ upperCaseFirstLetter(nameOfPredicate) + 
-		        				"["+ forallParameter+
-		        				"] == old(frac"+upperCaseFirstLetter(nameOfPredicate)+"["+
-		        				 forallParameter+"]))));\n");
+		        				ensuresForall = ensuresForall.concat("(frac"+ upperCaseFirstLetter(nameOfPredicate) + 
+		        						"["+ forallParameter+
+		        						"] == old(frac"+upperCaseFirstLetter(nameOfPredicate)+"["+
+		        						forallParameter+"]))));\n");
+		        			}
+		        		}
 		        	}
-		        }
 		        	
 		        if (!ensuresForall.equals(""))
 		        	out.write(ensuresForall+"\n");
@@ -976,7 +985,7 @@ public class BoogieVisitor extends NullVisitor {
 			out.write(methodBody.get(currentMethod));				
 		}
 		catch (Exception e) {
-			System.err.println("Error: " + e.getMessage());
+			System.err.println("Error in visitMethodDeclaration writing this method out: " + e.getMessage());
 		}
     	isFirstMethod = false;
     }
@@ -1238,7 +1247,7 @@ public class BoogieVisitor extends NullVisitor {
   			           		}
   		  	}
   	      	catch (Exception e) {
-  	      		System.err.println("Error: " + e.getMessage());
+  	      		System.err.println("Error in concatToStatementObjProp: " + e.getMessage());
   	      	}
     	} else {
     		  // We are inside a predicate.
@@ -1569,6 +1578,7 @@ public class BoogieVisitor extends NullVisitor {
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString);
     		    
+    			
     		    addToFractionManipulationsList(
     		    		1, // 1 for method precondition
     		    		currentMethod, 
@@ -2028,7 +2038,7 @@ public class BoogieVisitor extends NullVisitor {
     		String namePredOrMethod, boolean isPredicate, boolean isPack, boolean isPrecond
     ) {
     	String result = "";
-    	 LinkedList<FractionManipulationStatement> fractionManipulationsList = null;
+    	 LinkedList<FractionManipulationStatement> fractionManipulationsList;
     	 if (isPredicate) {
     		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
     	 } else if (isPrecond) {
@@ -2036,9 +2046,10 @@ public class BoogieVisitor extends NullVisitor {
     	 } else {
     		 fractionManipulationsList = fractionManipulationsListMethodPost.get(namePredOrMethod);
     	 }
-    		 
+    	 
     	 for (int i=0; i<fractionManipulationsList.size(); i++) {
     		 FractionManipulationStatement fracMan = fractionManipulationsList.get(i);
+    		
     		 if (!fracMan.getIfCondition().equals("")) {
     			 result = result.concat("if (" + fracMan.getIfCondition() + ") {");
     		 }
@@ -2063,7 +2074,8 @@ public class BoogieVisitor extends NullVisitor {
     			 result = result.concat("}");
     		 }
     	 }
-    	
+    	 
+    	    	
     	return result;
     }
      
@@ -2184,7 +2196,7 @@ public class BoogieVisitor extends NullVisitor {
   		  }
     	}
     	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
+    		System.err.println("Error in visitIdentifierExpression: " + e.getMessage());
     	};
 
     	visitChildren(ast);
@@ -2232,7 +2244,7 @@ public class BoogieVisitor extends NullVisitor {
   			}
         }
     	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
+    		System.err.println("Error in visitStatementExpression: " + e.getMessage());
         }
     	inStatement = false;
   	}
@@ -2512,8 +2524,8 @@ public class BoogieVisitor extends NullVisitor {
     		String fractionObject,
     		String fraction
     ) {
-    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = 
-				new LinkedList<FractionManipulationStatement>();
+    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
+				
     	switch (flag) {
          	case 1: currentPredOrMethodFracManipulation = 
          				fractionManipulationsListPredicate.get(predOrMethod);
@@ -2534,7 +2546,12 @@ public class BoogieVisitor extends NullVisitor {
     					fractionObject,
     					fraction		
     			);
+    	newFracMani.writeOut();
+    	if (currentPredOrMethodFracManipulation == null) {
+    		currentPredOrMethodFracManipulation = new LinkedList<FractionManipulationStatement>();
+    	}
     	currentPredOrMethodFracManipulation.add(newFracMani);
+    	
     	switch (flag) {
      		case 1: fractionManipulationsListPredicate.put(predOrMethod, 
      					currentPredOrMethodFracManipulation);	 
@@ -2545,7 +2562,7 @@ public class BoogieVisitor extends NullVisitor {
      		case 3: fractionManipulationsListMethodPost.put(predOrMethod, 
 						currentPredOrMethodFracManipulation);	 
 	 				break;       
-	    } 	
+	    } 
     }
     
     void modifyPredicateFrac(FracString s) {
@@ -2613,7 +2630,7 @@ public class BoogieVisitor extends NullVisitor {
     		out.write("\n");
     	}
     	catch (Exception e) {
-    		System.err.println("Error: " + e.getMessage());
+    		System.err.println("Error in makeConstructors declaration of packed and frac: " + e.getMessage());
     	}
     	    	
     	try {
@@ -2637,7 +2654,7 @@ public class BoogieVisitor extends NullVisitor {
             			fieldsTypes.get(fieldsTypes.size()-1).getName() + "1); \n \n");
     		}
         	catch (Exception e) {
-        		System.err.println("Error: " + e.getMessage());
+        		System.err.println("Error in makeConstructors writing of procedure Construct: " + e.getMessage());
         	}
     }
         
@@ -2766,7 +2783,7 @@ public class BoogieVisitor extends NullVisitor {
     			}
     		}
     		catch (Exception e) {
-    			System.err.println("Error: " + e.getMessage());
+    			System.err.println("Error in writePredParamsOutOrToString: " + e.getMessage());
     		}  
     	}
     	return result;
