@@ -1109,9 +1109,6 @@ public class BoogieVisitor extends NullVisitor {
     	if (currentRequiresFrac != null) {
     		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
                 FracString fracString = currentRequiresFrac.get(pf);
-        		statementContent = 
-        			statementContent.concat(
-        					fracString.getStatementFracString(true, identifierBeforeMethSel));
         		modifyFieldsInMethod(fracString.getNameFrac());
         	}
     	}
@@ -1121,9 +1118,6 @@ public class BoogieVisitor extends NullVisitor {
     	if (currentEnsuresFrac != null) {
     		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
                 FracString fracString = currentEnsuresFrac.get(pf);
-        		statementContent = 
-        			statementContent.concat(
-        					fracString.getStatementFracString(false, identifierBeforeMethSel));
         		modifyFieldsInMethod(fracString.getNameFrac());
         	}
     	}
@@ -1143,8 +1137,6 @@ public class BoogieVisitor extends NullVisitor {
         	if (currentRequiresFrac != null) {
         		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
                     FracString fracString = currentRequiresFrac.get(pf);
-            		statementContent = 
-            			statementContent.concat(fracString.getStatementFracString(true, identifierBeforeMethSel));
             		modifyFieldsInMethod(fracString.getNameFrac());
             	}
         	}
@@ -1153,8 +1145,6 @@ public class BoogieVisitor extends NullVisitor {
         	if (currentEnsuresFrac != null) {
         		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
                     FracString fracString = currentEnsuresFrac.get(pf);
-            		statementContent = 
-            			statementContent.concat(fracString.getStatementFracString(false, identifierBeforeMethSel));
             		modifyFieldsInMethod(fracString.getNameFrac());
             	}
         	}
@@ -2053,8 +2043,8 @@ public class BoogieVisitor extends NullVisitor {
     		 if (!fracMan.getIfCondition().equals("")) {
     			 result = result.concat("if (" + fracMan.getIfCondition() + ") {");
     		 }
-    		 result = result.concat("frac" + fracMan.getPredName() + "[" + fracMan.getFractionObject()
-    				 +"] := frac" + fracMan.getPredName() + "[" + fracMan.getFractionObject()
+    		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + fracMan.getFractionObject()
+    				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + fracMan.getFractionObject()
     				 +"]"); 
     		 if (isPredicate) {
     			 if (isPack) {
