@@ -127,7 +127,7 @@ public class BoogieVisitor extends NullVisitor {
 	//For each predicate name, this maps to a list of PackObjMods. 
 	//This map needs to be reset in the beginning of each method.
 	//The first String represents the name of the predicate.
-	//TODO add a comment here
+	//See class PackObjMods for more insight.
 	HashMap<String, LinkedList<PackObjMods>> packedMods = 
 			new HashMap<String, LinkedList<PackObjMods>>();
 	
@@ -291,7 +291,9 @@ public class BoogieVisitor extends NullVisitor {
 	Set<String> methods = new TreeSet<String>();
 	
 	//For each method, fieldsInMethod contains 
-	//the set of fields in that method.
+	//the set of fields in that method. 
+	//TODO !!! this contains all fields but for modifies I only need the 
+	// fields on the left of :=.
 	HashMap<String, Set<String>> fieldsInMethod = 
 			new HashMap<String, Set<String>>();
 		
@@ -1035,15 +1037,12 @@ public class BoogieVisitor extends NullVisitor {
     		}
   
     		if (!namePredicate.equals("") && !insideObjectProposition){
-    		/*	FieldTypePredbody currentParamsPredicateBody = 
+    			FieldTypePredbody currentParamsPredicateBody = 
     					paramsPredicateBody.get(namePredicate);
     			paramsPredicateBody.put(
 					namePredicate, 
 					currentParamsPredicateBody.concatToPredicateBody(fieldName)
-    			); 		*/
-    			// This is already written out in visitIdentifier
-    			//TODO make sure the logic is correct
-    			// and that this is truly duplicated.
+    			); 		
     		}
     	} else {
     		// We are inside a pack/unpack annotation.
@@ -2152,7 +2151,9 @@ public class BoogieVisitor extends NullVisitor {
     				if (insideObjectProposition) {
     					objectPropString = objectPropString.concat(identifierName);
     				}
-    				if (!insideObjectProposition) {
+    				// Need the second condition because this part is already written out in 
+    				// helperFieldSelection.
+    				if (!insideObjectProposition && !inFieldSelection) {
     					paramsPredicateBody.put(
     							namePredicate, 
     							currentParamsPredicateBody.concatToPredicateBody(fieldName+ "[this]")
