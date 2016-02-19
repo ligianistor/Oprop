@@ -78,6 +78,9 @@ public class BoogieVisitor extends NullVisitor {
 	//Are we in a binary expression?
 	boolean inBinaryExpression = false;
 	
+	// Are we before child 0 in a binary expression?
+	boolean beforeChild0 = false;
+	
 	// Are we in the left part of the ~=> implies?
 	// This is for setting FractionManipulationStatement.
 	boolean inChild1OfImplies = false;
@@ -292,11 +295,11 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//For each method, fieldsInMethod contains 
 	//the set of fields in that method. 
-	//TODO !!! this contains all fields but for modifies I only need the 
-	// fields on the left of :=.
+	//This structure only contains the fields, including packedPred and fracPred,
+	//on the left of :=.
 	HashMap<String, Set<String>> fieldsInMethod = 
 			new HashMap<String, Set<String>>();
-		
+			
 	//For each method, methodsInMethod contains 
 	//the set of methods called in that method.
 	HashMap<String, LinkedList<FieldAndTypePair>> methodsInMethod = 
@@ -1272,7 +1275,9 @@ public class BoogieVisitor extends NullVisitor {
     		ifConditionFractionManipulation = "";
     		formalParametersFractionManipulation.clear();
     	}
-		  children[0].accept(this );
+    	if (operatorSymbol.equals(":=")) { beforeChild0 = true; }
+		children[0].accept(this );
+		beforeChild0 = false;
 		  if (localOperatorSymbol.equals("==>")) {
 			  inChild1OfImplies = false;
 		  }
@@ -1657,7 +1662,7 @@ public class BoogieVisitor extends NullVisitor {
     		if (children[1] instanceof FieldSelection) {
     			FieldSelection fieldSel1 = (FieldSelection)children[1];
     			String stringField1 = fieldSel1.getIdentifier().getName();
-                if (currentMethod != "") {
+                if ((currentMethod != "") && beforeChild0) {
             		   modifyFieldsInMethod(stringField1);     
                 }
                 // We need to signal that we are 
@@ -1686,7 +1691,7 @@ public class BoogieVisitor extends NullVisitor {
     		String stringField2 = fieldSel2.getIdentifier().getName();
     		
     		String identifierName = stringField2 + "[" + stringField1;
-            if (currentMethod != "") {
+            if ((currentMethod != "") && beforeChild0) {
        		   modifyFieldsInMethod(stringField1);   
        		   modifyFieldsInMethod(stringField2);   
           }
@@ -1704,7 +1709,7 @@ public class BoogieVisitor extends NullVisitor {
         		children[2] instanceof MethodSelection) {
         		FieldSelection fieldSel1 = (FieldSelection)children[1];
         		String stringField1 = fieldSel1.getIdentifier().getName();
-        		if (currentMethod != "") {
+        		if ((currentMethod != "") && beforeChild0) {
         			modifyFieldsInMethod(stringField1);     
                 }
         		// We need to signal that we are 
