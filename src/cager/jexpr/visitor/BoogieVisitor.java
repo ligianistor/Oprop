@@ -857,7 +857,7 @@ public class BoogieVisitor extends NullVisitor {
 			}
 		} else {
 			//TODO
-			//Need an example with what happens when 
+			//Need to write what happens when 
 			//there are unpacked object propositions
 			//in the precondition.
 		}
@@ -1100,58 +1100,7 @@ public class BoogieVisitor extends NullVisitor {
     	// Second write the fraction manipulations of the postconditions
     	statementContent = statementContent.concat(
     			writeFractionManipulation(methodName, false, false, false));
-    	
-    	LinkedList<FracString> currentRequiresFrac = new LinkedList<FracString>();
-    	LinkedList<FracString> currentEnsuresFrac = new LinkedList<FracString>();
-    	
-    	// Modify the frac variables corresponding to the requires and ensures of 
-    	// this method.
-    	currentRequiresFrac = 
-    			requiresFrac.get(methodName);
-    	if (currentRequiresFrac != null) {
-    		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
-                FracString fracString = currentRequiresFrac.get(pf);
-        		modifyFieldsInMethod(fracString.getNameFrac());
-        	}
-    	}
-    	
-    	currentEnsuresFrac = 
-    			ensuresFrac.get(methodName);
-    	if (currentEnsuresFrac != null) {
-    		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
-                FracString fracString = currentEnsuresFrac.get(pf);
-        		modifyFieldsInMethod(fracString.getNameFrac());
-        	}
-    	}
-    	
-    	// I am looking at methods from other classes also. 
-    	// This for should be a while. 
-    	int classOfMethod = -1;
-    	for (int i=0; i< numberFilesBefore; i++) {
-    		if (bv[i].getClassName().equals(lastPrimaryExpressionType))
-    			classOfMethod = i;
-    	}
-    	
-    	// There is some duplication of code here -- same as the code above
-    	// that is for this BoogieVisitor.
-    	if (classOfMethod != -1)  {
-        	currentRequiresFrac = bv[classOfMethod].getRequiresFrac().get(methodName);
-        	if (currentRequiresFrac != null) {
-        		for (int pf = 0; pf < currentRequiresFrac.size(); pf++) {
-                    FracString fracString = currentRequiresFrac.get(pf);
-            		modifyFieldsInMethod(fracString.getNameFrac());
-            	}
-        	}
-        	
-        	currentEnsuresFrac = bv[classOfMethod].getEnsuresFrac().get(methodName);
-        	if (currentEnsuresFrac != null) {
-        		for (int pf = 0; pf < currentEnsuresFrac.size(); pf++) {
-                    FracString fracString = currentEnsuresFrac.get(pf);
-            		modifyFieldsInMethod(fracString.getNameFrac());
-            	}
-        	}
-    	}
-    	
+  
     	//If the last 2 characters are ";\n" we need to delete them because
     	//they are going to be added at the end of visitStatement.
     	statementContent = statementContent.substring(0, statementContent.length() - 2); 	
@@ -2010,17 +1959,21 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	
     	toWrite = toWrite.concat(objectObjProp + ");\n"); 
+       	if (annotationName.equals("pack")) {
+    	 	// Add the fraction manipulations statements
+    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, true, false));
+    	} else {
+    	 	// Add the fraction manipulations statements
+    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, false, false));
+    	}
+    	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
     	toWrite = toWrite.concat(objectObjProp + "] := "); 
     	
        	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("true"); 
-    	 	// Add the fraction manipulations statements
-    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, true, false));
     	} else {
     		toWrite = toWrite.concat("false"); 
-    	 	// Add the fraction manipulations statements
-    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, false, false));
     	}
        	modifyFieldsInMethod("packed"+upperCaseFirstLetter(predicateNameObjProp));
     
@@ -2050,6 +2003,7 @@ public class BoogieVisitor extends NullVisitor {
     		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + fracMan.getFractionObject()
     				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + fracMan.getFractionObject()
     				 +"]"); 
+    		 modifyFieldsInMethod("frac" + upperCaseFirstLetter(fracMan.getPredName()));
     		 if (isPredicate) {
     			 if (isPack) {
     			 	result = result.concat("-");
@@ -2236,7 +2190,7 @@ public class BoogieVisitor extends NullVisitor {
     		if (currentMethod != "") {
     			statementContent = statementContent.concat(";\n");
     		} else {
-    			out.write(";\n");
+    			out.write(";\n");	
   			}
         }
     	catch (Exception e) {
@@ -2523,13 +2477,13 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
 				
     	switch (flag) {
-         	case 1: currentPredOrMethodFracManipulation = 
+         	case 0: currentPredOrMethodFracManipulation = 
          				fractionManipulationsListPredicate.get(predOrMethod);
                   	 break;
-         	case 2: currentPredOrMethodFracManipulation = 
+         	case 1: currentPredOrMethodFracManipulation = 
      					fractionManipulationsListMethodPre.get(predOrMethod);
          	 		break;
-         	case 3: currentPredOrMethodFracManipulation = 
+         	case 2: currentPredOrMethodFracManipulation = 
  					    fractionManipulationsListMethodPost.get(predOrMethod);
  	 				break;        
     	 }
@@ -2542,20 +2496,20 @@ public class BoogieVisitor extends NullVisitor {
     					fractionObject,
     					fraction		
     			);
-    	newFracMani.writeOut();
+    	
     	if (currentPredOrMethodFracManipulation == null) {
     		currentPredOrMethodFracManipulation = new LinkedList<FractionManipulationStatement>();
     	}
     	currentPredOrMethodFracManipulation.add(newFracMani);
     	
     	switch (flag) {
-     		case 1: fractionManipulationsListPredicate.put(predOrMethod, 
+     		case 0: fractionManipulationsListPredicate.put(predOrMethod, 
      					currentPredOrMethodFracManipulation);	 
               	 	break;
-     		case 2: fractionManipulationsListMethodPre.put(predOrMethod, 
+     		case 1: fractionManipulationsListMethodPre.put(predOrMethod, 
  						currentPredOrMethodFracManipulation);	 
       	 			break;
-     		case 3: fractionManipulationsListMethodPost.put(predOrMethod, 
+     		case 2: fractionManipulationsListMethodPost.put(predOrMethod, 
 						currentPredOrMethodFracManipulation);	 
 	 				break;       
 	    } 
