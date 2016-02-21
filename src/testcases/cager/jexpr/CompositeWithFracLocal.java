@@ -51,7 +51,10 @@ requires this.parent -> op &&
 	unpacked(this#1.0 count(c)) &&
 	(this#0.5 left(ol, c1)) &&
 	(this#0.5 right(or, c2)) &&
-	(op!=null ~=> unpacked(op#k count(c3)))
+	(op!=null ~=> unpacked(op#k count(c3))) &&
+	(unpacked(op#k left(op.left, c))
+	|| unpacked(op#k right(op.right,c))
+	|| (op == null))
 ensures (this#1.0 count(c1+c2+1))
 // For all fractions that are not mentioned in the pre-condition,
 // assume they are 0.

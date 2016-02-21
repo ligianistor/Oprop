@@ -2236,7 +2236,7 @@ public class BoogieVisitor extends NullVisitor {
     	methodVariables.accept(this);
     	
     	if (precondition != null) {
-    		modifyMethodSpec("\t requires ");
+    		modifyMethodSpec("\t requires (this != null) && ");
     		insidePrecondition = true;
     		precondition.accept(this);
     		insidePrecondition = false;
