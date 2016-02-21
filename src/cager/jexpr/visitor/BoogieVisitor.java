@@ -1347,6 +1347,9 @@ public class BoogieVisitor extends NullVisitor {
     					//it is of the form 
     					//name_predicate object number 
     					//and it needs to be deconstructed.
+    					// The name_predicate object number is for
+    					// when an argument is itself the argument of another 
+    					//object proposition inclosed in this predicate.
     					int firstIndexSpace = localField.indexOf(' ');
     					String localNamePred = localField.substring(0, firstIndexSpace);  					
     					String leftoverString = localField.substring(firstIndexSpace+1, localField.length());  					
@@ -1361,7 +1364,11 @@ public class BoogieVisitor extends NullVisitor {
     					// It should be made generally recursive in future work.
     		        	LinkedList<ArgumentAndFieldPair> listArgsToFieldsRecursive =
     		        			predArgWhichField.get(localNamePred);
-    		            					
+    		            // localObject is of the form field[this], but I need to 
+    		        	// transform it to field[objectString]
+    		        	System.out.println("localObject before:" + localObject + "objectString:"+objectString);
+    		        	localObject = localObject.replaceFirst("this", objectString);
+    		        	System.out.println("localObject after:" + localObject);
     					result = result.concat(" && ("+ 
     							listArgsToFieldsRecursive.get(localNumber).getField()+
     							"["+localObject+"]=="+args.get(i)+")"
@@ -1552,6 +1559,7 @@ public class BoogieVisitor extends NullVisitor {
     		// This is where I write
     		// add count_ol_2 to the map
     		// to be searched for recursively.
+    		// TODO need to add a much bigger comment here
     		addObjPropToPredArgWhichField(objProp);
     		
     		//We want to add the FracString to predicateFrac for
