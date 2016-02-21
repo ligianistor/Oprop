@@ -324,7 +324,7 @@ public class BoogieVisitor extends NullVisitor {
 	//which we are at the moment.
 	//This can also represent just components of 
 	//an object proposition.
-	String objectPropString;
+	String objectPropString = "";
 	
 	String objectObjProp;
 	String predicateNameObjProp;
@@ -1035,7 +1035,9 @@ public class BoogieVisitor extends NullVisitor {
     		 }
 		  
     		// TODO maybe I should add something to fieldName here
-    		if (insidePrecondition || insidePostcondition ) {
+    		  // I need to add the !insideObjectProposition part because
+    		  // that is taken care of when I write which arguments belong to which fields.
+    		if ((insidePrecondition || insidePostcondition ) && !insideObjectProposition)  {
     			modifyMethodSpec(fieldName);  
     		}
   
@@ -2042,7 +2044,7 @@ public class BoogieVisitor extends NullVisitor {
     			//we are not inside a predicate
     			if (!(fieldName == null)) {
     				// TODO need to refactor this function
-    				if (insideObjectProposition) {
+    				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				} else if (inPackUnpackAnnotation &&
     						inArgumentList &&
@@ -2087,7 +2089,7 @@ public class BoogieVisitor extends NullVisitor {
     						statementContent = statementContent.concat(identifierName);
     					}
     		   
-    					if (!insideObjectProposition && 
+    					if (!insideObjectProposition && !inFieldSelection &&
     							(insidePrecondition || insidePostcondition)) {
     						modifyMethodSpec(identifierName);
     					}
@@ -2098,7 +2100,7 @@ public class BoogieVisitor extends NullVisitor {
     					}
     				}
     				//modify object proposition parts
-    				if (insideObjectProposition) {
+    				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				}	
     			}
@@ -2107,7 +2109,7 @@ public class BoogieVisitor extends NullVisitor {
     			FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
     	      	 
     			if (!(fieldName == null)) {
-    				if (insideObjectProposition) {
+    				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				}
     				// Need the second condition because this part is already written out in 
@@ -2119,7 +2121,7 @@ public class BoogieVisitor extends NullVisitor {
     					);
     				}
     			} else {
-    				if (insideObjectProposition) {
+    				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				} else {
     					paramsPredicateBody.put(
