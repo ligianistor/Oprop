@@ -1,5 +1,9 @@
 package cager.jexpr;
 
+// I also use this class as predicate and object pair, 
+// to detect when there is packedPredicate[object] in
+// the pre-condition of a method. 
+
 public class PredicateAndFieldValue {
 	String predicate;
 	String fieldValue;

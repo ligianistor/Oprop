@@ -299,7 +299,13 @@ public class BoogieVisitor extends NullVisitor {
 	//on the left of :=.
 	HashMap<String, Set<String>> fieldsInMethod = 
 			new HashMap<String, Set<String>>();
-			
+	
+	//For each method, unpackedPredicatesInPrecondition contains the
+	//set of (predicate, object) for which we have unpacked(object#.. Predicate(..)
+	//in the precondition of that method.
+	HashMap<String, LinkedList<PredicateAndFieldValue>> unpackedPredicatesInPrecondition = 
+			new HashMap<String, LinkedList<PredicateAndFieldValue>>();
+	
 	//For each method, methodsInMethod contains 
 	//the set of methods called in that method.
 	HashMap<String, LinkedList<FieldAndTypePair>> methodsInMethod = 
@@ -706,9 +712,9 @@ public class BoogieVisitor extends NullVisitor {
     						upperCaseFirstLetter(currentNamePred)+"(");
     				writePredParamsOutOrToString(currentNamePred, 1, false);
     				out.write("this:Ref);\n"); 
-    				out.write("\t requires packed"+
+    				out.write("\t requires (packed"+
     						upperCaseFirstLetter(currentNamePred)+"[");
-    				out.write("this]==false &&\n");
+    				out.write("this]==false) &&\n");
 			
     				out.write("\t \t" + predBody + "; \n \n"); 
 			
@@ -827,18 +833,53 @@ public class BoogieVisitor extends NullVisitor {
 			String forallParameter = getNewForallParameter();		
 					
 			//requires (forall x:Ref :: packedOK[x]);
+			// Not everything is packed, only the ones that are 
+			// not specifically unpacked.
 			if (localFieldsInMethod != null) {
 				for (String p : predicates) {					        	
 					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
 							!setFracEq1.contains(p)) {
-						requiresPacked = 
+						LinkedList<PredicateAndFieldValue> unpackedPredicatesThisMethod =
+								unpackedPredicatesInPrecondition.get(currentMethod);
+						LinkedList<String> unpackedObjects = new LinkedList<String>();
+						// here I compute the objectStrings 
+						// that actually appear in unpacked(objectString#..Pred(())
+						// and I put them in unpackedObjects.
+						for (int l=0; l<unpackedPredicatesThisMethod.size(); l++) {
+							if ((unpackedPredicatesThisMethod.get(l)).
+									getPredicate().equals(p)) {
+								unpackedObjects.add((unpackedPredicatesThisMethod.get(l)).
+									getFieldValue());
+							}
+						}
+						
+						if (unpackedObjects.isEmpty()) {
+							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
 										forallParameter+
 										":Ref :: packed"+
 										upperCaseFirstLetter(p)+"[" +
 										forallParameter+"]);\n"
 										);
+						} else {
+							// create something like 
+							// ( ( (y!=this) && (y!=op) )
+							String notEquals = "";
+						
+							for (int m=0; m<unpackedObjects.size() - 1; m++) {
+								notEquals = notEquals.concat("(y!="+unpackedObjects.get(m) +") && ");
+							}
+							notEquals = notEquals.concat("(y!="+unpackedObjects.get(unpackedObjects.size() - 1) +") ==> ");
+							requiresPacked = 
+								requiresPacked.concat("\t requires (forall " + 
+										forallParameter+
+										":Ref :: (" + notEquals +" packed"+
+										upperCaseFirstLetter(p)+"[" +
+										forallParameter+"]));\n"
+										);
+							
 						}
+					}
 				}
 								
 				//I also write for the predicates of the 
@@ -1390,7 +1431,7 @@ public class BoogieVisitor extends NullVisitor {
     	
         String packedOrUnpacked = "";
         if (lastIdentifierOrKeyword.equals("unpacked")) {
-        	packedOrUnpacked = "==false";
+        	packedOrUnpacked = "== false";
         }
     	
     	FracString fracString = new FracString();
@@ -1464,17 +1505,17 @@ public class BoogieVisitor extends NullVisitor {
         	if (fieldName == null){
         		// This is where FracString is updated
         		// but only when we are inside a predicate.
-        		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-        				"]"+ packedOrUnpacked+" && \n \t \t(frac"+
+        				"]"+ packedOrUnpacked+") && \n \t \t(frac"+
         				upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] >= " + fracInObjProp+")");
         		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(objectString+ "] >= " + fracInObjProp + ")");
         	} else {
-        		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-        				"[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        				"[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
         				"[this]] >= " + fracInObjProp+")");
 
@@ -1488,17 +1529,17 @@ public class BoogieVisitor extends NullVisitor {
         	if (fieldName == null){
         		// This is where FracString is updated
         		// but only when we are inside a predicate.       	
-        		bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-        				"] "+ packedOrUnpacked+"&& \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        				"] "+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
         		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
         		bodyPredicate = bodyPredicate.concat(objectString+ "] > 0.0)");
         	} else {
-            	bodyMethodOrPredicate = "packed"+upperCaseFirstLetter(predName)+"[";
+            	bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-    			          "[this]]"+ packedOrUnpacked+" && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+    			          "[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
             	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
             	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] > 0.0)");
@@ -1540,6 +1581,12 @@ public class BoogieVisitor extends NullVisitor {
     		    		objectString,
     		    		fracInObjProp
     		    );
+    		    
+    		    // add the (predicate, object) to 
+    		    // unpackedPredicatesInPrecondition
+    		    if (packedOrUnpacked.equals("== false")) {
+    		    modifyUnpackedPredicatesInPrecondition(predName, objectString);
+    		    }
     				
     		} else if (insidePostcondition){
     			modifyMethodPostconditions(objProp);
@@ -2553,6 +2600,16 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	currentFieldsInMethod.add(s);
     	fieldsInMethod.put(currentMethod, currentFieldsInMethod);    	
+    }
+   
+    void modifyUnpackedPredicatesInPrecondition(String predicate, String object) {
+    	 LinkedList<PredicateAndFieldValue> currentUnpackedPredicatesInPrecondition = 
+    			unpackedPredicatesInPrecondition.get(currentMethod);
+    	if (currentUnpackedPredicatesInPrecondition == null) {
+    		currentUnpackedPredicatesInPrecondition = new LinkedList<PredicateAndFieldValue>();
+    	}
+    	currentUnpackedPredicatesInPrecondition.add(new PredicateAndFieldValue(predicate, object));
+    	unpackedPredicatesInPrecondition.put(currentMethod, currentUnpackedPredicatesInPrecondition);    	
     }
     
     void modifyMethodsInMethod(FieldAndTypePair s) {
