@@ -1058,6 +1058,7 @@ public class BoogieVisitor extends NullVisitor {
     public void helperFieldSelection(String identifierName) {
     	// TODO add additional checks for lastIdentifierOrKeyword
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
+
     	if (identifierName.contains("[")) fieldName = fieldName.concat("]");
     	fieldsInStatement.add(identifierName);
     	if (!inPackUnpackAnnotation) {
@@ -1099,8 +1100,7 @@ public class BoogieVisitor extends NullVisitor {
     	
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat(fieldName);
-  			System.out.println(ifConditionFractionManipulation);
+  					  ifConditionFractionManipulation.concat(lastIdentifierOrKeyword);
   		  }
     	
     	
@@ -1265,14 +1265,13 @@ public class BoogieVisitor extends NullVisitor {
     		concatToStatementObjProp("(");
     	}
     	if (localOperatorSymbol.equals("==>")) {
-    		System.out.println("in localOperator");
     		inChild1OfImplies = true;
     		ifConditionFractionManipulation = "";
     		formalParametersFractionManipulation.clear();
     	}
     	if (operatorSymbol.equals(":=")) { beforeChild0 = true; }
 		children[0].accept(this );
-		  System.out.println(ifConditionFractionManipulation);
+
 		beforeChild0 = false;
 		  if (localOperatorSymbol.equals("==>")) {
 			  inChild1OfImplies = false;
@@ -1281,7 +1280,6 @@ public class BoogieVisitor extends NullVisitor {
 		  if (inChild1OfImplies) {
 			  ifConditionFractionManipulation = 
 					  ifConditionFractionManipulation.concat(operatorSymbol);
-			  System.out.println(ifConditionFractionManipulation+"objProp");
 		  }
 		  
 		  concatToStatementObjProp(operatorSymbol);
@@ -1291,6 +1289,7 @@ public class BoogieVisitor extends NullVisitor {
 		  children[1].accept(this );
 		  if (localOperatorSymbol.equals("==>")) {
 			  inChild2OfImplies = false;
+			  ifConditionFractionManipulation = "";
 		  }
 	    if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
 	    	concatToStatementObjProp(")");
@@ -1369,7 +1368,6 @@ public class BoogieVisitor extends NullVisitor {
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(astvalue);
-  			  System.out.println(ifConditionFractionManipulation);
   		  }
     	
     	visitChildren(ast); 
@@ -1933,7 +1931,6 @@ public class BoogieVisitor extends NullVisitor {
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(keywordString);
-  			System.out.println(ifConditionFractionManipulation);
   		  }
     }
     
@@ -2199,8 +2196,7 @@ public class BoogieVisitor extends NullVisitor {
         	
   		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat("[" + identifierName + "]");
-  			System.out.println(ifConditionFractionManipulation);
+  					  ifConditionFractionManipulation.concat(identifierName);
   			  // The formal parameters are only identifiers.
   			  // This is what it looks like when I look at the .interm file.
   			  //TODO only add it to this list if it is one of the formal or
@@ -2550,7 +2546,6 @@ public class BoogieVisitor extends NullVisitor {
  					    fractionManipulationsListMethodPost.get(predOrMethod);
  	 				break;        
     	 }
-    	System.out.println("ifCondition:"+ifCondition);
     	FractionManipulationStatement newFracMani =
     			new FractionManipulationStatement(
     					ifCondition,
