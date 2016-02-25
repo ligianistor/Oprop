@@ -234,6 +234,13 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<FracString>>  ensuresFrac = 
 			new HashMap<String, LinkedList<FracString>>();
 	
+	//For each method, this map
+	//tells us which frac[] are in the body of that method.
+	//This is to know for what frac fields to write 
+	//assume (forall y:Ref :: (fracRight[y] >= 0.0) );
+	HashMap<String, LinkedList<FracString>>  methodBodyFrac = 
+			new HashMap<String, LinkedList<FracString>>();
+	
 	//For each predicate, this map
 	//tells us which frac[] are in the body of the predicate
 	HashMap<String, LinkedList<FracString>>  predicateFrac = 
