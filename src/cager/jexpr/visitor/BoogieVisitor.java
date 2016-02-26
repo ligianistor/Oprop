@@ -178,6 +178,8 @@ public class BoogieVisitor extends NullVisitor {
 	// or no ~double k:
 	// int c: 
 	
+	//TODO add more error messages to know where the errors actually occur
+	
 	//This maps each method name to the existential variables of that method.
 	//I think they are separated by commas.
 	//TODO remove "I think" - is it sure?

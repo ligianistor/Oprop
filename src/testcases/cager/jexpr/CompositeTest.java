@@ -31,12 +31,10 @@ predicate count(int c) =
 		&& (this#0.5 right(or, rc)) 
 				
 void updateCount() 
-~double k:
-int c:	
-requires this#1.0 count(this.count)
+requires this#1.0 count(op.count)
 
 {
-unpack(this#1.0 count(this.count));
+unpack(this#1.0 count(op.count));
 
 }
 
