@@ -235,11 +235,11 @@ public class BoogieVisitor extends NullVisitor {
 			new HashMap<String, LinkedList<FracString>>();
 	
 	//For each method, this map
-	//tells us which frac[] are in the body of that method.
+	//tells us which fracPred's are in the body of that method.
 	//This is to know for what frac fields to write 
 	//assume (forall y:Ref :: (fracRight[y] >= 0.0) );
-	HashMap<String, LinkedList<FracString>>  methodBodyFrac = 
-			new HashMap<String, LinkedList<FracString>>();
+	HashMap<String, LinkedList<String>>  methodBodyFrac = 
+			new HashMap<String, LinkedList<String>>();
 	
 	//For each predicate, this map
 	//tells us which frac[] are in the body of the predicate
@@ -1035,6 +1035,7 @@ public class BoogieVisitor extends NullVisitor {
 				writtenModuloFunction = true;
 			}
 			out.write("{\n"+stringOfVarDecls);
+			out.write(writeAssumeForall(currentMethod));
 			out.write(methodBody.get(currentMethod));				
 		}
 		catch (Exception e) {
@@ -1561,6 +1562,11 @@ public class BoogieVisitor extends NullVisitor {
     	// We do not need to set this inside the if branches.
     	fracString.setMinBound(0);
     	
+    	if ( (currentMethod != "") && !insidePrecondition && !insidePostcondition) {
+    		//XXX
+    		modifyMethodBodyFrac(fracString.getNameFrac());
+    	}
+    	
     	if ((currentMethod != "") && !inPackUnpackAnnotation) {
     		if (insidePrecondition || insidePostcondition) {
     			modifyMethodSpec(bodyMethodOrPredicate);
@@ -1597,7 +1603,7 @@ public class BoogieVisitor extends NullVisitor {
     		    modifyUnpackedPredicatesInPrecondition(predName, objectString);
     		    }
     				
-    		} else if (insidePostcondition){
+    		} else if (insidePostcondition) {
     			modifyMethodPostconditions(objProp);
     			modifyEnsuresFrac(fracString);
     		    addToFractionManipulationsList(
@@ -2517,6 +2523,50 @@ public class BoogieVisitor extends NullVisitor {
     	
     }
     
+    //adds a FracString to the methodBodyFrac map for the currentMethod
+    void modifyMethodBodyFrac(String s) {
+    	LinkedList<String> currentMethodBodyFrac = 
+    			methodBodyFrac.get(currentMethod);
+    	if (currentMethodBodyFrac == null) {
+    		currentMethodBodyFrac = new LinkedList<String>();
+    	}
+    	currentMethodBodyFrac.add(s);
+    	methodBodyFrac.put(currentMethod, currentMethodBodyFrac);
+    	
+    }
+    
+    // write assume (forall y:Ref :: (fracRight[y] >= 0.0) );
+    // to a string.
+    String writeAssumeForall(String methodName) {
+    	String result = "";
+    	
+    	Set<String> fracInMethodBodyAndSpec = new TreeSet<String>();
+    	LinkedList<FracString> requiresFracInMethod = requiresFrac.get(methodName);
+    	LinkedList<FracString> ensuresFracInMethod = ensuresFrac.get(methodName);
+    	LinkedList<String> methodBodyFracInMethod = methodBodyFrac.get(methodName);
+    	
+    	for (int i=0; i<requiresFracInMethod.size(); i++) {
+    		fracInMethodBodyAndSpec.add(requiresFracInMethod.get(i).getNameFrac());
+    	}
+    	
+    	for (int i=0; i<ensuresFracInMethod.size(); i++) {
+    		fracInMethodBodyAndSpec.add(ensuresFracInMethod.get(i).getNameFrac());
+    	}
+    	
+    	for (int i=0; i<methodBodyFracInMethod.size(); i++) {
+    		fracInMethodBodyAndSpec.add(methodBodyFracInMethod.get(i));
+    	}
+
+    	for (String temp : fracInMethodBodyAndSpec) {
+    		result = result.concat("assume (forall y:Ref :: ("+ 
+    				temp +
+    				"[y] >= 0.0) );\n");
+    	}
+    	return result;
+    }
+    
+    
+    
     void addToFieldWhichPredicates(String field, String predicate) {
     	LinkedList<String> currentFieldWhichPredicates = 
     			fieldWhichPredicates.get(field);
@@ -2855,5 +2905,4 @@ public class BoogieVisitor extends NullVisitor {
 		} 
 		return result;
     }
-
 }
