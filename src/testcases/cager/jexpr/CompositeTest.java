@@ -33,12 +33,10 @@ predicate count(int c) =
 void updateCount() 
 ~double k:
 int c:	
-requires this#1.0 count(c) 
-
+requires this#1.0 count(this.count)
 
 {
-
-
+unpack(this#1.0 count(this.count));
 
 }
 

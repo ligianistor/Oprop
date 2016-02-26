@@ -171,6 +171,13 @@ public class BoogieVisitor extends NullVisitor {
 	//I think they are separated by commas.
 	HashMap<String, String> methodParams = new HashMap<String, String>();
 	
+	// TODO 
+	// Fix the null error that happens when
+	// the method has no requires
+	// or no ensures
+	// or no ~double k:
+	// int c: 
+	
 	//This maps each method name to the existential variables of that method.
 	//I think they are separated by commas.
 	//TODO remove "I think" - is it sure?
@@ -1110,8 +1117,7 @@ public class BoogieVisitor extends NullVisitor {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(lastIdentifierOrKeyword);
   		  }
-    	
-    	
+    		
     }
 
     public void visitMethodSelection(MethodSelection ast) 
@@ -2545,22 +2551,30 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<FracString> ensuresFracInMethod = ensuresFrac.get(methodName);
     	LinkedList<String> methodBodyFracInMethod = methodBodyFrac.get(methodName);
     	
-    	for (int i=0; i<requiresFracInMethod.size(); i++) {
-    		fracInMethodBodyAndSpec.add(requiresFracInMethod.get(i).getNameFrac());
+    	if (requiresFracInMethod!=null) {
+    		for (int i=0; i<requiresFracInMethod.size(); i++) {
+    			fracInMethodBodyAndSpec.add(requiresFracInMethod.get(i).getNameFrac());
+    		}
     	}
     	
-    	for (int i=0; i<ensuresFracInMethod.size(); i++) {
-    		fracInMethodBodyAndSpec.add(ensuresFracInMethod.get(i).getNameFrac());
+    	if (ensuresFracInMethod != null) {
+    		for (int i=0; i<ensuresFracInMethod.size(); i++) {
+    			fracInMethodBodyAndSpec.add(ensuresFracInMethod.get(i).getNameFrac());
+    		}
     	}
     	
-    	for (int i=0; i<methodBodyFracInMethod.size(); i++) {
-    		fracInMethodBodyAndSpec.add(methodBodyFracInMethod.get(i));
+    	if (methodBodyFracInMethod != null) {
+    		for (int i=0; i<methodBodyFracInMethod.size(); i++) {
+    			fracInMethodBodyAndSpec.add(methodBodyFracInMethod.get(i));
+    		}
     	}
 
-    	for (String temp : fracInMethodBodyAndSpec) {
-    		result = result.concat("assume (forall y:Ref :: ("+ 
+    	if (!fracInMethodBodyAndSpec.isEmpty()) {
+    		for (String temp : fracInMethodBodyAndSpec) {
+    			result = result.concat("assume (forall y:Ref :: ("+ 
     				temp +
     				"[y] >= 0.0) );\n");
+    		}
     	}
     	return result;
     }
