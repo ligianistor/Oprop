@@ -501,18 +501,23 @@ public class BoogieVisitor extends NullVisitor {
     public void visitPredicateDeclaration(PredicateDeclaration ast) 
     		throws ParseException
     { 
+    try {
     	namePredicate = ast.getIdentifier().getName();
     	predicates.add(namePredicate);
     	paramsPredicateBody.put(namePredicate, new FieldTypePredbody());
     	predArgWhichField.put(namePredicate, null);
     	fractionManipulationsListPredicate.put(namePredicate, new LinkedList<FractionManipulationStatement>());
+    }     	
+    catch (Exception e) {
+		System.err.println("Error in visitPredicateDeclaration: " + e.getMessage());
+	}
     	AST[] children = ast.getChildren();
     	//Visit formal parameters.
     	children[0].accept(this);
     	//TODO
     	//need to take care of formal parameters
     	//Visit expression.
-    	children[1].accept(this);	
+    	children[1].accept(this);
     }
     
     public void visitQuantifierVariables(QuantifierVariables ast) 
@@ -523,8 +528,9 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitQuantifierVariable(QuantifierVariable ast) 
     		throws ParseException
-  	{    	   	    
+  	{    		
     	if (ast!=null) {
+    	  try { 
     		String name = ast.getName();
     	
     		if (currentMethod != "") {
@@ -543,11 +549,17 @@ public class BoogieVisitor extends NullVisitor {
     		else if (currentMethod !="") {
     			modifyMethodExistentialParams(name+ ":" + type +",");
     		}
+    	    }     	
+    	    catch (Exception e) {
+    			System.err.println("Error in visitQuantifierVariable: " + e.getMessage());
+    		}
     		visitChildren(ast);
     	}
     }
     
-    String writeAllPredArgWhichField(String namePred, String predBody) {
+    String writeAllPredArgWhichField(String namePred, String predBody) 
+    {
+    	try {
     	//As I modify predBody with the new additions,
     	//I keep count of the length of the strings that I add.
     	int offset=0;
@@ -584,7 +596,7 @@ public class BoogieVisitor extends NullVisitor {
     		
     			predBody = firstHalf.concat(oneObjProp).concat(secondHalf);
     			offset += oneObjProp.length();	
-    		}
+    		}	
     	}
     	
     	// Second modify predBody with parameters representing the values
@@ -608,6 +620,11 @@ public class BoogieVisitor extends NullVisitor {
 					}
 				}
 				predBody = predBody.concat(argsToFieldsString);
+		}
+
+    	}
+	    catch (Exception e) {
+			System.err.println("Error in writeAllPredArgWhichField: " + e.getMessage());
 		}
     	
     	return predBody;
@@ -785,9 +802,14 @@ public class BoogieVisitor extends NullVisitor {
     	    }
     			
     	    out.write("procedure "+ast.getIdentifier().getName()+"(");
+    	}
+	    catch (Exception e) {
+			System.err.println("Error in visitMethodDeclaration writing this method out, before visitChildren: " + e.getMessage());
+		}
 				
     	    visitChildren(ast);
     	    
+    	    try {
     	    //TODO add all parameters when calling function
     	    out.write(methodParams.get(currentMethod));
     	    out.write("this:Ref)\n");
@@ -1048,7 +1070,8 @@ public class BoogieVisitor extends NullVisitor {
 			out.write(methodBody.get(currentMethod));				
 		}
 		catch (Exception e) {
-			System.err.println("Error in visitMethodDeclaration writing this method out: " + e.getMessage());
+			System.err.println("Error in visitMethodDeclaration writing this method out, after visitChildren: "
+					+ e.getMessage());
 		}
     	isFirstMethod = false;
     }
