@@ -101,6 +101,9 @@ packedLeft[this] := false;
 if (left[this]!=null)
 {
 call UnpackCount(c1, ol1, or1, lc1, rc1, ol);
+// TODO see why below I have fracLeft[this] and not fracLeft[ol]
+// then make sure the actual params are used, not the formal ones
+// in ifConditionFractionManipulation
 fracLeft[this] := fracLeft[this]+0.5;
 fracRight[this] := fracRight[this]+0.5;
 packedCount[ol] := false;
@@ -199,7 +202,7 @@ if (op==null) {
  fracCount[this] := fracCount[this]+0.5;
 }
 packedParent[opp] := false;
-call UnpackCount(opp, oll, this, llc, lcc, opp);
+call UnpackCount(, oll, this, llc, lcc, opp);
 fracLeft[this] := fracLeft[this]+0.5;
 fracRight[this] := fracRight[this]+0.5;
 packedCount[opp] := false;

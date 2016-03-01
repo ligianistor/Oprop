@@ -867,30 +867,37 @@ public class BoogieVisitor extends NullVisitor {
 		//which are specified explicitly,
 		//then it means that all are packed.
 		String requiresPacked = "";
+
 		if (methodPreconditionsUnpacked.isEmpty()) {
+			
 			String forallParameter = getNewForallParameter();		
-					
+			
 			//requires (forall x:Ref :: packedOK[x]);
 			// Not everything is packed, only the ones that are 
 			// not specifically unpacked.
 			if (localFieldsInMethod != null) {
+				
 				for (String p : predicates) {					        	
 					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
 							!setFracEq1.contains(p)) {
+						
 						LinkedList<PredicateAndFieldValue> unpackedPredicatesThisMethod =
 								unpackedPredicatesInPrecondition.get(currentMethod);
 						LinkedList<String> unpackedObjects = new LinkedList<String>();
+						
 						// here I compute the objectStrings 
 						// that actually appear in unpacked(objectString#..Pred(())
 						// and I put them in unpackedObjects.
-						for (int l=0; l<unpackedPredicatesThisMethod.size(); l++) {
-							if ((unpackedPredicatesThisMethod.get(l)).
-									getPredicate().equals(p)) {
-								unpackedObjects.add((unpackedPredicatesThisMethod.get(l)).
-									getFieldValue());
+						if (unpackedPredicatesThisMethod != null) {
+							for (int l=0; l<unpackedPredicatesThisMethod.size(); l++) {
+								if ((unpackedPredicatesThisMethod.get(l)).
+										getPredicate().equals(p)) {
+									unpackedObjects.add((unpackedPredicatesThisMethod.get(l)).
+											getFieldValue());
+								}
 							}
 						}
-						
+					
 						if (unpackedObjects.isEmpty()) {
 							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
@@ -1595,6 +1602,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	if ( (currentMethod != "") && !insidePrecondition && !insidePostcondition) {
     		//XXX
+    		//TODO why is this xxx above?
     		modifyMethodBodyFrac(fracString.getNameFrac());
     	}
     	

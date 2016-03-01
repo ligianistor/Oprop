@@ -31,8 +31,10 @@ predicate count(int c) =
 		&& (this#0.5 right(or, rc)) 
 				
 void updateCount() 
-requires this#1.0 count(op.count)
-
+int c1, int c2,Composite op:	
+requires  this.parent -> op && 
+		(this#1.0 count(op.count))
+ensures (this#1.0 count(c1+c2+1))
 {
 unpack(this#1.0 count(op.count));
 
