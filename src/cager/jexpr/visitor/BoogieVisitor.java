@@ -96,8 +96,6 @@ public class BoogieVisitor extends NullVisitor {
 	// the first variable "ifConditionFractionManipulation" will be null.
 	// Depending on the situation, the other variable might be null.
 	String ifConditionFractionManipulation = "";
-	LinkedList<String> formalParametersFractionManipulation = 
-			new LinkedList<String>();
 	
 	//Are we inside an IfStatement?
 	//We need this because there are Blocks inside an IfStatement and 
@@ -169,6 +167,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//This maps each method name to the parameters of that method.
 	//I think they are separated by commas.
+	//TODO they should not be separated by commas, they should be a LinkedList
 	HashMap<String, String> methodParams = new HashMap<String, String>();
 	
 	// TODO 
@@ -1182,6 +1181,8 @@ public class BoogieVisitor extends NullVisitor {
 
     	statementContent = statementContent + "\t call "+ methodName + "(";
     	visitChildren(ast);
+    	// TODO need to add a new LinkedList here to hold the actual params
+    	// calculated from the string that I get from the visitChildren() above
     	statementContent = statementContent +identifierBeforeMethSel+");\n";
     	
     	// Add fractionManipulationStatements
@@ -1315,7 +1316,6 @@ public class BoogieVisitor extends NullVisitor {
     	if (localOperatorSymbol.equals("==>")) {
     		inChild1OfImplies = true;
     		ifConditionFractionManipulation = "";
-    		formalParametersFractionManipulation.clear();
     	}
     	if (operatorSymbol.equals(":=")) { beforeChild0 = true; }
 		children[0].accept(this );
@@ -1630,7 +1630,6 @@ public class BoogieVisitor extends NullVisitor {
     		    		1, // 1 for method precondition
     		    		currentMethod, 
     		    		ifConditionFractionManipulation,
-    		    		formalParametersFractionManipulation,
     		    		predName,
     		    		objectString,
     		    		fracInObjProp
@@ -1649,7 +1648,6 @@ public class BoogieVisitor extends NullVisitor {
  		    			2, // 2 for method postcondition
  		    			currentMethod, 
  		    			ifConditionFractionManipulation,
- 		    			formalParametersFractionManipulation,
     		    		predName,
     		    		objectString,
     		    		fracInObjProp
@@ -1678,7 +1676,6 @@ public class BoogieVisitor extends NullVisitor {
 		    		0, // this is 0 for predicate 
 		    		namePredicate, 
 		    		ifConditionFractionManipulation,
-		    		formalParametersFractionManipulation,
 		    		predName,
 		    		objectString,
 		    		fracInObjProp
@@ -2099,14 +2096,34 @@ public class BoogieVisitor extends NullVisitor {
     ) {
     	String result = "";
     	 LinkedList<FractionManipulationStatement> fractionManipulationsList;
+    	 // TODO xxx
+    	 // First I need to get the formal parameters list corresponding to this method or 
+    	 // predicate and also the actual parameters list. 
+    	 // In condition and in the fraction object I need to replace the formal parameters with
+    	 // the actual parameters.
+    	 // The order is that the formal params are written out is:
+    	 // formal params, existential params, this.
+    	 // I only need the name of all these parameters.
+    	 LinkedList<String> formalParams = new LinkedList<String>();
+    	 LinkedList<String> actualParams = new LinkedList<String>();
+    	 
     	 if (isPredicate) {
     		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
-    	 } else if (isPrecond) {
+    		 // use paramsPredicateBody for formal params.
+    		 // for actual params use argumentsObjProp and existentialArgsObjProp
+    	 
+    	 
+    	 } else { 
+    		 // look in methodParams for formal params
+    		 // need to separate the comma separated params, then add "this" as it's not added yet.
+    		// for actual params need to add a new LinkedList in visitMethodSelection
+    		 if (isPrecond) {
     		 fractionManipulationsList = fractionManipulationsListMethodPre.get(namePredOrMethod);
     	 } else {
     		 fractionManipulationsList = fractionManipulationsListMethodPost.get(namePredOrMethod);
     	 }
-    	 
+    	 }
+    	  
     	 for (int i=0; i<fractionManipulationsList.size(); i++) {
     		 FractionManipulationStatement fracMan = fractionManipulationsList.get(i);
     		
@@ -2247,11 +2264,6 @@ public class BoogieVisitor extends NullVisitor {
   		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(identifierName);
-  			  // The formal parameters are only identifiers.
-  			  // This is what it looks like when I look at the .interm file.
-  			  //TODO only add it to this list if it is one of the formal or
-  			  //quantified parameters of this predicate/method.
-  			formalParametersFractionManipulation.add(identifierName);
   		  }
     	}
     	catch (Exception e) {
@@ -2270,8 +2282,7 @@ public class BoogieVisitor extends NullVisitor {
     	inStatement = true;
     	AST[] children = ast.getChildren();
     	int size = children.length;
-    	statementContent = statementContent.concat("if (");
-    	
+    	statementContent = statementContent.concat("if (");    	
     	children[0].accept(this);
     	statementContent = statementContent.concat(")\n");
     	modifyMethodBody(statementContent);
@@ -2631,7 +2642,6 @@ public class BoogieVisitor extends NullVisitor {
     				 // 2 for method postcondition
     		String predOrMethod, 
     		String ifCondition,
-    		LinkedList<String> formalParameters,
     		String predName,
     		String fractionObject,
     		String fraction
@@ -2652,7 +2662,6 @@ public class BoogieVisitor extends NullVisitor {
     	FractionManipulationStatement newFracMani =
     			new FractionManipulationStatement(
     					ifCondition,
-    					formalParameters,
     					predName,
     					fractionObject,
     					fraction		
