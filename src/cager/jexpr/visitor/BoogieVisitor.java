@@ -2104,13 +2104,22 @@ public class BoogieVisitor extends NullVisitor {
     	 // The order is that the formal params are written out is:
     	 // formal params, existential params, this.
     	 // I only need the name of all these parameters.
-    	 LinkedList<String> formalParams = new LinkedList<String>();
+    	 LinkedList<FieldAndTypePair> formalParams = new LinkedList<FieldAndTypePair>();
     	 LinkedList<String> actualParams = new LinkedList<String>();
     	 
     	 if (isPredicate) {
     		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
     		 // use paramsPredicateBody for formal params.
     		 // for actual params use argumentsObjProp and existentialArgsObjProp
+    		 FieldTypePredbody args = paramsPredicateBody.get(namePredOrMethod);
+    		 formalParams = args.getFormalParameters();
+    		 formalParams.addAll(args.getExistentialParameters());
+    		 formalParams.add(new FieldAndTypePair("this", "Ref"));
+    		 
+    		 // These are the actual parameters of the current object proposition.
+    		 // Maybe this is not right and I need to pass in argumentsObjProp.
+    		 actualParams = argumentsObjProp;
+    		 actualParams.addAll(existentialArgsObjProp);
     	 
     	 
     	 } else { 
