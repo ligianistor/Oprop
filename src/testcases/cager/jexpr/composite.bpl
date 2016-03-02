@@ -92,7 +92,7 @@ procedure updateCount(c:int,c1:int,c2:int,c3:int,ol:Composite,or:Composite,op:Co
 assume (forall y:Ref :: (fracCount[y] >= 0.0) );
 assume (forall y:Ref :: (fracLeft[y] >= 0.0) );
 assume (forall y:Ref :: (fracRight[y] >= 0.0) );
-newc:=1;
+c,ol,c1,or,c2,c3,c,c,c1,c2,1,newc:=1;
 call UnpackLeft(ol, c1, op, this);
 if (ol!=null) {
  fracCount[ol] := fracCount[ol]+0.5;
@@ -101,9 +101,6 @@ packedLeft[this] := false;
 if (left[this]!=null)
 {
 call UnpackCount(c1, ol1, or1, lc1, rc1, ol);
-// TODO see why below I have fracLeft[this] and not fracLeft[ol]
-// then make sure the actual params are used, not the formal ones
-// in ifConditionFractionManipulation
 fracLeft[this] := fracLeft[this]+0.5;
 fracRight[this] := fracRight[this]+0.5;
 packedCount[ol] := false;
@@ -184,7 +181,7 @@ assume (forall y:Ref :: (fracCount[y] >= 0.0) );
 assume (forall y:Ref :: (fracLeft[y] >= 0.0) );
 assume (forall y:Ref :: (fracParent[y] >= 0.0) );
 assume (forall y:Ref :: (fracRight[y] >= 0.0) );
-if (parent[this]!=null)
+lcc,lcc,lcc,lcc,ol,lc,or,rc,if (parent[this]!=null)
 {
 fracParent[opp] := fracParent[opp];
 call UnpackParent(parent[opp], count[opp], opp);
@@ -202,7 +199,7 @@ if (op==null) {
  fracCount[this] := fracCount[this]+0.5;
 }
 packedParent[opp] := false;
-call UnpackCount(, oll, this, llc, lcc, opp);
+call UnpackCount(count[opp], oll, this, llc, lcc, opp);
 fracLeft[this] := fracLeft[this]+0.5;
 fracRight[this] := fracRight[this]+0.5;
 packedCount[opp] := false;
@@ -417,7 +414,7 @@ if (ol!=null) {
 packedLeft[this] := false;
 left[this]:=l;
 count[left[this]]:=count[left[l]];
-call PackLeft(l, , parent[this], this);
+call PackLeft(l, count[left[l]], parent[this], this);
 if (ol!=null) {
  fracCount[ol] := fracCount[ol]-0.5;
 }

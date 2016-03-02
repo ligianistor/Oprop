@@ -1104,6 +1104,7 @@ public class BoogieVisitor extends NullVisitor {
     // so I removed it.
     public void helperFieldSelection(String identifierName) {
     	// TODO add additional checks for lastIdentifierOrKeyword
+    	
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
 
     	if (identifierName.contains("[")) fieldName = fieldName.concat("]");
@@ -1139,8 +1140,9 @@ public class BoogieVisitor extends NullVisitor {
     			); 		
     		}
     	} else {
+    		
     		// We are inside a pack/unpack annotation.
-    		if (!insideObjectProposition && inArgumentList) {
+    		if (inArgumentList) {
     			objectPropString = objectPropString.concat(fieldName);
     		}	
     	}
@@ -1512,12 +1514,14 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<String> args = new LinkedList<String>();
     	if (!argList.isEmpty()) {
     	// This is ArgumentList.
+    		inArgumentList = true;
     		AST[] childrenArgList = argList.getChildren();
     		for (int i=0; i<childrenArgList.length; i++){
     			objectPropString = "";
     			childrenArgList[i].accept(this);
     			args.add(objectPropString);
     		}
+    		inArgumentList = false;
     	}
     	
     	argumentsObjProp = args;
@@ -1697,7 +1701,7 @@ public class BoogieVisitor extends NullVisitor {
 
     public void visitPrimaryExpression(PrimaryExpression ast) 
     		throws ParseException 
-    {
+    { 
     	Expression[] children = (Expression[])ast.getChildren();
     	if (children.length == 2) {
     		if (children[1] instanceof MethodSelection) {
@@ -2002,6 +2006,7 @@ public class BoogieVisitor extends NullVisitor {
     	predicateNameObjProp = "";
     	argumentsObjProp.clear();
     	fractionObjProp = "";
+    	inArgumentList = true;
     	children[0].accept(this);
     
     	toWrite = toWrite.concat("frac"+upperCaseFirstLetter(predicateNameObjProp)+"[");
@@ -2023,6 +2028,7 @@ public class BoogieVisitor extends NullVisitor {
   	  			//TODO need to write something here
   	  		}
   	  	}
+  	  inArgumentList = false;
     	
   	  	modifyMethodBody(toWrite);
   	  	inPackUnpackAnnotation = false;
@@ -2387,13 +2393,14 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitArgumentList(ArgumentList ast)
   		  throws ParseException 
-  	{  
+  	{   
     	// If we are inside unpacked(...)
     	// then this is not really an argument list.
     	// It is actually only a single object proposition.
     	if (!lastIdentifierOrKeyword.equals("unpacked")) {
     		inArgumentList = true;
     	}
+
     	visitChildren(ast); 
     	inArgumentList = false;
     }

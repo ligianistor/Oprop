@@ -6,6 +6,7 @@ import cager.jexpr.OperatorTypeInfo;
 import cager.jexpr.ParseException;
 import cager.jexpr.Types;
 import cager.jexpr.ast.AST;
+import cager.jexpr.ast.ArgumentList;
 import cager.jexpr.ast.BinaryExpression;
 import cager.jexpr.ast.Block;
 import cager.jexpr.ast.CastExpression;
@@ -77,6 +78,12 @@ public class ContextVisitor extends NullVisitor
     }
 
     public void visitClassDeclaration(ClassDeclaration ast) throws ParseException
+    {
+        visitChildren(ast);
+
+    }
+    
+    public void visitArgumentList(ArgumentList ast) throws ParseException
     {
         visitChildren(ast);
 
