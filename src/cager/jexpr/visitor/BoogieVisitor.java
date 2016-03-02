@@ -1385,10 +1385,6 @@ public class BoogieVisitor extends NullVisitor {
     			}
     		}
 		  
-    		if ((currentMethod != "") && (!inStatement) && (inArgumentList) ) {
-    			modifyMethodBody(astvalue + ",");
-    		}
-		  
     		if ((currentMethod != "") && !insideObjectProposition 
     				&& (insidePrecondition || insidePostcondition)) {
     			modifyMethodSpec(astvalue);
@@ -2192,10 +2188,6 @@ public class BoogieVisitor extends NullVisitor {
     						} else {
     							statementContent = statementContent.concat(identifierName + ", ");
     						}
-    					}
-    		   
-    					if ((currentMethod != "") && (inArgumentList) && (!inStatement)) {
-    						modifyMethodBody(identifierName + ",");
     					}
     		   
     					if ((currentMethod != "") && (inStatement) && 
