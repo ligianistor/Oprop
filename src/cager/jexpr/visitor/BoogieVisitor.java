@@ -1163,7 +1163,7 @@ public class BoogieVisitor extends NullVisitor {
     	
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat(lastIdentifierOrKeyword);
+  					  ifConditionFractionManipulation.concat("["+lastIdentifierOrKeyword+"]");
   		  }
     		
     }
@@ -2020,8 +2020,13 @@ public class BoogieVisitor extends NullVisitor {
         }
         
 		  if (inChild1OfImplies) {
-  			  ifConditionFractionManipulation = 
+			  if (keywordString.equals("this")) {
+				  ifConditionFractionManipulation = 
+	  					  ifConditionFractionManipulation.concat("["+keywordString+"]");
+			  } else {
+				  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(keywordString);
+			  }
   		  }
     }
     
@@ -2136,11 +2141,12 @@ public class BoogieVisitor extends NullVisitor {
   	}
     
     //TODO xxx
+    // Each formal parameter is surrounded by [ and ] in oldString
     String replaceFormalArgsWithActual(
     	LinkedList<FieldAndTypePair> formalParams,
     	LinkedList<String> actualParams,
     	String oldString
-    		) {
+    ) {
     	String result = "";
     	
     	return result;
@@ -2342,7 +2348,7 @@ public class BoogieVisitor extends NullVisitor {
         	
   		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat(identifierName);
+  					  ifConditionFractionManipulation.concat("["+identifierName+"]");
   		  }
     	}
     	catch (Exception e) {
