@@ -658,8 +658,10 @@ public class BoogieVisitor extends NullVisitor {
     	methodBody.put(methodName, "");
     	methodSpec.put(methodName, "");
     	methodParams.put(methodName, new LinkedList<FieldAndTypePair>());
-    	fractionManipulationsListMethodPre.put(methodName, new LinkedList<FractionManipulationStatement>());
-    	fractionManipulationsListMethodPost.put(methodName, new LinkedList<FractionManipulationStatement>());
+    	fractionManipulationsListMethodPre.put(methodName, 
+    			new LinkedList<FractionManipulationStatement>());
+    	fractionManipulationsListMethodPost.put(methodName, 
+    			new LinkedList<FractionManipulationStatement>());
     	currentMethod = methodName;
     	
     	//When we hit the first method, we write out the constructors for this 
@@ -671,7 +673,8 @@ public class BoogieVisitor extends NullVisitor {
     				out.write(moduloTranslation);
     			}
     			catch(Exception e) {
-    				System.err.println("Error in visitMethodDeclaration first method: " + e.getMessage());
+    				System.err.println("Error in visitMethodDeclaration first method: " 
+    						+ e.getMessage());
     			}
     			//We only want to write out the modulo function once.
     			writtenModuloFunction = true;
@@ -805,7 +808,8 @@ public class BoogieVisitor extends NullVisitor {
     	    out.write("procedure "+ast.getIdentifier().getName()+"(");
     	}
 	    catch (Exception e) {
-			System.err.println("Error in visitMethodDeclaration writing this method out, before visitChildren: " + e.getMessage());
+			System.err.println("Error in visitMethodDeclaration writing this method out, " +
+					"before visitChildren: " + e.getMessage());
 		}
 				
     	    visitChildren(ast);
@@ -896,8 +900,11 @@ public class BoogieVisitor extends NullVisitor {
 							for (int l=0; l<unpackedPredicatesThisMethod.size(); l++) {
 								if ((unpackedPredicatesThisMethod.get(l)).
 										getPredicate().equals(p)) {
-									unpackedObjects.add((unpackedPredicatesThisMethod.get(l)).
-											getFieldValue());
+									unpackedObjects.add(
+											(
+											unpackedPredicatesThisMethod.get(l)).
+											getFieldValue()
+											);
 								}
 							}
 						}
@@ -918,7 +925,9 @@ public class BoogieVisitor extends NullVisitor {
 							for (int m=0; m<unpackedObjects.size() - 1; m++) {
 								notEquals = notEquals.concat("(y!="+unpackedObjects.get(m) +") && ");
 							}
-							notEquals = notEquals.concat("(y!="+unpackedObjects.get(unpackedObjects.size() - 1) +") ==> ");
+							notEquals = notEquals.concat("(y!="+
+									unpackedObjects.get(
+											unpackedObjects.size() - 1) +") ==> ");
 							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
 										forallParameter+
@@ -1081,7 +1090,8 @@ public class BoogieVisitor extends NullVisitor {
 			out.write(methodBody.get(currentMethod));				
 		}
 		catch (Exception e) {
-			System.err.println("Error in visitMethodDeclaration writing this method out, after visitChildren: "
+			System.err.println("Error in visitMethodDeclaration writing this method out, " +
+					"after visitChildren: "
 					+ e.getMessage());
 		}
     	isFirstMethod = false;
@@ -1158,10 +1168,19 @@ public class BoogieVisitor extends NullVisitor {
     		
     }
     
-    LinkedList<String> separateParameters(String full) {
+    // The String full is made of Strings separated by the character ch
+    LinkedList<String> separateParameters(String full, int ch) {
     	 LinkedList<String> result = new  LinkedList<String>();
+    	 int firstIndex = full.indexOf(ch);
+    	 String firstSegment;
     	 
-    	 
+    	 while(firstIndex != -1) {
+    		 firstSegment = full.substring(0, firstIndex);
+    		 result.add(firstSegment);
+    		 full = full.substring(firstIndex + 1, full.length());
+    		 firstIndex = full.indexOf(ch);
+    	 }
+    	 result.add(full);
     	 return result;
     }
     
@@ -1193,10 +1212,17 @@ public class BoogieVisitor extends NullVisitor {
     	}
 
     	statementContent = statementContent + "\t call "+ methodName + "(";
+    	String statementContentBefore = statementContent;
     	visitChildren(ast);
+    	String statementContentAfter = statementContent;
+    	String listOfActualParams = statementContentAfter.
+    			substring(statementContentBefore.length(), statementContentAfter.length());
     	// TODO need to add a new LinkedList here to hold the actual params
     	// calculated from the string that I get from the visitChildren() above
     	statementContent = statementContent +identifierBeforeMethSel+");\n";
+    	listOfActualParams = listOfActualParams.concat(identifierBeforeMethSel);
+    	
+    	actualArgumentsMethod = separateParameters(listOfActualParams, ',');
     	
     	// Add fractionManipulationStatements
     	// First write the fraction manipulations of the preconditions
@@ -1454,13 +1480,11 @@ public class BoogieVisitor extends NullVisitor {
     					// The name_predicate object number is for
     					// when an argument is itself the argument of another 
     					//object proposition inclosed in this predicate.
-    					int firstIndexSpace = localField.indexOf(' ');
-    					String localNamePred = localField.substring(0, firstIndexSpace);  					
-    					String leftoverString = localField.substring(firstIndexSpace+1, localField.length());  					
-    					int secondIndexSpace =  leftoverString.indexOf(' ');
-    					String localObject = leftoverString.substring(0, secondIndexSpace);  					
-    					int localNumber = Integer.parseInt(
-    							leftoverString.substring(secondIndexSpace+1, leftoverString.length()));
+
+    					LinkedList<String> localFieldParts = separateParameters(localField, ' ');
+    					String localNamePred = localFieldParts.get(0);  					
+    					String localObject = localFieldParts.get(1);  					
+    					int localNumber = Integer.parseInt(localFieldParts.get(2));
     		        	// The list of which field each argument of 
     		        	// this predicate represents.
     					// This recursive idea only works for one level down, 
@@ -1572,7 +1596,8 @@ public class BoogieVisitor extends NullVisitor {
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
         				"]"+ packedOrUnpacked+") && \n \t \t(frac"+
         				upperCaseFirstLetter(predName)+"[");
-        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] >= " + fracInObjProp+")");
+        		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] >= " 
+        				+ fracInObjProp+")");
         		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(objectString+ "] >= " + fracInObjProp + ")");
         	} else {
@@ -1602,7 +1627,8 @@ public class BoogieVisitor extends NullVisitor {
         	} else {
             	bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-    			          "[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+    			          "[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+
+            			  upperCaseFirstLetter(predName)+"[");
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
             	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
             	bodyPredicate = bodyPredicate.concat(fieldName + "[this]] > 0.0)");
@@ -1919,7 +1945,8 @@ public class BoogieVisitor extends NullVisitor {
     			stringOfVarDecls = stringOfVarDecls.concat("\t var " + localVariableName +":Ref;\n");
     		}
     		else 
-    			stringOfVarDecls = stringOfVarDecls.concat("\t var " + localVariableName +":"+ fieldType+";\n");
+    			stringOfVarDecls = stringOfVarDecls.concat("\t var " +
+    						localVariableName +":"+ fieldType+";\n");
     	
     	visitChildren(ast);
       }
@@ -2108,7 +2135,12 @@ public class BoogieVisitor extends NullVisitor {
     	inPackUnpackAnnotation = false;    	
   	}
     
-    String replaceFormalArgsWithActual() {
+    //TODO xxx
+    String replaceFormalArgsWithActual(
+    	LinkedList<FieldAndTypePair> formalParams,
+    	LinkedList<String> actualParams,
+    	String oldString
+    		) {
     	String result = "";
     	
     	return result;
@@ -2158,8 +2190,8 @@ public class BoogieVisitor extends NullVisitor {
     		 formalParams.clear();
     		 actualParams.clear();
     		 formalParams = methodParams.get(namePredOrMethod);
-    		 
-    		 
+    		 // This is the list of actual arguments for the current method 
+    		 actualParams = actualArgumentsMethod;
     		 
     		 if (isPrecond) {
     		 fractionManipulationsList = fractionManipulationsListMethodPre.get(namePredOrMethod);
@@ -2174,8 +2206,10 @@ public class BoogieVisitor extends NullVisitor {
     		 if (!fracMan.getIfCondition().equals("")) {
     			 result = result.concat("if (" + fracMan.getIfCondition() + ") {\n ");
     		 }
-    		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + fracMan.getFractionObject()
-    				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + fracMan.getFractionObject()
+    		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + 
+    				 "[" + fracMan.getFractionObject()
+    				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
+    				 fracMan.getFractionObject()
     				 +"]"); 
     		 modifyFieldsInMethod("frac" + upperCaseFirstLetter(fracMan.getPredName()));
     		 if (isPredicate) {
@@ -2188,7 +2222,8 @@ public class BoogieVisitor extends NullVisitor {
     			 result = result.concat("-"); // if it's in the precondition it means we consume(subtract)
     			 							// this part of the fraction
     		 } else {
-    			 result = result.concat("+"); //if it's in the postcondition it means we add to the existing amount
+    			 result = result.concat("+"); //if it's in the postcondition it means we add 
+    			 							//to the existing amount
     			 							//this part of the fraction
     		 }
     		 result = result.concat(fracMan.getFraction()+";\n");
@@ -2806,7 +2841,8 @@ public class BoogieVisitor extends NullVisitor {
     		out.write("\n");
     	}
     	catch (Exception e) {
-    		System.err.println("Error in makeConstructors declaration of packed and frac: " + e.getMessage());
+    		System.err.println("Error in makeConstructors declaration of packed and frac: " +
+    					e.getMessage());
     	}
     	    	
     	try {
@@ -2830,7 +2866,8 @@ public class BoogieVisitor extends NullVisitor {
             			fieldsTypes.get(fieldsTypes.size()-1).getName() + "1); \n \n");
     		}
         	catch (Exception e) {
-        		System.err.println("Error in makeConstructors writing of procedure Construct: " + e.getMessage());
+        		System.err.println("Error in makeConstructors writing of procedure Construct: " + 
+        					e.getMessage());
         	}
     }
         
