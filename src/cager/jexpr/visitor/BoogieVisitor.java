@@ -166,9 +166,8 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, String> methodSpec = new HashMap<String, String>();
 	
 	//This maps each method name to the parameters of that method.
-	//I think they are separated by commas.
-	//TODO they should not be separated by commas, they should be a LinkedList
-	HashMap<String, String> methodParams = new HashMap<String, String>();
+	HashMap<String, LinkedList<FieldAndTypePair>> methodParams = 
+			new HashMap<String, LinkedList<FieldAndTypePair>>();
 	
 	// TODO 
 	// Fix the null error that happens when
@@ -362,6 +361,9 @@ public class BoogieVisitor extends NullVisitor {
 	//The actual arguments for the predicate in the constructor 
 	//that is currently called.
 	LinkedList<String> argumentsPredicate = new LinkedList<String>();
+	
+	// The actual arguments for the current method.
+	LinkedList<String> actualArgumentsMethod = new LinkedList<String>();
 	
 	//The Boogie Visitors of the files that have been translated before this one.
 	BoogieVisitor[] bv;
@@ -655,7 +657,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     	methodBody.put(methodName, "");
     	methodSpec.put(methodName, "");
-    	methodParams.put(methodName, "");
+    	methodParams.put(methodName, new LinkedList<FieldAndTypePair>());
     	fractionManipulationsListMethodPre.put(methodName, new LinkedList<FractionManipulationStatement>());
     	fractionManipulationsListMethodPost.put(methodName, new LinkedList<FractionManipulationStatement>());
     	currentMethod = methodName;
@@ -810,7 +812,10 @@ public class BoogieVisitor extends NullVisitor {
     	    
     	    try {
     	    //TODO add all parameters when calling function
-    	    out.write(methodParams.get(currentMethod));
+    	    LinkedList<FieldAndTypePair> currentMethodParams = methodParams.get(currentMethod);
+    	    for (int i=0; i<currentMethodParams.size(); i++) {
+    	    	out.write(currentMethodParams.get(i).getName()+":"+currentMethodParams.get(i).getType() + ", ");
+    	    }
     	    out.write("this:Ref)\n");
 							
     	    //Need to automatically detect what is being modified, 
@@ -1152,6 +1157,14 @@ public class BoogieVisitor extends NullVisitor {
   		  }
     		
     }
+    
+    LinkedList<String> separateParameters(String full) {
+    	 LinkedList<String> result = new  LinkedList<String>();
+    	 
+    	 
+    	 return result;
+    }
+    
 
     public void visitMethodSelection(MethodSelection ast) 
     		throws ParseException
@@ -1188,11 +1201,13 @@ public class BoogieVisitor extends NullVisitor {
     	// Add fractionManipulationStatements
     	// First write the fraction manipulations of the preconditions
     	statementContent = statementContent.concat(
-    			writeFractionManipulation(methodName, false, false, true));
+    			writeFractionManipulation(
+    					methodName, false, false, true, identifierBeforeMethSel));
     	
     	// Second write the fraction manipulations of the postconditions
     	statementContent = statementContent.concat(
-    			writeFractionManipulation(methodName, false, false, false));
+    			writeFractionManipulation(
+    					methodName, false, false, false, identifierBeforeMethSel));
   
     	//If the last 2 characters are ";\n" we need to delete them because
     	//they are going to be added at the end of visitStatement.
@@ -1801,7 +1816,7 @@ public class BoogieVisitor extends NullVisitor {
     			modifyFormalParams(name, type); 
     			addArgToPredArgWhichField(name);
     		} else if (currentMethod !="") {
-    			modifyMethodParams(name+ ":" + type +",");
+    			modifyMethodParams(name, type);
     		}
     		//I don't think this node has any children.
     		visitChildren(ast);
@@ -2071,10 +2086,12 @@ public class BoogieVisitor extends NullVisitor {
     	toWrite = toWrite.concat(objectObjProp + ");\n"); 
        	if (annotationName.equals("pack")) {
     	 	// Add the fraction manipulations statements
-    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, true, false));
+    		toWrite = toWrite.concat(writeFractionManipulation(
+    				predicateNameObjProp, true, true, false, objectObjProp));
     	} else {
     	 	// Add the fraction manipulations statements
-    		toWrite = toWrite.concat(writeFractionManipulation(predicateNameObjProp, true, false, false));
+    		toWrite = toWrite.concat(writeFractionManipulation(
+    				predicateNameObjProp, true, false, false, objectObjProp));
     	}
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
@@ -2091,12 +2108,21 @@ public class BoogieVisitor extends NullVisitor {
     	inPackUnpackAnnotation = false;    	
   	}
     
+    String replaceFormalArgsWithActual() {
+    	String result = "";
+    	
+    	return result;
+    }
+    
     String writeFractionManipulation(
-    		String namePredOrMethod, boolean isPredicate, boolean isPack, boolean isPrecond
+    		String namePredOrMethod, 
+    		boolean isPredicate, 
+    		boolean isPack, 
+    		boolean isPrecond,
+    		String callingObject
     ) {
     	String result = "";
     	 LinkedList<FractionManipulationStatement> fractionManipulationsList;
-    	 // TODO xxx
     	 // First I need to get the formal parameters list corresponding to this method or 
     	 // predicate and also the actual parameters list. 
     	 // In condition and in the fraction object I need to replace the formal parameters with
@@ -2108,6 +2134,8 @@ public class BoogieVisitor extends NullVisitor {
     	 LinkedList<String> actualParams = new LinkedList<String>();
     	 
     	 if (isPredicate) {
+    		 formalParams.clear();
+    		 actualParams.clear();
     		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
     		 // use paramsPredicateBody for formal params.
     		 // for actual params use argumentsObjProp and existentialArgsObjProp
@@ -2117,15 +2145,22 @@ public class BoogieVisitor extends NullVisitor {
     		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 
     		 // These are the actual parameters of the current object proposition.
-    		 // Maybe this is not right and I need to pass in argumentsObjProp.
+    		 // This is right because for the predicate case we are always inside an object proposition
+    		 // and argumentsObjProp are accurate.
     		 actualParams = argumentsObjProp;
     		 actualParams.addAll(existentialArgsObjProp);
-    	 
+    		 actualParams.add(callingObject);
     	 
     	 } else { 
     		 // look in methodParams for formal params
     		 // need to separate the comma separated params, then add "this" as it's not added yet.
-    		// for actual params need to add a new LinkedList in visitMethodSelection
+    		 // for actual params need to add a new LinkedList in visitMethodSelection
+    		 formalParams.clear();
+    		 actualParams.clear();
+    		 formalParams = methodParams.get(namePredOrMethod);
+    		 
+    		 
+    		 
     		 if (isPrecond) {
     		 fractionManipulationsList = fractionManipulationsListMethodPre.get(namePredOrMethod);
     	 } else {
@@ -2336,7 +2371,7 @@ public class BoogieVisitor extends NullVisitor {
     		parametersMethod.add(name);
     		String type = ast.getType().toString();
     	if (currentMethod !="") {
-    		modifyMethodParams(name+ ":" + type +",");
+    		modifyMethodParams(name,type);
     	}
     		//I don't think this node has any children.
     		visitChildren(ast);
@@ -2522,9 +2557,11 @@ public class BoogieVisitor extends NullVisitor {
 		methodSpec.put(currentMethod, currentMethodSpec);
     }
     
-    void modifyMethodParams(String s) {
-    	String currentMethodParams = methodParams.get(currentMethod);
-		currentMethodParams = currentMethodParams.concat(s);
+    void modifyMethodParams(String field, String type) {
+    	LinkedList<FieldAndTypePair> currentMethodParams = methodParams.get(currentMethod);
+    	if (currentMethodParams!=null) {
+    		currentMethodParams.add(new FieldAndTypePair(field, type));
+    	}
 		methodParams.put(currentMethod, currentMethodParams);
     }
     
