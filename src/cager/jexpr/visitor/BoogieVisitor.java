@@ -2143,11 +2143,20 @@ public class BoogieVisitor extends NullVisitor {
     //TODO xxx
     // Each formal parameter is surrounded by [ and ] in oldString
     String replaceFormalArgsWithActual(
+    	// TODO there is an error here, this should be LinkedList<String>
     	LinkedList<FieldAndTypePair> formalParams,
     	LinkedList<String> actualParams,
     	String oldString
     ) {
     	String result = "";
+    	int indexOfLeftParen = oldString.indexOf('[');
+    	int indexOfRightParen = oldString.indexOf(']');
+    	//TODO might need to adjust these indexes
+    	String currentParam = oldString.substring(indexOfLeftParen, indexOfRightParen);
+    	int indexOfCurrentParam = formalParams.indexOf(currentParam);
+    	result = result.concat(oldString.substring(0, indexOfLeftParen));
+    	result = result.concat(actualParams.get(indexOfCurrentParam));
+    	
     	
     	return result;
     }
