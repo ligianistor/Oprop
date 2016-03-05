@@ -2140,10 +2140,34 @@ public class BoogieVisitor extends NullVisitor {
     	inPackUnpackAnnotation = false;    	
   	}
     
-    //TODO xxx
+    String findActualParamInFormals(
+        	LinkedList<FieldAndTypePair> formalParams,
+        	LinkedList<String> actualParams,
+        	String formalParameter) {
+    	String result = "";
+    	
+    	int indexOfCurrentParam = -1;
+		for (int i=0; i<formalParams.size(); i++) {
+			if (formalParams.get(i).getName().equals(formalParameter)) {
+				indexOfCurrentParam = i;
+			}
+		}
+
+		// This should always be different than -1.
+		// TODO I should not need the second part of this condition
+		if ((indexOfCurrentParam != -1) && (indexOfCurrentParam < actualParams.size()) ){
+			result = actualParams.get(indexOfCurrentParam);
+		}	
+		return result;
+    	
+    }
+    
+    
+    
+    
+    
     // Each formal parameter is surrounded by [ and ] in oldString
     String replaceFormalArgsWithActual(
-    	// TODO there is an error here, this should be LinkedList<String>
     	LinkedList<FieldAndTypePair> formalParams,
     	LinkedList<String> actualParams,
     	String oldString
@@ -2151,12 +2175,28 @@ public class BoogieVisitor extends NullVisitor {
     	String result = "";
     	int indexOfLeftParen = oldString.indexOf('[');
     	int indexOfRightParen = oldString.indexOf(']');
-    	//TODO might need to adjust these indexes
-    	String currentParam = oldString.substring(indexOfLeftParen, indexOfRightParen);
-    	int indexOfCurrentParam = formalParams.indexOf(currentParam);
-    	result = result.concat(oldString.substring(0, indexOfLeftParen));
-    	result = result.concat(actualParams.get(indexOfCurrentParam));
-    	
+    	while (indexOfLeftParen != -1) {
+    		//TODO might need to adjust these indexes
+    		String currentParam = oldString.substring(indexOfLeftParen, indexOfRightParen);
+    		int indexOfCurrentParam = -1;
+    		for (int i=0; i<formalParams.size(); i++) {
+    			if (formalParams.get(i).getName().equals(currentParam)) {
+    				indexOfCurrentParam = i;
+    			}
+    		}
+    		
+    		// This should always be different than -1.
+    		if (indexOfCurrentParam != -1) {
+    			result = result.concat(oldString.substring(0, indexOfLeftParen));
+    			result = result.concat(actualParams.get(indexOfCurrentParam));
+    		}
+    		
+    		oldString = oldString.substring(indexOfRightParen+1, oldString.length());
+    		
+    		indexOfLeftParen = oldString.indexOf('[');
+        	indexOfRightParen = oldString.indexOf(']');
+    		
+    	}
     	
     	return result;
     }
@@ -2219,12 +2259,22 @@ public class BoogieVisitor extends NullVisitor {
     		 FractionManipulationStatement fracMan = fractionManipulationsList.get(i);
     		
     		 if (!fracMan.getIfCondition().equals("")) {
-    			 result = result.concat("if (" + fracMan.getIfCondition() + ") {\n ");
+    			 result = result.concat("if (" + 
+    					 replaceFormalArgsWithActual(
+    							 formalParams,
+    							 actualParams,
+    							 fracMan.getIfCondition()
+    							 ) + ") {\n ");
     		 }
+    		 
+    		    String actualObject = findActualParamInFormals(
+    		        	formalParams,
+    		        	actualParams,
+    		        	 fracMan.getFractionObject());
     		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + 
-    				 "[" + fracMan.getFractionObject()
+    				 "[" + actualObject
     				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
-    				 fracMan.getFractionObject()
+    				 actualObject
     				 +"]"); 
     		 modifyFieldsInMethod("frac" + upperCaseFirstLetter(fracMan.getPredName()));
     		 if (isPredicate) {
