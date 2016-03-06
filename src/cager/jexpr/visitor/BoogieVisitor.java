@@ -2169,16 +2169,14 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<String> actualParams,
     	String oldString
     ) {
-    	//System.out.println("oldString"+oldString);
     	String result = "";
     	int indexOfLeftParen = oldString.indexOf('[');
     	int indexOfRightParen = oldString.indexOf(']');
-    	//System.out.println(indexOfLeftParen);
-    	//System.out.println(indexOfRightParen);
+
     	while (indexOfLeftParen != -1) {
     		
     		String currentParam = oldString.substring(indexOfLeftParen+1, indexOfRightParen);
-    		//System.out.println("currentParam" + currentParam);
+    	
     		int indexOfCurrentParam = -1;
     		for (int i=0; i<formalParams.size(); i++) {
     			if (formalParams.get(i).getName().equals(currentParam)) {
@@ -2189,7 +2187,6 @@ public class BoogieVisitor extends NullVisitor {
     		// This should always be different than -1.
     		if (indexOfCurrentParam != -1) {
     			result = result.concat(oldString.substring(0, indexOfLeftParen));
-    			//System.out.println("newParam" + actualParams.get(indexOfCurrentParam));
     			result = result.concat(actualParams.get(indexOfCurrentParam));
     		}
     		
@@ -2200,7 +2197,7 @@ public class BoogieVisitor extends NullVisitor {
     		
     	}
     	result = result.concat(oldString);
-    	//System.out.println("resultString"+result);
+
     	return result;
     }
     
@@ -2240,11 +2237,7 @@ public class BoogieVisitor extends NullVisitor {
     		 // Here I am making a copy of the actual list of formal paramters
     		 // because I do not want to add elements to the original list.
     		 formalParams = copyLinkedList(args.getFormalParameters());
-    		 //TODO xxx
-    		 // need to create a copy method for formal params
-    		 // right now I'm modifying the actual formalParams below
-    		// System.out.println(args.getFormalParameters().size() + " size of existential args:"+ args.getExistentialParameters().size());
-    		 
+
     		 formalParams.addAll(args.getExistentialParameters());
     		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 
@@ -2254,33 +2247,16 @@ public class BoogieVisitor extends NullVisitor {
     		 actualParams = copyLinkedList(argumentsObjProp);
     		 actualParams.addAll(existentialArgsObjProp);
     		 actualParams.add(callingObject);
-    		/* 
-    		 System.out.println("Formal params for predicate:" + namePredOrMethod);
-    		 for (int i=0; i<formalParams.size(); i++) {
-    			 System.out.println(formalParams.get(i).getName());
-    		 }
-    		 System.out.println("Actual params for predicate :"+ namePredOrMethod);
-    		 for (int i=0; i<actualParams.size(); i++) {
-    			 System.out.println(actualParams.get(i));
-    		 }
-    	 */
+
     	 } else { 
     		 // look in methodParams for formal params
     		 // need to separate the comma separated params, then add "this" as it's not added yet.
     		 // for actual params need to add a new LinkedList in visitMethodSelection
-    		 formalParams =  methodParams.get(namePredOrMethod);
+    		 formalParams = copyLinkedList(methodParams.get(namePredOrMethod));
+    		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 // This is the list of actual arguments for the current method 
     		 actualParams = actualArgumentsMethod;
-    		/* 
-    		 System.out.println("Formal params for method:" + namePredOrMethod);
-    		 for (int i=0; i<formalParams.size(); i++) {
-    			 System.out.println(formalParams.get(i).getName());
-    		 }
-    		 System.out.println("Actual params for method:" + namePredOrMethod);
-    		 for (int i=0; i<actualParams.size(); i++) {
-    			 System.out.println(actualParams.get(i));
-    		 }
-    		 */
+
     		 if (isPrecond) {
     		 fractionManipulationsList = fractionManipulationsListMethodPre.get(namePredOrMethod);
     	 } else {
@@ -2345,10 +2321,22 @@ public class BoogieVisitor extends NullVisitor {
     		PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
     		String fieldName = quantifiedVars.get(pv);
        
+    		//TODO do I really need these quantifiedVars?
+    		// If I do, put comments why.
     		if (namePredicate.equals("")) {
     			//we are not inside a predicate
     			if (!(fieldName == null)) {
     				// TODO need to refactor this function
+    				
+					if ((currentMethod != "") && (inArgumentList) 
+							&& (inStatement) && !inFieldSelection) {
+						if (inBinaryExpression) {
+							statementContent = statementContent.concat(fieldName+ "[this]");
+						} else {
+							statementContent = statementContent.concat(fieldName+ "[this]" + ", ");
+						}
+					}
+					
     				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				} else if (inPackUnpackAnnotation &&
