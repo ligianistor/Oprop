@@ -33,11 +33,11 @@ predicate count(int c) =
 void updateCount() 
 
 {
+			Composite op;
 			Composite ol;
-			Composite or;
-			int lc;
+			int c1;
 			int rc;
-unpack(this#1.0 count(op.count))[ol, or, lc, rc];
+			unpack(this#0.5 left(ol, c1))[op];
 
 }
 

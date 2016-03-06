@@ -2169,12 +2169,16 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<String> actualParams,
     	String oldString
     ) {
+    	//System.out.println("oldString"+oldString);
     	String result = "";
     	int indexOfLeftParen = oldString.indexOf('[');
     	int indexOfRightParen = oldString.indexOf(']');
+    	//System.out.println(indexOfLeftParen);
+    	//System.out.println(indexOfRightParen);
     	while (indexOfLeftParen != -1) {
-    		//TODO might need to adjust these indexes
-    		String currentParam = oldString.substring(indexOfLeftParen, indexOfRightParen);
+    		
+    		String currentParam = oldString.substring(indexOfLeftParen+1, indexOfRightParen);
+    		//System.out.println("currentParam" + currentParam);
     		int indexOfCurrentParam = -1;
     		for (int i=0; i<formalParams.size(); i++) {
     			if (formalParams.get(i).getName().equals(currentParam)) {
@@ -2185,6 +2189,7 @@ public class BoogieVisitor extends NullVisitor {
     		// This should always be different than -1.
     		if (indexOfCurrentParam != -1) {
     			result = result.concat(oldString.substring(0, indexOfLeftParen));
+    			//System.out.println("newParam" + actualParams.get(indexOfCurrentParam));
     			result = result.concat(actualParams.get(indexOfCurrentParam));
     		}
     		
@@ -2194,7 +2199,8 @@ public class BoogieVisitor extends NullVisitor {
         	indexOfRightParen = oldString.indexOf(']');
     		
     	}
-    	
+    	result = result.concat(oldString);
+    	//System.out.println("resultString"+result);
     	return result;
     }
     
@@ -2231,6 +2237,8 @@ public class BoogieVisitor extends NullVisitor {
     		 // use paramsPredicateBody for formal params.
     		 // for actual params use argumentsObjProp and existentialArgsObjProp
     		 FieldTypePredbody args = paramsPredicateBody.get(namePredOrMethod);
+    		 // Here I am making a copy of the actual list of formal paramters
+    		 // because I do not want to add elements to the original list.
     		 formalParams = copyLinkedList(args.getFormalParameters());
     		 //TODO xxx
     		 // need to create a copy method for formal params
