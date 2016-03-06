@@ -2155,16 +2155,13 @@ public class BoogieVisitor extends NullVisitor {
 
 		// This should always be different than -1.
 		// TODO I should not need the second part of this condition
-		if ((indexOfCurrentParam != -1) && (indexOfCurrentParam < actualParams.size()) ){
+		// TODO without it it crashes
+		if ((indexOfCurrentParam != -1)) {
 			result = actualParams.get(indexOfCurrentParam);
 		}	
 		return result;
     	
     }
-    
-    
-    
-    
     
     // Each formal parameter is surrounded by [ and ] in oldString
     String replaceFormalArgsWithActual(
@@ -2201,6 +2198,15 @@ public class BoogieVisitor extends NullVisitor {
     	return result;
     }
     
+    public <K> LinkedList<K> copyLinkedList(LinkedList<K> l) {
+    	 LinkedList<K> result = new LinkedList<K>();
+    	 for (int i = 0; i< l.size(); i++) {
+    		 result.add(l.get(i));
+    	 }
+    	 return result;
+    }
+    
+    
     String writeFractionManipulation(
     		String namePredOrMethod, 
     		boolean isPredicate, 
@@ -2221,33 +2227,52 @@ public class BoogieVisitor extends NullVisitor {
     	 LinkedList<String> actualParams = new LinkedList<String>();
     	 
     	 if (isPredicate) {
-    		 formalParams.clear();
-    		 actualParams.clear();
     		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
     		 // use paramsPredicateBody for formal params.
     		 // for actual params use argumentsObjProp and existentialArgsObjProp
     		 FieldTypePredbody args = paramsPredicateBody.get(namePredOrMethod);
-    		 formalParams = args.getFormalParameters();
+    		 formalParams = copyLinkedList(args.getFormalParameters());
+    		 //TODO xxx
+    		 // need to create a copy method for formal params
+    		 // right now I'm modifying the actual formalParams below
+    		// System.out.println(args.getFormalParameters().size() + " size of existential args:"+ args.getExistentialParameters().size());
+    		 
     		 formalParams.addAll(args.getExistentialParameters());
     		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 
     		 // These are the actual parameters of the current object proposition.
     		 // This is right because for the predicate case we are always inside an object proposition
     		 // and argumentsObjProp are accurate.
-    		 actualParams = argumentsObjProp;
+    		 actualParams = copyLinkedList(argumentsObjProp);
     		 actualParams.addAll(existentialArgsObjProp);
     		 actualParams.add(callingObject);
-    	 
+    		/* 
+    		 System.out.println("Formal params for predicate:" + namePredOrMethod);
+    		 for (int i=0; i<formalParams.size(); i++) {
+    			 System.out.println(formalParams.get(i).getName());
+    		 }
+    		 System.out.println("Actual params for predicate :"+ namePredOrMethod);
+    		 for (int i=0; i<actualParams.size(); i++) {
+    			 System.out.println(actualParams.get(i));
+    		 }
+    	 */
     	 } else { 
     		 // look in methodParams for formal params
     		 // need to separate the comma separated params, then add "this" as it's not added yet.
     		 // for actual params need to add a new LinkedList in visitMethodSelection
-    		 formalParams.clear();
-    		 actualParams.clear();
-    		 formalParams = methodParams.get(namePredOrMethod);
+    		 formalParams =  methodParams.get(namePredOrMethod);
     		 // This is the list of actual arguments for the current method 
     		 actualParams = actualArgumentsMethod;
-    		 
+    		/* 
+    		 System.out.println("Formal params for method:" + namePredOrMethod);
+    		 for (int i=0; i<formalParams.size(); i++) {
+    			 System.out.println(formalParams.get(i).getName());
+    		 }
+    		 System.out.println("Actual params for method:" + namePredOrMethod);
+    		 for (int i=0; i<actualParams.size(); i++) {
+    			 System.out.println(actualParams.get(i));
+    		 }
+    		 */
     		 if (isPrecond) {
     		 fractionManipulationsList = fractionManipulationsListMethodPre.get(namePredOrMethod);
     	 } else {
@@ -2267,10 +2292,10 @@ public class BoogieVisitor extends NullVisitor {
     							 ) + ") {\n ");
     		 }
     		 
-    		    String actualObject = findActualParamInFormals(
+    		 String actualObject = findActualParamInFormals(
     		        	formalParams,
     		        	actualParams,
-    		        	 fracMan.getFractionObject());
+    		        	fracMan.getFractionObject());
     		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + 
     				 "[" + actualObject
     				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
