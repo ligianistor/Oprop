@@ -79,31 +79,37 @@ int rc2;
 int newc; 
 newc = 1;
 unpack(this#0.5 left(ol, c1))[op];
+if (ol != null) { fracCount[ol] := fracCount[ol] + 0.5; } //fracMan
 if (this.left != null) {
-	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];	
+	unpack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];
+	fracLeft[ol] := fracLeft[ol] + 0.5; //fracMan
+	fracRight[ol] := fracRight[ol] + 0.5; //fracMan
 	newc = newc + this.left.count;
 	pack(ol#0.5 count(c1))[ol1, or1, lc1, rc1];
-	fracLeft[ol] := fracLeft[ol] - 0.5;
-	fracRight[ol] := fracRight[ol] - 0.5;
+	fracLeft[ol] := fracLeft[ol] - 0.5; //fracMan
+	fracRight[ol] := fracRight[ol] - 0.5; //fracMan
 }
 pack(this#0.5 left(ol, c1))[op];
-(ol!=null) ~=> fracCount[ol] := fracCount[ol] - 0.5;
+if (ol!=null) { fracCount[ol] := fracCount[ol] - 0.5; } //fracMan
 
 unpack(this#0.5 right(or, c2))[op];	
+if (or!=null) { fracCount[or] := fracCount[or] + 0.5; } //fracMan
 
 if (this.right != null) {
 	unpack(or#0.5 count(c2))[ol2, or2, lc2, rc2];
+	fracLeft[or] := fracLeft[or] + 0.5; //fracMan
+	fracRight[or] := fracRight[or] + 0.5; //fracMan
 	newc = newc + this.right.count;
 	pack(or#0.5 count(c2))[ol2, or2, lc2, rc2];
-	fracLeft[or] := fracLeft[or] - 0.5;
-	fracRight[or] := fracRight[or] - 0.5;
+	fracLeft[or] := fracLeft[or] - 0.5; //fracMan
+	fracRight[or] := fracRight[or] - 0.5; //fracMan
 }
 pack(this#0.5 right(or, c2))[op];
-(or != null) ~=> (fracCount[or] := fracCount[or] - 0.5);
+if (or != null) { fracCount[or] := fracCount[or] - 0.5;} //fracMan
 this.count = newc; 
 pack(this#1.0 count(newc))[ol, or, c1, c2];
-fracLeft[this] := fracLeft[this] - 0.5;
-fracRight[this] := fracRight[this] - 0.5;
+fracLeft[this] := fracLeft[this] - 0.5; //fracMan
+fracRight[this] := fracRight[this] - 0.5; //fracMan
 }
 
 void updateCountRec() 
@@ -143,8 +149,21 @@ if (this.parent != null) {
 	// fraction to it as before.
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
+	fracCount[opp] := fracCount[opp] + 0.5; //fracMan
+	if (parent[opp] != null) {  //fracMan
+		fracParent[parent[opp]] := fracParent[parent[opp]] + 0.001; //fracMan  
+	} //fracMan
+	if ((parent[opp] != null) && (left[parent[opp]] == opp)) { //fracMan
+		fracLeft[parent[opp]] := fracLeft[parent[opp]] + 0.5; //fracMan
+	} //fracMan
+	if ((parent[opp] != null) && (right[parent[opp]] == opp)) { //fracMan 
+		fracRight[parent[opp]] := fracRight[parent[opp]] + 0.5; //fracMan
+	} //fracMan
+	if (parent[opp] == null) { fracCount[opp] := fracCount[opp] + 0.5; } //fracMan
 	
 	unpack(opp#0.5 count(opp.count))[oll, this, llc, lcc];
+	fracLeft[opp] := fracLeft[opp] + 0.5; //fracMan
+	fracRight[opp] := fracRight[opp] + 0.5; //fracMan
 			
 	if (this == this.parent.right) {
 		//The rule in the formal system should be that
@@ -154,6 +173,7 @@ if (this.parent != null) {
 		fracRight[opp] := 0.5 + 0.5;
 		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 right(this, lcc))[opp.parent];
+		if (this != null) { fracCount[this] := fracCount[this] + 0.5; } //fracMan
 		
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
 		fracCount[this] := 0.5 + 0.5;
@@ -162,7 +182,7 @@ if (this.parent != null) {
 		fracLeft[this] := fracLeft[this] - 0.5;
 		fracRight[this] := fracRight[this] - 0.5;
 
-		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
+		if (opp!=null) { fracCount[opp] := fracCount[opp] - k; }
 		fracCount[this] := 1.0;
 		pack(this#k2 parent())[opp, lc + rc + 1];
 		fracCount[this] := fracCount[this] - 0.5;
@@ -211,7 +231,7 @@ if (this.parent != null) {
 		fracLeft[this] := fracLeft[this] - 0.5;
 		fracRight[this] := fracRight[this] - 0.5;
 		// Instead of k I can divide and multiply by 2 (and top at 1 if necessary)
-		(opp!=null) ~=> fracCount[opp] := fracCount[opp] - k;
+		if (opp!=null) { fracCount[opp] := fracCount[opp] - k; }
 		fracCount[this] := 1.0;
 		pack(this#k2 parent())[opp, lc + rc + 1];
 		fracCount[this] := fracCount[this] - 0.5;
