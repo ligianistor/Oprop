@@ -114,6 +114,8 @@ void updateCountRec()
 Composite opp, int lcc,
 Composite or, Composite ol,
 int lc, int rc:
+	// I do the same algorithm for fraction manipulation statements 
+	// for unpacked() and packed object propositions in the pre- and post-conditions.
 requires unpacked(this#k1 parent()) &&
 	this.parent -> opp &&
 	(opp != this) &&

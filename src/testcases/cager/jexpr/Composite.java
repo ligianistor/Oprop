@@ -101,8 +101,8 @@ requires unpacked(this#k1 parent()) &&
 	this.parent -> opp &&
 	(opp != this) &&
    ( (opp != null) ~=> (opp#k parent()) ) && 
-   ( (opp != null) &&	(opp.left == this)) ~=>	 (opp#0.5 left(this, lcc)) &&
-   ( (opp != null) && (opp.right == this)) ~=>	 (opp#0.5 right(this, lcc))
+  ( ( (opp != null) &&	(opp.left == this)) ~=>	 (opp#0.5 left(this, lcc))) &&
+    ( ( (opp != null) && (opp.right == this)) ~=>	 (opp#0.5 right(this, lcc)))
       &&
      ((opp == null) ~=> (this#0.5 count(lcc)))
       &&
