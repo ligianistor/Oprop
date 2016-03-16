@@ -2332,7 +2332,10 @@ public class BoogieVisitor extends NullVisitor {
 							&& (inStatement) && !inFieldSelection) {
 						if (inBinaryExpression) {
 							statementContent = statementContent.concat(fieldName+ "[this]");
-						} else {
+						} 
+						// TODO This really needs to be refactored and
+						// understand all the cases.
+						if (inMethodSelectionStatement) {
 							statementContent = statementContent.concat(fieldName+ "[this]" + ", ");
 						}
 					}
