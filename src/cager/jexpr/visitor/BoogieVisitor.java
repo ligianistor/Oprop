@@ -2285,22 +2285,50 @@ public class BoogieVisitor extends NullVisitor {
     				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
     				 actualObject
     				 +"]"); 
+    		 String fractionString = fracMan.getFraction();
     		 modifyFieldsInMethod("frac" + upperCaseFirstLetter(fracMan.getPredName()));
-    		 if (isPredicate) {
-    			 if (isPack) {
-    			 	result = result.concat("-");
-    		 	} else {
-    			 	result = result.concat("+");
-    		 	}
-    		 } else if (isPrecond) {
-    			 result = result.concat("-"); // if it's in the precondition it means we consume(subtract)
-    			 							// this part of the fraction
+    		 if (isNumeric(fractionString)) {
+    			 if (isPredicate) {
+    				 if (isPack) {
+    					 result = result.concat("-");
+    				 } else {
+    					 result = result.concat("+");
+    				 }
+    			 } else if (isPrecond) {
+    				 // if it's in the precondition it means we consume(subtract)
+    				 // this part of the fraction
+    				 result = result.concat("-"); 
+    			 } else {
+    				//if it's in the postcondition it means we add 
+    				//to the existing amount
+					//this part of the fraction
+    				result = result.concat("+"); 							
+    			 }
+    			 result = result.concat(fractionString);
     		 } else {
-    			 result = result.concat("+"); //if it's in the postcondition it means we add 
-    			 							//to the existing amount
-    			 							//this part of the fraction
+    			 // If we are in this branch
+    			 // it means that the fraction is "k" or similar
+    			 if (isPredicate) {
+    				 if (isPack) {
+    					 result = result.concat("/ 2.0");
+    				 } else {
+    					 result = result.concat("+ 0.001");
+    				 }
+    			 } else if (isPrecond) {
+    				 // if it's in the precondition it means we extract an arbitrary 
+    				 // portion of the fraction. For that it is enough to divide by 2.0 .
+    				 // It is 2.0 and not 2 because all the arguments have to be double 
+    				 // in Boogie in this case.
+    				 result = result.concat("/ 2.0"); 
+    			 } else {
+    				//if it's in the postcondition it means we add 
+    				// k, i.e., an arbitrary amount to the fraction.
+    				// I have chosen this arbitrary value to be 0.001.
+    				result = result.concat("+ 0.001"); 							
+    			 }
+    			 
     		 }
-    		 result = result.concat(fracMan.getFraction()+";\n");
+    		 result = result.concat(";\n");
     		 if (!fracMan.getIfCondition().equals("")) {
     			 result = result.concat("}\n");
     		 }
