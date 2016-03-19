@@ -2430,10 +2430,12 @@ public class BoogieVisitor extends NullVisitor {
     				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				} else {
-    					paramsPredicateBody.put(
-    							namePredicate, 
-    							currentParamsPredicateBody.concatToPredicateBody(identifierName)
-    					); 		   
+    					if (!inFieldSelection) {
+    						paramsPredicateBody.put(
+    								namePredicate, 
+    								currentParamsPredicateBody.concatToPredicateBody(identifierName)
+    						); 	
+    					}
     				}	
     		}
     		//TODO put more comments
