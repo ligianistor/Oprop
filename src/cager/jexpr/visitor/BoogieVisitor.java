@@ -1113,6 +1113,24 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast);
     }
     
+    String addDelimitersToString(String initial) {
+    	int index = initial.indexOf('[');
+    	if (index==-1) {
+    		return initial;
+    	} else {
+    		String result = initial.substring(0, index+1);
+    		result = result.concat("$");
+    		String leftover = initial.substring(index+1, initial.length());
+    		index = leftover.indexOf(']');
+    		String first = leftover.substring(0, index);
+    		String last = leftover.substring(index, leftover.length());
+    		result = result.concat(first+"@"+last);
+    		System.out.println("result= "+result);
+    		return result;
+    	}
+    	
+    }
+    
     // This is instead of visitFieldSelection.
     // We  do not end up in the visitFieldSelection() method
     // so I removed it.
@@ -1165,7 +1183,7 @@ public class BoogieVisitor extends NullVisitor {
     	
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat(fieldName);
+  					  ifConditionFractionManipulation.concat(addDelimitersToString(fieldName));
   		  }
     		
     }
@@ -2414,8 +2432,6 @@ public class BoogieVisitor extends NullVisitor {
     		// If we are in field selection, 
     		// this identifier will be written out in helperFieldSelection().
   		  if (inChild1OfImplies && !inFieldSelection) {
-  			  // TODO this is where parent[opp] gets written out
-  			  // this is where the error is
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat("$"+identifierName+"@");
   		  }
