@@ -1125,7 +1125,6 @@ public class BoogieVisitor extends NullVisitor {
     		String first = leftover.substring(0, index);
     		String last = leftover.substring(index, leftover.length());
     		result = result.concat(first+"@"+last);
-    		System.out.println("result= "+result);
     		return result;
     	}
     	
@@ -1379,7 +1378,15 @@ public class BoogieVisitor extends NullVisitor {
     		ifConditionFractionManipulation = "";
     	}
     	if (operatorSymbol.equals(":=")) { beforeChild0 = true; }
+		if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
+			ifConditionFractionManipulation = 
+					ifConditionFractionManipulation.concat("(");
+		}
 		children[0].accept(this );
+		if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
+			ifConditionFractionManipulation = 
+					ifConditionFractionManipulation.concat(")");
+		}
 
 		beforeChild0 = false;
 		  if (localOperatorSymbol.equals("==>")) {
@@ -1387,7 +1394,6 @@ public class BoogieVisitor extends NullVisitor {
 		  }
 		  
 		  if (inChild1OfImplies) {
-			  // TODO I need to add () around the binary expressions
 			  ifConditionFractionManipulation = 
 					  ifConditionFractionManipulation.concat(operatorSymbol);
 		  }
@@ -1396,7 +1402,16 @@ public class BoogieVisitor extends NullVisitor {
 		  if (localOperatorSymbol.equals("==>")) {
 			  inChild2OfImplies = true;
 		  }
+		  
+		  if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
+				ifConditionFractionManipulation = 
+						ifConditionFractionManipulation.concat("(");
+		  }
 		  children[1].accept(this );
+		  if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
+				ifConditionFractionManipulation = 
+						ifConditionFractionManipulation.concat(")");
+		  }
 		  if (localOperatorSymbol.equals("==>")) {
 			  inChild2OfImplies = false;
 			  ifConditionFractionManipulation = "";
