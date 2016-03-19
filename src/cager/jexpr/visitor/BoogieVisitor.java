@@ -1369,6 +1369,7 @@ public class BoogieVisitor extends NullVisitor {
 		  }
 		  
 		  if (inChild1OfImplies) {
+			  // TODO I need to add () around the binary expressions
 			  ifConditionFractionManipulation = 
 					  ifConditionFractionManipulation.concat(operatorSymbol);
 		  }
@@ -2354,7 +2355,6 @@ public class BoogieVisitor extends NullVisitor {
     		return;
     	try {
     		String identifierName = lastIdentifierOrKeyword;  
-       
     		if (namePredicate.equals("")) {
     			//we are not inside a predicate
     				if (!inPackUnpackAnnotation) {
@@ -2401,16 +2401,19 @@ public class BoogieVisitor extends NullVisitor {
     							namePredicate, 
     							currentParamsPredicateBody.concatToPredicateBody(identifierName)
     					); 		   
-    				}
-    			
+    				}	
     		}
+    		//TODO put more comments
+    		// and realign the code.
        
     		if (inArgumentList) {
     			argumentsConstructor.add(identifierName);
     			argumentsPredicate.add(identifierName);
     		}
         	
-  		  if (inChild1OfImplies) {
+    		// If we are in field selection, 
+    		// this identifier will be written out in helperFieldSelection().
+  		  if (inChild1OfImplies && !inFieldSelection) {
   			  // TODO this is where parent[opp] gets written out
   			  // this is where the error is
   			  ifConditionFractionManipulation = 
