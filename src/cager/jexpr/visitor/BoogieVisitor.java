@@ -1161,9 +1161,11 @@ public class BoogieVisitor extends NullVisitor {
     		}	
     	}
     	
+    	// TODO if it contains [] I have to surround what is inside by $@.
+    	
 		  if (inChild1OfImplies) {
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat("["+lastIdentifierOrKeyword+"]");
+  					  ifConditionFractionManipulation.concat(fieldName);
   		  }
     		
     }
@@ -2020,10 +2022,15 @@ public class BoogieVisitor extends NullVisitor {
         }
         
 		  if (inChild1OfImplies) {
+			  // Although "this" is a keyword,
+			  // it should be treated like a formal parameter.
+			  // That is why it is surrounded by $ and @.
 			  if (keywordString.equals("this")) {
 				  ifConditionFractionManipulation = 
-	  					  ifConditionFractionManipulation.concat("["+keywordString+"]");
+	  					  ifConditionFractionManipulation.concat("$"+keywordString+"@");
 			  } else {
+				  // The keywordString does not need to be replaced by
+				  // the actual parameter.
 				  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(keywordString);
 			  }
@@ -2170,8 +2177,8 @@ public class BoogieVisitor extends NullVisitor {
     	String oldString
     ) {
     	String result = "";
-    	int indexOfLeftParen = oldString.indexOf('[');
-    	int indexOfRightParen = oldString.indexOf(']');
+    	int indexOfLeftParen = oldString.indexOf('$');
+    	int indexOfRightParen = oldString.indexOf('@');
 
     	while (indexOfLeftParen != -1) {
     		
@@ -2192,8 +2199,8 @@ public class BoogieVisitor extends NullVisitor {
     		
     		oldString = oldString.substring(indexOfRightParen+1, oldString.length());
     		
-    		indexOfLeftParen = oldString.indexOf('[');
-        	indexOfRightParen = oldString.indexOf(']');
+    		indexOfLeftParen = oldString.indexOf('$');
+        	indexOfRightParen = oldString.indexOf('@');
     		
     	}
     	result = result.concat(oldString);
@@ -2269,11 +2276,11 @@ public class BoogieVisitor extends NullVisitor {
     		
     		 if (!fracMan.getIfCondition().equals("")) {
     			 result = result.concat("if (" + 
-    					// replaceFormalArgsWithActual(
-    						//	 formalParams,
-    							// actualParams,
+    					 replaceFormalArgsWithActual(
+    							 formalParams,
+    							 actualParams,
     							 fracMan.getIfCondition()
-    							 //)
+    							 )
     							 + ") {\n ");
     		 }
     		 
@@ -2347,51 +2354,9 @@ public class BoogieVisitor extends NullVisitor {
     		return;
     	try {
     		String identifierName = lastIdentifierOrKeyword;  
-    		PredicateAndFieldValue pv = new PredicateAndFieldValue(namePredicate, identifierName);
-    		String fieldName = quantifiedVars.get(pv);
        
-    		//TODO do I really need these quantifiedVars?
-    		// If I do, put comments why.
     		if (namePredicate.equals("")) {
     			//we are not inside a predicate
-    			if (!(fieldName == null)) {
-    				// TODO need to refactor this function
-    				
-					if ((currentMethod != "") && (inArgumentList) 
-							&& (inStatement) && !inFieldSelection) {
-						if (inBinaryExpression) {
-							statementContent = statementContent.concat(fieldName+ "[this]");
-						} 
-						// TODO This really needs to be refactored and
-						// understand all the cases.
-						if (inMethodSelectionStatement) {
-							statementContent = statementContent.concat(fieldName+ "[this]" + ", ");
-						}
-					}
-					
-    				if (insideObjectProposition && !inFieldSelection) {
-    					objectPropString = objectPropString.concat(identifierName);
-    				} else if (inPackUnpackAnnotation &&
-    						inArgumentList &&
-    						!inFieldSelection){
-						objectPropString = objectPropString.concat(identifierName);
-					}
-    				// When we are inside FieldSelection or MethodSelection,
-    				// we have already written the field out in another place.
-    				if (inStatement && !inPackUnpackAnnotation && !inFieldSelection &&
-    						!inMethodSelectionStatement) {
-    					modifyMethodBody(fieldName+ "[this]");
-    				}
-  			  
-    				// This should go in the else.
-    				// op goes here but it shouldn't for method spec. 
-    				// This if tries to fix the error.
-    				if ((insidePrecondition || insidePostcondition)  &&
-    					 !insideObjectProposition &&
-    					 !inFieldSelection) {
-    					modifyMethodSpec(identifierName); 
-    				} 
-    			} else {
     				if (!inPackUnpackAnnotation) {
     					// If we are in FieldSelection, this already 
     					// is written to the statementContent in another place.
@@ -2424,24 +2389,11 @@ public class BoogieVisitor extends NullVisitor {
     				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				}	
-    			}
+    			
     		} else {
     			//we are inside a predicate
     			FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(namePredicate);
-    	      	 
-    			if (!(fieldName == null)) {
-    				if (insideObjectProposition && !inFieldSelection) {
-    					objectPropString = objectPropString.concat(identifierName);
-    				}
-    				// Need the second condition because this part is already written out in 
-    				// helperFieldSelection.
-    				if (!insideObjectProposition && !inFieldSelection) {
-    					paramsPredicateBody.put(
-    							namePredicate, 
-    							currentParamsPredicateBody.concatToPredicateBody(fieldName+ "[this]")
-    					);
-    				}
-    			} else {
+    	      	
     				if (insideObjectProposition && !inFieldSelection) {
     					objectPropString = objectPropString.concat(identifierName);
     				} else {
@@ -2450,7 +2402,7 @@ public class BoogieVisitor extends NullVisitor {
     							currentParamsPredicateBody.concatToPredicateBody(identifierName)
     					); 		   
     				}
-    			}
+    			
     		}
        
     		if (inArgumentList) {
@@ -2459,8 +2411,10 @@ public class BoogieVisitor extends NullVisitor {
     		}
         	
   		  if (inChild1OfImplies) {
+  			  // TODO this is where parent[opp] gets written out
+  			  // this is where the error is
   			  ifConditionFractionManipulation = 
-  					  ifConditionFractionManipulation.concat("["+identifierName+"]");
+  					  ifConditionFractionManipulation.concat("$"+identifierName+"@");
   		  }
     	}
     	catch (Exception e) {
