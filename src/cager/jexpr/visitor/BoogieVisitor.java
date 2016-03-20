@@ -168,19 +168,9 @@ public class BoogieVisitor extends NullVisitor {
 	//This maps each method name to the parameters of that method.
 	HashMap<String, LinkedList<FieldAndTypePair>> methodParams = 
 			new HashMap<String, LinkedList<FieldAndTypePair>>();
-	
-	// TODO 
-	// Fix the null error that happens when
-	// the method has no requires
-	// or no ensures
-	// or no ~double k:
-	// int c: 
-	
-	//TODO add more error messages to know where the errors actually occur
-	
+
 	//This maps each method name to the existential variables of that method.
-	//I think they are separated by commas.
-	//TODO remove "I think" - is it sure?
+	//For each variable there is a part  name+ ":" + type +",".
 	HashMap<String, String> methodExistentialParams = 
 			new HashMap<String, String>();
 	
@@ -468,25 +458,24 @@ public class BoogieVisitor extends NullVisitor {
     
     public void visitFieldDeclaration(FieldDeclaration ast) 
     		throws ParseException 
-    { 
-    	String fieldName = ast.getName();
-
-    	fields.add(fieldName);
-    	fieldsTypes.add(
+  { 
+    	try {
+    		String fieldName = ast.getName();
+    		fields.add(fieldName);
+    		fieldsTypes.add(
     			new FieldAndTypePair(fieldName, ast.getType().toString()));
     	
-    	String fieldType = ast.getType().toString();
-    	boolean isClass = false;
+    		String fieldType = ast.getType().toString();
+    		boolean isClass = false;
 
-    	if (fieldType.equals(className)) {
-    		isClass = true;
-    	}
-    	for (int i=0; i<numberFilesBefore; i++) {
-    		if (bv[i].getClassName().equals(fieldType) )
+    		if (fieldType.equals(className)) {
     			isClass = true;
-    	}
+    		}
+    		for (int i=0; i<numberFilesBefore; i++) {
+    			if (bv[i].getClassName().equals(fieldType) )
+    				isClass = true;
+    		}
     	
-    	try {
     		if (isClass) {
     			out.write("var "+ fieldName +": [Ref]Ref;\n");
     		}
@@ -1134,6 +1123,7 @@ public class BoogieVisitor extends NullVisitor {
     // We  do not end up in the visitFieldSelection() method
     // so I removed it.
     public void helperFieldSelection(String identifierName) {
+    	try {
     	// TODO add additional checks for lastIdentifierOrKeyword
     	
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
@@ -1184,7 +1174,10 @@ public class BoogieVisitor extends NullVisitor {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(addDelimitersToString(fieldName));
   		  }
-    		
+		}
+		catch (Exception e) {
+			System.err.println("Error in  helperFieldSelection"	+ e.getMessage());
+		}	
     }
     
     // The String full is made of Strings separated by the character ch
@@ -1357,6 +1350,7 @@ public class BoogieVisitor extends NullVisitor {
     void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) 
     		throws ParseException 
     {
+    	try {
     	String localOperatorSymbol = operatorSymbol;
     	// We replace the linear implies ~=> with ==>.
     	if (operatorSymbol.equals("~=>")) {
@@ -1439,11 +1433,16 @@ public class BoogieVisitor extends NullVisitor {
 				modifyPredicateBinExpr(b);
 			} 
 		}
+		}
+		catch (Exception e) {
+			System.err.println("Error in  helperBinaryExpression"	+ e.getMessage());
+		}
     }
       
     public void visitLiteralExpression(LiteralExpression ast) 
     		throws ParseException 
     { 
+    	try {
     	String astvalue = ast.value.toString();
     	if (insideObjectProposition) {
 			  objectPropString = objectPropString.concat(astvalue);
@@ -1490,6 +1489,11 @@ public class BoogieVisitor extends NullVisitor {
   			  ifConditionFractionManipulation = 
   					  ifConditionFractionManipulation.concat(astvalue);
   		  }
+		  
+	}
+	catch (Exception e) {
+		System.err.println("Error in  visitLiteralExpression"	+ e.getMessage());
+	}
     	
     	visitChildren(ast); 
     }
@@ -1502,6 +1506,7 @@ public class BoogieVisitor extends NullVisitor {
     		LinkedList<String> args, 
     		String objectString) {
     	String result = "";
+    try {
     	for (int i=0;i<args.size();i++) {
     		ArgumentAndFieldPair argField = listArgsToFields.get(i);
     		//This can be null for predicates that have no arguments.
@@ -1542,12 +1547,18 @@ public class BoogieVisitor extends NullVisitor {
     			}
     		}
     	}
+    	
+	}
+	catch (Exception e) {
+		System.err.println("Error in  writePredArgWhichField"	+ e.getMessage());
+	}
     	return result;
     }
     
     public void visitObjectProposition(ObjectProposition ast) 
     		throws ParseException
-    {    	
+    {    
+    	try {
     	insideObjectProposition = true;
     	
         String packedOrUnpacked = "";
@@ -1760,6 +1771,10 @@ public class BoogieVisitor extends NullVisitor {
     		
     	}
     	insideObjectProposition = false;
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error in  visitObjectProposition "+ e.getMessage());
+    	}
     }
 
    
