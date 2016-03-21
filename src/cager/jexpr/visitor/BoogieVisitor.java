@@ -58,6 +58,28 @@ import cager.jexpr.ast.UnaryExpression;
  */
 public class BoogieVisitor extends NullVisitor {
 	
+	// Map that counts for each method how many calls to other methods 
+	// there are inside this method.
+	// Only if there are 0 methods inside we can think about skipping a 
+	// "requires forall" for a "packed" global variable.
+	
+	
+	// For each "packed" in the current method, this map
+	// points to a linked list that holds all the objects
+	// that are modified through "packed" in the body of the method.
+	
+	
+	
+	// For each "packed" in the current method, this map
+	// points to a linked list that holds all the objects
+	// that are mentioned in the precondition of the method.
+	// The above 3 maps will tell us what to write in the 
+	// "requires forall" for the packed variables
+	// in the pre-conditions of methods.
+	
+	
+	
+	
 	// This maps the (predicate, identifier) to the field that that 
 	// identifier represents.
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = 
