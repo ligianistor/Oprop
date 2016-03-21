@@ -62,21 +62,25 @@ public class BoogieVisitor extends NullVisitor {
 	// there are inside this method.
 	// Only if there are 0 methods inside we can think about skipping a 
 	// "requires forall" for a "packed" global variable.
-	
+	HashMap<String, Integer> numberInsideMethods = 
+			new HashMap<String, Integer>();
 	
 	// For each "packed" in the current method, this map
-	// points to a linked list that holds all the objects
+	// points to a set that holds all the objects
 	// that are modified through "packed" in the body of the method.
-	
+	HashMap<String, Set<String>> packedModifiedArgsInMethod =
+			new HashMap<String, Set<String>>();
 	
 	
 	// For each "packed" in the current method, this map
-	// points to a linked list that holds all the objects
+	// points to a set that holds all the objects
+	// of packedPred[object] (even if it's == false)
 	// that are mentioned in the precondition of the method.
 	// The above 3 maps will tell us what to write in the 
 	// "requires forall" for the packed variables
 	// in the pre-conditions of methods.
-	
+	HashMap<String, Set<String>> packedModifiedArgsInPrecondition =
+			new HashMap<String, Set<String>>();
 	
 	
 	
@@ -666,6 +670,10 @@ public class BoogieVisitor extends NullVisitor {
     	String methodName = ast.getIdentifier().name;
     	methods.add(methodName);
     	
+    	numberInsideMethods.put(methodName, new Integer(0));
+    	packedModifiedArgsInMethod.clear();
+    	packedModifiedArgsInPrecondition.clear();
+    	
     	methodBody.put(methodName, "");
     	methodSpec.put(methodName, "");
     	methodParams.put(methodName, new LinkedList<FieldAndTypePair>());
@@ -920,7 +928,24 @@ public class BoogieVisitor extends NullVisitor {
 							}
 						}
 					
-						if (unpackedObjects.isEmpty()) {
+						Set<String> argsInMethod = packedModifiedArgsInMethod.get(p);
+						Set<String> argsInPrecondition = packedModifiedArgsInPrecondition.get(p);
+						boolean areEqual = true;
+						if ((argsInMethod == null) || (argsInPrecondition==null)) {
+							areEqual = false;
+							//TODO what happens when both are null?
+						} else {
+							if (argsInMethod != argsInPrecondition) {
+								areEqual = false;
+							}
+						}
+						
+						if (unpackedObjects.isEmpty()
+							&&
+							!areEqual
+							&&
+							(numberInsideMethods.get(currentMethod) == 0)
+						) {
 							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
 										forallParameter+
@@ -1107,7 +1132,32 @@ public class BoogieVisitor extends NullVisitor {
 		}
     	isFirstMethod = false;
     }
- 
+    
+    void addArgToPackedModifiedArgsInMethod(String predName, String object) {
+    	Set<String> currentArguments = 
+    			packedModifiedArgsInMethod.get(predName);
+    	if (currentArguments == null) {
+    		currentArguments = new TreeSet<String>();
+    	}
+    	currentArguments.add(object);
+    	packedModifiedArgsInMethod.put(predName, currentArguments);
+    }
+    
+    void addArgToPackedModifiedArgsInPrecondition(String predName, String object) {
+    	Set<String> currentArguments = 
+    			packedModifiedArgsInPrecondition.get(predName);
+    	if (currentArguments == null) {
+    		currentArguments = new TreeSet<String>();
+    	}
+    	currentArguments.add(object);
+    	packedModifiedArgsInPrecondition.put(predName, currentArguments);
+    }
+    
+    void increaseNumberInsideMethods() {
+    	Integer currentNumber = numberInsideMethods.get(currentMethod);
+        numberInsideMethods.put(currentMethod, currentNumber + 1);
+    }
+    
     String getNewForallParameter() {
     	String forallParameter = "x";
     	int i=0;
@@ -1226,6 +1276,9 @@ public class BoogieVisitor extends NullVisitor {
     	// retain last field[this] also.
     	String identifierBeforeMethSel = lastIdentifierOrKeyword;
     	visitedMethSel = true;
+    	// Increase the number of methods that are called inside the
+    	// current method.
+    	increaseNumberInsideMethods();
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
@@ -1711,11 +1764,11 @@ public class BoogieVisitor extends NullVisitor {
     	fracString.setMinBound(0);
     	
     	if ( (currentMethod != "") && !insidePrecondition && !insidePostcondition) {
-    		//XXX
-    		//TODO why is this xxx above?
     		modifyMethodBodyFrac(fracString.getNameFrac());
+        	addArgToPackedModifiedArgsInMethod(predName, objectString);
     	}
     	
+    	// TODO don't I need to add if I am in inPackUnpackAnnotation also???
     	if ((currentMethod != "") && !inPackUnpackAnnotation) {
     		if (insidePrecondition || insidePostcondition) {
     			modifyMethodSpec(bodyMethodOrPredicate);
@@ -1732,6 +1785,7 @@ public class BoogieVisitor extends NullVisitor {
     		}
  
     		if (insidePrecondition) {
+    			addArgToPackedModifiedArgsInPrecondition(predName, objectString);
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString);
     		    
