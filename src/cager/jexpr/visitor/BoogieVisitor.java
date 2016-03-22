@@ -965,9 +965,9 @@ public class BoogieVisitor extends NullVisitor {
 							String notEquals = "";
 						
 							for (int m=0; m<unpackedObjects.size() - 1; m++) {
-								notEquals = notEquals.concat("(y!="+unpackedObjects.get(m) +") && ");
+								notEquals = notEquals.concat("("+forallParameter+"!="+unpackedObjects.get(m) +") && ");
 							}
-							notEquals = notEquals.concat("(y!="+
+							notEquals = notEquals.concat("("+forallParameter+"!="+
 									unpackedObjects.get(
 											unpackedObjects.size() - 1) +") ==> ");
 							requiresPacked = 
