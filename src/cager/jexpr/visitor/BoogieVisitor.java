@@ -927,10 +927,10 @@ public class BoogieVisitor extends NullVisitor {
 								}
 							}
 						}
-					
+
+						boolean areEqual = true;
 						Set<String> argsInMethod = packedModifiedArgsInMethod.get(p);
 						Set<String> argsInPrecondition = packedModifiedArgsInPrecondition.get(p);
-						boolean areEqual = true;
 						if ((argsInMethod == null) || (argsInPrecondition==null)) {
 							areEqual = false;
 							//TODO what happens when both are null?
@@ -944,7 +944,7 @@ public class BoogieVisitor extends NullVisitor {
 							&&
 							!areEqual
 							&&
-							(numberInsideMethods.get(currentMethod) == 0)
+							(numberInsideMethods.get(currentMethod) == (new Integer(0)))
 						) {
 							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
@@ -953,7 +953,7 @@ public class BoogieVisitor extends NullVisitor {
 										upperCaseFirstLetter(p)+"[" +
 										forallParameter+"]);\n"
 										);
-						} else {
+						} else if  (!unpackedObjects.isEmpty()){
 							// create something like 
 							// ( ( (y!=this) && (y!=op) )
 							String notEquals = "";
@@ -990,7 +990,9 @@ public class BoogieVisitor extends NullVisitor {
 					}
 				}
 			}
+		
 		} else {
+			
 			//TODO
 			//Need to write what happens when 
 			//there are unpacked object propositions
