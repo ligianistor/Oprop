@@ -837,7 +837,13 @@ public class BoogieVisitor extends NullVisitor {
     	    //TODO add all parameters when calling function
     	    LinkedList<FieldAndTypePair> currentMethodParams = methodParams.get(currentMethod);
     	    for (int i=0; i<currentMethodParams.size(); i++) {
-    	    	out.write(currentMethodParams.get(i).getName()+":"+currentMethodParams.get(i).getType() + ", ");
+    	    	out.write(currentMethodParams.get(i).getName()+":");
+    	    	String type = currentMethodParams.get(i).getType();
+    	    	if (type.equals("int") || type.equals("bool") ||type.equals("real") ) {
+    	    		out.write(currentMethodParams.get(i).getType() + ", ");
+    	    	} else {
+    	    		out.write("Ref, ");
+    	    	}
     	    }
     	    out.write("this:Ref)\n");
 							
@@ -2572,7 +2578,7 @@ public class BoogieVisitor extends NullVisitor {
     	children[1].accept(this);
     	statementContent = "";
     	if (size == 3) { 
-    		modifyMethodBody("else \n");
+    		modifyMethodBody("else {\n");
         	children[2].accept(this);
         	statementContent = "";
     	}
@@ -2671,6 +2677,7 @@ public class BoogieVisitor extends NullVisitor {
     	  }
     	    	
     	modifyMethodBody("}\n ");
+
   	}
     
     
