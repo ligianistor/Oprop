@@ -26,7 +26,7 @@ predicate count(int c) =
 		exists Composite ol, Composite or,
 		int lc, int rc : 
 		this.count -> c && 
-		c == lc + rc + 1  
+		(c == lc + rc + 1)		
 		&& (this#0.5 left(ol, lc)) 
 		&& (this#0.5 right(or, rc)) 
 			
@@ -102,14 +102,14 @@ requires unpacked(this#k1 parent()) &&
 	(opp != this) &&
    ( (opp != null) ~=> (opp#k parent()) ) && 
   ( ( (opp != null) &&	(opp.left == this)) ~=>	 (opp#0.5 left(this, lcc))) &&
-    ( ( (opp != null) && (opp.right == this)) ~=>	 (opp#0.5 right(this, lcc)))
+    ( ( (opp != null) && (opp.right == this)) ~=> (opp#0.5 right(this, lcc)))
       &&
      ((opp == null) ~=> (this#0.5 count(lcc)))
       &&
    unpacked(this#0.5 count(lcc)) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
-ensures (this#k2 parent())
+ensures (this#k2 parent()) && (this#k count(this.count))
 {
 // Existential variables for unpack(opp#0.5 count(opp.count))
 Composite oll;
@@ -122,10 +122,11 @@ int rrc;
 if (this.parent != null) {
 	splitFrac(opp#k parent(), 2);
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
-	
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
-	unpack(opp#0.5 count(opp.count))[oll, this, llc, lcc];
+	unpack(opp#0.5 count(opp.count))[oll, orr, count[left[opp]], count[right[opp]]];
+
 	if (this == this.parent.right) {
+
 		//The rule in the formal system should be that
 		//if we have two object propositions with different parameters
 		//that are both packed, then the parameters should be the same.
@@ -139,7 +140,9 @@ if (this.parent != null) {
 		pack(opp#1.0 right(this, lcc))[opp.parent];
 			
 		this.parent.updateCountRec()[opp.parent, opp.count, opp.left, this, opp.left.count, lc + rc + 1];	
-	} else if (this == this.parent.left){
+		
+	} else {
+
 		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(oll, llc));
 		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 left(this, lcc))[opp.parent];
