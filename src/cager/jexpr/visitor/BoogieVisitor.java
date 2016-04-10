@@ -1010,7 +1010,12 @@ public class BoogieVisitor extends NullVisitor {
 		//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
 		// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) 
 		//==> (packedOK[x] == old(packedOK[x]))));"
-		// and the others.		
+		// and the others.
+		
+		// I also need to see if these 2 kinds of "foralls" can be automatically 
+		// inferred:
+		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));  
+		// ensures (forall y:Ref :: packedParent[y]);
 		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
 				packedMods.entrySet().iterator();
 		while (it.hasNext()) {
@@ -3103,6 +3108,7 @@ public class BoogieVisitor extends NullVisitor {
 	//boo comes from boolean
 	//name is the name of the predicate
 	//obj is the name of the object. It can be this, or dc[this], etc.
+	// TODO this is not called anywhere!
 	void modifyPackedMods(String name, String obj, int boo) {
 		LinkedList<PackObjMods> currentPackObjMods = 
     			packedMods.get(name);

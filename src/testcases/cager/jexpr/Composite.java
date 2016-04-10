@@ -109,7 +109,7 @@ requires unpacked(this#k1 parent()) &&
    unpacked(this#0.5 count(lcc)) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
-ensures (this#k2 parent()) && (this#k count(this.count))
+ensures (this#k2 parent())
 {
 // Existential variables for unpack(opp#0.5 count(opp.count))
 Composite oll;
