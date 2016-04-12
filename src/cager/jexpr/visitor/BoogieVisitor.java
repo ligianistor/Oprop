@@ -58,20 +58,12 @@ import cager.jexpr.ast.UnaryExpression;
  */
 public class BoogieVisitor extends NullVisitor {
 	
-	// Map that counts for each method how many calls to other methods 
-	// there are inside this method.
-	// Only if there are 0 methods inside we can think about skipping a 
-	// "requires forall" for a "packed" global variable.
-	HashMap<String, Integer> numberInsideMethods = 
-			new HashMap<String, Integer>();
-	
 	// For each "packed" in the current method, this map
 	// points to a set that holds all the objects
 	// that are modified through "packed" in the body of the method.
 	HashMap<String, Set<String>> packedModifiedArgsInMethod =
 			new HashMap<String, Set<String>>();
-	
-	
+		
 	// For each "packed" in the current method, this map
 	// points to a set that holds all the objects
 	// of packedPred[object] (even if it's == false)
@@ -80,11 +72,9 @@ public class BoogieVisitor extends NullVisitor {
 	// "requires forall" for the packed variables
 	// in the pre-conditions of methods.
 	HashMap<String, Set<String>> packedModifiedArgsInPrecondition =
-			new HashMap<String, Set<String>>();
+			new HashMap<String, Set<String>>();	
 	
-	
-	
-	// This maps the (predicate, identifier) to the field that that 
+	// This maps the (predicate, identifier) to the field that the
 	// identifier represents.
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = 
 			new HashMap<PredicateAndFieldValue, String> ();
@@ -327,6 +317,8 @@ public class BoogieVisitor extends NullVisitor {
 	//the set of fields in that method. 
 	//This structure only contains the fields, including packedPred and fracPred,
 	//on the left of :=.
+	// XXXX This is what I need, it represents
+	// what gets put in the "modifies" clause of each method.
 	HashMap<String, Set<String>> fieldsInMethod = 
 			new HashMap<String, Set<String>>();
 	
@@ -338,6 +330,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//For each method, methodsInMethod contains 
 	//the set of methods called in that method.
+	// XXXX this is what I need
 	HashMap<String, LinkedList<FieldAndTypePair>> methodsInMethod = 
 			new HashMap<String, LinkedList<FieldAndTypePair>>();
 	
@@ -670,7 +663,6 @@ public class BoogieVisitor extends NullVisitor {
     	String methodName = ast.getIdentifier().name;
     	methods.add(methodName);
     	
-    	numberInsideMethods.put(methodName, new Integer(0));
     	packedModifiedArgsInMethod.clear();
     	packedModifiedArgsInPrecondition.clear();
     	
@@ -949,8 +941,6 @@ public class BoogieVisitor extends NullVisitor {
 						if (unpackedObjects.isEmpty()
 							&&
 							!areEqual
-							&&
-							(numberInsideMethods.get(currentMethod) == (new Integer(0)))
 						) {
 							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
@@ -1011,11 +1001,27 @@ public class BoogieVisitor extends NullVisitor {
 		// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) 
 		//==> (packedOK[x] == old(packedOK[x]))));"
 		// and the others.
+		// Only try to infer "ensures (forall y:Ref :: packedParent[y]);"	if:
+		//- either there are no calls to other methods inside the body of this method
+		// --even in that case still need to see how packedOK[] has changed.
+		// -or there are calls to other methods, but they do not modify packedOK, or
+		// the only method that is called inside the body of this method
+		// is the current one which is called recursively.
+		// If you don't know what are the "modifies" of a method
+		// because it has not been translated yet, assume it modifies the
+		// global field in question (to be safe) and abort mission.
+		// Only then try to infer "..packedOK[] == old()..". 
+		// If you can't infer that, then try to infer 
+		// "ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
 		
-		// I also need to see if these 2 kinds of "foralls" can be automatically 
-		// inferred:
-		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));  
-		// ensures (forall y:Ref :: packedParent[y]);
+		// Same algorithm as above goes for fractions, but first try to infer 
+		// ensures (forall x:Ref:: (fracParent[x] == old(fracParent[x])));
+		// If that cannot be inferred because there were too many 
+		// changes to fracParent[] (that I have to keep track of!! TODO)
+		// then try to infer:
+		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0)); 
+		// which is a weaker "ensures forall".
+
 		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
 				packedMods.entrySet().iterator();
 		while (it.hasNext()) {
@@ -1166,11 +1172,6 @@ public class BoogieVisitor extends NullVisitor {
     	packedModifiedArgsInPrecondition.put(predName, currentArguments);
     }
     
-    void increaseNumberInsideMethods() {
-    	Integer currentNumber = numberInsideMethods.get(currentMethod);
-        numberInsideMethods.put(currentMethod, currentNumber + 1);
-    }
-    
     String getNewForallParameter() {
     	String forallParameter = "x";
     	int i=0;
@@ -1289,9 +1290,6 @@ public class BoogieVisitor extends NullVisitor {
     	// retain last field[this] also.
     	String identifierBeforeMethSel = lastIdentifierOrKeyword;
     	visitedMethSel = true;
-    	// Increase the number of methods that are called inside the
-    	// current method.
-    	increaseNumberInsideMethods();
     	// It might be that some object propositions in the "requires" of the call procedure
     	// are already packed and we might not need to pack them. I need to check for that.
     	String methodName = ast.getIdentifier().name;
