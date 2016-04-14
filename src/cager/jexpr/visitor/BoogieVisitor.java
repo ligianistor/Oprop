@@ -1010,7 +1010,13 @@ public class BoogieVisitor extends NullVisitor {
 		// If you don't know what are the "modifies" of a method
 		// because it has not been translated yet, assume it modifies the
 		// global field in question (to be safe) and abort mission.
-		// Only then try to infer "..packedOK[] == old()..". 
+		// Only then try to infer "ensures (forall y:Ref :: packedParent[y]);". 
+		// Need to add a few heuristic rules for this, rules 
+		// that can be augmented over time.
+		// One of those heuristic rules is that if there is only one packedOK[] := false
+		// and it is after the call to the recursive method, then 
+		 // "ensures (forall y:Ref :: packedParent[y]);" can be inferred.
+		// Other heuristics can be added.
 		// If you can't infer that, then try to infer 
 		// "ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
 		
