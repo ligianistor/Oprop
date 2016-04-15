@@ -58,14 +58,18 @@ procedure UnpackRight(or: Ref, rc:int, op: Ref, this:Ref);
 
 procedure updateCount(c:int, c1:int, c2:int, c3:int, ol:Ref, or:Ref, op:Ref, this:Ref)
 	 modifies count,fracCount,fracLeft,fracRight,packedCount,packedLeft,packedRight;
-	 requires (this != null) && (((((parent[this]==op)&&(packedCount[this]== false) && 
+	 requires (this != null) && ((op!=null)==>(((((((packedLeft[op] == false) && 
+ 	 	(fracLeft[op] > 0.0) && (left[op]==left[op]) && (count[left[op]]==count[left[op]])||(packedRight[op] == false) && 
+ 	 	(fracRight[op] > 0.0) && (right[op]==right[op]) && (count[right[op]]==count[right[op]]))&&(parent[this]==op))&&(packedCount[this]== false) && 
  	 	(fracCount[this] >= 1.0) && (count[this]==c))&&(packedLeft[this]) && 
  	 	(fracLeft[this] >= 0.5) && (left[this]==ol) && (count[left[this]]==c1))&&(packedRight[this]) && 
  	 	(fracRight[this] >= 0.5) && (right[this]==or) && (count[right[this]]==c2))&&((op!=null)==>(packedCount[parent[this]]== false) && 
- 	 	(fracCount[parent[this]] > 0.0) && (count[op]==c3)));
+ 	 	(fracCount[parent[this]] > 0.0) && (count[op]==c3))));
 	 ensures (packedCount[this]) && 
  	 	(fracCount[this] >= 1.0) && (count[this]==((c1+c2)+1));
 	 requires (forall x:Ref :: ((x!=this) && (x!=op) ==>  packedCount[x]));
+	 requires (forall x:Ref :: ((x!=op) ==>  packedLeft[x]));
+	 requires (forall x:Ref :: ((x!=op) ==>  packedRight[x]));
 	 ensures (forall x:Ref:: (packedCount[x] == old(packedCount[x])));
 	 ensures (forall x:Ref:: (fracCount[x] == old(fracCount[x])));
 
@@ -153,7 +157,9 @@ packedCount[this] := true;
 	 ensures (packedParent[this] ) && 
  	 	(fracParent[this] > 0.0);
 	 requires (forall x:Ref :: ((x!=this) ==>  packedCount[x]));
+	 requires (forall x:Ref :: packedLeft[x]);
 	 requires (forall x:Ref :: ((x!=this) ==>  packedParent[x]));
+	 requires (forall x:Ref :: packedRight[x]);
 	 ensures (forall x:Ref:: (packedCount[x] == old(packedCount[x])));
 	 ensures (forall x:Ref:: (fracCount[x] == old(fracCount[x])));
 
@@ -207,9 +213,21 @@ if (this!=null) {
 packedRight[opp] := false;
 fracCount[this] := fracCount[this]+0.5;
 	 call updateCount(lcc, ol, or, opp, lc, rc, count[opp], this);
-fracCount[ this] := fracCount[ this] - 1.0;
-fracLeft[ this] := fracLeft[ this] - 0.5;
-fracRight[ this] := fracRight[ this] - 0.5;
+if ( count[opp]!=null) {
+ fracLeft[ count[opp]] := fracLeft[ count[opp]] / 2.0;
+}
+if ( count[opp]!=null) {
+ fracRight[ count[opp]] := fracRight[ count[opp]] / 2.0;
+}
+if ( count[opp]!=null) {
+ fracCount[ this] := fracCount[ this] - 1.0;
+}
+if ( count[opp]!=null) {
+ fracLeft[ this] := fracLeft[ this] - 0.5;
+}
+if ( count[opp]!=null) {
+ fracRight[ this] := fracRight[ this] - 0.5;
+}
 if ( count[opp]!=null) {
  fracCount[ count[opp]] := fracCount[ count[opp]] / 2.0;
 }
@@ -263,9 +281,21 @@ if (this!=null) {
 packedLeft[opp] := false;
 fracCount[this] := fracCount[this]+0.5;
 	 call updateCount(lcc, ol, or, opp, lc, rc, count[opp], this);
-fracCount[ this] := fracCount[ this] - 1.0;
-fracLeft[ this] := fracLeft[ this] - 0.5;
-fracRight[ this] := fracRight[ this] - 0.5;
+if ( count[opp]!=null) {
+ fracLeft[ count[opp]] := fracLeft[ count[opp]] / 2.0;
+}
+if ( count[opp]!=null) {
+ fracRight[ count[opp]] := fracRight[ count[opp]] / 2.0;
+}
+if ( count[opp]!=null) {
+ fracCount[ this] := fracCount[ this] - 1.0;
+}
+if ( count[opp]!=null) {
+ fracLeft[ this] := fracLeft[ this] - 0.5;
+}
+if ( count[opp]!=null) {
+ fracRight[ this] := fracRight[ this] - 0.5;
+}
 if ( count[opp]!=null) {
  fracCount[ count[opp]] := fracCount[ count[opp]] / 2.0;
 }
@@ -313,9 +343,21 @@ fracParent[this] := fracParent[this] + 0.001;
  else {
 fracCount[this] := fracCount[this]+0.5;
 	 call updateCount(lcc, ol, or, opp, lc, rc, count[opp], this);
-fracCount[ this] := fracCount[ this] - 1.0;
-fracLeft[ this] := fracLeft[ this] - 0.5;
-fracRight[ this] := fracRight[ this] - 0.5;
+if ( count[opp]!=null) {
+ fracLeft[ count[opp]] := fracLeft[ count[opp]] / 2.0;
+}
+if ( count[opp]!=null) {
+ fracRight[ count[opp]] := fracRight[ count[opp]] / 2.0;
+}
+if ( count[opp]!=null) {
+ fracCount[ this] := fracCount[ this] - 1.0;
+}
+if ( count[opp]!=null) {
+ fracLeft[ this] := fracLeft[ this] - 0.5;
+}
+if ( count[opp]!=null) {
+ fracRight[ this] := fracRight[ this] - 0.5;
+}
 if ( count[opp]!=null) {
  fracCount[ count[opp]] := fracCount[ count[opp]] / 2.0;
 }
@@ -341,11 +383,14 @@ packedParent[this] := true;
  procedure setLeft(l:Ref, this:Ref)
 	 modifies count,fracCount,fracLeft,fracParent,fracRight,left,packedCount,packedLeft,packedParent,packedRight,parent;
 	 requires (this != null) && (((((((this!=l)&&(l!=null))&&(right[this]!=parent[this]))&&(l!=parent[this]))&&(this!=right[this]))&&(packedParent[this] ) && 
- 	 	(fracParent[this] > 0.0))&&(packedParent[l] == false) && 
+ 	 	(fracParent[this] > 0.0))&&(packedParent[l] ) && 
  	 	(fracParent[l] > 0.0));
 	 ensures (packedParent[this] ) && 
  	 	(fracParent[this] > 0.0);
-	 requires (forall x:Ref :: ((x!=l) ==>  packedParent[x]));
+	 requires (forall x:Ref :: packedCount[x]);
+	 requires (forall x:Ref :: packedLeft[x]);
+	 requires (forall x:Ref :: packedParent[x]);
+	 requires (forall x:Ref :: packedRight[x]);
 	 ensures (forall x:Ref:: (packedCount[x] == old(packedCount[x])));
 	 ensures (forall x:Ref:: (fracCount[x] == old(fracCount[x])));
 

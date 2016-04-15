@@ -205,6 +205,7 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//Set of predicates for the corresponding frac global variables that are 1
 	//in the requires or ensures of the current method.
+	//TODO how does this affect for which predicates I write "ensure forall (packedPred???
 	Set<String> setFracEq1 = new TreeSet<String>();	
 	
 	//For each method, this map tells us which are the
@@ -903,7 +904,8 @@ public class BoogieVisitor extends NullVisitor {
 			if (localFieldsInMethod != null) {
 				
 				for (String p : predicates) {					        	
-					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) && 
+					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) 
+							&& 
 							!setFracEq1.contains(p)) {
 						
 						LinkedList<PredicateAndFieldValue> unpackedPredicatesThisMethod =
@@ -1035,11 +1037,17 @@ public class BoogieVisitor extends NullVisitor {
 		        (Entry<String, LinkedList<PackObjMods>>)it.next();
 		    String nameOfPredicate = pairs.getKey();
 		    LinkedList<PackObjMods> objMods = pairs.getValue();
-		    Set<String> modifiedObjects = new TreeSet<String>();
+		    HashMap<String, LinkedList<String>> modifiedObjects = new HashMap<String, LinkedList<String>>();
 		    for (int i = 0; i < objMods.size(); i++) {
 		        PackObjMods p = objMods.get(i);
 		        if (p.isPackedModified()) {
-		        	modifiedObjects.add(p.getObjectString());
+		        	LinkedList<String> currentModifiedObjects = 
+		        			modifiedObjects.get(nameOfPredicate);
+		        	if (currentModifiedObjects == null) {
+		        		currentModifiedObjects = new LinkedList<String>();
+		        	}
+		        	currentModifiedObjects.add(p.getObjectString());
+		        	modifiedObjects.put(nameOfPredicate, currentModifiedObjects); 
 		        }	
 		    }
 		        	
@@ -1055,7 +1063,7 @@ public class BoogieVisitor extends NullVisitor {
 		    				!setFracEq1.contains(nameOfPredicate)) {
 		    			ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
-		        	if (modifiedObjects.isEmpty()) {
+		        	if (modifiedObjects.get(nameOfPredicate).isEmpty()) {
 		        		ensuresForall = ensuresForall.concat(
 		        				"packed"+upperCaseFirstLetter(nameOfPredicate) + 
 		        				"["+forallParameter+
@@ -1064,7 +1072,7 @@ public class BoogieVisitor extends NullVisitor {
 		        				forallParameter+"])));\n");
 		        	} else {
 		        		String[] modifiedObjectsArray = 
-		        				modifiedObjects.toArray(new String[0]);
+		        				modifiedObjects.get(nameOfPredicate).toArray(new String[0]);
 		        		int len = modifiedObjectsArray.length;
 		        		if (len > 1) {
 		        			ensuresForall = ensuresForall.concat("(");
@@ -1107,7 +1115,7 @@ public class BoogieVisitor extends NullVisitor {
 		        						"] == old(frac" + upperCaseFirstLetter(nameOfPredicate) +"["+
 		        						forallParameter+"])));\n");
 		        			} else {
-		        				String[] modifiedObjectsArray = modifiedObjects.toArray(new String[0]);
+		        				String[] modifiedObjectsArray = modifiedObjects.get(nameOfPredicate).toArray(new String[0]);
 		        				int len = modifiedObjectsArray.length;
 		        				if (len > 1) {
 		        					ensuresForall = ensuresForall.concat("(");
@@ -3261,4 +3269,6 @@ public class BoogieVisitor extends NullVisitor {
 		} 
 		return result;
     }
+    
+
 }
