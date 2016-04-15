@@ -1063,7 +1063,7 @@ public class BoogieVisitor extends NullVisitor {
 		    				!setFracEq1.contains(nameOfPredicate)) {
 		    			ensuresForall = ensuresForall.concat(
 		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
-		        	if (modifiedObjects.get(nameOfPredicate).isEmpty()) {
+		        	if (modifiedObjects.get(nameOfPredicate) == null) {
 		        		ensuresForall = ensuresForall.concat(
 		        				"packed"+upperCaseFirstLetter(nameOfPredicate) + 
 		        				"["+forallParameter+
@@ -1109,7 +1109,7 @@ public class BoogieVisitor extends NullVisitor {
 		        				!setFracEq1.contains(nameOfPredicate)) {
 		        			ensuresForall = ensuresForall.concat(
 		        					"\t ensures (forall "+  forallParameter+":Ref:: (");
-		        			if (modifiedObjects.isEmpty()) {
+		        			if (modifiedObjects.get(nameOfPredicate) == null) {
 		        				ensuresForall = ensuresForall.concat("frac"+upperCaseFirstLetter(nameOfPredicate) + 
 		        						"["+ forallParameter+
 		        						"] == old(frac" + upperCaseFirstLetter(nameOfPredicate) +"["+
@@ -3270,5 +3270,4 @@ public class BoogieVisitor extends NullVisitor {
 		return result;
     }
     
-
 }
