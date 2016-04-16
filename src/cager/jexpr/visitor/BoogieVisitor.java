@@ -1024,11 +1024,20 @@ public class BoogieVisitor extends NullVisitor {
 		
 		// Same algorithm as above goes for fractions, but first try to infer 
 		// ensures (forall x:Ref:: (fracParent[x] == old(fracParent[x])));
+		// Only try to infer the above if there are no calls to other methods inside
+		// this method!
+		// Even then the pattern of modifications of fracParent needs to be simple:
+		// either only + and -, or + and - having * and \ between them, 
+		// but only a * after a \ or a \ after a *. So very very simple patterns of modifications.
 		// If that cannot be inferred because there were too many 
 		// changes to fracParent[] (that I have to keep track of!! TODO)
 		// then try to infer:
 		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0)); 
 		// which is a weaker "ensures forall".
+		// Only try to infer the above if there are no calls to other methods inside, or if
+		// the methods that are inside do not modify fracParent, or if they do modify it, it is the
+		// current method being called recursively.
+		
 
 		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
 				packedMods.entrySet().iterator();
