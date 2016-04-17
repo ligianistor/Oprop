@@ -1015,9 +1015,16 @@ public class BoogieVisitor extends NullVisitor {
 		// Only then try to infer "ensures (forall y:Ref :: packedParent[y]);". 
 		// Need to add a few heuristic rules for this, rules 
 		// that can be augmented over time.
-		// One of those heuristic rules is that if there is only one packedOK[] := false
-		// and it is after the call to the recursive method, then 
-		 // "ensures (forall y:Ref :: packedParent[y]);" can be inferred.
+		// I actually need to do a bit of static analysis on the text to infer this.
+		// There is a pattern to recursive functions: 
+		// if (cond1)
+		// else 
+		// If cond1 refers to parent[] and the exact object that is being unpacked, like in
+		// our case before the recursive call and then the else does not unpack it,
+		// then we can do the ensures forall everything is packed.
+		// Also need to look at which block every packedParent[]:= is in.
+		// The analysis starts with which are the packed and unpacked objects for the predicate
+		// packedParent and keeps track of what happens to them.
 		// Other heuristics can be added.
 		// If you can't infer that, then try to infer 
 		// "ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
