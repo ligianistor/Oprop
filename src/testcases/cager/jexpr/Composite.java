@@ -55,7 +55,9 @@ requires
 	(this#0.5 left(ol, c1)) &&
 	(this#0.5 right(or, c2)) &&
 	(op!=null ~=> unpacked(op#k count(c3))) 
-ensures (this#1.0 count(c1+c2+1))
+ensures (this#1.0 count(c1+c2+1)) &&
+    ( (op!=null) ~=> (unpacked(op#k1 left(op.left, op.left.count)) || 
+    				unpacked(op#k2 right(op.right, op.right.count)) ))
 {
 // Existential variables for 
 // unpack(ol#0.5 count(c1)).
@@ -170,7 +172,7 @@ void setLeft(Composite l)
 ~ double k1, double k2, double k:
 requires (this != l) && (l != null) && (this.right != this.parent) &&
 		(l != this.parent) && (this != this.right) && (this#k1 parent()) &&
-		(l#k2 parent())	
+		(l#k2 parent())	&& unpacked()
 ensures (this#k parent())
 {
 // Existentially quantified variable for UnpackParent(this,lcc)
@@ -178,7 +180,7 @@ int lcc;
 // Existentially quantified variables for UnpackCount(this,lcc)
 // The variable rc is also used in the call to updateCountRec()
 Composite or;
-
+unpack(l#k2 parent())[l.parent, l.count];
 if (l.parent==null) {	
 	l.parent = this;
 	unpack(this#k1 parent())[this.parent, lcc];
@@ -191,7 +193,10 @@ if (l.parent==null) {
 	splitFrac(this#1.0 left(l, l.left.count));
 	pack(l#k2 parent())[l.parent, l.left.count];	
 	this.updateCountRec()[this.parent, lcc, l, this.right, l.left.count, this.right.count]; 	
-	}
+} else {
+	pack(l#k2 parent())[l.parent, l.count];	
+}
+	
 }
 
 }
