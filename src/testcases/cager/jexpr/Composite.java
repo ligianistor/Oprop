@@ -57,7 +57,7 @@ requires
 	(op!=null ~=> unpacked(op#k count(c3))) 
 ensures (this#1.0 count(c1+c2+1)) &&
     ( (op!=null) ~=> (unpacked(op#k1 left(op.left, op.left.count)) || 
-    				unpacked(op#k2 right(op.right, op.right.count)) ))
+    				unpacked(op#k2 right(op.right, op.right.count)) ) )
 {
 // Existential variables for 
 // unpack(ol#0.5 count(c1)).
@@ -97,6 +97,8 @@ this.count = newc;
 pack(this#1.0 count(newc))[ol, or, c1, c2];
 }
 
+	// The programmer is required to put all the statements about a fracPred[obj] into a single one.
+	// Like for unpacked(this# count) below.
 void updateCountRec() 
 ~ double k1, double k, double k2:
 Composite opp, int lcc,
@@ -109,9 +111,9 @@ requires unpacked(this#k1 parent()) &&
   ( ( (opp != null) &&	(opp.left == this)) ~=>	 (opp#0.5 left(this, lcc))) &&
     ( ( (opp != null) && (opp.right == this)) ~=> (opp#0.5 right(this, lcc)))
       &&
-     ((opp == null) ~=> (this#0.5 count(lcc)))
+     ((opp == null) ~=> (unpacked(this#1.0 count(lcc)) ) )
       &&
-   unpacked(this#0.5 count(lcc)) &&
+   ((opp!=null ) ~=> unpacked(this#0.5 count(lcc))) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
 ensures (this#k2 parent())
