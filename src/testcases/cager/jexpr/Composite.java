@@ -42,7 +42,16 @@ predicate parent() =
 	(((op != null) && (op.left == this)) ~=> op#0.5 left(this, c)) &&
 	(((op != null) && (op.right == this)) ~=> op#0.5 right(this, c)) &&
 	(op == null ~=> (this#0.5 count(c)))
-		
+	
+	// If in the ensures we have ==constant for a fraction
+	// I don't need to do frac=frac-constant1. if constant1 is mentioned in the
+	// pre-condition. So the equality in the postcondition overwrites whatever the
+	// precondition says.
+	// If in both the pre and postcondition we have k related to fractions
+	// then we can say frac=frac/2.0 and frac=frac*2.0 after the call to the 
+	// method because these statements do not contradict each other.
+	// The other case that I need to think of is if in the precondition we have 
+	// fraction k and in the postcondition we have a constant, and also the other way around.
 void updateCount() 
 ~double k, double k1, double k2:
 int c, int c1, int c2, int c3,
@@ -99,6 +108,7 @@ pack(this#1.0 count(newc))[ol, or, c1, c2];
 
 	// The programmer is required to put all the statements about a fracPred[obj] into a single one.
 	// Like for unpacked(this# count) below.
+	// If we have a packed and an unpacked, the putting together of these is unpacked.
 void updateCountRec() 
 ~ double k1, double k, double k2:
 Composite opp, int lcc,
@@ -174,7 +184,7 @@ void setLeft(Composite l)
 ~ double k1, double k2, double k:
 requires (this != l) && (l != null) && (this.right != this.parent) &&
 		(l != this.parent) && (this != this.right) && (this#k1 parent()) &&
-		(l#k2 parent())	&& unpacked()
+		(l#k2 parent())	
 ensures (this#k parent())
 {
 // Existentially quantified variable for UnpackParent(this,lcc)
