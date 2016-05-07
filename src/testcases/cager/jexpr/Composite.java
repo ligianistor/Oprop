@@ -186,11 +186,12 @@ if (this.parent != null) {
 }
 
 void setLeft(Composite l) 
-~ double k1, double k2, double k:
-requires (this != l) && (l != null) && (this.right != this.parent) &&
-		(l != this.parent) && (this != this.right) && (this#k1 parent()) &&
+~ double k1, double k2, double k, double k3:
+requires (this != l) && (l != null) && (this.left != this.parent) &&
+		(l != this.parent) && (l != this.right) &&
+		(this != this.right) && (this != this.left) && (this#k1 parent()) &&
 		(l#k2 parent())	
-ensures (this#k parent())
+ensures (this#k parent()) && (l#k3 parent())
 {
 // Existentially quantified variable for UnpackParent(this,lcc)
 int lcc;
