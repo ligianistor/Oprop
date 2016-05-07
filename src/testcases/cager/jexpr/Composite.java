@@ -53,9 +53,10 @@ predicate parent() =
 	// The other case that I need to think of is if in the precondition we have 
 	// fraction k and in the postcondition we have a constant, and also the other way around.
 void updateCount() 
+	// It is implicit that double k, double k1, etc are > 0.
 ~double k, double k1, double k2:
-int c, int c1, int c2, int c3,
-Composite ol, Composite or, Composite op:	
+int c, Composite ol, Composite or, Composite op,
+int c1, int c2, int c3:	
 requires 
     (op!=null) ~=> (unpacked(op#k1 left(op.left, op.left.count)) || 
     				unpacked(op#k2 right(op.right, op.right.count)) ) &&
@@ -66,13 +67,18 @@ requires
 	(op!=null ~=> unpacked(op#k count(c3))) 
 ensures (this#1.0 count(c1+c2+1)) &&
     ( (op!=null) ~=> (unpacked(op#k1 left(op.left, op.left.count)) || 
-    				unpacked(op#k2 right(op.right, op.right.count)) ) )
+    				unpacked(op#k2 right(op.right, op.right.count)) ) ) &&
+    (op!=null ~=> unpacked(op#k count(c3)))  &&
+    (this#0.0 left(this.left, this.left.count)) && 
+    (this#0.0 right(this.right, this.right.count))
+    
 {
 // Existential variables for 
 // unpack(ol#0.5 count(c1)).
 // The programmer should put all the 
 // existential variables the he/she declares in the
 //beginning of the program.
+int newc;
 Composite ol1;
 Composite or1;
 int lc1;
@@ -85,7 +91,6 @@ Composite or2;
 int lc2;
 int rc2;
 
-int newc;
 newc = 1;
 unpack(this#0.5 left(ol, c1))[op];
 if (this.left != null) {
@@ -121,9 +126,9 @@ requires unpacked(this#k1 parent()) &&
   ( ( (opp != null) &&	(opp.left == this)) ~=>	 (opp#0.5 left(this, lcc))) &&
     ( ( (opp != null) && (opp.right == this)) ~=> (opp#0.5 right(this, lcc)))
       &&
-     ((opp == null) ~=> (unpacked(this#1.0 count(lcc)) ) )
+      ((opp == null) ~=> (unpacked(this#0.5 count(lcc))))
       &&
-   ((opp!=null ) ~=> unpacked(this#0.5 count(lcc))) &&
+   unpacked(this#0.5 count(lcc)) && &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
 ensures (this#k2 parent())
