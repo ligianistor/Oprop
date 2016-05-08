@@ -128,7 +128,7 @@ requires unpacked(this#k1 parent()) &&
       &&
       ((opp == null) ~=> (unpacked(this#0.5 count(lcc))))
       &&
-   unpacked(this#0.5 count(lcc)) && &&
+   unpacked(this#0.5 count(lcc)) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
 ensures (this#k2 parent())

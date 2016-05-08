@@ -910,7 +910,8 @@ public class BoogieVisitor extends NullVisitor {
 						
 						LinkedList<PredicateAndFieldValue> unpackedPredicatesThisMethod =
 								unpackedPredicatesInPrecondition.get(currentMethod);
-						LinkedList<String> unpackedObjects = new LinkedList<String>();
+						// TODO unpackedObjects needs to be a set.
+						Set<String> unpackedObjectsSet = new TreeSet<String>();
 						
 						// here I compute the objectStrings 
 						// that actually appear in unpacked(objectString#..Pred(())
@@ -919,7 +920,7 @@ public class BoogieVisitor extends NullVisitor {
 							for (int l=0; l<unpackedPredicatesThisMethod.size(); l++) {
 								if ((unpackedPredicatesThisMethod.get(l)).
 										getPredicate().equals(p)) {
-									unpackedObjects.add(
+									unpackedObjectsSet.add(
 											(
 											unpackedPredicatesThisMethod.get(l)).
 											getFieldValue()
@@ -939,6 +940,8 @@ public class BoogieVisitor extends NullVisitor {
 								areEqual = false;
 							}
 						}
+						LinkedList<String> unpackedObjects = new LinkedList<String>();
+						unpackedObjects.addAll(unpackedObjectsSet);
 						
 						if (unpackedObjects.isEmpty()
 							&&
@@ -1679,9 +1682,11 @@ public class BoogieVisitor extends NullVisitor {
     	
         String packedOrUnpacked = "";
         if (lastIdentifierOrKeyword.equals("unpacked")) {
-        	packedOrUnpacked = "== false";
+        	packedOrUnpacked = " == false";
         }
     	
+        //TODO could make == 1.0 instead of (fracCount[this] >= 1.0)
+        //as a special case. It's not in this method.
     	FracString fracString = new FracString();
     	TypedAST object  = ast.getObject();
     	objectPropString = "";
@@ -1842,7 +1847,7 @@ public class BoogieVisitor extends NullVisitor {
     		    
     		    // add the (predicate, object) to 
     		    // unpackedPredicatesInPrecondition
-    		    if (packedOrUnpacked.equals("== false")) {
+    		    if (packedOrUnpacked.equals(" == false")) {
     		    modifyUnpackedPredicatesInPrecondition(predName, objectString);
     		    }
     				
@@ -2165,7 +2170,7 @@ public class BoogieVisitor extends NullVisitor {
         	}
      	
         	//modify object proposition parts
-        	if (insideObjectProposition) {
+        	if (insideObjectProposition && !inFieldSelection) {
         		objectPropString = objectPropString.concat(keywordString);
         	}	   
         } else { 
@@ -2689,6 +2694,7 @@ public class BoogieVisitor extends NullVisitor {
     		insidePostcondition = false;
     		modifyMethodSpec(";\n");
     	}
+    	//TODO add the optimization to remove (left[op]==left[op]) for parameters.
     }
     
     public void visitBlock(Block ast) 
