@@ -1000,54 +1000,40 @@ public class BoogieVisitor extends NullVisitor {
 			//in the precondition.
 		}
 		out.write(requiresPacked);
-				
+		//TODO keep track of changes to fracParent[]	
 		//Here I generate 
 		//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
 		// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) 
 		//==> (packedOK[x] == old(packedOK[x]))));"
-		// and the others.
-		// Only try to infer "ensures (forall y:Ref :: packedParent[y]);"	if:
-		//- either there are no calls to other methods inside the body of this method
-		// --even in that case still need to see how packedOK[] has changed.
-		// -or there are calls to other methods, but they do not modify packedOK, or
-		// the only method that is called inside the body of this method
-		// is the current one which is called recursively.
-		// If you don't know what are the "modifies" of a method
-		// because it has not been translated yet, assume it modifies the
-		// global field in question (to be safe) and abort mission.
-		// Only then try to infer "ensures (forall y:Ref :: packedParent[y]);". 
-		// Need to add a few heuristic rules for this, rules 
-		// that can be augmented over time.
-		// I actually need to do a bit of static analysis on the text to infer this.
-		// There is a pattern to recursive functions: 
-		// if (cond1)
-		// else 
-		// If cond1 refers to parent[] and the exact object that is being unpacked, like in
-		// our case before the recursive call and then the else does not unpack it,
-		// then we can do the ensures forall everything is packed.
-		// Also need to look at which block every packedParent[]:= is in.
-		// The analysis starts with which are the packed and unpacked objects for the predicate
-		// packedParent and keeps track of what happens to them.
-		// Other heuristics can be added.
-		// If you can't infer that, then try to infer 
-		// "ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
+		// and the others, related to fracPredicate.
 		
-		// Same algorithm as above goes for fractions, but first try to infer 
-		// ensures (forall x:Ref:: (fracParent[x] == old(fracParent[x])));
-		// Only try to infer the above if there are no calls to other methods inside
-		// this method!
-		// Even then the pattern of modifications of fracParent needs to be simple:
-		// either only + and -, or + and - having * and \ between them, 
-		// but only a * after a \ or a \ after a *. So very very simple patterns of modifications.
-		// If that cannot be inferred because there were too many 
-		// changes to fracParent[] (that I have to keep track of!! TODO)
-		// then try to infer:
-		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0)); 
-		// which is a weaker "ensures forall".
-		// Only try to infer the above if there are no calls to other methods inside, or if
-		// the methods that are inside do not modify fracParent, or if they do modify it, it is the
-		// current method being called recursively.
+		// TODO I have to look which are the ifCondition ==> expression that are the exact same in
+		// the pre and postcondition and maybe make a new data structure for them. 
+		// Look at the fractionManipulation structures, maybe they are what I need.
+		// Each item is one part of the &&, which includes the ifCondition and the right part
+		// of it, that might include ||.
+		// Those can be disregarded in the ensures forall.
 		
+		// Only infer the ensures forall from the pre and post-condition. They 
+		// will show what are the packed and frac that changed.
+		// Keep track of which if-conditions are exactly the same in the pre and postconditions.
+		// Also keep track of the other elements that make up the pre and postconditions.
+		// Only look at those elements which are not equal in the pre and post-conditions. 
+		// From those extract the objects that changed for packed, for each predicate.
+		
+		// For the fractions, also only look at pre and post-conditions.
+		// Only try to infer the ensures forall for fractions if there is a mention of a frac in the postcondition.
+		// If there is no mention, it means that the programmer did not know what happens to the frac and we 
+		// cannot infer the ensures forall.
+		
+		// There are 2 kinds of ensures forall that can be inferred: 
+		// ensures (forall y:Ref :: ( (y!=this) ==> (fracLeft[y] == old(fracLeft[y]) ) ) );
+		// and 
+		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));  
+		
+		// The second one is more relaxed. If there are calls to any methods in this method,
+		// then infer this ensures forall.
+		// The first one can be inferred for methods that have no calls to other methods inside. 
 
 		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
 				packedMods.entrySet().iterator();
