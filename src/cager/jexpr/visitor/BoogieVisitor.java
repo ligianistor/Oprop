@@ -1009,7 +1009,10 @@ public class BoogieVisitor extends NullVisitor {
 		
 		// TODO I have to look which are the ifCondition ==> expression that are the exact same in
 		// the pre and postcondition and maybe make a new data structure for them. 
-		// Look at the fractionManipulation structures, maybe they are what I need.
+		// The fractionManipulation structures are exactly what I need, 
+		// especially fractionManipulationsListPredicate and the likes.
+		// I can look at them and decide if I have the same thing in the pre- and post-conditions and
+		// decide that they cancel each other.
 		// Each item is one part of the &&, which includes the ifCondition and the right part
 		// of it, that might include ||.
 		// Those can be disregarded in the ensures forall.
