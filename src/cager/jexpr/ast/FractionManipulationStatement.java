@@ -1,12 +1,22 @@
 package cager.jexpr.ast;
 
-import java.util.LinkedList;
-
 public class FractionManipulationStatement {
 	private String ifCondition;
 	private String predName;
 	private String fractionObject; 
 	private String fractionValue;
+	private String predName2; 
+	// This is for the case
+	// when we have ifcondition ==> objectProposition1 || objectProposition2
+	// This is just a case of what can appear in the pre- and post-conditions
+	// and the generalization (maybe write a linked list instead of 
+	// only being able to handle an or with 2 disjuncts)
+	// is left as future work.
+	// This means that I need to add the infrastructure
+	// to know if I am in the second disjunct.
+	private String fractionObject2; 
+	private String fractionValue2;
+	
 	
 	public FractionManipulationStatement(
 			String ifCondition_,
@@ -18,8 +28,11 @@ public class FractionManipulationStatement {
 		predName = predName_;
 		fractionObject = fractionObject_;
 		fractionValue = fractionValue_;
+		predName2 = "";
+		fractionObject2 = "";
+		fractionValue2 = "";
+		
 	}
-	
 	
 	public String getIfCondition() {
 		return ifCondition;
@@ -37,6 +50,18 @@ public class FractionManipulationStatement {
 		return fractionValue;
 	}
 	
+	public String getPredName2() {
+		return predName2;
+	}
+	
+	public String getFractionObject2() {
+		return fractionObject2;
+	}
+	
+	public String getFraction2() {
+		return fractionValue2;
+	}
+	
 	@Override
 public boolean equals(Object obj) {
 		
@@ -52,7 +77,10 @@ public boolean equals(Object obj) {
 		if ( ifCondition.equals(o1.getIfCondition()) &&
 			predName.equals(o1.getPredName()) &&
 			fractionObject.equals(o1.getFractionObject()) &&
-			(fractionValue.equals(o1.getFraction()))
+			fractionValue.equals(o1.getFraction()) &&
+			predName2.equals(o1.getPredName2()) &&
+			fractionObject2.equals(o1.getFractionObject2()) &&
+			fractionValue2.equals(o1.getFraction2())
 			) 
 			// TODO maybe I don't need to compare to the actual value of the fraction
 		{
@@ -68,11 +96,16 @@ public boolean equals(Object obj) {
 		result *= ifCondition.hashCode();
 		result *= predName.hashCode();
 		result *= fractionObject.hashCode();
+		result *= predName2.hashCode();
+		result *= fractionObject2.hashCode();
 	    return result;
 	  }
 	
 	public void writeOut() {
 		System.out.println("FractionManipulationStatement: " + ifCondition +" "+ 
-				predName + " "+ fractionObject +"\n");
+				predName + " "+ fractionObject +
+				"||"+
+				predName2 + " "+ fractionObject2 +
+				"\n");
 	}
 }
