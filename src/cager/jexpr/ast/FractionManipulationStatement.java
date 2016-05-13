@@ -62,6 +62,18 @@ public class FractionManipulationStatement {
 		return fractionValue2;
 	}
 	
+	public void setPredName2(String pred2) {
+		predName2 = pred2;
+	}
+	
+	public void setFractionObject2(String fracObj2) {
+		fractionObject2 = fracObj2;
+	}
+	
+	public void setFraction2(String frac2) {
+		fractionValue2 = frac2;
+	}
+	
 	@Override
 public boolean equals(Object obj) {
 		

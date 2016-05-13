@@ -1822,8 +1822,7 @@ public class BoogieVisitor extends NullVisitor {
     		if (insidePrecondition) {
     			addArgToPackedModifiedArgsInPrecondition(predName, objectString);
     			modifyMethodPreconditions(objProp);
-    			modifyRequiresFrac(fracString);
-    		    
+    			modifyRequiresFrac(fracString); 
     			
     		    addToFractionManipulationsList(
     		    		1, // 1 for method precondition
@@ -2975,7 +2974,7 @@ public class BoogieVisitor extends NullVisitor {
          	case 2: currentPredOrMethodFracManipulation = 
  					    fractionManipulationsListMethodPost.get(predOrMethod);
  	 				break;        
-    	 }
+    	}
     	FractionManipulationStatement newFracMani =
     			new FractionManipulationStatement(
     					ifCondition,

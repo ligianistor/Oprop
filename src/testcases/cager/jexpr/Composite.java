@@ -57,6 +57,8 @@ void updateCount()
 ~double k, double k1, double k2:
 int c, Composite ol, Composite or, Composite op,
 int c1, int c2, int c3:	
+	//Have to count the disjunctions and put the disjunction number in the fraction manipulation statement
+	//This way I can reconstruct which disjunctions are together.
 requires 
     (op!=null) ~=> (unpacked(op#k1 left(op.left, op.left.count)) || 
     				unpacked(op#k2 right(op.right, op.right.count)) ) &&
