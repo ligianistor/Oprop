@@ -82,6 +82,12 @@ public class BoogieVisitor extends NullVisitor {
 	//The name of the Java class.
 	String className;
 	
+	// For the pre-, or post-conditions of a method,
+	// or for the translation body of a perdicate,
+	// this is the number of the disjunction member
+	// in the list of conjunctions making up the above.
+	int disjunctionNumber = -1;
+	
 	//The name of the current local variable
 	String localVariableName = "";
 	
@@ -195,8 +201,7 @@ public class BoogieVisitor extends NullVisitor {
 	//There might be more than one predicate for the same
 	//field, but they don't exist at the same time in a method. 
 	HashMap<String, LinkedList<String>> fieldWhichPredicates = 
-			new HashMap<String, LinkedList<String>>();
-	
+			new HashMap<String, LinkedList<String>>();	
 	
 	// This gathers the fields in each statement. 
 	// Not in each block, but in each statement.
@@ -527,6 +532,7 @@ public class BoogieVisitor extends NullVisitor {
     	//TODO
     	//need to take care of formal parameters
     	//Visit expression.
+    	disjunctionNumber = 0;
     	children[1].accept(this);
     }
     
@@ -1348,12 +1354,12 @@ public class BoogieVisitor extends NullVisitor {
     	// First write the fraction manipulations of the preconditions
     	statementContent = statementContent.concat(
     			writeFractionManipulation(
-    					methodName, false, false, true, identifierBeforeMethSel));
+    					methodName, false, false, true, identifierBeforeMethSel, disjunctionNumber));
     	
     	// Second write the fraction manipulations of the postconditions
     	statementContent = statementContent.concat(
     			writeFractionManipulation(
-    					methodName, false, false, false, identifierBeforeMethSel));
+    					methodName, false, false, false, identifierBeforeMethSel, disjunctionNumber));
   
     	//If the last 2 characters are ";\n" we need to delete them because
     	//they are going to be added at the end of visitStatement.
@@ -1364,6 +1370,9 @@ public class BoogieVisitor extends NullVisitor {
     		throws ParseException
     {
     	inBinaryExpression = true;
+    	if (ast.op.getId() == JExprConstants.SC_OR) {
+    		disjunctionNumber++;
+    	}
     	if (ast.op.getId() == JExprConstants.KEYACCESS) {
     		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
     		PrimaryExpression e2 = (PrimaryExpression)ast.E2;
@@ -2234,7 +2243,7 @@ public class BoogieVisitor extends NullVisitor {
   	  			//TODO need to write something here
   	  		}
   	  	}
-  	  inArgumentList = false;
+  	    inArgumentList = false;
     	
   	  	modifyMethodBody(toWrite);
   	  	inPackUnpackAnnotation = false;
@@ -2285,11 +2294,11 @@ public class BoogieVisitor extends NullVisitor {
        	if (annotationName.equals("pack")) {
     	 	// Add the fraction manipulations statements
     		toWrite = toWrite.concat(writeFractionManipulation(
-    				predicateNameObjProp, true, true, false, objectObjProp));
+    				predicateNameObjProp, true, true, false, objectObjProp, disjunctionNumber));
     	} else {
     	 	// Add the fraction manipulations statements
     		toWrite = toWrite.concat(writeFractionManipulation(
-    				predicateNameObjProp, true, false, false, objectObjProp));
+    				predicateNameObjProp, true, false, false, objectObjProp, disjunctionNumber));
     	}
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
@@ -2381,9 +2390,10 @@ public class BoogieVisitor extends NullVisitor {
     		boolean isPredicate, 
     		boolean isPack, 
     		boolean isPrecond,
-    		String callingObject
+    		String callingObject,
+    		int disjunctionNum
     ) {
-    	String result = "";
+    	 String result = "";
     	 LinkedList<FractionManipulationStatement> fractionManipulationsList;
     	 // First I need to get the formal parameters list corresponding to this method or 
     	 // predicate and also the actual parameters list. 
@@ -2670,6 +2680,7 @@ public class BoogieVisitor extends NullVisitor {
     	if (precondition != null) {
     		modifyMethodSpec("\t requires (this != null) && ");
     		insidePrecondition = true;
+    		disjunctionNumber = 0;
     		precondition.accept(this);
     		insidePrecondition = false;
     		modifyMethodSpec(";\n");
@@ -2678,6 +2689,7 @@ public class BoogieVisitor extends NullVisitor {
     	if (postcondition != null) {
     		modifyMethodSpec("\t ensures ");
     		insidePostcondition = true;
+    		disjunctionNumber = 0;
     		postcondition.accept(this);
     		insidePostcondition = false;
     		modifyMethodSpec(";\n");
@@ -2980,7 +2992,9 @@ public class BoogieVisitor extends NullVisitor {
     					ifCondition,
     					predName,
     					fractionObject,
-    					fraction		
+    					fraction	
+    					// TODO !!! this is where I need to add disjunctionNumber
+    					// the write method only writes it out.
     			);
     	
     	if (currentPredOrMethodFracManipulation == null) {
