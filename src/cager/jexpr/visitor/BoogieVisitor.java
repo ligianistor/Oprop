@@ -1014,7 +1014,7 @@ public class BoogieVisitor extends NullVisitor {
 		// and the others, related to fracPredicate.
 		
 		// TODO I have to look which are the ifCondition ==> expression that are the exact same in
-		// the pre and postcondition and maybe make a new data structure for them. 
+		// the pre and postcondition. 
 		// The fractionManipulation structures are exactly what I need, 
 		// especially fractionManipulationsListPredicate and the likes.
 		// I can look at them and decide if I have the same thing in the pre- and post-conditions and
@@ -1354,12 +1354,12 @@ public class BoogieVisitor extends NullVisitor {
     	// First write the fraction manipulations of the preconditions
     	statementContent = statementContent.concat(
     			writeFractionManipulation(
-    					methodName, false, false, true, identifierBeforeMethSel, disjunctionNumber));
+    					methodName, false, false, true, identifierBeforeMethSel));
     	
     	// Second write the fraction manipulations of the postconditions
     	statementContent = statementContent.concat(
     			writeFractionManipulation(
-    					methodName, false, false, false, identifierBeforeMethSel, disjunctionNumber));
+    					methodName, false, false, false, identifierBeforeMethSel));
   
     	//If the last 2 characters are ";\n" we need to delete them because
     	//they are going to be added at the end of visitStatement.
@@ -2294,11 +2294,11 @@ public class BoogieVisitor extends NullVisitor {
        	if (annotationName.equals("pack")) {
     	 	// Add the fraction manipulations statements
     		toWrite = toWrite.concat(writeFractionManipulation(
-    				predicateNameObjProp, true, true, false, objectObjProp, disjunctionNumber));
+    				predicateNameObjProp, true, true, false, objectObjProp));
     	} else {
     	 	// Add the fraction manipulations statements
     		toWrite = toWrite.concat(writeFractionManipulation(
-    				predicateNameObjProp, true, false, false, objectObjProp, disjunctionNumber));
+    				predicateNameObjProp, true, false, false, objectObjProp));
     	}
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
@@ -2390,8 +2390,7 @@ public class BoogieVisitor extends NullVisitor {
     		boolean isPredicate, 
     		boolean isPack, 
     		boolean isPrecond,
-    		String callingObject,
-    		int disjunctionNum
+    		String callingObject
     ) {
     	 String result = "";
     	 LinkedList<FractionManipulationStatement> fractionManipulationsList;
@@ -2993,9 +2992,8 @@ public class BoogieVisitor extends NullVisitor {
     					predName,
     					fractionObject,
     					fraction	
-    					// TODO !!! this is where I need to add disjunctionNumber
-    					// the write method only writes it out.
     			);
+    	newFracMani.setDisjunctionNumber(disjunctionNumber);
     	
     	if (currentPredOrMethodFracManipulation == null) {
     		currentPredOrMethodFracManipulation = new LinkedList<FractionManipulationStatement>();
