@@ -1021,7 +1021,8 @@ public class BoogieVisitor extends NullVisitor {
 		// decide that they cancel each other.
 		// Each item is one part of the &&, which includes the ifCondition and the right part
 		// of it, that might include ||.
-		// Those can be disregarded in the ensures forall.
+		// Those can be disregarded in the ensures forall, and also I don't need to write 
+		// anything related to them after the method is called.
 		
 		// Only infer the ensures forall from the pre and post-condition. They 
 		// will show what are the packed and frac that changed.
@@ -2338,7 +2339,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     }
     
-    // Each formal parameter is surrounded by [ and ] in oldString
+    // Each formal parameter is surrounded by $ and @ in oldString
     String replaceFormalArgsWithActual(
     	LinkedList<FieldAndTypePair> formalParams,
     	LinkedList<String> actualParams,
@@ -2392,6 +2393,13 @@ public class BoogieVisitor extends NullVisitor {
     		boolean isPrecond,
     		String callingObject
     ) {
+    	// TODO Here I need to check and only write out 
+    	// if the exact same thing is not both in the pre- and post-condition.
+    	// For this I need to construct the disjunction and only after it is constructed
+    	// I need to compare them.
+    	// TODO they are also disregarded in the "ensures forall", I only need
+    	// to look at the packed[] and frac that are not part of the ensures forall that
+    	// are the same in the pre and postcondition.
     	 String result = "";
     	 LinkedList<FractionManipulationStatement> fractionManipulationsList;
     	 // First I need to get the formal parameters list corresponding to this method or 
