@@ -647,6 +647,41 @@ public class BoogieVisitor extends NullVisitor {
 	
     }
     
+/*	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListPredicate = 
+			new HashMap<String, LinkedList<FractionManipulationStatement>>();
+	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPre = 
+			new HashMap<String, LinkedList<FractionManipulationStatement>>();
+	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPost = 
+			new HashMap<String, LinkedList<FractionManipulationStatement>>();
+*/
+    
+    String inferEnsuresForallForPacked(String methodName_) {
+    	String result="";
+    	// TODO need to add  data structures like fractionManipulationsListMethodPre and
+    	// fractionManipulationsListMethodPost, but to infer the packed.
+    	
+    	return result;			
+    }
+    
+    String inferEnsuresForallForFrac(String methodName_) {
+    	String result="";
+
+   	 LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
+   			 fractionManipulationsListMethodPre.get(methodName_);
+   	 
+   	 LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
+   			 fractionManipulationsListMethodPost.get(methodName_);
+
+	  
+	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
+		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
+		 // TODO need to compare to the ones in fractionManipulationsListMethodPost
+		 
+	 }
+    	
+    	
+    	return result;			
+    }
     
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here
