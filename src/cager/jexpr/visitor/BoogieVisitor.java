@@ -654,17 +654,30 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPost = 
 			new HashMap<String, LinkedList<FractionManipulationStatement>>();
 */
-    
+    // TODO xxxx this is what I need to do next
     String inferEnsuresForallForPacked(String methodName_) {
-    	String result="";
-    	// TODO need to add  data structures like fractionManipulationsListMethodPre and
-    	// fractionManipulationsListMethodPost, but to infer the packed.
+    	String result = "";
+    	// Use the isPacked in fractionManipulationsListMethodPre and
+    	// fractionManipulationsListMethodPost to infer the packed.
+    	
+      	 LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
+       			 fractionManipulationsListMethodPre.get(methodName_);
+       	 
+       	 LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
+       			 fractionManipulationsListMethodPost.get(methodName_);
+
+    	  
+    	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
+    		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
+    		 // TODO need to compare to the ones in fractionManipulationsListMethodPost
+    		 
+    	 }
     	
     	return result;			
     }
     
     String inferEnsuresForallForFrac(String methodName_) {
-    	String result="";
+    	String result = "";
 
    	 LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
    			 fractionManipulationsListMethodPre.get(methodName_);
@@ -683,6 +696,7 @@ public class BoogieVisitor extends NullVisitor {
     	return result;			
     }
     
+        
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here
     public void visitMethodDeclaration(MethodDeclaration ast) 
@@ -1108,6 +1122,10 @@ public class BoogieVisitor extends NullVisitor {
 		    if (!ast.getIdentifier().getName().equals("main")) {
 		       	//This is for writing "ensures forall for packed.
 		    	if (localFieldsInMethod != null) {
+		    		// TODO this is totally random,
+		    		// the way I decide which ensures forall for packed are written out.
+		    		// I just wrote it to have something written about this.
+		    		// Need to change this part.
 		    		if (localFieldsInMethod.contains("packed"+
 		    				upperCaseFirstLetter(nameOfPredicate)) &&
 		    				!setFracEq1.contains(nameOfPredicate)) {
@@ -1715,8 +1733,10 @@ public class BoogieVisitor extends NullVisitor {
     	insideObjectProposition = true;
     	
         String packedOrUnpacked = "";
+        boolean isPacked = true;
         if (lastIdentifierOrKeyword.equals("unpacked")) {
         	packedOrUnpacked = " == false";
+        	isPacked = false;
         }
     	
         //TODO could make == 1.0 instead of (fracCount[this] >= 1.0)
@@ -1875,7 +1895,8 @@ public class BoogieVisitor extends NullVisitor {
     		    		ifConditionFractionManipulation,
     		    		predName,
     		    		objectString,
-    		    		fracInObjProp
+    		    		fracInObjProp,
+    		    		isPacked
     		    );
     		    
     		    // add the (predicate, object) to 
@@ -1893,7 +1914,8 @@ public class BoogieVisitor extends NullVisitor {
  		    			ifConditionFractionManipulation,
     		    		predName,
     		    		objectString,
-    		    		fracInObjProp
+    		    		fracInObjProp,
+    		    		isPacked
     		    );
     		}
     	} else if (currentMethod == "") {
@@ -1921,7 +1943,8 @@ public class BoogieVisitor extends NullVisitor {
 		    		ifConditionFractionManipulation,
 		    		predName,
 		    		objectString,
-		    		fracInObjProp
+		    		fracInObjProp,
+		    		isPacked
 		    );
     		
     	}
@@ -3014,7 +3037,8 @@ public class BoogieVisitor extends NullVisitor {
     		String ifCondition,
     		String predName,
     		String fractionObject,
-    		String fraction
+    		String fraction,
+    		boolean isPacked
     ) {
     	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
 				
@@ -3037,6 +3061,7 @@ public class BoogieVisitor extends NullVisitor {
     					fraction	
     			);
     	newFracMani.setDisjunctionNumber(disjunctionNumber);
+    	newFracMani.setIsPacked(isPacked);
     	
     	if (currentPredOrMethodFracManipulation == null) {
     		currentPredOrMethodFracManipulation = new LinkedList<FractionManipulationStatement>();

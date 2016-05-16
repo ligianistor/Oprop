@@ -6,6 +6,7 @@ public class FractionManipulationStatement {
 	private String fractionObject; 
 	private String fractionValue;
 	private int disjunctionNumber;
+	private boolean isPacked;
 	
 	public FractionManipulationStatement(
 			String ifCondition_,
@@ -20,6 +21,8 @@ public class FractionManipulationStatement {
 		//The fraction manipulation is not usually in a disjunction
 		//and the -1 represents just this.
 		disjunctionNumber = -1;
+		// The object propositions are usually packed than not.
+		isPacked = true;
 	}
 	
 	public String getIfCondition() {
@@ -46,6 +49,14 @@ public class FractionManipulationStatement {
 		return disjunctionNumber;
 	}
 	
+	public void setIsPacked(boolean b) {
+		isPacked = b;
+	}
+	
+	public boolean getIsPacked() {
+		return isPacked;
+	}
+	
 	@Override
 public boolean equals(Object obj) {
 		
@@ -62,7 +73,8 @@ public boolean equals(Object obj) {
 			predName.equals(o1.getPredName()) &&
 			fractionObject.equals(o1.getFractionObject()) &&
 			fractionValue.equals(o1.getFraction()) &&
-			(disjunctionNumber == o1.getDisjunctionNumber())
+			(disjunctionNumber == o1.getDisjunctionNumber()) &&
+			(isPacked == o1.getIsPacked())
 			) 
 			// TODO maybe I don't need to compare to the actual value of the fraction
 		{
@@ -79,11 +91,12 @@ public boolean equals(Object obj) {
 		result *= predName.hashCode();
 		result *= fractionObject.hashCode();
 		result *= disjunctionNumber;
+		result *= isPacked?1:2;
 	    return result;
 	  }
 	
 	public void writeOut() {
 		System.out.println("FractionManipulationStatement: " + ifCondition +" "+ 
-				predName + " "+ fractionObject + " " + disjunctionNumber + "\n");
+				predName + " "+ fractionObject + " " + disjunctionNumber + " " + isPacked + "\n");
 	}
 }
