@@ -654,6 +654,13 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPost = 
 			new HashMap<String, LinkedList<FractionManipulationStatement>>();
 */
+    // First look at one obj prop, say objProp1, element in the precondition and what is its disjunction number.
+    // Then put in a set all the obj props elements that have the same disjunction number.
+    // Then look for the obj props in the postcondition that 
+    // are equal to objProp1, but don't include in the equality 
+    // the disjunction number.
+    // From the one that is equal to this one construct the set that represents the whole disjunction
+    // and see if it is equal to the set got from the pre-condition.
     // TODO xxxx this is what I need to do next
     String inferEnsuresForallForPacked(String methodName_) {
     	String result = "";
@@ -665,6 +672,8 @@ public class BoogieVisitor extends NullVisitor {
        	 
        	 LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
        			 fractionManipulationsListMethodPost.get(methodName_);
+       	 
+       	 // I need to reconstruct the disjunction.
 
     	  
     	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
