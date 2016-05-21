@@ -73,6 +73,10 @@ public boolean equals(Object obj) {
 			predName.equals(o1.getPredName()) &&
 			fractionObject.equals(o1.getFractionObject()) &&
 			fractionValue.equals(o1.getFraction()) &&
+			// The disjunction number needs to be put here
+			// because there could be two statements that appear 
+			// twice, but in two disjunctions. And they are not the same,
+			// the disjunction number sets them apart.
 			(disjunctionNumber == o1.getDisjunctionNumber()) &&
 			(isPacked == o1.getIsPacked())
 			) 
