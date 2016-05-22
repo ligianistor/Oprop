@@ -684,7 +684,7 @@ public class BoogieVisitor extends NullVisitor {
     // not know how that predicate changed.
     String inferEnsuresForallForPacked(String methodName_) {
     	String result = "";
-		 Set<Integer> setDisjunctionNumbers = new TreeSet<Integer>();
+		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
     	// Use the isPacked in fractionManipulationsListMethodPre and
     	// fractionManipulationsListMethodPost to infer the packed.
     	
@@ -699,23 +699,48 @@ public class BoogieVisitor extends NullVisitor {
     		 // I need to reconstruct the disjunction if fracMan has a disjunction number.
     		 int disjNumber = fracMan.getDisjunctionNumber();
     		 Integer integerDisjNumber = new Integer(disjNumber);
-    		 if ((disjNumber != -1) && (!setDisjunctionNumbers.contains(integerDisjNumber))) {
-    			 setDisjunctionNumbers.add(integerDisjNumber);
+    		 if ((disjNumber != -1) && (!setDisjunctionNumbersPrecond.contains(integerDisjNumber))) {
+    			 setDisjunctionNumbersPrecond.add(integerDisjNumber);
     			 // The set of object propositions in the precondition
     			 // that are in the same disjunction with the current object proposition.
-    			 Set<FractionManipulationStatement> setDisjunctionFracMan = 
+    			 Set<FractionManipulationStatement> setPrecondDisjunctionFracMan = 
     					 new TreeSet<FractionManipulationStatement>();
-    			 setDisjunctionFracMan.add(fracMan);
+    			 setPrecondDisjunctionFracMan.add(fracMan);
     			 for (int j=i+1; j<fractionManipulationsListPre.size(); j++) {
     				 FractionManipulationStatement fracManAfter = fractionManipulationsListPre.get(j);
     				 if (fracManAfter.getDisjunctionNumber() == disjNumber) {
-    					 setDisjunctionFracMan.add(fracManAfter);
+    					 setPrecondDisjunctionFracMan.add(fracManAfter);
     				 }
-    		 
-    		 
-    		 
-    		 
     			 }
+    			 // Now construct the set of object propositions from the postcondition
+    			 // that is equal (or might be equal) to the set setDisjunctionFracMan.
+    			 // The following part is all about the postconditions.
+    			 // I start the process, the same one as above, but for postconditions.
+    			 // The set of object propositions in the postcondition
+    			 // that are in the same disjunction with fracMan.
+    			 Set<FractionManipulationStatement> setPostcondDisjunctionFracMan = 
+    					 new TreeSet<FractionManipulationStatement>();
+    			 for (int j=i+1; j<fractionManipulationsListPost.size(); j++) {
+    				 FractionManipulationStatement fracManAfter = fractionManipulationsListPost.get(j);
+    				 if (fracManAfter.getFractionObject().equals(fracMan.getFractionObject())
+    						&&
+    					(fracManAfter.getPredName().equals(fracMan.getPredName()))
+    						&&
+    					(fracManAfter.getIfCondition().equals(fracMan.getIfCondition()))
+    						 ) {
+    					 setPostcondDisjunctionFracMan.add(fracManAfter);
+    				 }
+    			 }
+    			 
+    			 // Compare setPostcondDisjunctionFracMan and setPrecondDisjunctionFracMan.
+    			 
+    			 
+    			 
+    			 
+    			 
+    			 
+    			 
+    			 
     		 }
     		 
     	 }
