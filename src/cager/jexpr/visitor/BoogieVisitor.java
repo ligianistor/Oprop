@@ -655,13 +655,27 @@ public class BoogieVisitor extends NullVisitor {
 			new HashMap<String, LinkedList<FractionManipulationStatement>>();
 */
     // First look at one obj prop, say objProp1, element in the precondition and what is its disjunction number.
-    // Then put in a set all the obj props elements that have the same disjunction number.
+    // Then put in a set all the obj props elements that have the same disjunction number in the precondition.
     // Then look for the obj props in the postcondition that 
     // are equal to objProp1, but don't include in the equality 
     // the disjunction number.
-    // From the one that is equal to this one construct the set that represents the whole disjunction
+    // From the one that is equal to this one (assume there is only one for now, if there are more, 
+    // it is left for future work),
+    // construct the set that represents the whole disjunction
     // and see if it is equal to the set got from the pre-condition.
-    // TODO xxxx this is what I need to do next
+    // In this way I get everything that is the same in the pre and postconditions.
+    // I also need to keep track of what is not the same, because they
+    // will also tell me what I need to write in the (...)==> part of the 
+    // ensures forall.
+    // If what is in the precondition is exactly the same as what is in the postcondition,
+    // then I can move on.
+    // If what I have in the precondition cannot be found in the postcondition
+    // then I take the object proposition of the precondition
+    // and look for an object proposition in the postcondition that has the same object
+    // and the same predicate, and see if it changed from packed to unpacked,
+    // or if the fraction changed. For this last case, when I look if something changed, I
+    // can disregard the disjunction number because I need an over approximation
+    // of the packed/unpacked (and fractions for below?) that changed.
     String inferEnsuresForallForPacked(String methodName_) {
     	String result = "";
     	// Use the isPacked in fractionManipulationsListMethodPre and
