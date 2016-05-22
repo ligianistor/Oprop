@@ -676,6 +676,8 @@ public class BoogieVisitor extends NullVisitor {
     // or if the fraction changed. For this last case, when I look if something changed, I
     // can disregard the disjunction number because I need an over approximation
     // of the packed/unpacked (and fractions for below?) that changed.
+    // Also, if in the precondition it is surrounded by an ifCondition,
+    // but in the postcondition it is not, I consider it changed.
     // If an object proposition with the same object and predicate cannot be found in the 
     // postcondition, this means that I cannot write an ensures forall for that predicate,
     // both for packed and for frac.
@@ -733,6 +735,15 @@ public class BoogieVisitor extends NullVisitor {
     			 }
     			 
     			 // Compare setPostcondDisjunctionFracMan and setPrecondDisjunctionFracMan.
+    			 // If they are the same then I don't need to do anything.
+    			 // If they are not the same, if there is an ifCondition,
+    			 // I need to look at all the individual object propositions in the disjunction
+    			 // for the precondition
+    			 // and see how each changed in the postcondition.
+    			 // If there is no ifCondition, I still need to look at all the 
+    			 // object propositions in the postcondition and see if there is 
+    			 // one that is like this one from the precondition.
+    			 
     			 
     			 
     			 
