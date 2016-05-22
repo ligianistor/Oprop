@@ -676,8 +676,15 @@ public class BoogieVisitor extends NullVisitor {
     // or if the fraction changed. For this last case, when I look if something changed, I
     // can disregard the disjunction number because I need an over approximation
     // of the packed/unpacked (and fractions for below?) that changed.
+    // If an object proposition with the same object and predicate cannot be found in the 
+    // postcondition, this means that I cannot write an ensures forall for that predicate,
+    // both for packed and for frac.
+    // This is because the programmer did not have enough information to write anything
+    // about that object proposition that we are looking for and thus they did 
+    // not know how that predicate changed.
     String inferEnsuresForallForPacked(String methodName_) {
     	String result = "";
+		 Set<Integer> setDisjunctionNumbers = new TreeSet<Integer>();
     	// Use the isPacked in fractionManipulationsListMethodPre and
     	// fractionManipulationsListMethodPost to infer the packed.
     	
@@ -687,12 +694,29 @@ public class BoogieVisitor extends NullVisitor {
        	 LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
        			 fractionManipulationsListMethodPost.get(methodName_);
        	 
-       	 // I need to reconstruct the disjunction.
-
-    	  
     	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
     		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
-    		 // TODO need to compare to the ones in fractionManipulationsListMethodPost
+    		 // I need to reconstruct the disjunction if fracMan has a disjunction number.
+    		 int disjNumber = fracMan.getDisjunctionNumber();
+    		 Integer integerDisjNumber = new Integer(disjNumber);
+    		 if ((disjNumber != -1) && (!setDisjunctionNumbers.contains(integerDisjNumber))) {
+    			 setDisjunctionNumbers.add(integerDisjNumber);
+    			 // The set of object propositions in the precondition
+    			 // that are in the same disjunction with the current object proposition.
+    			 Set<FractionManipulationStatement> setDisjunctionFracMan = 
+    					 new TreeSet<FractionManipulationStatement>();
+    			 setDisjunctionFracMan.add(fracMan);
+    			 for (int j=i+1; j<fractionManipulationsListPre.size(); j++) {
+    				 FractionManipulationStatement fracManAfter = fractionManipulationsListPre.get(j);
+    				 if (fracManAfter.getDisjunctionNumber() == disjNumber) {
+    					 setDisjunctionFracMan.add(fracManAfter);
+    				 }
+    		 
+    		 
+    		 
+    		 
+    			 }
+    		 }
     		 
     	 }
     	
