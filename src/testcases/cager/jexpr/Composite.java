@@ -54,6 +54,7 @@ predicate parent() =
 	// fraction k and in the postcondition we have a constant, and also the other way around.
 void updateCount() 
 	// It is implicit that double k, double k1, etc are > 0.
+	// TODO I need to make this explicit somehow.
 ~double k, double k1, double k2:
 int c, Composite ol, Composite or, Composite op,
 int c1, int c2, int c3:	

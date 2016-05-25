@@ -647,13 +647,6 @@ public class BoogieVisitor extends NullVisitor {
 	
     }
     
-/*	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListPredicate = 
-			new HashMap<String, LinkedList<FractionManipulationStatement>>();
-	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPre = 
-			new HashMap<String, LinkedList<FractionManipulationStatement>>();
-	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPost = 
-			new HashMap<String, LinkedList<FractionManipulationStatement>>();
-*/
     // First look at one obj prop, say objProp1, element in the precondition and what is its disjunction number.
     // Then put in a set all the obj props elements that have the same disjunction number in the precondition.
     // Then look for the obj props in the postcondition that 
@@ -743,6 +736,22 @@ public class BoogieVisitor extends NullVisitor {
     			 // If there is no ifCondition, I still need to look at all the 
     			 // object propositions in the postcondition and see if there is 
     			 // one that is like this one from the precondition.
+    			 
+    			 if (!setPostcondDisjunctionFracMan.equals(setPrecondDisjunctionFracMan)) {
+    				 // Any of the objects in this disjunction of the precondition
+    				 // that is not equal to one in the postcondition
+    				 // means that they could change and cannot be included in the
+    				 // ensures forall. Only if it was the exact same as the disjunction in the postcondition
+    				 // it could have been included in the ensures forall.
+    				 
+    			 }
+    			 
+    			 
+    			 
+    			 // Future work.
+    			 // If I do need to write fraction statements about a disjunction
+    			 // I'll have to write for both disjunction elements 
+    			 // because Boogie does not know which one will hold.
     			 
     			 
     			 
