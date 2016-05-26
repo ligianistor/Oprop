@@ -812,6 +812,11 @@ public class BoogieVisitor extends NullVisitor {
     				 // ensures forall. Only if it was the exact same as the disjunction in the postcondition
     				 // it could have been included in the ensures forall.
     				 
+    				 // compare all the object propositions in the precondition set above
+    				 // one by one, with *all* the object propositions in the postcondition
+    				 // and retain for each the name of the predicate and the object if they are
+    				 // different.
+    				 
     				 
     			 }
     			 
