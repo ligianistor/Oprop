@@ -647,6 +647,74 @@ public class BoogieVisitor extends NullVisitor {
 	
     }
     
+    // TODO should I substitute all Set<> with TreeSet<>?
+    boolean areEqualSetsPacked(
+    		Set<FractionManipulationStatement> setPre,
+    		Set<FractionManipulationStatement> setPost 		
+    ) {
+    	// copy constructor
+    	Set<FractionManipulationStatement> setPreCopy =
+    			new TreeSet<FractionManipulationStatement>(setPre);
+    	//1. check if setPre and setPost have the same number of elements
+    	//2. go through all the elements in setPre and for each look in setPost.
+    	//3. if you find it remove it from setPre
+    	//4. at the end, setPre should be empty and then the sets are equal
+    	if (setPre.size() == setPost.size()) {
+    		Iterator<FractionManipulationStatement> iterPre = setPre.iterator();
+    		 while (iterPre.hasNext()) {
+    			 FractionManipulationStatement elementPre = iterPre.next();
+    			 Iterator<FractionManipulationStatement> iterPost = setPost.iterator();
+    			 while (iterPost.hasNext()) {
+        			 FractionManipulationStatement elementPost = iterPost.next();
+        			 if (elementPre.equalsForPacked(elementPost)) {
+        				 // remove the element from setPreCopy
+        				 setPreCopy.remove(elementPre);
+        				 // break out of the interior while
+        				 break;
+        			 }
+    		    }	
+    	}
+    	}
+    	
+    	if (setPreCopy.isEmpty()) return true;
+    	return false;
+    }
+    
+    // TODO need to write a single function where I pass 
+    // the function equalsForPacked or equalsForFractions as parameter
+    boolean areEqualSetsFractions(
+    	    		Set<FractionManipulationStatement> setPre,
+    	    		Set<FractionManipulationStatement> setPost 		
+    	    ) {
+    	    	// copy constructor
+    	    	Set<FractionManipulationStatement> setPreCopy =
+    	    			new TreeSet<FractionManipulationStatement>(setPre);
+    	    	//1. check if setPre and setPost have the same number of elements
+    	    	//2. go through all the elements in setPre and for each look in setPost.
+    	    	//3. if you find it remove it from setPre
+    	    	//4. at the end, setPre should be empty and then the sets are equal
+    	    	if (setPre.size() == setPost.size()) {
+    	    		Iterator<FractionManipulationStatement> iterPre = setPre.iterator();
+    	    		 while (iterPre.hasNext()) {
+    	    			 FractionManipulationStatement elementPre = iterPre.next();
+    	    			 Iterator<FractionManipulationStatement> iterPost = setPost.iterator();
+    	    			 while (iterPost.hasNext()) {
+    	        			 FractionManipulationStatement elementPost = iterPost.next();
+    	        			 if (elementPre.equalsForFractions(elementPost)) {
+    	        				 // remove the element from setPreCopy
+    	        				 setPreCopy.remove(elementPre);
+    	        				 // break out of the interior while
+    	        				 break;
+    	        			 }
+    	    		    }	
+    	    	}
+    	    	}
+    	    	
+    	    	if (setPreCopy.isEmpty()) return true;
+    	    	return false;
+    	    }
+    
+    
     // First look at one obj prop, say objProp1, element in the precondition and what is its disjunction number.
     // Then put in a set all the obj props elements that have the same disjunction number in the precondition.
     // Then look for the obj props in the postcondition that 
@@ -737,12 +805,13 @@ public class BoogieVisitor extends NullVisitor {
     			 // object propositions in the postcondition and see if there is 
     			 // one that is like this one from the precondition.
     			 
-    			 if (!setPostcondDisjunctionFracMan.equals(setPrecondDisjunctionFracMan)) {
+    			 if (!areEqualSetsPacked(setPostcondDisjunctionFracMan,setPrecondDisjunctionFracMan)) {
     				 // Any of the objects in this disjunction of the precondition
     				 // that is not equal to one in the postcondition
     				 // means that they could change and cannot be included in the
     				 // ensures forall. Only if it was the exact same as the disjunction in the postcondition
     				 // it could have been included in the ensures forall.
+    				 
     				 
     			 }
     			 

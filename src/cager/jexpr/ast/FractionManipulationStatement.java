@@ -87,6 +87,53 @@ public boolean equals(Object obj) {
 		return false;
 	}
 	
+	// whether 2 objects are equal from the packed point of view,
+	// even if their fractions are not equal
+public boolean equalsForPacked(Object obj) {	
+		if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+      
+        FractionManipulationStatement o1 = (FractionManipulationStatement) obj;
+
+		if ( ifCondition.equals(o1.getIfCondition()) &&
+			predName.equals(o1.getPredName()) &&
+			fractionObject.equals(o1.getFractionObject()) &&
+			(isPacked == o1.getIsPacked())
+			) 
+		{
+			return true;
+		}
+		return false;
+	}
+
+// whether 2 objects are equal from the fractions point of view
+// even if their parameters or packing state are not equal
+public boolean equalsForFractions(Object obj) {
+	
+	if (obj == this) {
+        return true;
+    }
+    if (obj == null || obj.getClass() != this.getClass()) {
+        return false;
+    }
+  
+    FractionManipulationStatement o1 = (FractionManipulationStatement) obj;
+
+	if ( ifCondition.equals(o1.getIfCondition()) &&
+		predName.equals(o1.getPredName()) &&
+		fractionObject.equals(o1.getFractionObject()) &&
+		fractionValue.equals(o1.getFraction()) 
+		) 
+	{
+		return true;
+	}
+	return false;
+}
+	
 	
 	@Override
 	public int hashCode(){
