@@ -757,6 +757,22 @@ public class BoogieVisitor extends NullVisitor {
        	 LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
        			 fractionManipulationsListMethodPost.get(methodName_);
        	 
+       	 // For each predicate this map contains which are the 
+       	 // objects for which the objects propositions are packed in the
+       	 // precondition and unpacked in the postcondition 
+       	 // or vice versa.
+     	 HashMap<String, Set<String>> packedModifiedObjects =
+    			new HashMap<String, Set<String>>();
+     	 
+     	 // For each predicate this map contains whether
+     	 // that predicate (for all objects to which it is bound in the precondition)
+     	 // which was mentioned in the precondition
+     	 // was also mentioned in the postcondition.
+     	 // If it was not mentioned for all objects for which it was mentioned in the precondition
+     	 // it means that we cannot write an ensures forall for that predicate.
+     	 HashMap<String, Boolean> packedIsMentioned =
+    			new HashMap<String, Boolean>();
+       	 
     	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
     		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
     		 // I need to reconstruct the disjunction if fracMan has a disjunction number.
@@ -805,20 +821,33 @@ public class BoogieVisitor extends NullVisitor {
     			 // object propositions in the postcondition and see if there is 
     			 // one that is like this one from the precondition.
     			 
-    			 if (!areEqualSetsPacked(setPostcondDisjunctionFracMan,setPrecondDisjunctionFracMan)) {
+    			 if (!areEqualSetsPacked(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan)) {
     				 // Any of the objects in this disjunction of the precondition
     				 // that is not equal to one in the postcondition
     				 // means that they could change and cannot be included in the
     				 // ensures forall. Only if it was the exact same as the disjunction in the postcondition
     				 // it could have been included in the ensures forall.
+    				 // The objects of the object propositions in the pre set could
+    				 // be put straight in packedModifiedObjects, but it could be that
+    				 // they are not event mentioned in the postcondition and in that case
+    				 // packedIsMentioned needs to be modified for that predicate.
+    				 // Sowe do need to find at least one obejct proposition in the postcondition
+    				 // that has the same object and predicate as the current one 
+    				 // taken from setPrecondDisjunctionFracMan.
     				 
-    				 // compare all the object propositions in the precondition set above
-    				 // one by one, with *all* the object propositions in the postcondition
-    				 // and retain for each the name of the predicate and the object if they are
-    				 // different.
+    				 
+    				 
+
+    				 
     				 
     				 
     			 }
+    			 
+    			 // This is for the object propositions that are not part of a disjunction.
+				 // Compare all the object propositions in the precondition set above
+				 // one by one, with *all* the object propositions in the postcondition
+				 // and retain for each the name of the predicate and the object if they are
+				 // different.
     			 
     			 
     			 
