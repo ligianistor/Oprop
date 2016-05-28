@@ -714,6 +714,41 @@ public class BoogieVisitor extends NullVisitor {
     	    	return false;
     	    }
     
+    // Check if fracMan exists in setPre. Comparison function is not straight equality
+    // it only checks if a FractionManipulationStatement exists with the same predicate and object
+    // in setPost.
+    boolean doesFractionManipulationExist(
+    		 Set<FractionManipulationStatement> setPost,
+    		 FractionManipulationStatement fracMan	 
+    ) {
+    	boolean result = false;
+		Iterator<FractionManipulationStatement> iterPost = setPost.iterator();
+		 while (iterPost.hasNext()) {
+			 FractionManipulationStatement elementPost = iterPost.next();
+			 if (
+					 fracMan.getPredName().equals(elementPost.getPredName()) &&
+					 fracMan.getFractionObject().equals(elementPost.getFractionObject())
+			 ) {
+				 result = true;
+				 break;
+			 }
+		 }
+    	return result;
+    }
+    
+	void addToPackedModifiedObjects(
+			HashMap<String, Set<String>> packedModifiedObjects,
+			String predName, 
+			String fractionObject
+	 ) {
+		Set<String> currentSetOfObjects = packedModifiedObjects.get(predName);
+		if (currentSetOfObjects == null) {
+			currentSetOfObjects = new TreeSet<String>();
+		}
+		currentSetOfObjects.add(fractionObject);
+		packedModifiedObjects.put(predName, currentSetOfObjects);		
+	}
+    
     
     // First look at one obj prop, say objProp1, element in the precondition and what is its disjunction number.
     // Then put in a set all the obj props elements that have the same disjunction number in the precondition.
@@ -770,6 +805,8 @@ public class BoogieVisitor extends NullVisitor {
      	 // was also mentioned in the postcondition.
      	 // If it was not mentioned for all objects for which it was mentioned in the precondition
      	 // it means that we cannot write an ensures forall for that predicate.
+     	 // TODO maybe I need to put True for all predicates that are mentioned in the "modifies" 
+     	 // to start with.
      	 HashMap<String, Boolean> packedIsMentioned =
     			new HashMap<String, Boolean>();
        	 
@@ -821,6 +858,7 @@ public class BoogieVisitor extends NullVisitor {
     			 // object propositions in the postcondition and see if there is 
     			 // one that is like this one from the precondition.
     			 
+    			 // For the composite example, we don't go inside this if.
     			 if (!areEqualSetsPacked(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan)) {
     				 // Any of the objects in this disjunction of the precondition
     				 // that is not equal to one in the postcondition
@@ -829,19 +867,29 @@ public class BoogieVisitor extends NullVisitor {
     				 // it could have been included in the ensures forall.
     				 // The objects of the object propositions in the pre set could
     				 // be put straight in packedModifiedObjects, but it could be that
-    				 // they are not event mentioned in the postcondition and in that case
+    				 // they are not even mentioned in the postcondition and in that case
     				 // packedIsMentioned needs to be modified for that predicate.
-    				 // Sowe do need to find at least one obejct proposition in the postcondition
+    				 // So we do need to find at least one object proposition in the postcondition
     				 // that has the same object and predicate as the current one 
     				 // taken from setPrecondDisjunctionFracMan.
-    				 
-    				 
-    				 
-
-    				 
-    				 
-    				 
-    			 }
+    				Iterator<FractionManipulationStatement> iterPrecond = setPrecondDisjunctionFracMan.iterator();
+    					 while (iterPrecond.hasNext()) {
+    						 FractionManipulationStatement elementPrecond = iterPrecond.next();
+    						 
+    						 if (!doesFractionManipulationExist(setPostcondDisjunctionFracMan, elementPrecond)) {
+    							 packedIsMentioned.put(elementPrecond.getPredName(), new Boolean(false));
+    						 } else {
+    							 addToPackedModifiedObjects(
+    									 packedModifiedObjects,
+    									 elementPrecond.getPredName(), 
+    									 elementPrecond.getFractionObject()
+    							 );
+    							 // TODO I don't know if packedModifiedObjects
+    							 // was modified because it was given by value?
+    							 // or do I need to do more?
+    							 
+    						 }	 
+    					 }
     			 
     			 // This is for the object propositions that are not part of a disjunction.
 				 // Compare all the object propositions in the precondition set above
@@ -854,18 +902,10 @@ public class BoogieVisitor extends NullVisitor {
     			 // Future work.
     			 // If I do need to write fraction statements about a disjunction
     			 // I'll have to write for both disjunction elements 
-    			 // because Boogie does not know which one will hold.
-    			 
-    			 
-    			 
-    			 
-    			 
-    			 
-    			 
-    			 
-    			 
+    			 // because Boogie does not know which one will hold.	 
     		 }
     		 
+    	 }
     	 }
     	
     	return result;			
