@@ -749,7 +749,6 @@ public class BoogieVisitor extends NullVisitor {
 		packedModifiedObjects.put(predName, currentSetOfObjects);		
 	}
     
-    
     // First look at one obj prop, say objProp1, element in the precondition and what is its disjunction number.
     // Then put in a set all the obj props elements that have the same disjunction number in the precondition.
     // Then look for the obj props in the postcondition that 
@@ -768,8 +767,9 @@ public class BoogieVisitor extends NullVisitor {
     // If what I have in the precondition cannot be found in the postcondition
     // then I take the object proposition of the precondition
     // and look for an object proposition in the postcondition that has the same object
-    // and the same predicate, and see if it changed from packed to unpacked,
-    // or if the fraction changed. For this last case, when I look if something changed, I
+    // and the same predicate. If it exists it means that it changed and it needs to go
+    // in the map that keeps track of which objects changed for each predicate. 
+	// For this last case, when I look if something changed, I
     // can disregard the disjunction number because I need an over approximation
     // of the packed/unpacked (and fractions for below?) that changed.
     // Also, if in the precondition it is surrounded by an ifCondition,
@@ -780,12 +780,14 @@ public class BoogieVisitor extends NullVisitor {
     // This is because the programmer did not have enough information to write anything
     // about that object proposition that we are looking for and thus they did 
     // not know how that predicate changed.
+	// The above algorithm is only for disjunctions, but it should be similar 
+	// for simple fractionStatements.
     String inferEnsuresForallForPacked(String methodName_) {
-    	String result = "";
+    	 String result = "";
 		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
+		 
     	// Use the isPacked in fractionManipulationsListMethodPre and
-    	// fractionManipulationsListMethodPost to infer the packed.
-    	
+    	// fractionManipulationsListMethodPost to infer the changes in packed.
       	 LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
        			 fractionManipulationsListMethodPre.get(methodName_);
        	 
@@ -795,7 +797,7 @@ public class BoogieVisitor extends NullVisitor {
        	 // For each predicate this map contains which are the 
        	 // objects for which the objects propositions are packed in the
        	 // precondition and unpacked in the postcondition 
-       	 // or vice versa.
+       	 // or vice versa, only if they are mentioned both in the pre- and postcondition.
      	 HashMap<String, Set<String>> packedModifiedObjects =
     			new HashMap<String, Set<String>>();
      	 
@@ -803,20 +805,36 @@ public class BoogieVisitor extends NullVisitor {
      	 // that predicate (for all objects to which it is bound in the precondition)
      	 // which was mentioned in the precondition
      	 // was also mentioned in the postcondition.
-     	 // If it was not mentioned for all objects for which it was mentioned in the precondition
-     	 // it means that we cannot write an ensures forall for that predicate.
+     	 // If it was not mentioned for at least one object for which it was mentioned in the precondition
+     	 // it means that we cannot write an "ensures forall" for that predicate.
      	 // TODO maybe I need to put True for all predicates that are mentioned in the "modifies" 
-     	 // to start with.
+     	 // to start with. For this I need to give the "modifies" set as an argument to this method.
      	 HashMap<String, Boolean> packedIsMentioned =
     			new HashMap<String, Boolean>();
+     	  	 
+     	 // This set contains contains the predicates for which
+     	 // there exists an "unpacked" in the postcondition.
+     	 Set<String> unpackedInPostcondition =
+    			new TreeSet<String>();
+     	 // It is simpler for the map above to be populated right now
+     	 // as it only requires a pass over the postconditions.
+    	 for (int i=0; i<fractionManipulationsListPost.size(); i++) {
+    		 FractionManipulationStatement fracMan = fractionManipulationsListPost.get(i);
+    		 boolean isPacked = fracMan.getIsPacked();
+    		 if (!isPacked) {
+    			 String pred = fracMan.getPredName();
+    			 unpackedInPostcondition.add(pred);
+    		 } 
+    	 }
        	 
     	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
     		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
     		 // I need to reconstruct the disjunction if fracMan has a disjunction number.
     		 int disjNumber = fracMan.getDisjunctionNumber();
-    		 Integer integerDisjNumber = new Integer(disjNumber);
-    		 if ((disjNumber != -1) && (!setDisjunctionNumbersPrecond.contains(integerDisjNumber))) {
-    			 setDisjunctionNumbersPrecond.add(integerDisjNumber);
+    		 // disjNumber does not need to be specifically wrapped in an Integer
+    		 // because Java does it automatically if need be.
+    		 if ((disjNumber != -1) && (!setDisjunctionNumbersPrecond.contains(disjNumber))) {
+    			 setDisjunctionNumbersPrecond.add(disjNumber);
     			 // The set of object propositions in the precondition
     			 // that are in the same disjunction with the current object proposition.
     			 Set<FractionManipulationStatement> setPrecondDisjunctionFracMan = 
@@ -829,14 +847,14 @@ public class BoogieVisitor extends NullVisitor {
     				 }
     			 }
     			 // Now construct the set of object propositions from the postcondition
-    			 // that is equal (or might be equal) to the set setDisjunctionFracMan.
+    			 // that might be equal to the set setDisjunctionFracMan.
     			 // The following part is all about the postconditions.
     			 // I start the process, the same one as above, but for postconditions.
     			 // The set of object propositions in the postcondition
     			 // that are in the same disjunction with fracMan.
     			 Set<FractionManipulationStatement> setPostcondDisjunctionFracMan = 
     					 new TreeSet<FractionManipulationStatement>();
-    			 for (int j=i+1; j<fractionManipulationsListPost.size(); j++) {
+    			 for (int j=0; j<fractionManipulationsListPost.size(); j++) {
     				 FractionManipulationStatement fracManAfter = fractionManipulationsListPost.get(j);
     				 if (fracManAfter.getFractionObject().equals(fracMan.getFractionObject())
     						&&
@@ -897,15 +915,37 @@ public class BoogieVisitor extends NullVisitor {
 				 // and retain for each the name of the predicate and the object if they are
 				 // different.
     			 
-    			 
-    			 
     			 // Future work.
     			 // If I do need to write fraction statements about a disjunction
     			 // I'll have to write for both disjunction elements 
     			 // because Boogie does not know which one will hold.	 
-    		 }
+    		 }	 
+    	 } else if (disjNumber == -1) {
+    		 // This is a FractionManipulationStatement that is not part of a disjunction.
+    		 // If there is an ifCondition or not does not influence what I do.
+    		 // I am comparing the current fracMan with all the fracMan's in the postcondition
+    		 // and if there is one that has the same object and predicate, and the "isPacked"
+    		 // changed, I add that object to packedModifiedObjects.
     		 
+        	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
+        		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
+        		 if(
+        				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
+        				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
+        				 (fracMan.getIsPacked()!=fracMan.getIsPacked())
+        				 //TODO should I compare ifConditions?
+        		 ) {
+        			 addToPackedModifiedObjects(
+        					 packedModifiedObjects,
+        					 fracMan.getPredName(),
+        					 fracMan.getFractionObject()
+        			);
+        			 // TODO is packedModifiedObjects passed by value and thus I don't need to do anything else?
+        		 }
+        	 }
     	 }
+    		 
+    		 
     	 }
     	
     	return result;			
@@ -1326,8 +1366,16 @@ public class BoogieVisitor extends NullVisitor {
 		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));  
 		
 		// The second one is more relaxed. If there are calls to any methods in this method,
-		// then infer this ensures forall.
+		// then infer the second ensures forall. Also this one needs to be inferred if not
+		// all fracPred's that are in the precondition were mentioned in the postcondition.
+		// If instead all the fracPred's that were in the precondition were also
+		// mentioned in the postcondition then it makes sense to infer the first one.
 		// The first one can be inferred for methods that have no calls to other methods inside. 
+		
+		// For the "ensures forall" for packed, if there is an unpacked in the postcondition
+		// then infer the "ensures forall" that has the "old() == ..".
+		// If there is no "unpacked" in the postcondition then 
+		// infer the one that says "ensures forall y:: packedPred[y]".
 
 		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
 				packedMods.entrySet().iterator();
