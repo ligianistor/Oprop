@@ -827,8 +827,11 @@ public class BoogieVisitor extends NullVisitor {
     		 } 
     	 }
        	 
-    	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
+    	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {		 		 
     		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
+    		 // Initialize all the entries in maps to default values.
+    		 packedIsMentioned.put(fracMan.getPredName(), true);
+    		 
     		 // I need to reconstruct the disjunction if fracMan has a disjunction number.
     		 int disjNumber = fracMan.getDisjunctionNumber();
     		 // disjNumber does not need to be specifically wrapped in an Integer
@@ -944,10 +947,34 @@ public class BoogieVisitor extends NullVisitor {
         		 }
         	 }
     	 }
-    		 
-    		 
-    	 }
-    	
+ 
+    }
+    // Here I write the "ensures forall" for packed as we have the infrastructure in place.
+    Iterator<Entry<String, Boolean>> j = 
+    			packedIsMentioned.entrySet().iterator(); 
+    while(j.hasNext()) {
+    		Boolean currentIsMentioned = j.next().getValue();
+    		if (currentIsMentioned) {
+        		String currentNamePred = j.next().getKey();
+        		if (unpackedInPostcondition.contains(currentNamePred)){
+        			// We need to add
+        			// "ensures (forall y:Ref :: ( (this!=y)  ==> 
+        			// (packedPred[y] == old(packedPred[y])) ) );"
+        			// to result.
+        			result = result.concat("ensures (forall y:Ref :: (");
+        			// TODO xxxxxx this is where I left off
+
+        		} else {
+        			// We need to add "ensures (forall y:Ref :: packedParent[y]);"
+        			// to result.
+        			result = result.concat("ensures (forall y:Ref :: packed"+
+        					upperCaseFirstLetter(currentNamePred)+"[y]);\n");
+        		}
+    			
+    		}
+    }
+    	 
+    	 
     	return result;			
     }
     
