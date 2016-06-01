@@ -210,7 +210,8 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//Set of predicates for the corresponding frac global variables that are 1
 	//in the requires or ensures of the current method.
-	//TODO how does this affect for which predicates I write "ensure forall (packedPred???
+	//TODO I think this should only contain the predicates for which the fraction is 1 in the 
+	// postcondition only, it does not matter if it is 1 in the precondition.
 	Set<String> setFracEq1 = new TreeSet<String>();	
 	
 	//For each method, this map tells us which are the
@@ -1427,61 +1428,17 @@ public class BoogieVisitor extends NullVisitor {
 		        	
 		    String forallParameter = getNewForallParameter();
 		    String ensuresForall = "";
-		    //We only need to add "ensures forall" and "requires forall" for the
-		    //other procedures that are not main.
-		    if (!ast.getIdentifier().getName().equals("main")) {
-		       	//This is for writing "ensures forall for packed.
-		    	if (localFieldsInMethod != null) {
-		    		// TODO this is totally random,
-		    		// the way I decide which ensures forall for packed are written out.
-		    		// I just wrote it to have something written about this.
-		    		// Need to change this part.
-		    		if (localFieldsInMethod.contains("packed"+
-		    				upperCaseFirstLetter(nameOfPredicate)) &&
-		    				!setFracEq1.contains(nameOfPredicate)) {
-		    			ensuresForall = ensuresForall.concat(
-		        			"\t ensures (forall "+  forallParameter+":Ref:: (");
-		        	if (modifiedObjects.get(nameOfPredicate) == null) {
-		        		ensuresForall = ensuresForall.concat(
-		        				"packed"+upperCaseFirstLetter(nameOfPredicate) + 
-		        				"["+forallParameter+
-		        				"] == old(packed" + 
-		        				upperCaseFirstLetter(nameOfPredicate) +"["+
-		        				forallParameter+"])));\n");
-		        	} else {
-		        		String[] modifiedObjectsArray = 
-		        				modifiedObjects.get(nameOfPredicate).toArray(new String[0]);
-		        		int len = modifiedObjectsArray.length;
-		        		if (len > 1) {
-		        			ensuresForall = ensuresForall.concat("(");
-		        		}
-		        		for (int k = 0; k < len - 1; k++) {
-		        			ensuresForall = ensuresForall.concat(
-		        							"("+forallParameter+"!="+
-		        							modifiedObjectsArray[k]+") &&"
-		        			);
-		        		}
-		        		
-		        		ensuresForall = ensuresForall.concat(
-		        						"("+forallParameter+"!="+
-		        						modifiedObjectsArray[len-1]+") ==> "
-		        		);
-		        		if (len > 1) {
-		        			ensuresForall = ensuresForall.concat("(");
-		        		}
-		        		
-		        		ensuresForall = ensuresForall.concat("(packed"+ 
-		        							upperCaseFirstLetter(nameOfPredicate) + 
-		        							"["+ forallParameter+
-		        							"] == old(packed"+
-		        							upperCaseFirstLetter(nameOfPredicate)+"["+
-		        							forallParameter+"]))));\n"
-		        		);
-		        	}
-		        }
-		    }
-		           //This is for writing "ensures forall for frac.
-		        	if (localFieldsInMethod != null) {
+		    // We only need to add "ensures forall" and "requires forall" for the
+		    // other procedures that are not main.
+		    // "main" is the client code.
+		    String thisMethodName = ast.getIdentifier().getName();
+		    if (!thisMethodName.equals("main")) {
+		       	// This is for writing "ensures forall for packed.
+		    	// Might need to give the forallParameter to this method.
+		    	ensuresForall = ensuresForall.concat(inferEnsuresForallForPacked(thisMethodName));
+		    	
+		        //This is for writing "ensures forall for frac.
+		        if (localFieldsInMethod != null) {
 		        		if (localFieldsInMethod.contains(
 		        				"frac"+upperCaseFirstLetter(nameOfPredicate)) &&
 		        				!setFracEq1.contains(nameOfPredicate)) {
