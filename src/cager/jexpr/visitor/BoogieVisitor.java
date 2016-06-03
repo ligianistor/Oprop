@@ -782,7 +782,7 @@ public class BoogieVisitor extends NullVisitor {
     // about that object proposition that we are looking for and thus they did 
     // not know how that predicate changed.
 	// The above algorithm is only for disjunctions, but it should be similar 
-	// for simple fractionStatements.
+	// for simple fractionManipulationStatements.
     String inferEnsuresForallForPacked(String methodName_) {
     	 String result = "";
 		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
@@ -813,7 +813,7 @@ public class BoogieVisitor extends NullVisitor {
      	 HashMap<String, Boolean> packedIsMentioned =
     			new HashMap<String, Boolean>();
      	  	 
-     	 // This set contains contains the predicates for which
+     	 // This set contains the predicates for which
      	 // there exists an "unpacked" in the postcondition.
      	 Set<String> unpackedInPostcondition =
     			new TreeSet<String>();
@@ -843,6 +843,7 @@ public class BoogieVisitor extends NullVisitor {
     			 // that are in the same disjunction with the current object proposition.
     			 Set<FractionManipulationStatement> setPrecondDisjunctionFracMan = 
     					 new TreeSet<FractionManipulationStatement>();
+    			 // I added compareTo() for the line below to work.
     			 setPrecondDisjunctionFracMan.add(fracMan);
     			 for (int j=i+1; j<fractionManipulationsListPre.size(); j++) {
     				 FractionManipulationStatement fracManAfter = fractionManipulationsListPre.get(j);
@@ -850,6 +851,7 @@ public class BoogieVisitor extends NullVisitor {
     					 setPrecondDisjunctionFracMan.add(fracManAfter);
     				 }
     			 }
+    			 
     			 // Now construct the set of object propositions from the postcondition
     			 // that might be equal to the set setDisjunctionFracMan.
     			 // The following part is all about the postconditions.
@@ -899,7 +901,7 @@ public class BoogieVisitor extends NullVisitor {
     						 FractionManipulationStatement elementPrecond = iterPrecond.next();
     						 
     						 if (!doesFractionManipulationExist(setPostcondDisjunctionFracMan, elementPrecond)) {
-    							 packedIsMentioned.put(elementPrecond.getPredName(), new Boolean(false));
+    							 packedIsMentioned.put(elementPrecond.getPredName(), false);
     						 } else {
     							 addToPackedModifiedObjects(
     									 packedModifiedObjects,
@@ -925,6 +927,7 @@ public class BoogieVisitor extends NullVisitor {
     			 // because Boogie does not know which one will hold.	 
     		 }	 
     	 } else if (disjNumber == -1) {
+    		 // TODO xxxx!!! there are 2 errors below
     		 // This is a FractionManipulationStatement that is not part of a disjunction.
     		 // If there is an ifCondition or not does not influence what I do.
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
@@ -954,9 +957,10 @@ public class BoogieVisitor extends NullVisitor {
     Iterator<Entry<String, Boolean>> j = 
     			packedIsMentioned.entrySet().iterator(); 
     while(j.hasNext()) {
-    		Boolean currentIsMentioned = j.next().getValue();
-    		if (currentIsMentioned) {
-        		String currentNamePred = j.next().getKey();
+    	    Entry<String, Boolean> pair = (Entry<String, Boolean>)j.next();
+    		Boolean currentIsMentioned = pair.getValue();
+    		if (currentIsMentioned.booleanValue()) {
+        		String currentNamePred = pair.getKey();
         		if (unpackedInPostcondition.contains(currentNamePred)){
         			// We need to add
         			// "ensures (forall y:Ref :: ( (this!=y)  ==> 
@@ -971,11 +975,9 @@ public class BoogieVisitor extends NullVisitor {
         			result = result.concat("ensures (forall y:Ref :: packed"+
         					upperCaseFirstLetter(currentNamePred)+"[y]);\n");
         		}
-    			
+        		    			
     		}
-    }
-    	 
-    	 
+    }  	
     	return result;			
     }
     
@@ -1388,7 +1390,7 @@ public class BoogieVisitor extends NullVisitor {
 		// If there is no mention, it means that the programmer did not know what happens to the frac and we 
 		// cannot infer the ensures forall.
 		
-		// There are 2 kinds of ensures forall that can be inferred: 
+		// There are 2 kinds of ensures forall that can be inferred for fractions: 
 		// ensures (forall y:Ref :: ( (y!=this) ==> (fracLeft[y] == old(fracLeft[y]) ) ) );
 		// and 
 		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));  

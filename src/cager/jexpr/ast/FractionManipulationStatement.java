@@ -1,6 +1,6 @@
 package cager.jexpr.ast;
 
-public class FractionManipulationStatement {
+public class FractionManipulationStatement implements Comparable{
 	private String ifCondition;
 	private String predName;
 	private String fractionObject; 
@@ -149,5 +149,16 @@ public boolean equalsForFractions(Object obj) {
 	public void writeOut() {
 		System.out.println("FractionManipulationStatement: " + ifCondition +" "+ 
 				predName + " "+ fractionObject + " " + disjunctionNumber + " " + isPacked + "\n");
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		    //FoodItems temp = (FoodItems) o;
+		    if(this.equals((FractionManipulationStatement)o))
+		        return 0;
+		    else if (this.predName.compareTo(((FractionManipulationStatement)o).getPredName()) > 0)
+		        return 1;
+		    else 
+		        return -1;
 	}
 }
