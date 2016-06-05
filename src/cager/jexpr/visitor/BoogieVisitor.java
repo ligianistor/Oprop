@@ -796,7 +796,7 @@ public class BoogieVisitor extends NullVisitor {
     // not know how that predicate changed.
 	// The above algorithm is only for disjunctions, but it should be similar 
 	// for simple fractionManipulationStatements.
-    PairOfStrings inferEnsuresForall(String methodName_, boolean forPacked) {
+    PairOfStrings inferEnsuresForall(String methodName_, boolean forPacked, String forallParameter) {
     	 PairOfStrings pairOfStrings = new PairOfStrings();
 		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
 		 
@@ -999,6 +999,7 @@ public class BoogieVisitor extends NullVisitor {
  
     }
     // Here I write the "ensures forall" for packed as we have the infrastructure in place.
+    	 // TODO rewrite all hashmap traversal using keyset.
     Iterator<Entry<String, Boolean>> j = 
     		predicateIsMentioned.entrySet().iterator(); 
     while(j.hasNext()) {
@@ -1013,8 +1014,22 @@ public class BoogieVisitor extends NullVisitor {
         				// "ensures (forall y:Ref :: ( (this!=y)  ==> 
         				// (packedPred[y] == old(packedPred[y])) ) );"
         				// to result.
-        				pairOfStrings.concatPacked("ensures (forall y:Ref :: (");
-        				// TODO xxxxxx this is where I left off
+        				pairOfStrings.concatPacked("ensures (forall");
+        				pairOfStrings.concatPacked(forallParameter);
+        				pairOfStrings.concatPacked(":Ref :: (");
+        				
+        				Set<String> currentModifiedObjects = packedModifiedObjects.get(currentNamePred);
+        				if (currentModifiedObjects!=null) {
+        					String[] currentModifiedObjectsArray = currentModifiedObjects.toArray(new String[0]);
+        					for (int z=0; z <currentModifiedObjectsArray.length-1; z++ ) {
+        						pairOfStrings.concatPacked(currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
+        					}
+        					pairOfStrings.concatPacked(
+        						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
+        						"!="+forallParameter + ") ==> packed"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(packed"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])) ) );\n");
+        				}
 
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
@@ -1029,9 +1044,22 @@ public class BoogieVisitor extends NullVisitor {
         				// "ensures (forall y:Ref :: ( (this!=y)  ==> 
         				// (packedPred[y] == old(packedPred[y])) ) );"
         				// to result.
-        				pairOfStrings.concatFractions("ensures (forall y:Ref :: (");
-        				// TODO xxxxxx this is where I left off
-
+        				pairOfStrings.concatFractions("ensures (forall");
+        				pairOfStrings.concatFractions(forallParameter);
+        				pairOfStrings.concatFractions(":Ref :: (");
+        				
+        				Set<String> currentModifiedObjects = packedModifiedObjects.get(currentNamePred);
+        				if (currentModifiedObjects!=null) {
+        					String[] currentModifiedObjectsArray = currentModifiedObjects.toArray(new String[0]);
+        					for (int z=0; z <currentModifiedObjectsArray.length-1; z++ ) {
+        						pairOfStrings.concatFractions(currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
+        					}
+        					pairOfStrings.concatFractions(
+        						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
+        						"!="+forallParameter + ") ==> frac"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])) ) );\n");
+        				}
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
@@ -1485,10 +1513,10 @@ public class BoogieVisitor extends NullVisitor {
 	    if (!thisMethodName.equals("main")) {
 	       	// This is for writing "ensures forall for packed.
 	    	// TODO Might need to give the forallParameter to this method.
-	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, true).getEnsuresForallPacked());
+	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, true, forallParameter).getEnsuresForallPacked());
 	    	
 	        //This is for writing "ensures forall for frac.
-	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, false).getEnsuresForallFractions());
+	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, false, forallParameter).getEnsuresForallFractions());
 	        	
 	        if (!ensuresForall.equals(""))
 	        	out.write(ensuresForall+"\n");
