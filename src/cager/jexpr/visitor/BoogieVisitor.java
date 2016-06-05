@@ -1035,7 +1035,7 @@ public class BoogieVisitor extends NullVisitor {
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
-        				pairOfStrings.concatFractions("ensures (forall y:Ref :: packed"+
+        				pairOfStrings.concatFractions("ensures (forall y:Ref :: frac"+
         					upperCaseFirstLetter(currentNamePred)+"[y]);\n");
         			}
         			
@@ -1045,27 +1045,7 @@ public class BoogieVisitor extends NullVisitor {
     }  	
     	return pairOfStrings;			
     }
-    
-    String inferEnsuresForallForFrac(String methodName_) {
-    	String result = "";
-
-   	 LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
-   			 fractionManipulationsListMethodPre.get(methodName_);
-   	 
-   	 LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
-   			 fractionManipulationsListMethodPost.get(methodName_);
-
-	  
-	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {
-		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
-		 // TODO need to compare to the ones in fractionManipulationsListMethodPost
-		 
-	 }
-    	
-    	
-    	return result;			
-    }
-    
+       
         
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here
@@ -1472,6 +1452,7 @@ public class BoogieVisitor extends NullVisitor {
 		// If there is no "unpacked" in the postcondition then 
 		// infer the one that says "ensures forall y:: packedPred[y]".
 
+		// TODO not sure if the while below is needed.
 		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
 				packedMods.entrySet().iterator();
 		while (it.hasNext()) {
@@ -1492,26 +1473,27 @@ public class BoogieVisitor extends NullVisitor {
 		        	modifiedObjects.put(nameOfPredicate, currentModifiedObjects); 
 		        }	
 		    }
-		        	
-		    String forallParameter = getNewForallParameter();
-		    String ensuresForall = "";
-		    // We only need to add "ensures forall" and "requires forall" for the
-		    // other procedures that are not main.
-		    // "main" is the client code.
-		    String thisMethodName = ast.getIdentifier().getName();
-		    if (!thisMethodName.equals("main")) {
-		       	// This is for writing "ensures forall for packed.
-		    	// Might need to give the forallParameter to this method.
-		    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, true).getEnsuresForallPacked());
-		    	
-		        //This is for writing "ensures forall for frac.
-		    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, false).getEnsuresForallFractions());
-		        	
-		        if (!ensuresForall.equals(""))
-		        	out.write(ensuresForall+"\n");
-		        }
 		    }
-		        
+		    
+		// This is where I write the "ensures (forall .." out.
+	    String forallParameter = getNewForallParameter();
+	    String ensuresForall = "";
+	    // We only need to add "ensures forall" and "requires forall" for the
+	    // other procedures that are not main.
+	    // "main" is the client code.
+	    String thisMethodName = ast.getIdentifier().getName();
+	    if (!thisMethodName.equals("main")) {
+	       	// This is for writing "ensures forall for packed.
+	    	// TODO Might need to give the forallParameter to this method.
+	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, true).getEnsuresForallPacked());
+	    	
+	        //This is for writing "ensures forall for frac.
+	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, false).getEnsuresForallFractions());
+	        	
+	        if (!ensuresForall.equals(""))
+	        	out.write(ensuresForall+"\n");
+	        }
+	    
 			//write here the function for modulo, if modulo was found in the 
 			//body of the procedure.
 		    //It is OK for modulo to be added after it was used in the procedure.
