@@ -1505,41 +1505,7 @@ public class BoogieVisitor extends NullVisitor {
 		    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, true).getEnsuresForallPacked());
 		    	
 		        //This is for writing "ensures forall for frac.
-		        if (localFieldsInMethod != null) {
-		        		if (localFieldsInMethod.contains(
-		        				"frac"+upperCaseFirstLetter(nameOfPredicate)) &&
-		        				!setFracEq1.contains(nameOfPredicate)) {
-		        			ensuresForall = ensuresForall.concat(
-		        					"\t ensures (forall "+  forallParameter+":Ref:: (");
-		        			if (modifiedObjects.get(nameOfPredicate) == null) {
-		        				ensuresForall = ensuresForall.concat("frac"+upperCaseFirstLetter(nameOfPredicate) + 
-		        						"["+ forallParameter+
-		        						"] == old(frac" + upperCaseFirstLetter(nameOfPredicate) +"["+
-		        						forallParameter+"])));\n");
-		        			} else {
-		        				String[] modifiedObjectsArray = modifiedObjects.get(nameOfPredicate).toArray(new String[0]);
-		        				int len = modifiedObjectsArray.length;
-		        				if (len > 1) {
-		        					ensuresForall = ensuresForall.concat("(");
-		        				}
-		        				for (int k = 0; k < len - 1; k++) {
-		        					ensuresForall = ensuresForall.concat(
-		        							"("+forallParameter+"!="+modifiedObjectsArray[k]+") &&");
-		        				}
-		        		
-		        				ensuresForall = ensuresForall.concat(
-		        						"("+forallParameter+"!="+modifiedObjectsArray[len-1]+") ==> ");
-		        				if (len > 1) {
-		        					ensuresForall = ensuresForall.concat("(");
-		        				}
-		        		
-		        				ensuresForall = ensuresForall.concat("(frac"+ upperCaseFirstLetter(nameOfPredicate) + 
-		        						"["+ forallParameter+
-		        						"] == old(frac"+upperCaseFirstLetter(nameOfPredicate)+"["+
-		        						forallParameter+"]))));\n");
-		        			}
-		        		}
-		        	}
+		    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, false).getEnsuresForallFractions());
 		        	
 		        if (!ensuresForall.equals(""))
 		        	out.write(ensuresForall+"\n");
