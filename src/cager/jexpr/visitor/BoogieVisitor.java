@@ -925,8 +925,11 @@ public class BoogieVisitor extends NullVisitor {
     						 FractionManipulationStatement elementPrecond = iterPrecond.next();
     						 
     						 if (!doesFractionManipulationExist(setPostcondDisjunctionFracMan, elementPrecond)) {
+    							 System.out.println(methodName_ + " " +elementPrecond.getPredName() );
+    							 
     							 predicateIsMentioned.put(elementPrecond.getPredName(), false);
     						 } else {
+    							 System.out.println("NO "+methodName_ + " " +elementPrecond.getPredName() );
     							 addToPackedModifiedObjects(
     									 packedModifiedObjects,
     									 elementPrecond.getPredName(), 
@@ -1014,12 +1017,12 @@ public class BoogieVisitor extends NullVisitor {
         				// "ensures (forall y:Ref :: ( (this!=y)  ==> 
         				// (packedPred[y] == old(packedPred[y])) ) );"
         				// to result.
-        				pairOfStrings.concatPacked("ensures (forall");
-        				pairOfStrings.concatPacked(forallParameter);
-        				pairOfStrings.concatPacked(":Ref :: (");
-        				
         				Set<String> currentModifiedObjects = packedModifiedObjects.get(currentNamePred);
         				if (currentModifiedObjects!=null) {
+        					pairOfStrings.concatPacked("ensures (forall ");
+        					pairOfStrings.concatPacked(forallParameter);
+        					pairOfStrings.concatPacked(":Ref :: (");
+        				
         					String[] currentModifiedObjectsArray = currentModifiedObjects.toArray(new String[0]);
         					for (int z=0; z <currentModifiedObjectsArray.length-1; z++ ) {
         						pairOfStrings.concatPacked(currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
@@ -1034,6 +1037,7 @@ public class BoogieVisitor extends NullVisitor {
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
+        				//TODO need to add an if here!!
         				pairOfStrings.concatPacked("ensures (forall y:Ref :: packed"+
         					upperCaseFirstLetter(currentNamePred)+"[y]);\n");
         			}
@@ -1044,12 +1048,12 @@ public class BoogieVisitor extends NullVisitor {
         				// "ensures (forall y:Ref :: ( (this!=y)  ==> 
         				// (packedPred[y] == old(packedPred[y])) ) );"
         				// to result.
-        				pairOfStrings.concatFractions("ensures (forall");
-        				pairOfStrings.concatFractions(forallParameter);
-        				pairOfStrings.concatFractions(":Ref :: (");
-        				
         				Set<String> currentModifiedObjects = packedModifiedObjects.get(currentNamePred);
         				if (currentModifiedObjects!=null) {
+        					pairOfStrings.concatFractions("ensures (forall");
+        					pairOfStrings.concatFractions(forallParameter);
+        					pairOfStrings.concatFractions(":Ref :: (");
+        				
         					String[] currentModifiedObjectsArray = currentModifiedObjects.toArray(new String[0]);
         					for (int z=0; z <currentModifiedObjectsArray.length-1; z++ ) {
         						pairOfStrings.concatFractions(currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
@@ -1063,6 +1067,7 @@ public class BoogieVisitor extends NullVisitor {
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
+        				// TODO need to write an if here too!!!
         				pairOfStrings.concatFractions("ensures (forall y:Ref :: frac"+
         					upperCaseFirstLetter(currentNamePred)+"[y]);\n");
         			}
@@ -1073,7 +1078,8 @@ public class BoogieVisitor extends NullVisitor {
     }  	
     	return pairOfStrings;			
     }
-       
+    
+    //TODO make sure that the rules for what fractionManipulations to be written out are respected.
         
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here
