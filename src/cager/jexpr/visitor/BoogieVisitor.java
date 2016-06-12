@@ -1043,8 +1043,8 @@ public class BoogieVisitor extends NullVisitor {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
         				//TODO need to add an if here!!
-        				pairOfStrings.concatPacked("\t ensures (forall y:Ref :: packed"+
-        					upperCaseFirstLetter(currentNamePred)+"[y]);\n");
+        				pairOfStrings.concatPacked("\t ensures (forall "+ forallParameter +":Ref :: packed"+
+        					upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]);\n");
         			}
         		} else {
         			// This is the generation of the "ensures forall" string for fractions.
@@ -1055,7 +1055,7 @@ public class BoogieVisitor extends NullVisitor {
         				// to result.
         				Set<String> currentModifiedObjects = packedModifiedObjects.get(currentNamePred);
         				if (currentModifiedObjects!=null) {
-        					pairOfStrings.concatFractions("\t ensures (forall");
+        					pairOfStrings.concatFractions("\t ensures (forall ");
         					pairOfStrings.concatFractions(forallParameter);
         					pairOfStrings.concatFractions(":Ref :: (");
         				
@@ -2048,6 +2048,7 @@ public class BoogieVisitor extends NullVisitor {
     	
         //TODO could make == 1.0 instead of (fracCount[this] >= 1.0)
         //as a special case. It's not in this method.
+        // XXXX TODO this next
     	FracString fracString = new FracString();
     	TypedAST object  = ast.getObject();
     	objectPropString = "";
