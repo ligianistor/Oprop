@@ -75,15 +75,7 @@ procedure updateCount(c:int, ol:Ref, or:Ref, op:Ref, c1:int, c2:int, c3:int, thi
 	 requires (forall x:Ref :: ((x!=op) && (x!=this) ==>  packedCount[x]));
 	 requires (forall x:Ref :: ((x!=op) ==>  packedLeft[x]));
 	 requires (forall x:Ref :: ((x!=op) ==>  packedRight[x]));
-	 ensures (forall x:Ref:: (packedCount[x] == old(packedCount[x])));
-	 ensures (forall x:Ref:: (fracCount[x] == old(fracCount[x])));
-
-	 ensures (forall x:Ref:: (packedLeft[x] == old(packedLeft[x])));
-	 ensures (forall x:Ref:: (fracLeft[x] == old(fracLeft[x])));
-
-	 ensures (forall x:Ref:: (packedRight[x] == old(packedRight[x])));
-	 ensures (forall x:Ref:: (fracRight[x] == old(fracRight[x])));
-
+ensures (forall y:Ref :: (ensures (forall y:Ref :: (ensures (forall y:Ref :: (ensures (forall y:Ref :: (ensures (forall y:Ref :: (ensures (forall y:Ref :: (
 {
 	 var newc:int;
 	 var ol1:Ref;
@@ -165,17 +157,14 @@ packedCount[this] := true;
 	 requires (forall x:Ref :: packedLeft[x]);
 	 requires (forall x:Ref :: ((x!=this) ==>  packedParent[x]));
 	 requires (forall x:Ref :: packedRight[x]);
-	 ensures (forall x:Ref:: (packedCount[x] == old(packedCount[x])));
-	 ensures (forall x:Ref:: (fracCount[x] == old(fracCount[x])));
-
-	 ensures (forall x:Ref:: (packedParent[x] == old(packedParent[x])));
-	 ensures (forall x:Ref:: (fracParent[x] == old(fracParent[x])));
-
-	 ensures (forall x:Ref:: (packedLeft[x] == old(packedLeft[x])));
-	 ensures (forall x:Ref:: (fracLeft[x] == old(fracLeft[x])));
-
-	 ensures (forall x:Ref:: (packedRight[x] == old(packedRight[x])));
-	 ensures (forall x:Ref:: (fracRight[x] == old(fracRight[x])));
+ensures (forall y:Ref :: packedCount[y]);
+ensures (forall y:Ref :: packedParent[y]);
+ensures (forall y:Ref :: packedLeft[y]);
+ensures (forall y:Ref :: packedRight[y]);
+ensures (forall y:Ref :: fracCount[y]);
+ensures (forall y:Ref :: fracParent[y]);
+ensures (forall y:Ref :: fracLeft[y]);
+ensures (forall y:Ref :: fracRight[y]);
 
 {
 	 var oll:Ref;
@@ -430,17 +419,8 @@ packedParent[this] := true;
 	 requires (forall x:Ref :: packedLeft[x]);
 	 requires (forall x:Ref :: packedParent[x]);
 	 requires (forall x:Ref :: packedRight[x]);
-	 ensures (forall x:Ref:: (packedCount[x] == old(packedCount[x])));
-	 ensures (forall x:Ref:: (fracCount[x] == old(fracCount[x])));
-
-	 ensures (forall x:Ref:: (packedParent[x] == old(packedParent[x])));
-	 ensures (forall x:Ref:: (fracParent[x] == old(fracParent[x])));
-
-	 ensures (forall x:Ref:: (packedLeft[x] == old(packedLeft[x])));
-	 ensures (forall x:Ref:: (fracLeft[x] == old(fracLeft[x])));
-
-	 ensures (forall x:Ref:: (packedRight[x] == old(packedRight[x])));
-	 ensures (forall x:Ref:: (fracRight[x] == old(fracRight[x])));
+ensures (forall y:Ref :: packedParent[y]);
+ensures (forall y:Ref :: fracParent[y]);
 
 {
 	 var lcc:int;

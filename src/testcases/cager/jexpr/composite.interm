@@ -2125,1767 +2125,1767 @@ before visitor v
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1286c71 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@863cc1 is FS and type: Composite
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e77ca4 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1286c71 cager.jexpr.ast.PrimaryExpression@e77ca4
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fea539 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@863cc1 cager.jexpr.ast.PrimaryExpression@fea539
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a83205 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1145cc is FS and type: Composite
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16c2195 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a83205 cager.jexpr.ast.PrimaryExpression@16c2195
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fd5730 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1145cc cager.jexpr.ast.PrimaryExpression@1fd5730
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@10d16b cager.jexpr.ast.BinaryExpression@24de67
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1673d71 cager.jexpr.ast.BinaryExpression@f2e328
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@853e51 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1be4050 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@853e51 cager.jexpr.ast.PrimaryExpression@1be4050
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f6c18 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f1cdfb type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f6c18 cager.jexpr.ast.PrimaryExpression@f1cdfb
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@170526a type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@132e233 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@170526a cager.jexpr.ast.PrimaryExpression@132e233
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10a59d2 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f1ed7 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@10a59d2 cager.jexpr.ast.PrimaryExpression@8f1ed7
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a0c382 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@183bfee cager.jexpr.ast.PrimaryExpression@1a0c382
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@31e2ad type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@118da51 cager.jexpr.ast.PrimaryExpression@31e2ad
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@adb165 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@15978e7 cager.jexpr.ast.PrimaryExpression@adb165
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a50395 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@18e400b cager.jexpr.ast.PrimaryExpression@a50395
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@110c2e8 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16c171f type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@110c2e8 cager.jexpr.ast.PrimaryExpression@16c171f
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ec850 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@813aca type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@ec850 cager.jexpr.ast.PrimaryExpression@813aca
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1620d92 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@69048b type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3ad545 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@87c801 type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a969e4 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@67211b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5bf465 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10a2bb0 type: int
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ae8542 type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ba63a2 type: boolean
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aec0d1 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e361ad type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f4ea9d type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1aec0d1 cager.jexpr.ast.PrimaryExpression@1f4ea9d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@21e5f0 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e361ad cager.jexpr.ast.PrimaryExpression@21e5f0
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@571688 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@ae8542 cager.jexpr.ast.PrimaryExpression@571688
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17ef0a7 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@ba63a2 cager.jexpr.ast.PrimaryExpression@17ef0a7
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1884319 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e9a555 type: Composite
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ed41f8 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1884319 cager.jexpr.ast.PrimaryExpression@ed41f8
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@165a43b type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e9a555 cager.jexpr.ast.PrimaryExpression@165a43b
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@863cc1 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@fea539 cager.jexpr.ast.PrimaryExpression@863cc1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@159b3 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@a82a10 cager.jexpr.ast.PrimaryExpression@159b3
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1145cc type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1fd5730 cager.jexpr.ast.PrimaryExpression@1145cc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@618b08 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1eed0fb cager.jexpr.ast.PrimaryExpression@618b08
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1673d71 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@f2e328 cager.jexpr.ast.PrimaryExpression@1673d71
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1da2b6d type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@591171 cager.jexpr.ast.PrimaryExpression@1da2b6d
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f6c18 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1882876 is FS and type: Composite
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f1cdfb type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f6c18 cager.jexpr.ast.PrimaryExpression@f1cdfb
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1860e4 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1882876 cager.jexpr.ast.PrimaryExpression@1860e4
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10a59d2 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@812517 is FS and type: Composite
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f1ed7 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@10a59d2 cager.jexpr.ast.PrimaryExpression@8f1ed7
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@aa3e9a type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@812517 cager.jexpr.ast.PrimaryExpression@aa3e9a
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@31e2ad cager.jexpr.ast.BinaryExpression@118da51
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@f42d53 cager.jexpr.ast.BinaryExpression@cbb612
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a50395 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18e400b type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a50395 cager.jexpr.ast.PrimaryExpression@18e400b
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e7f21 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c79a5 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e7f21 cager.jexpr.ast.PrimaryExpression@2c79a5
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ec850 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@813aca type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@ec850 cager.jexpr.ast.PrimaryExpression@813aca
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e668c2 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e7a4d0 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e668c2 cager.jexpr.ast.PrimaryExpression@1e7a4d0
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3ad545 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@87c801 cager.jexpr.ast.PrimaryExpression@3ad545
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f55ff2 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@16e3eb3 cager.jexpr.ast.PrimaryExpression@f55ff2
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5bf465 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@10a2bb0 cager.jexpr.ast.PrimaryExpression@5bf465
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d67d61 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1c190a2 cager.jexpr.ast.PrimaryExpression@d67d61
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ba63a2 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e361ad type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@ba63a2 cager.jexpr.ast.PrimaryExpression@e361ad
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@feba21 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16dd645 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@feba21 cager.jexpr.ast.PrimaryExpression@16dd645
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@21e5f0 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@17ef0a7 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e54f3 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb3f66 type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e9a555 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@165a43b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f5fc2 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d7cf62 type: int
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@159b3 type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7040e7 type: boolean
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a82a10 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b51db7 type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@618b08 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a82a10 cager.jexpr.ast.PrimaryExpression@618b08
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b1f800 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1b51db7 cager.jexpr.ast.PrimaryExpression@1b1f800
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eed0fb type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@159b3 cager.jexpr.ast.PrimaryExpression@1eed0fb
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@111014a type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@7040e7 cager.jexpr.ast.PrimaryExpression@111014a
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1da2b6d type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16ba7f9 type: Composite
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@591171 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1da2b6d cager.jexpr.ast.PrimaryExpression@591171
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e0f945 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@16ba7f9 cager.jexpr.ast.PrimaryExpression@e0f945
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1882876 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1860e4 cager.jexpr.ast.PrimaryExpression@1882876
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d50a6 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@29de03 cager.jexpr.ast.PrimaryExpression@d50a6
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@812517 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@aa3e9a cager.jexpr.ast.PrimaryExpression@812517
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@aea981 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@fa7139 cager.jexpr.ast.PrimaryExpression@aea981
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f42d53 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@cbb612 cager.jexpr.ast.PrimaryExpression@f42d53
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f7fbe type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1fbafbb cager.jexpr.ast.PrimaryExpression@1f7fbe
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e7f21 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ce2c57 is FS and type: int
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c79a5 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e7f21 cager.jexpr.ast.PrimaryExpression@2c79a5
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e668c2 type: int
-Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e7a4d0 type: int
-Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f55ff2 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e7a4d0 cager.jexpr.ast.PrimaryExpression@f55ff2
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16e3eb3 type: int
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@d67d61 cager.jexpr.ast.PrimaryExpression@16e3eb3
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e668c2 cager.jexpr.ast.BinaryExpression@1c190a2
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@feba21 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@16dd645 cager.jexpr.ast.PrimaryExpression@feba21
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e54f3 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb3f66 type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f5fc2 type: Composite
-Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d7cf62 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7040e7 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b51db7 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1b1f800 cager.jexpr.ast.PrimaryExpression@1b51db7
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@111014a type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16ba7f9 type: double
-Evaluating type of IdentifierExpression: right right
-Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e0f945 type: Composite
-Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d50a6 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@29de03 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@aea981 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@fa7139 cager.jexpr.ast.PrimaryExpression@aea981
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f7fbe is FS and type: Composite
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fbafbb type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f7fbe cager.jexpr.ast.PrimaryExpression@1fbafbb
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ce2c57 type: Composite
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c118ae type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c118ae type: int
 Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@ce2c57 cager.jexpr.ast.PrimaryExpression@1c118ae
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3b84ee type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@19438de cager.jexpr.ast.PrimaryExpression@3b84ee
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@217dc8 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c91629 type: double
-Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ce0314 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c1b13 type: int
-Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3b84ee type: int
+Evaluating type of IdentifierExpression: lc lc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19438de type: int
+Evaluating type of IdentifierExpression: rc rc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@217dc8 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@19438de cager.jexpr.ast.PrimaryExpression@217dc8
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c91629 type: int
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1ce0314 cager.jexpr.ast.PrimaryExpression@c91629
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@3b84ee cager.jexpr.ast.BinaryExpression@2c1b13
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a59727 type: boolean
 Evaluating type of Binary cager.jexpr.ast.BinaryExpression@66a008 cager.jexpr.ast.PrimaryExpression@1a59727
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: op op
+Evaluating type of Keyword this
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@194a8eb type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@de1cb6 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@194a8eb cager.jexpr.ast.PrimaryExpression@de1cb6
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@de1cb6 type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of IdentifierExpression: ol ol
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@2f06b6 type: Composite
-Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@161c602 type: double
-Evaluating type of IdentifierExpression: parent parent
+Evaluating type of IdentifierExpression: lc lc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@161c602 type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb73e type: Composite
 Setting type of Object Prop 
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@208506 type: boolean
 Evaluating type of Binary cager.jexpr.ast.BinaryExpression@fd5428 cager.jexpr.ast.PrimaryExpression@208506
-boolean ~=> boolean
+boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a04c26 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@e7736c cager.jexpr.ast.PrimaryExpression@1a04c26
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a04c26 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e7736c type: double
+Evaluating type of IdentifierExpression: right right
+Evaluating type of IdentifierExpression: or or
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14ad296 type: Composite
+Evaluating type of IdentifierExpression: rc rc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1479a6b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eae775 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@101b455 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@e6529c cager.jexpr.ast.PrimaryExpression@101b455
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1399ae5 is FS and type: Composite
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8709d type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1399ae5 cager.jexpr.ast.PrimaryExpression@e8709d
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@397cea type: Composite
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@380dbe type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@397cea cager.jexpr.ast.PrimaryExpression@380dbe
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e5f1d type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1869929 cager.jexpr.ast.PrimaryExpression@e5f1d
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b15387 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2da7a type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@175831e type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f3329a type: int
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17f2ee6 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@e01873 cager.jexpr.ast.PrimaryExpression@17f2ee6
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14ad296 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1479a6b type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@14ad296 cager.jexpr.ast.PrimaryExpression@1479a6b
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6558bb type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a49182 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6558bb cager.jexpr.ast.PrimaryExpression@1a49182
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eae775 type: boolean
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14cf1b9 type: Composite
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@91cc3a type: double
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f713ed type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3d58b2 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@18a3745 cager.jexpr.ast.PrimaryExpression@3d58b2
+boolean ~=> boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@132ca2b type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@176ed77 cager.jexpr.ast.PrimaryExpression@132ca2b
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e02fc4 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@600a08 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e02fc4 cager.jexpr.ast.PrimaryExpression@600a08
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@132967d type: boolean
 Evaluating type of IdentifierExpression: op op
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@101b455 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@35ee49 is FS and type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6529c type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@101b455 cager.jexpr.ast.PrimaryExpression@e6529c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@af0e38 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@35ee49 cager.jexpr.ast.PrimaryExpression@af0e38
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1399ae5 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1eae775 cager.jexpr.ast.PrimaryExpression@1399ae5
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ce8e44 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@132967d cager.jexpr.ast.PrimaryExpression@ce8e44
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8709d type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@de4f4b type: boolean
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@397cea type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@380dbe type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@127ffd7 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10dae16 type: double
 Evaluating type of IdentifierExpression: left left
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e5f1d type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1202afe type: Composite
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1869929 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b15387 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6bb83 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2098ff type: Composite
 Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e8709d cager.jexpr.ast.ObjectProposition@e2da7a
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@de4f4b cager.jexpr.ast.ObjectProposition@1c98b2
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@175831e type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1f3329a cager.jexpr.ast.PrimaryExpression@175831e
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16ce9df type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@16e3762 cager.jexpr.ast.PrimaryExpression@16ce9df
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@17f2ee6 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e01873 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@17f2ee6 cager.jexpr.ast.PrimaryExpression@e01873
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f61f5c type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@84e3f9 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@f61f5c cager.jexpr.ast.PrimaryExpression@84e3f9
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6558bb type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@92fe09 type: boolean
 Evaluating type of IdentifierExpression: op op
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a49182 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@64064b is FS and type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14cf1b9 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a49182 cager.jexpr.ast.PrimaryExpression@14cf1b9
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d942d9 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@64064b cager.jexpr.ast.PrimaryExpression@d942d9
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@91cc3a type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6558bb cager.jexpr.ast.PrimaryExpression@91cc3a
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b3cc96 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@92fe09 cager.jexpr.ast.PrimaryExpression@1b3cc96
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f713ed type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@13ca972 type: boolean
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3d58b2 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18a3745 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@198a1f4 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b0d990 type: double
 Evaluating type of IdentifierExpression: right right
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@132ca2b type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19baf0b type: Composite
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@176ed77 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e02fc4 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10c69 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d5fcfe type: Composite
 Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f713ed cager.jexpr.ast.ObjectProposition@600a08
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@13ca972 cager.jexpr.ast.ObjectProposition@d4c191
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@132967d type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@35ee49 cager.jexpr.ast.PrimaryExpression@132967d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f05076 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@32835b cager.jexpr.ast.PrimaryExpression@1f05076
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@af0e38 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ce8e44 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@af0e38 cager.jexpr.ast.PrimaryExpression@ce8e44
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4df9a0 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@13f8d12 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@4df9a0 cager.jexpr.ast.PrimaryExpression@13f8d12
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@de4f4b type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@127ffd7 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@146ccac type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1274873 type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10dae16 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1202afe type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@59fa4 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@133fe5d type: int
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6bb83 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@2098ff cager.jexpr.ast.PrimaryExpression@e6bb83
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@809791 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@5edcf5 cager.jexpr.ast.PrimaryExpression@809791
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c98b2 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@16ce9df cager.jexpr.ast.PrimaryExpression@1c98b2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fc6345 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@d9783e cager.jexpr.ast.PrimaryExpression@1fc6345
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Visiting Method updateCount
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16e3762 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f61f5c type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@16e3762 cager.jexpr.ast.PrimaryExpression@f61f5c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1654886 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7c8865 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1654886 cager.jexpr.ast.PrimaryExpression@7c8865
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@84e3f9 type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dea651 type: boolean
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@92fe09 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@791901 type: Composite
 Evaluating type of IdentifierExpression: k1 k1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@64064b type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@58a983 type: null
 Evaluating type of IdentifierExpression: left left
 Evaluating type of IdentifierExpression: op op
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d942d9 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e107d9 is FS and type: Composite
 Evaluating type of IdentifierExpression: op op
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b3cc96 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@13ca972 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ca3f30 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fa9557 type: Composite
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@198a1f4 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16292a4 type: Composite
 Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b0d990 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8978c7 type: null
 Evaluating type of IdentifierExpression: right right
 Evaluating type of IdentifierExpression: op op
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19baf0b is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1586ed7 is FS and type: Composite
 Evaluating type of IdentifierExpression: op op
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10c69 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d5fcfe type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d4f13a is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@292edb type: Composite
 Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@d4c191 cager.jexpr.ast.PrimaryExpression@1f05076
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c33b55 cager.jexpr.ast.PrimaryExpression@6c5ac4
 boolean || boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@32835b type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bb0662 type: boolean
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@4df9a0 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a04643 is FS and type: Composite
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@13f8d12 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@4df9a0 cager.jexpr.ast.PrimaryExpression@13f8d12
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@164f01b type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a04643 cager.jexpr.ast.PrimaryExpression@164f01b
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@32835b cager.jexpr.ast.BinaryExpression@146ccac
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1bb0662 cager.jexpr.ast.BinaryExpression@1cfb8d3
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1274873 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@59fa4 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6f403e type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e2d3cd type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@133fe5d type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@809791 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bf711e type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9b7336 type: int
 Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@5edcf5 cager.jexpr.ast.PrimaryExpression@1fc6345
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1a8f100 cager.jexpr.ast.PrimaryExpression@6664fc
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d9783e type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1654886 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@700edc type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dfa65c type: double
 Evaluating type of IdentifierExpression: left left
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7c8865 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@122e89e type: Composite
 Evaluating type of IdentifierExpression: c1 c1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dea651 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@791901 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d5f53f type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d809e3 type: Composite
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@58a983 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@e107d9 cager.jexpr.ast.PrimaryExpression@58a983
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17127f4 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1f60f2b cager.jexpr.ast.PrimaryExpression@17127f4
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ca3f30 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@fa9557 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15decc0 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1627086 type: double
 Evaluating type of IdentifierExpression: right right
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16292a4 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c9982e type: Composite
 Evaluating type of IdentifierExpression: c2 c2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8978c7 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1586ed7 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@262730 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d6e551 type: Composite
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d4f13a type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@292edb cager.jexpr.ast.PrimaryExpression@d4f13a
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@694a18 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@7f9d0e cager.jexpr.ast.PrimaryExpression@694a18
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c33b55 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6c5ac4 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c33b55 cager.jexpr.ast.PrimaryExpression@6c5ac4
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@200470 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3813c type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@200470 cager.jexpr.ast.PrimaryExpression@3813c
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bb0662 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19b32e type: Composite
 Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a04643 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1429c57 type: null
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: c3 c3
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@164f01b type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cfb8d3 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@264dd8 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c0c6f6 type: int
 Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@6f403e cager.jexpr.ast.PrimaryExpression@1e2d3cd
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@46752d cager.jexpr.ast.PrimaryExpression@1b71c12
 boolean ~=> boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@bf711e type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@9b7336 cager.jexpr.ast.PrimaryExpression@bf711e
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@84e3f9 cager.jexpr.ast.BinaryExpression@1a8f100
-boolean ~=> boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6664fc type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@700edc type: double
-Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: c1 c1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@dfa65c type: int
-Evaluating type of IdentifierExpression: c2 c2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@122e89e type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@dfa65c cager.jexpr.ast.PrimaryExpression@122e89e
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d5f53f type: int
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@d809e3 cager.jexpr.ast.PrimaryExpression@d5f53f
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@17127f4 type: int
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f60f2b type: boolean
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@15decc0 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1627086 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@15decc0 cager.jexpr.ast.PrimaryExpression@1627086
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c9982e type: boolean
-Evaluating type of IdentifierExpression: unpacked unpacked
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@262730 type: Composite
-Evaluating type of IdentifierExpression: k1 k1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d6e551 type: null
-Evaluating type of IdentifierExpression: left left
-Evaluating type of IdentifierExpression: op op
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@694a18 is FS and type: Composite
-Evaluating type of IdentifierExpression: op op
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7f9d0e is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@200470 type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: unpacked unpacked
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3813c type: Composite
-Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19b32e type: null
-Evaluating type of IdentifierExpression: right right
-Evaluating type of IdentifierExpression: op op
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1429c57 is FS and type: Composite
-Evaluating type of IdentifierExpression: op op
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@264dd8 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c0c6f6 type: Composite
-Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@46752d cager.jexpr.ast.PrimaryExpression@1b71c12
-boolean || boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@93f61c type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c9982e cager.jexpr.ast.PrimaryExpression@93f61c
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@2dce0 cager.jexpr.ast.PrimaryExpression@93f61c
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1dea651 cager.jexpr.ast.BinaryExpression@1f335bb
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2dce0 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f60f2b cager.jexpr.ast.PrimaryExpression@2dce0
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4c9860 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a7d316 type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: c1 c1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1370ab type: int
+Evaluating type of IdentifierExpression: c2 c2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@49f9fa type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1370ab cager.jexpr.ast.PrimaryExpression@49f9fa
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ba936a type: int
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@12421db cager.jexpr.ast.PrimaryExpression@ba936a
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12ad974 type: int
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2a7640 type: boolean
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b9808e type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a721e2 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1b9808e cager.jexpr.ast.PrimaryExpression@1a721e2
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a1ad7d type: boolean
+Evaluating type of IdentifierExpression: unpacked unpacked
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1851576 type: Composite
+Evaluating type of IdentifierExpression: k1 k1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@442c19 type: null
+Evaluating type of IdentifierExpression: left left
+Evaluating type of IdentifierExpression: op op
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ab2ddb is FS and type: Composite
+Evaluating type of IdentifierExpression: op op
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14fb3e1 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aa9b4d type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: unpacked unpacked
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b9ef8c type: Composite
+Evaluating type of IdentifierExpression: k2 k2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e037a type: null
+Evaluating type of IdentifierExpression: right right
+Evaluating type of IdentifierExpression: op op
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@766186 is FS and type: Composite
+Evaluating type of IdentifierExpression: op op
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fcabd4 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1752bea type: Composite
+Setting type of Object Prop 
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1963c81 cager.jexpr.ast.PrimaryExpression@5e60f2
+boolean || boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2ed1e8 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a1ad7d cager.jexpr.ast.PrimaryExpression@2ed1e8
+boolean ~=> boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d6f84a type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2a7640 cager.jexpr.ast.PrimaryExpression@1d6f84a
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@4c9860 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a7d316 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@4c9860 cager.jexpr.ast.PrimaryExpression@a7d316
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@46ca65 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@191e365 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@46ca65 cager.jexpr.ast.PrimaryExpression@191e365
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1370ab type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e823ac type: Composite
 Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@49f9fa type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7e0422 type: null
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: c3 c3
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ba936a type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12421db type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@141567b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@94dd46 type: int
 Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@12ad974 cager.jexpr.ast.PrimaryExpression@2a7640
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@14b4e26 cager.jexpr.ast.PrimaryExpression@f7ba12
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b9808e type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1a721e2 cager.jexpr.ast.PrimaryExpression@1b9808e
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d91824 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1bffd0d cager.jexpr.ast.PrimaryExpression@1d91824
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a1ad7d type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1851576 type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@442c19 is FS and type: Composite
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ab2ddb is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14fb3e1 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aa9b4d type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1b9ef8c cager.jexpr.ast.PrimaryExpression@1aa9b4d
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e037a type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@766186 type: double
-Evaluating type of IdentifierExpression: right right
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fcabd4 is FS and type: Composite
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1752bea is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1963c81 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5e60f2 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@2ed1e8 cager.jexpr.ast.PrimaryExpression@5e60f2
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: newc newc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d6f84a type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@46ca65 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1d6f84a cager.jexpr.ast.PrimaryExpression@46ca65
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@191e365 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e823ac type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7e0422 type: Composite
-Evaluating type of IdentifierExpression: c1 c1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@141567b type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@94dd46 type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14b4e26 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f7ba12 type: null
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d91824 is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bffd0d type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1d91824 cager.jexpr.ast.PrimaryExpression@1bffd0d
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: ol ol
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@17e72d1 type: Composite
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@a40050 type: double
-Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: c1 c1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1108691 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f2afad type: int
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: ol1 ol1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ebacc8 type: Composite
-Evaluating type of IdentifierExpression: or1 or1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19cad9d type: Composite
-Evaluating type of IdentifierExpression: lc1 lc1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14a4639 type: int
-Evaluating type of IdentifierExpression: rc1 rc1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1487e30 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@548719 type: null
-Evaluating type of IdentifierExpression: newc newc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1719d5b type: int
-Evaluating type of IdentifierExpression: newc newc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11c635 type: int
+Evaluating type of IdentifierExpression: left left
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1108691 is FS and type: Composite
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ebc2a2 is FS and type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@11c635 cager.jexpr.ast.PrimaryExpression@ebc2a2
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1719d5b cager.jexpr.ast.BinaryExpression@374956
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f2afad is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ebacc8 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19cad9d type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@14a4639 cager.jexpr.ast.PrimaryExpression@19cad9d
+boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1afebc9 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a0fbd6 type: double
-Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: c1 c1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f5c8fb type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5dfb22 type: int
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: ol1 ol1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@128f03 type: Composite
-Evaluating type of IdentifierExpression: or1 or1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b2ab7 type: Composite
-Evaluating type of IdentifierExpression: lc1 lc1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c17a8c type: int
-Evaluating type of IdentifierExpression: rc1 rc1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1549f0e type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@9652dd type: null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11a67fe type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a15856 type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@aea288 type: Composite
-Evaluating type of IdentifierExpression: c1 c1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@130cda4 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10cface type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1262a85 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@b1b290 type: null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@422e25 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e38fae type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1487e30 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@548719 type: double
 Evaluating type of IdentifierExpression: right right
-Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ee1619 type: Composite
-Evaluating type of IdentifierExpression: c2 c2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ece626 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f9eba0 type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@dc91e2 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@edc33d type: null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1acf5f7 is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@4845a2 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1acf5f7 cager.jexpr.ast.PrimaryExpression@4845a2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1719d5b is FS and type: Composite
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11c635 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ebc2a2 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@374956 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1afebc9 cager.jexpr.ast.PrimaryExpression@374956
+boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: or or
+Evaluating type of IdentifierExpression: newc newc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a0fbd6 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f5c8fb type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a0fbd6 cager.jexpr.ast.PrimaryExpression@f5c8fb
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5dfb22 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@128f03 type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of IdentifierExpression: ol ol
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b2ab7 type: Composite
+Evaluating type of IdentifierExpression: c1 c1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c17a8c type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1549f0e type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9652dd type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11a67fe type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a15856 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@aea288 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a15856 cager.jexpr.ast.PrimaryExpression@aea288
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: ol ol
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@130cda4 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10cface type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: c1 c1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1262a85 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@b1b290 type: int
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: ol1 ol1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@422e25 type: Composite
+Evaluating type of IdentifierExpression: or1 or1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e38fae type: Composite
+Evaluating type of IdentifierExpression: lc1 lc1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ee1619 type: int
+Evaluating type of IdentifierExpression: rc1 rc1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ece626 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f9eba0 type: null
+Evaluating type of IdentifierExpression: newc newc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dc91e2 type: int
+Evaluating type of IdentifierExpression: newc newc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@edc33d type: int
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1acf5f7 is FS and type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@edc33d cager.jexpr.ast.PrimaryExpression@1acf5f7
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@dc91e2 cager.jexpr.ast.BinaryExpression@4845a2
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: ol ol
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@d39f3c type: Composite
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@17b51e8 type: double
 Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: c2 c2
+Evaluating type of IdentifierExpression: c1 c1
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@13e6577 type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1776d65 type: int
 Setting type of Object Prop 
-Evaluating type of IdentifierExpression: ol2 ol2
+Evaluating type of IdentifierExpression: ol1 ol1
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1af1934 type: Composite
-Evaluating type of IdentifierExpression: or2 or2
+Evaluating type of IdentifierExpression: or1 or1
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@9fe45c type: Composite
-Evaluating type of IdentifierExpression: lc2 lc2
+Evaluating type of IdentifierExpression: lc1 lc1
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@14966cc type: int
-Evaluating type of IdentifierExpression: rc2 rc2
+Evaluating type of IdentifierExpression: rc1 rc1
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fc1b56 type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@66db4e type: null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c80825 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8ee5c0 type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of IdentifierExpression: ol ol
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18dafec type: Composite
+Evaluating type of IdentifierExpression: c1 c1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@118cb72 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d4c5a0 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@faaa93 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d4b411 type: null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@79e32f type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@326074 type: double
+Evaluating type of IdentifierExpression: right right
+Evaluating type of IdentifierExpression: or or
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15a64e6 type: Composite
+Evaluating type of IdentifierExpression: c2 c2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@196722d type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@221c75 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: op op
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17a82f1 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2aa00c type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@71b383 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c087be type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@71b383 cager.jexpr.ast.PrimaryExpression@c087be
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: or or
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fded2 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1edc290 type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: c2 c2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@80b973 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10f3a9c type: int
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: ol2 ol2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d115db type: Composite
+Evaluating type of IdentifierExpression: or2 or2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f20964 type: Composite
+Evaluating type of IdentifierExpression: lc2 lc2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@46a171 type: int
+Evaluating type of IdentifierExpression: rc2 rc2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1110f31 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fc63be type: null
 Evaluating type of IdentifierExpression: newc newc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c80825 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f87254 type: int
 Evaluating type of IdentifierExpression: newc newc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8ee5c0 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19f410 type: int
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18dafec is FS and type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@8ee5c0 cager.jexpr.ast.PrimaryExpression@18dafec
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e67cdb is FS and type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@19f410 cager.jexpr.ast.PrimaryExpression@1e67cdb
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@c80825 cager.jexpr.ast.BinaryExpression@118cb72
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f87254 cager.jexpr.ast.BinaryExpression@10f35d1
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d4c5a0 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@faaa93 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19658fe type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ac9fff type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: c2 c2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d4b411 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@79e32f type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3c5fd5 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b7a875 type: int
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: ol2 ol2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@326074 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@94a05c type: Composite
 Evaluating type of IdentifierExpression: or2 or2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@15a64e6 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ac0292 type: Composite
 Evaluating type of IdentifierExpression: lc2 lc2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@196722d type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dcd49d type: int
 Evaluating type of IdentifierExpression: rc2 rc2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@221c75 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@17a82f1 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10abe88 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6313e1 type: null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2aa00c type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@71b383 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ae264f type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1553d18 type: double
 Evaluating type of IdentifierExpression: right right
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c087be type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11e31ea type: Composite
 Evaluating type of IdentifierExpression: c2 c2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@fded2 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1edc290 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15f0688 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a5d193 type: Composite
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: op op
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@80b973 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10f3a9c type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16237e0 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1425e17 type: null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d115db is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2f6aea is FS and type: int
 Evaluating type of IdentifierExpression: newc newc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f20964 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@d115db cager.jexpr.ast.PrimaryExpression@f20964
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1143614 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2f6aea cager.jexpr.ast.PrimaryExpression@1143614
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@46a171 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1110f31 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ea6afc type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@115fbb0 type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: newc newc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@fc63be type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f87254 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3f0860 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3eed51 type: int
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19f410 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14e912d type: Composite
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e67cdb type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11d5d85 type: Composite
 Evaluating type of IdentifierExpression: c1 c1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10f35d1 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e704e1 type: int
 Evaluating type of IdentifierExpression: c2 c2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19658fe type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ac9fff type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f18cc3 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@507369 type: null
 Visiting Method updateCountRec
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3c5fd5 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c9313b type: Composite
 Evaluating type of IdentifierExpression: k1 k1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b7a875 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bf3519 type: null
 Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@94a05c type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@373ac0 type: Composite
 Setting type of Object Prop 
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ac0292 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f250e8 is FS and type: Composite
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dcd49d type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1ac0292 cager.jexpr.ast.PrimaryExpression@1dcd49d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19de9c9 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f250e8 cager.jexpr.ast.PrimaryExpression@19de9c9
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@10abe88 cager.jexpr.ast.BinaryExpression@6313e1
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@5fba1c cager.jexpr.ast.BinaryExpression@b3b3a5
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ae264f type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d71e34 type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1553d18 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@ae264f cager.jexpr.ast.PrimaryExpression@1553d18
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ffeaea type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1d71e34 cager.jexpr.ast.PrimaryExpression@1ffeaea
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11e31ea type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@15f0688 cager.jexpr.ast.PrimaryExpression@11e31ea
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@97e111 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@139422b cager.jexpr.ast.PrimaryExpression@97e111
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a5d193 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16237e0 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a5d193 cager.jexpr.ast.PrimaryExpression@16237e0
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2720f6 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e50f2c type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2720f6 cager.jexpr.ast.PrimaryExpression@e50f2c
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1425e17 type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@473f4c type: boolean
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2f6aea type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18caa36 type: Composite
 Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1143614 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fac733 type: null
 Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ea6afc type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12c1472 type: Composite
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@115fbb0 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1425e17 cager.jexpr.ast.PrimaryExpression@115fbb0
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f25f89 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@473f4c cager.jexpr.ast.PrimaryExpression@f25f89
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3f0860 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@3eed51 cager.jexpr.ast.PrimaryExpression@3f0860
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5e305f type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1b9cdfc cager.jexpr.ast.PrimaryExpression@5e305f
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14e912d type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11d5d85 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@14e912d cager.jexpr.ast.PrimaryExpression@11d5d85
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1829097 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2d663 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1829097 cager.jexpr.ast.PrimaryExpression@e2d663
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e704e1 type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@691ccf type: boolean
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f18cc3 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e28347 is FS and type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@507369 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@f18cc3 cager.jexpr.ast.PrimaryExpression@507369
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@118bd3c type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e28347 cager.jexpr.ast.PrimaryExpression@118bd3c
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c9313b type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e704e1 cager.jexpr.ast.PrimaryExpression@1c9313b
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12fb7ef type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@691ccf cager.jexpr.ast.PrimaryExpression@12fb7ef
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bf3519 type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d4cb4b type: boolean
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@373ac0 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f250e8 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16eacf1 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11c1463 type: double
 Evaluating type of IdentifierExpression: left left
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19de9c9 type: Composite
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5fba1c type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@b3b3a5 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d71e34 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1bf3519 cager.jexpr.ast.PrimaryExpression@1d71e34
-boolean ~=> boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ffeaea type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@97e111 cager.jexpr.ast.PrimaryExpression@1ffeaea
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@139422b type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2720f6 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@139422b cager.jexpr.ast.PrimaryExpression@2720f6
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e50f2c type: boolean
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@473f4c is FS and type: Composite
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18caa36 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@473f4c cager.jexpr.ast.PrimaryExpression@18caa36
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fac733 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e50f2c cager.jexpr.ast.PrimaryExpression@1fac733
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12c1472 type: boolean
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f25f89 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5e305f type: double
-Evaluating type of IdentifierExpression: right right
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b9cdfc type: Composite
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1829097 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2d663 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@691ccf type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@12c1472 cager.jexpr.ast.PrimaryExpression@691ccf
-boolean ~=> boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e28347 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@118bd3c cager.jexpr.ast.PrimaryExpression@e28347
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12fb7ef type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d4cb4b type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@12fb7ef cager.jexpr.ast.PrimaryExpression@1d4cb4b
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16eacf1 type: boolean
-Evaluating type of IdentifierExpression: unpacked unpacked
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11c1463 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7e8bd9 type: double
-Evaluating type of IdentifierExpression: count count
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7e8bd9 type: Composite
 Evaluating type of IdentifierExpression: lcc lcc
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@f5e12 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8efc5 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8efc5 type: Composite
 Setting type of Object Prop 
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@d5a86c type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@16eacf1 cager.jexpr.ast.PrimaryExpression@d5a86c
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1d4cb4b cager.jexpr.ast.PrimaryExpression@d5a86c
 boolean ~=> boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@12471dc type: boolean
 Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1af5350 cager.jexpr.ast.PrimaryExpression@12471dc
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@186d315 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8c2f76 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@186d315 cager.jexpr.ast.PrimaryExpression@8c2f76
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1801443 type: boolean
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b2668f is FS and type: Composite
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16b5d1c type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1b2668f cager.jexpr.ast.PrimaryExpression@16b5d1c
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1adf08f type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1801443 cager.jexpr.ast.PrimaryExpression@1adf08f
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8c6f69 type: boolean
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e66f65 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19b7aeb type: double
+Evaluating type of IdentifierExpression: right right
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a2f9e6 type: Composite
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c480e8 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eb18de type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1adc5f7 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@8c6f69 cager.jexpr.ast.PrimaryExpression@1adc5f7
+boolean ~=> boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19fef7b type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1237512 cager.jexpr.ast.PrimaryExpression@19fef7b
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@db06de type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19febb9 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@db06de cager.jexpr.ast.PrimaryExpression@19febb9
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2cd301 type: boolean
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@186d315 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8c2f76 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d1223d type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ee8c1 type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1801443 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b2668f type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@142db11 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3c4c33 type: int
 Setting type of Object Prop 
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@16b5d1c cager.jexpr.ast.PrimaryExpression@1adf08f
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@aecd51 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2cd301 cager.jexpr.ast.PrimaryExpression@aecd51
+boolean ~=> boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@29b99c type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@158bc22 cager.jexpr.ast.PrimaryExpression@29b99c
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: unpacked unpacked
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a76306 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1563e06 type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10204ce type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1898b92 type: int
+Setting type of Object Prop 
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@12a2a50 cager.jexpr.ast.PrimaryExpression@1400eb0
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8c6f69 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e66f65 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8455dd type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@215bee type: double
 Evaluating type of IdentifierExpression: left left
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19b7aeb type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a74af type: Composite
 Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a2f9e6 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c480e8 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2b745 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6e375e type: Composite
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eb18de type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1adc5f7 cager.jexpr.ast.PrimaryExpression@1eb18de
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f5248c type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@13276cc cager.jexpr.ast.PrimaryExpression@1f5248c
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19fef7b type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1237512 type: double
-Evaluating type of IdentifierExpression: right right
-Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@db06de type: Composite
-Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19febb9 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2cd301 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d1223d type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1ee8c1 cager.jexpr.ast.PrimaryExpression@d1223d
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@142db11 type: Composite
-Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3c4c33 type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@aecd51 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@29b99c type: boolean
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@158bc22 is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a76306 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@158bc22 cager.jexpr.ast.PrimaryExpression@a76306
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1563e06 type: Composite
-Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10204ce type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1898b92 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12a2a50 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1400eb0 type: null
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8455dd type: Composite
-Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@215bee type: null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a74af type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@215bee cager.jexpr.ast.PrimaryExpression@1a74af
-Type Info is OperatorTypeInfo: result=double, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2b745 type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6e375e is FS and type: Composite
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f5248c is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@13276cc type: null
-Evaluating type of IdentifierExpression: opp opp
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@154bb1 type: Composite
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c5dd1 type: double
+Evaluating type of IdentifierExpression: right right
+Evaluating type of IdentifierExpression: or or
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5353c8 type: Composite
+Evaluating type of IdentifierExpression: rc rc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a19cc5 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3b6dbd type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a1a1c6 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@83cf00 cager.jexpr.ast.PrimaryExpression@1a1a1c6
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18b1699 type: Composite
+Evaluating type of IdentifierExpression: k2 k2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@78b973 type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d75e80 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7d30b3 type: boolean
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1087070 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10df8c7 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1087070 cager.jexpr.ast.PrimaryExpression@10df8c7
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@47fc71 type: Composite
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e62f6 type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@831c19 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a9c737 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1560b81 type: null
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d6dec type: Composite
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aba308 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15c693a type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1aba308 cager.jexpr.ast.PrimaryExpression@15c693a
+Type Info is OperatorTypeInfo: result=double, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a029 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@112e9e6 is FS and type: Composite
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ba3b30 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@83fff9 type: null
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a7553 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10ca25a type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5353c8 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a19cc5 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@76d19c is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bb6d85 type: int
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: oll oll
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3b6dbd type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1133f58 type: Composite
 Evaluating type of IdentifierExpression: orr orr
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a1a1c6 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a3aaf5 type: Composite
 Evaluating type of IdentifierExpression: count count
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@83cf00 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12cc66f type: int
 Evaluating type of IdentifierExpression: count count
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18b1699 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@78b973 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@97cc12 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d6c275 type: null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d75e80 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@78b73f type: Composite
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7d30b3 is FS and type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1d75e80 cager.jexpr.ast.PrimaryExpression@7d30b3
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@146b158 is FS and type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@78b73f cager.jexpr.ast.PrimaryExpression@146b158
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1087070 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10df8c7 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@25352b type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c5cc63 type: double
 Evaluating type of IdentifierExpression: right right
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@47fc71 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1edb587 type: Composite
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e62f6 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@831c19 type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a9c737 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1560b81 type: double
-Evaluating type of IdentifierExpression: right right
-Evaluating type of IdentifierExpression: orr orr
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d6dec type: Composite
-Evaluating type of IdentifierExpression: rrc rrc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aba308 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@15c693a type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a029 type: null
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@112e9e6 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ba3b30 type: double
-Evaluating type of IdentifierExpression: right right
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@83fff9 type: Composite
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a7553 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10ca25a type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@76d19c is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@bb6d85 type: null
-Evaluating type of IdentifierExpression: unpacked unpacked
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1133f58 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a3aaf5 type: double
-Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12cc66f type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@97cc12 type: int
-Setting type of Object Prop 
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d6c275 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@78b73f type: double
-Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@146b158 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@25352b type: int
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c5cc63 type: null
-Evaluating type of Keyword this
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1edb587 type: int
-Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@128b30e type: Composite
-Evaluating type of IdentifierExpression: or or
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@128b30e type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1036b16 type: Composite
+Setting type of Object Prop 
 Evaluating type of IdentifierExpression: opp opp
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@16ba008 type: Composite
-Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d78cb8 type: int
-Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@157b7c1 type: int
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e0e19d is FS and type: int
-Evaluating type of MethodSelection: updateCount
-MS name: updateCount, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d78cb8 type: double
+Evaluating type of IdentifierExpression: right right
+Evaluating type of IdentifierExpression: orr orr
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@157b7c1 type: Composite
+Evaluating type of IdentifierExpression: rrc rrc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e0e19d type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@fc45da type: Composite
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@4e0456 type: Composite
-Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1feab48 type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@9f2cff type: Composite
 Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4e0456 type: null
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@4346cd type: Composite
-Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@dd5a9d type: int
-Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@680525 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@dd5a9d cager.jexpr.ast.PrimaryExpression@680525
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@129cfbb type: int
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@51e62 cager.jexpr.ast.PrimaryExpression@129cfbb
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@dddff type: null
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@69b861 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c821ef type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1feab48 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9f2cff type: double
 Evaluating type of IdentifierExpression: right right
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12be8e1 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4346cd type: Composite
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c60f74 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@20b3a3 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dd5a9d type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@680525 type: Composite
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f1cbd7 is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7dcb35 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@129cfbb is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@51e62 type: null
+Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of Keyword this
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a83610 is FS and type: Composite
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@175870a is FS and type: int
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f4aa7a is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dddff type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@69b861 type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c821ef type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12be8e1 type: int
+Setting type of Object Prop 
 Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c60f74 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@20b3a3 type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f1cbd7 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7dcb35 type: int
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a83610 type: null
+Evaluating type of Keyword this
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@175870a type: int
+Evaluating type of IdentifierExpression: ol ol
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f4aa7a type: Composite
+Evaluating type of IdentifierExpression: or or
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@e44dd3 type: Composite
 Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@b1625c is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@b1625c type: Composite
 Evaluating type of IdentifierExpression: lc lc
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b092ae type: int
 Evaluating type of IdentifierExpression: rc rc
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@16df0d6 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1b092ae cager.jexpr.ast.PrimaryExpression@16df0d6
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@dea8b3 type: int
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@15c0d7 cager.jexpr.ast.PrimaryExpression@dea8b3
-AddTypeResolver: int + int
-Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of MethodSelection: updateCountRec
-MS name: updateCountRec, type: void
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@278a47 is FS and type: Composite
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e74fe9 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12f68b8 type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18430a5 type: Composite
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@195ba08 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e89338 type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1194a34 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@156a6be type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of IdentifierExpression: oll oll
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dd1c39 type: Composite
-Evaluating type of IdentifierExpression: llc llc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1681460 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11e9eb type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@147bc1 type: null
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c8ea1a type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@818de3 type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18a3257 type: Composite
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ef0b44 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ccadbd type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a256c7 is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ef57f8 type: null
-Evaluating type of IdentifierExpression: unpacked unpacked
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1788551 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@178b9ce type: double
-Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@eeb560 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c5d0e0 type: int
-Setting type of Object Prop 
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@145132 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1deb5f7 type: double
-Evaluating type of IdentifierExpression: count count
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7c9b46 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@b635d7 type: int
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@88ee03 type: null
-Evaluating type of Keyword this
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c21ed3 type: int
-Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@175beef type: Composite
-Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14a3da8 type: Composite
-Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1160e64 type: Composite
-Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10ad419 type: int
-Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eaf25d type: int
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cdecf7 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dea8b3 is FS and type: int
 Evaluating type of MethodSelection: updateCount
 MS name: updateCount, type: void
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@808680 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15c0d7 type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fe40d5 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@278a47 type: Composite
 Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@152912f type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e74fe9 type: null
 Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b9bbe8 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12f68b8 type: Composite
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@df804e type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18430a5 type: Composite
 Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1609af9 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@195ba08 type: int
 Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@15e8a8f type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1609af9 cager.jexpr.ast.PrimaryExpression@15e8a8f
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e89338 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@195ba08 cager.jexpr.ast.PrimaryExpression@e89338
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1daca94 type: int
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@129efd0 cager.jexpr.ast.PrimaryExpression@1daca94
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1194a34 type: int
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@156a6be cager.jexpr.ast.PrimaryExpression@1194a34
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3f6843 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dd1c39 type: null
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d6466f type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aa3554 type: double
-Evaluating type of IdentifierExpression: left left
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1681460 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11e9eb type: double
+Evaluating type of IdentifierExpression: right right
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1933d6c type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@147bc1 type: Composite
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a5b7b4 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@bfc8d0 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c8ea1a type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@818de3 type: Composite
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@119087d is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7c808d type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18a3257 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ef0b44 type: null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dbbaab is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ccadbd is FS and type: Composite
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@bc3ed6 is FS and type: int
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c19080 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a256c7 is FS and type: int
 Evaluating type of IdentifierExpression: opp opp
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f5e4b6 is FS and type: Composite
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1788551 is FS and type: Composite
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@178b9ce type: Composite
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@197950e is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eeb560 is FS and type: int
+Evaluating type of IdentifierExpression: lc lc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c5d0e0 type: int
+Evaluating type of IdentifierExpression: rc rc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@145132 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c5d0e0 cager.jexpr.ast.PrimaryExpression@145132
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1deb5f7 type: int
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@7c9b46 cager.jexpr.ast.PrimaryExpression@1deb5f7
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of MethodSelection: updateCountRec
+MS name: updateCountRec, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@b635d7 is FS and type: Composite
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@88ee03 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c21ed3 type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@175beef type: Composite
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14a3da8 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1160e64 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10ad419 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eaf25d type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of IdentifierExpression: oll oll
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cdecf7 type: Composite
+Evaluating type of IdentifierExpression: llc llc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@808680 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fe40d5 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@152912f type: null
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b9bbe8 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@df804e type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1609af9 type: Composite
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15e8a8f type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1daca94 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@129efd0 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3f6843 type: null
+Evaluating type of IdentifierExpression: unpacked unpacked
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d6466f type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aa3554 type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1933d6c type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a5b7b4 type: int
+Setting type of Object Prop 
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bfc8d0 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@119087d type: double
+Evaluating type of IdentifierExpression: count count
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7c808d type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dbbaab type: int
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bc3ed6 type: null
+Evaluating type of Keyword this
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c19080 type: int
+Evaluating type of IdentifierExpression: ol ol
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f5e4b6 type: Composite
+Evaluating type of IdentifierExpression: or or
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7a9bff type: Composite
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@197950e type: Composite
 Evaluating type of IdentifierExpression: lc lc
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@bb0257 type: int
 Evaluating type of IdentifierExpression: rc rc
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@196dcb4 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@bb0257 cager.jexpr.ast.PrimaryExpression@196dcb4
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@173b35d is FS and type: int
+Evaluating type of MethodSelection: updateCount
+MS name: updateCount, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@104ce99 type: Composite
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@97cb70 type: Composite
+Evaluating type of IdentifierExpression: k2 k2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ad65f7 type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1016505 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f53c8 type: Composite
+Evaluating type of IdentifierExpression: lc lc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c5a30b type: int
+Evaluating type of IdentifierExpression: rc rc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5367af type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c5a30b cager.jexpr.ast.PrimaryExpression@5367af
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@173b35d type: int
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@104ce99 cager.jexpr.ast.PrimaryExpression@173b35d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bc3013 type: int
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1f84d01 cager.jexpr.ast.PrimaryExpression@1bc3013
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@87b71b type: null
+Evaluating type of IdentifierExpression: opp opp
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6812d type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10ab67f type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@536500 type: Composite
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10bfedd type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@896e10 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@991d56 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5532da type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17db177 is FS and type: Composite
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10e0edb is FS and type: int
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f17c9e type: Composite
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12c734c is FS and type: Composite
+Evaluating type of IdentifierExpression: opp opp
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@145ad3d is FS and type: int
+Evaluating type of IdentifierExpression: lc lc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1708593 type: int
+Evaluating type of IdentifierExpression: rc rc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@517bc3 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1708593 cager.jexpr.ast.PrimaryExpression@517bc3
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1944379 type: int
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@d9cc1a cager.jexpr.ast.PrimaryExpression@1944379
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
 Evaluating type of MethodSelection: updateCountRec
 MS name: updateCountRec, type: void
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@97cb70 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6f8d7 is FS and type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ad65f7 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1016505 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1db2215 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19ac2e3 type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f53c8 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c5a30b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1710374 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@99c4cc type: int
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5367af type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bc3013 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@147480e type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@cbbdf3 type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f84d01 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@87b71b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@23af64 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@cfed14 type: int
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6812d type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d5e26b type: null
 Evaluating type of Keyword this
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10ab67f type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3eb8a type: int
 Evaluating type of IdentifierExpression: ol ol
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@536500 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15cb20e type: Composite
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10bfedd type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@adddd6 type: Composite
 Evaluating type of IdentifierExpression: opp opp
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@896e10 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bf34f4 type: Composite
 Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@991d56 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12dbd1a type: int
 Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5532da type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1da1f99 type: int
 Evaluating type of IdentifierExpression: opp opp
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@17db177 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1507ef7 is FS and type: int
 Evaluating type of MethodSelection: updateCount
 MS name: updateCount, type: void
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@10e0edb type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bf8de1 type: Composite
 Evaluating type of IdentifierExpression: unpacked unpacked
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f17c9e type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12c734c type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fbca58 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a1718e type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@145ad3d type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1708593 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1263a93 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@cfa52e type: int
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@517bc3 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1944379 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@658704 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18339aa type: null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d9cc1a type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3ed3f5 type: Composite
 Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6f8d7 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@cd8e77 type: null
 Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1db2215 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14441b6 type: Composite
 Setting type of Object Prop 
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19ac2e3 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3625d0 is FS and type: Composite
 Evaluating type of IdentifierExpression: lc lc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1710374 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eca6e7 type: int
 Evaluating type of IdentifierExpression: rc rc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@99c4cc type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1710374 cager.jexpr.ast.PrimaryExpression@99c4cc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c1c7c4 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@eca6e7 cager.jexpr.ast.PrimaryExpression@c1c7c4
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@147480e type: int
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@cbbdf3 cager.jexpr.ast.PrimaryExpression@147480e
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@221f81 type: int
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@426e05 cager.jexpr.ast.PrimaryExpression@221f81
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@23af64 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@145240a type: null
 Visiting Method setLeft
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@cfed14 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4120aa type: Composite
 Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d5e26b type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@cfed14 cager.jexpr.ast.PrimaryExpression@d5e26b
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3eb8a type: boolean
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@15cb20e type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@adddd6 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@15cb20e cager.jexpr.ast.PrimaryExpression@adddd6
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@bf34f4 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@3eb8a cager.jexpr.ast.PrimaryExpression@bf34f4
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@12dbd1a is FS and type: Composite
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1da1f99 is FS and type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@12dbd1a cager.jexpr.ast.PrimaryExpression@1da1f99
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1507ef7 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1bf8de1 cager.jexpr.ast.PrimaryExpression@1507ef7
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@fbca58 type: Composite
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a1718e is FS and type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@fbca58 cager.jexpr.ast.PrimaryExpression@a1718e
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1263a93 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@cfa52e cager.jexpr.ast.PrimaryExpression@1263a93
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@658704 type: Composite
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18339aa is FS and type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@658704 cager.jexpr.ast.PrimaryExpression@18339aa
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3ed3f5 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@cd8e77 cager.jexpr.ast.PrimaryExpression@3ed3f5
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14441b6 type: Composite
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3625d0 is FS and type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@14441b6 cager.jexpr.ast.PrimaryExpression@3625d0
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@eca6e7 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@c1c7c4 cager.jexpr.ast.PrimaryExpression@eca6e7
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@221f81 type: Composite
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@426e05 is FS and type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@221f81 cager.jexpr.ast.PrimaryExpression@426e05
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@145240a type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@4120aa cager.jexpr.ast.PrimaryExpression@145240a
-boolean && boolean
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c78f98 type: Composite
-Evaluating type of IdentifierExpression: k1 k1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a47962 type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d4179 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@b56efe type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@189e60f cager.jexpr.ast.PrimaryExpression@b56efe
-boolean && boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@4120aa cager.jexpr.ast.PrimaryExpression@1c78f98
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a47962 type: boolean
 Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5ee6a6 type: Composite
-Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@78d4e6 type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e15497 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@178986b type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@5ebc6e cager.jexpr.ast.PrimaryExpression@178986b
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d4179 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@b56efe type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1d4179 cager.jexpr.ast.PrimaryExpression@b56efe
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@189e60f type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a47962 cager.jexpr.ast.PrimaryExpression@189e60f
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a51364 type: Composite
-Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@9c393d type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@71edc0 type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aff012 type: boolean
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ba4b54 type: Composite
-Evaluating type of IdentifierExpression: k3 k3
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a79faa type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e352bf type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14d8c01 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1aff012 cager.jexpr.ast.PrimaryExpression@14d8c01
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5ee6a6 is FS and type: Composite
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@78d4e6 is FS and type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@5ee6a6 cager.jexpr.ast.PrimaryExpression@78d4e6
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e15497 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@178986b cager.jexpr.ast.PrimaryExpression@e15497
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@22a6bb type: Composite
-Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f0756d type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5ebc6e type: Composite
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a51364 is FS and type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@5ebc6e cager.jexpr.ast.PrimaryExpression@1a51364
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9c393d type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@71edc0 cager.jexpr.ast.PrimaryExpression@9c393d
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aff012 type: Composite
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ba4b54 is FS and type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1aff012 cager.jexpr.ast.PrimaryExpression@1ba4b54
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a79faa type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1e352bf cager.jexpr.ast.PrimaryExpression@1a79faa
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14d8c01 type: Composite
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@22a6bb is FS and type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@14d8c01 cager.jexpr.ast.PrimaryExpression@22a6bb
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f0756d type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@ad4bb0 cager.jexpr.ast.PrimaryExpression@f0756d
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@144426c type: Composite
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@64f150 is FS and type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@144426c cager.jexpr.ast.PrimaryExpression@64f150
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11ef9f6 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@acc399 cager.jexpr.ast.PrimaryExpression@11ef9f6
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5da364 type: Composite
+Evaluating type of IdentifierExpression: k1 k1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19232d7 type: null
 Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ad4bb0 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@147e4f0 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1074938 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1580757 cager.jexpr.ast.PrimaryExpression@1074938
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4a11a8 type: Composite
+Evaluating type of IdentifierExpression: k2 k2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@cd32e5 type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c882db type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1070723 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@65b778 cager.jexpr.ast.PrimaryExpression@1070723
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f02eaa type: Composite
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@187b796 type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@126172f type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bc2e06 type: boolean
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17193fc type: Composite
+Evaluating type of IdentifierExpression: k3 k3
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aa8b42 type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19cc1e3 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7d5b6e type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1bc2e06 cager.jexpr.ast.PrimaryExpression@7d5b6e
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fdbe17 type: Composite
+Evaluating type of IdentifierExpression: k2 k2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cb1278 type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@129aa21 type: Composite
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: l l
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@144426c is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6076c4 is FS and type: Composite
 Evaluating type of IdentifierExpression: l l
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@64f150 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11ef9f6 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@115798c is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@df0c3a type: null
 Evaluating type of IdentifierExpression: l l
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@acc399 is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@5da364 type: java.lang.Object
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@acc399 cager.jexpr.ast.PrimaryExpression@5da364
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19bb448 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@158fd70 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@19bb448 cager.jexpr.ast.PrimaryExpression@158fd70
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: l l
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19232d7 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@166de66 is FS and type: Composite
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@147e4f0 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@19232d7 cager.jexpr.ast.PrimaryExpression@147e4f0
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@93068a type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@166de66 cager.jexpr.ast.PrimaryExpression@93068a
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1074938 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@928095 type: Composite
 Evaluating type of IdentifierExpression: k1 k1
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1580757 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@37c7ee type: null
 Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@4a11a8 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@26fb32 type: Composite
 Setting type of Object Prop 
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@cd32e5 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@13596e0 is FS and type: Composite
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c882db type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1070723 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1445d28 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@140109f type: null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@65b778 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f02eaa type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1033c7e type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@178820c type: double
 Evaluating type of IdentifierExpression: count count
 Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@187b796 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@126172f type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a21c07 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@de1f47 type: int
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bc2e06 type: java.lang.Object
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d78139 type: java.lang.Object
 Evaluating type of IdentifierExpression: or or
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@17193fc type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aa8b42 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@650016 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8b5fe type: int
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19cc1e3 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7d5b6e type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4416b is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@162f58e type: null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fdbe17 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cb1278 type: double
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e775bc type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2c931 type: double
 Evaluating type of IdentifierExpression: left left
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@129aa21 type: java.lang.Object
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6076c4 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@115798c type: Composite
-Setting type of Object Prop 
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@df0c3a type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19bb448 type: double
-Evaluating type of IdentifierExpression: left left
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@158fd70 type: java.lang.Object
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@166de66 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@93068a type: Composite
-Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@928095 type: null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@37c7ee type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@26fb32 type: double
-Evaluating type of IdentifierExpression: left left
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@13596e0 type: java.lang.Object
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1445d28 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@140109f type: Composite
-Setting type of Object Prop 
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1033c7e is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@178820c type: null
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a21c07 is FS and type: Composite
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@de1f47 type: Composite
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a21c07 cager.jexpr.ast.PrimaryExpression@de1f47
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d78139 is FS and type: int
-Evaluating type of IdentifierExpression: l l
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@650016 is FS and type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@d78139 cager.jexpr.ast.PrimaryExpression@650016
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8b5fe type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@4416b type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@162f58e type: Composite
-Evaluating type of IdentifierExpression: l l
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e775bc is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2c931 type: Composite
-Setting type of Object Prop 
-Evaluating type of Keyword this
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@106bcba is FS and type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@15080e5 type: null
-Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@106bcba type: java.lang.Object
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15080e5 type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@3e4344 type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b24442 type: double
-Evaluating type of IdentifierExpression: left left
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@9f5742 type: Composite
-Evaluating type of IdentifierExpression: l l
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@119d975 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@13a567 type: Composite
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d03e78 type: null
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@b54dba type: Composite
-Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1020230 type: null
-Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ddc2c2 type: Composite
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: l l
-Evaluating type of FieldSelection: parent
-FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@11d6070 is FS and type: Composite
-Evaluating type of IdentifierExpression: l l
-Evaluating type of FieldSelection: left
-FS name: left, type: Composite
-Evaluating type of FieldSelection: count
-FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a65fca is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dac8a5 type: null
 Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b24442 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9f5742 type: double
+Evaluating type of IdentifierExpression: left left
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@119d975 type: java.lang.Object
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@13a567 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d03e78 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@b54dba type: null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1020230 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ddc2c2 type: double
+Evaluating type of IdentifierExpression: left left
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11d6070 type: java.lang.Object
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a65fca type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dac8a5 type: Composite
+Setting type of Object Prop 
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@aad8f9 is FS and type: Composite
-Evaluating type of IdentifierExpression: lcc lcc
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8aeedc type: int
-Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@147bc27 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8aeedc type: null
 Evaluating type of Keyword this
-Evaluating type of FieldSelection: right
-FS name: right, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@91d863 is FS and type: Composite
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@147bc27 is FS and type: Composite
 Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@91d863 type: Composite
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@147bc27 cager.jexpr.ast.PrimaryExpression@91d863
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
 Evaluating type of FieldSelection: left
 FS name: left, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@11570cd is FS and type: int
+Evaluating type of IdentifierExpression: l l
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a0d37f is FS and type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@11570cd cager.jexpr.ast.PrimaryExpression@a0d37f
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9d74b8 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@159df6c type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15b5219 type: Composite
+Evaluating type of IdentifierExpression: l l
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b258d is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6e7a5b type: Composite
+Setting type of Object Prop 
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1230534 is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2aabf8 type: null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1803641 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@69e732 type: double
+Evaluating type of IdentifierExpression: left left
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c9aff0 type: Composite
+Evaluating type of IdentifierExpression: l l
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@13dd7d1 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@123fee1 type: Composite
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@327cee type: null
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a7f8a4 type: Composite
+Evaluating type of IdentifierExpression: k2 k2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b4fe4d type: null
+Evaluating type of IdentifierExpression: parent parent
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a38598 type: Composite
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: l l
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@97ed28 is FS and type: Composite
+Evaluating type of IdentifierExpression: l l
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@530461 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@448192 type: null
+Evaluating type of Keyword this
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: parent
+FS name: parent, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@196c169 is FS and type: Composite
+Evaluating type of IdentifierExpression: lcc lcc
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@73f623 type: int
+Evaluating type of IdentifierExpression: l l
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1247c45 type: Composite
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: right
+FS name: right, type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5aad2a is FS and type: Composite
+Evaluating type of IdentifierExpression: l l
+Evaluating type of FieldSelection: left
+FS name: left, type: Composite
+Evaluating type of FieldSelection: count
+FS name: count, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11ebc46 is FS and type: int
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: right
 FS name: right, type: Composite
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a0d37f is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dad6d0 is FS and type: int
 Evaluating type of MethodSelection: updateCountRec
 MS name: updateCountRec, type: void
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@9d74b8 type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14d0183 type: Composite
 Evaluating type of IdentifierExpression: l l
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@159df6c type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9e58be type: Composite
 Evaluating type of IdentifierExpression: k2 k2
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@15b5219 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d43df5 type: null
 Evaluating type of IdentifierExpression: parent parent
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b258d type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12fcbd8 type: Composite
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: l l
 Evaluating type of FieldSelection: parent
 FS name: parent, type: Composite
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6e7a5b is FS and type: Composite
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f003c1 is FS and type: Composite
 Evaluating type of IdentifierExpression: l l
 Evaluating type of FieldSelection: count
 FS name: count, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1230534 is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2aabf8 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@186787c is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@150388c type: null
 before second dump 0
 CompilationUnits:
   CompilationUnit:

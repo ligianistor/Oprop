@@ -337,7 +337,6 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//For each method, methodsInMethod contains 
 	//the set of methods called in that method.
-	// XXXX this is what I need
 	HashMap<String, LinkedList<FieldAndTypePair>> methodsInMethod = 
 			new HashMap<String, LinkedList<FieldAndTypePair>>();
 	
@@ -844,11 +843,18 @@ public class BoogieVisitor extends NullVisitor {
     			 unpackedInPostcondition.add(pred);
     		 } 
     	 }
-       	 
+    	  
+    	 // This has to be done before the main while below because
+    	 // otherwise the true for a predicate that was found before to have false
+    	 // overwrites the false.
     	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {		 		 
     		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
     		 // Initialize all the entries in maps to default values.
     		 predicateIsMentioned.put(fracMan.getPredName(), true);
+    	 }
+       	 
+    	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {		 		 
+    		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
     		 
     		 // I need to reconstruct the disjunction if fracMan has a disjunction number.
     		 int disjNumber = fracMan.getDisjunctionNumber();
@@ -1067,8 +1073,21 @@ public class BoogieVisitor extends NullVisitor {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
         				// TODO need to write an if here too!!!
-        				pairOfStrings.concatFractions("\t ensures (forall y:Ref :: frac"+
-        					upperCaseFirstLetter(currentNamePred)+"[y]);\n");
+        				
+        				LinkedList<FieldAndTypePair> methodsCalledInThisMethod =
+        						methodsInMethod.get(methodName_);
+        				
+        				if (methodsCalledInThisMethod.isEmpty()) { 
+        						pairOfStrings.concatFractions("\t ensures (forall "+ forallParameter +":Ref :: frac"+
+        							upperCaseFirstLetter(currentNamePred)+"["+ forallParameter +"]);\n");					
+        				} else {
+        					// The resulting string should be similar to:
+        					// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));
+        					// but using forallParameter instead of y.
+    						pairOfStrings.concatFractions("\t ensures (forall "+forallParameter+":Ref :: (old(frac"+
+        							upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]) > 0.0) ==> (frac" +
+        							upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"] > 0.0 ));\n");	
+        				}
         			}
         			
         		}
@@ -1474,10 +1493,7 @@ public class BoogieVisitor extends NullVisitor {
 		// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));  
 		
 		// The second one is more relaxed. If there are calls to any methods in this method,
-		// then infer the second ensures forall. Also this one needs to be inferred if not
-		// all fracPred's that are in the precondition were mentioned in the postcondition.
-		// If instead all the fracPred's that were in the precondition were also
-		// mentioned in the postcondition then it makes sense to infer the first one.
+		// then infer the second ensures forall. 
 		// The first one can be inferred for methods that have no calls to other methods inside. 
 		
 		// For the "ensures forall" for packed, if there is an unpacked in the postcondition
