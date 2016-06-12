@@ -114,11 +114,12 @@ this.count = newc;
 pack(this#1.0 count(newc))[ol, or, c1, c2];
 }
 
-	// The programmer is required to put all the statements about a fracPred[obj] into a single one.
+	// The programmer is required to put all the statements about a fracPred[obj] into a single one. ??
+	// TODO is that necessary?
 	// Like for unpacked(this# count) below.
 	// If we have a packed and an unpacked, the putting together of these is unpacked.
 void updateCountRec() 
-~ double k1, double k, double k2:
+~ double k1, double k, double k2, double k3:
 Composite opp, int lcc,
 Composite or, Composite ol,
 int lc, int rc:
@@ -134,7 +135,7 @@ requires unpacked(this#k1 parent()) &&
    unpacked(this#0.5 count(lcc)) &&
    (this#0.5 left(ol, lc)) &&
    (this#0.5 right(or, rc))
-ensures (this#k2 parent())
+ensures (this#k2 parent()) && ( (opp != null) ~=> (opp#k3 parent()) ) 
 {
 // Existential variables for unpack(opp#0.5 count(opp.count))
 Composite oll;

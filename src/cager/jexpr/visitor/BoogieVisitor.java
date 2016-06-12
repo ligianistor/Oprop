@@ -824,8 +824,6 @@ public class BoogieVisitor extends NullVisitor {
      	 // was also mentioned in the postcondition.
      	 // If it was not mentioned for at least one object for which it was mentioned in the precondition
      	 // it means that we cannot write an "ensures forall" for that predicate.
-     	 // TODO maybe I need to put True for all predicates that are mentioned in the "modifies" 
-     	 // to start with. For this I need to give the "modifies" set as an argument to this method.
      	 HashMap<String, Boolean> predicateIsMentioned =
     			new HashMap<String, Boolean>();
      	  	 
@@ -847,6 +845,8 @@ public class BoogieVisitor extends NullVisitor {
     	 // This has to be done before the main while below because
     	 // otherwise the true for a predicate that was found before to have false
     	 // overwrites the false.
+     	 // I need to put True for all predicates that are mentioned in the "modifies" 
+     	 // to start with. 
     	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {		 		 
     		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
     		 // Initialize all the entries in maps to default values.
@@ -974,7 +974,7 @@ public class BoogieVisitor extends NullVisitor {
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
         		if (forPacked){
-        			if(
+        			if (
         				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
         				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
         				 (fracMan.getIsPacked()!=fracMan.getIsPacked())
@@ -985,11 +985,11 @@ public class BoogieVisitor extends NullVisitor {
         					 fracMan.getPredName(),
         					 fracMan.getFractionObject()
         			);
-        			 // TODO is packedModifiedObjects passed by value and thus I don't need to do anything else?
+        			 // packedModifiedObjects passed by value and thus I don't need to do anything else
         		 }
         		} else {
         			// this is same as the body of the if above, but for fractions
-        			if(
+        			if (
            				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
            				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
            				 (!fracMan.getFraction().equals(fracMan.getFraction()))
@@ -1000,7 +1000,7 @@ public class BoogieVisitor extends NullVisitor {
            					 fracMan.getPredName(),
            					 fracMan.getFractionObject()
            			);
-           			 // TODO is packedModifiedObjects passed by value and thus I don't need to do anything else?
+           			 //packedModifiedObjects passed by value and thus I don't need to do anything else
            		 }
         		}
         	 }
@@ -1072,7 +1072,7 @@ public class BoogieVisitor extends NullVisitor {
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
-        				// TODO need to write an if here too!!!
+        				// TODO need to refine the below a bit, maybe check a few more things
         				
         				LinkedList<FieldAndTypePair> methodsCalledInThisMethod =
         						methodsInMethod.get(methodName_);
@@ -1500,29 +1500,6 @@ public class BoogieVisitor extends NullVisitor {
 		// then infer the "ensures forall" that has the "old() == ..".
 		// If there is no "unpacked" in the postcondition then 
 		// infer the one that says "ensures forall y:: packedPred[y]".
-
-		// TODO not sure if the while below is needed.
-		Iterator<Entry<String, LinkedList<PackObjMods>>> it = 
-				packedMods.entrySet().iterator();
-		while (it.hasNext()) {
-		   	Entry<String, LinkedList<PackObjMods>> pairs = 
-		        (Entry<String, LinkedList<PackObjMods>>)it.next();
-		    String nameOfPredicate = pairs.getKey();
-		    LinkedList<PackObjMods> objMods = pairs.getValue();
-		    HashMap<String, LinkedList<String>> modifiedObjects = new HashMap<String, LinkedList<String>>();
-		    for (int i = 0; i < objMods.size(); i++) {
-		        PackObjMods p = objMods.get(i);
-		        if (p.isPackedModified()) {
-		        	LinkedList<String> currentModifiedObjects = 
-		        			modifiedObjects.get(nameOfPredicate);
-		        	if (currentModifiedObjects == null) {
-		        		currentModifiedObjects = new LinkedList<String>();
-		        	}
-		        	currentModifiedObjects.add(p.getObjectString());
-		        	modifiedObjects.put(nameOfPredicate, currentModifiedObjects); 
-		        }	
-		    }
-		    }
 		    
 		// This is where I write the "ensures (forall .." out.
 	    String forallParameter = getNewForallParameter();
@@ -1533,7 +1510,6 @@ public class BoogieVisitor extends NullVisitor {
 	    String thisMethodName = ast.getIdentifier().getName();
 	    if (!thisMethodName.equals("main")) {
 	       	// This is for writing "ensures forall for packed.
-	    	// TODO Might need to give the forallParameter to this method.
 	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, true, forallParameter).getEnsuresForallPacked());
 	    	
 	        //This is for writing "ensures forall for frac.
@@ -2773,8 +2749,7 @@ public class BoogieVisitor extends NullVisitor {
     	 }
     	 return result;
     }
-    
-    
+     
     String writeFractionManipulation(
     		String namePredOrMethod, 
     		boolean isPredicate, 
@@ -3090,7 +3065,6 @@ public class BoogieVisitor extends NullVisitor {
     		insidePostcondition = false;
     		modifyMethodSpec(";\n");
     	}
-    	//TODO add the optimization to remove (left[op]==left[op]) for parameters.
     }
     
     public void visitBlock(Block ast) 
