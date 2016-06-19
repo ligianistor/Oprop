@@ -74,6 +74,11 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, Set<String>> packedModifiedArgsInPrecondition =
 			new HashMap<String, Set<String>>();	
 	
+	// For each method, this map has pairs of (predicate, object)
+	// that are mentioned in the precondition but not in the postcondition.
+	HashMap<String, LinkedList<FieldAndTypePair>> predObjNotMentionedPostcond =
+			new HashMap<String, LinkedList<FieldAndTypePair>>();
+	
 	// This maps the (predicate, identifier) to the field that the
 	// identifier represents.
 	HashMap<PredicateAndFieldValue, String> quantifiedVars = 
@@ -647,7 +652,6 @@ public class BoogieVisitor extends NullVisitor {
 	
     }
     
-    // TODO should I substitute all Set<> with TreeSet<>?
     boolean areEqualSetsPacked(
     		Set<FractionManipulationStatement> setPre,
     		Set<FractionManipulationStatement> setPost 		
@@ -931,11 +935,12 @@ public class BoogieVisitor extends NullVisitor {
     						 FractionManipulationStatement elementPrecond = iterPrecond.next();
     						 
     						 if (!doesFractionManipulationExist(fractionManipulationsListPost, elementPrecond)) {
-    							 System.out.println(methodName_ + " " +elementPrecond.getPredName() );
-    							 
+    							 modifyPredObjNotMentionedPostcond(
+    									 methodName_, 
+    									 new FieldAndTypePair(elementPrecond.getPredName(), elementPrecond.getFractionObject())
+    							 );
     							 predicateIsMentioned.put(elementPrecond.getPredName(), false);
     						 } else {
-    							 System.out.println("NO "+methodName_ + " " +elementPrecond.getPredName() );
     							 addToPackedModifiedObjects(
     									 packedModifiedObjects,
     									 elementPrecond.getPredName(), 
@@ -970,6 +975,8 @@ public class BoogieVisitor extends NullVisitor {
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
     		 // and if there is one that has the same object and predicate, and the "isPacked"
     		 // changed, I add that object to packedModifiedObjects.
+    		 
+    		 // TODO I also need to change isModified in this branch.
     		 
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
@@ -1008,7 +1015,6 @@ public class BoogieVisitor extends NullVisitor {
  
     }
     // Here I write the "ensures forall" for packed as we have the infrastructure in place.
-    	 // TODO rewrite all hashmap traversal using keyset.
     Iterator<Entry<String, Boolean>> j = 
     		predicateIsMentioned.entrySet().iterator(); 
     while(j.hasNext()) {
@@ -1096,8 +1102,6 @@ public class BoogieVisitor extends NullVisitor {
     }  	
     	return pairOfStrings;			
     }
-    
-    //TODO make sure that the rules for what fractionManipulations to be written out are respected.
         
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here
@@ -1367,7 +1371,7 @@ public class BoogieVisitor extends NullVisitor {
 						
 						LinkedList<PredicateAndFieldValue> unpackedPredicatesThisMethod =
 								unpackedPredicatesInPrecondition.get(currentMethod);
-						// TODO unpackedObjects needs to be a set.
+						
 						Set<String> unpackedObjectsSet = new TreeSet<String>();
 						
 						// here I compute the objectStrings 
@@ -1457,14 +1461,13 @@ public class BoogieVisitor extends NullVisitor {
 			//in the precondition.
 		}
 		out.write(requiresPacked);
-		//TODO keep track of changes to fracParent[]	
 		//Here I generate 
 		//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
 		// or "ensures (forall x:Ref :: ( ((x!=this) && (x!=that) ) 
 		//==> (packedOK[x] == old(packedOK[x]))));"
 		// and the others, related to fracPredicate.
 		
-		// TODO I have to look which are the ifCondition ==> expression that are the exact same in
+		// I look which are the ifCondition ==> expression that are the exact same in
 		// the pre and postcondition. 
 		// The fractionManipulation structures are exactly what I need, 
 		// especially fractionManipulationsListPredicate and the likes.
@@ -1713,14 +1716,8 @@ public class BoogieVisitor extends NullVisitor {
     	
     	// Add fractionManipulationStatements
     	// First write the fraction manipulations of the preconditions
-    	statementContent = statementContent.concat(
-    			writeFractionManipulation(
-    					methodName, false, false, true, identifierBeforeMethSel));
-    	
-    	// Second write the fraction manipulations of the postconditions
-    	statementContent = statementContent.concat(
-    			writeFractionManipulation(
-    					methodName, false, false, false, identifierBeforeMethSel));
+    	statementContent = statementContent.concat(writeFractionManipulation(
+    			methodName, false, false, true, identifierBeforeMethSel));
   
     	//If the last 2 characters are ";\n" we need to delete them because
     	//they are going to be added at the end of visitStatement.
@@ -2696,8 +2693,6 @@ public class BoogieVisitor extends NullVisitor {
 		}
 
 		// This should always be different than -1.
-		// TODO I should not need the second part of this condition
-		// TODO without it it crashes
 		if ((indexOfCurrentParam != -1)) {
 			result = actualParams.get(indexOfCurrentParam);
 		}	
@@ -2750,7 +2745,7 @@ public class BoogieVisitor extends NullVisitor {
     	 }
     	 return result;
     }
-     
+         
     String writeFractionManipulation(
     		String namePredOrMethod, 
     		boolean isPredicate, 
@@ -2758,13 +2753,6 @@ public class BoogieVisitor extends NullVisitor {
     		boolean isPrecond,
     		String callingObject
     ) {
-    	// TODO Here I need to check and only write out 
-    	// if the exact same thing is not both in the pre- and post-condition.
-    	// For this I need to construct the disjunction and only after it is constructed
-    	// I need to compare them.
-    	// TODO they are also disregarded in the "ensures forall", I only need
-    	// to look at the packed[] and frac that are not part of the ensures forall that
-    	// are the same in the pre and postcondition.
     	 String result = "";
     	 LinkedList<FractionManipulationStatement> fractionManipulationsList;
     	 // First I need to get the formal parameters list corresponding to this method or 
@@ -2795,6 +2783,58 @@ public class BoogieVisitor extends NullVisitor {
     		 actualParams = copyLinkedList(argumentsObjProp);
     		 actualParams.addAll(existentialArgsObjProp);
     		 actualParams.add(callingObject);
+    		 
+    		 
+        	 for (int i=0; i<fractionManipulationsList.size(); i++) {
+        		 FractionManipulationStatement fracMan = fractionManipulationsList.get(i);
+        		
+        		 if (!fracMan.getIfCondition().equals("")) {
+        			 result = result.concat("if (" + 
+        					 replaceFormalArgsWithActual(
+        							 formalParams,
+        							 actualParams,
+        							 fracMan.getIfCondition()
+        							 )
+        							 + ") {\n ");
+        		 }
+        		 
+        		 String actualObject = findActualParamInFormals(
+        		        	formalParams,
+        		        	actualParams,
+        		        	fracMan.getFractionObject());
+        		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + 
+        				 "[" + actualObject
+        				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
+        				 actualObject
+        				 +"]"); 
+        		 String fractionString = fracMan.getFraction();
+        		 modifyFieldsInMethod("frac" + upperCaseFirstLetter(fracMan.getPredName()));
+        		 if (isNumeric(fractionString)) {
+        			 if (isPredicate) {
+        				 if (isPack) {
+        					 result = result.concat(" - ");
+        				 } else {
+        					 result = result.concat(" + ");
+        				 }
+        			 } 
+        			 result = result.concat(fractionString);
+        		 } else {
+        			 // If we are in this branch
+        			 // it means that the fraction is "k" or similar
+        			 if (isPredicate) {
+        				 if (isPack) {
+        					 result = result.concat(" / 2.0");
+        				 } else {
+        					 result = result.concat(" + 0.001");
+        				 }
+        			 } 
+        			 
+        		 }
+        		 result = result.concat(";\n");
+        		 if (!fracMan.getIfCondition().equals("")) {
+        			 result = result.concat("}\n");
+        		 }
+        	 }
 
     	 } else { 
     		 // look in methodParams for formal params
@@ -2804,86 +2844,25 @@ public class BoogieVisitor extends NullVisitor {
     		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 // This is the list of actual arguments for the current method 
     		 actualParams = actualArgumentsMethod;
-
-    		 if (isPrecond) {
-    		 fractionManipulationsList = fractionManipulationsListMethodPre.get(namePredOrMethod);
-    	 } else {
-    		 fractionManipulationsList = fractionManipulationsListMethodPost.get(namePredOrMethod);
-    	 }
-    	 }
-    	  
-    	 for (int i=0; i<fractionManipulationsList.size(); i++) {
-    		 FractionManipulationStatement fracMan = fractionManipulationsList.get(i);
-    		
-    		 if (!fracMan.getIfCondition().equals("")) {
-    			 result = result.concat("if (" + 
-    					 replaceFormalArgsWithActual(
-    							 formalParams,
-    							 actualParams,
-    							 fracMan.getIfCondition()
-    							 )
-    							 + ") {\n ");
-    		 }
     		 
-    		 String actualObject = findActualParamInFormals(
-    		        	formalParams,
-    		        	actualParams,
-    		        	fracMan.getFractionObject());
-    		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + 
-    				 "[" + actualObject
-    				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
-    				 actualObject
-    				 +"]"); 
-    		 String fractionString = fracMan.getFraction();
-    		 modifyFieldsInMethod("frac" + upperCaseFirstLetter(fracMan.getPredName()));
-    		 if (isNumeric(fractionString)) {
-    			 if (isPredicate) {
-    				 if (isPack) {
-    					 result = result.concat(" - ");
-    				 } else {
-    					 result = result.concat(" + ");
-    				 }
-    			 } else if (isPrecond) {
-    				 // if it's in the precondition it means we consume(subtract)
-    				 // this part of the fraction
-    				 result = result.concat(" - "); 
-    			 } else {
-    				//if it's in the postcondition it means we add 
-    				//to the existing amount
-					//this part of the fraction
-    				result = result.concat(" + "); 							
-    			 }
-    			 result = result.concat(fractionString);
-    		 } else {
-    			 // If we are in this branch
-    			 // it means that the fraction is "k" or similar
-    			 if (isPredicate) {
-    				 if (isPack) {
-    					 result = result.concat(" / 2.0");
-    				 } else {
-    					 result = result.concat(" + 0.001");
-    				 }
-    			 } else if (isPrecond) {
-    				 // if it's in the precondition it means we extract an arbitrary 
-    				 // portion of the fraction. For that it is enough to divide by 2.0 .
-    				 // It is 2.0 and not 2 because all the arguments have to be double 
-    				 // in Boogie in this case.
-    				 result = result.concat(" / 2.0"); 
-    			 } else {
-    				//if it's in the postcondition it means we add 
-    				// k, i.e., an arbitrary amount to the fraction.
-    				// I have chosen this arbitrary value to be 0.001.
-    				result = result.concat(" + 0.001"); 							
-    			 }
-    			 
-    		 }
-    		 result = result.concat(";\n");
-    		 if (!fracMan.getIfCondition().equals("")) {
-    			 result = result.concat("}\n");
-    		 }
+    		 LinkedList<FieldAndTypePair> predObjs = 
+    	    			predObjNotMentionedPostcond.get(namePredOrMethod);
+    	     if (predObjs != null) {
+    	    	 for (int p=0;p<predObjs.size();p++) {
+    	    		result = result.concat("\t frac"+upperCaseFirstLetter(predObjs.get(p).getName())+"["+
+    	    	 
+        					 replaceFormalArgsWithActual(
+        							 formalParams,
+        							 actualParams,
+        							 predObjs.get(p).getType() // this is not actually the type but the object
+        							 ) +"] := 0.0;\n");			
+    	    	 }  		
+    	    }
+ 
+    		 
+    		 
     	 }
-    	 
-    	    	
+    	
     	return result;
     }
      
@@ -3104,7 +3083,6 @@ public class BoogieVisitor extends NullVisitor {
     	visitChildren(ast); 
     	inArgumentList = false;
     }
-    
     
     void modifyMethodBody(String s) {
     	String currentMethodBody = methodBody.get(currentMethod);
@@ -3436,6 +3414,16 @@ public class BoogieVisitor extends NullVisitor {
     	methodsInMethod.put(currentMethod, currentMethodsInMethod);    	
     }
     
+    void modifyPredObjNotMentionedPostcond(String methodName, FieldAndTypePair s) {
+    	LinkedList<FieldAndTypePair> currentPredObjNotMentionedPostcond = 
+    			predObjNotMentionedPostcond.get(methodName);
+    	if (currentPredObjNotMentionedPostcond == null) {
+    		currentPredObjNotMentionedPostcond = new LinkedList<FieldAndTypePair>();
+    	}
+    	currentPredObjNotMentionedPostcond.add(s);
+    	predObjNotMentionedPostcond.put(methodName, currentPredObjNotMentionedPostcond);    	
+    }
+    
     void modifyPredicateBinExpr(BinExprString s) {
     	LinkedList<BinExprString> currentPredicateBinExpr = 
     			predicateBinExpr.get(namePredicate);
@@ -3507,32 +3495,6 @@ public class BoogieVisitor extends NullVisitor {
 			}
 		}
 		return -1;
-	}
-	
-	// This method helps to keep track of which "packedPredicate"
-	// variables have been assigned to, so that we know what to put in the 
-	// "modifies" of methods.
-	//boo comes from boolean
-	//name is the name of the predicate
-	//obj is the name of the object. It can be this, or dc[this], etc.
-	// TODO this is not called anywhere!
-	void modifyPackedMods(String name, String obj, int boo) {
-		LinkedList<PackObjMods> currentPackObjMods = 
-    			packedMods.get(name);
-
-    	// All the elements of packedMods have been initialized  
-    	// to the empty lists.
-    	int position = getPositionObjectName(currentPackObjMods, obj);
-    	if (position == -1) {
-    		PackObjMods o = new PackObjMods(obj);
-    		o.addModification(boo);
-    		currentPackObjMods.add(o); 		
-    	} else {
-    		PackObjMods o = currentPackObjMods.get(position);
-    		o.addModification(boo);
-    		currentPackObjMods.set(position, o);
-    	}
-    	packedMods.put(name, currentPackObjMods);
 	}
 
 	//I am not inferring the calling of pack/unpack.
