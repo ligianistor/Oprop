@@ -1073,7 +1073,7 @@ public class BoogieVisitor extends NullVisitor {
         						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
         						"!="+forallParameter + ")) ==> frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
-        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])) ) );\n");
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
         				}
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
