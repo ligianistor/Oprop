@@ -1043,7 +1043,7 @@ public class BoogieVisitor extends NullVisitor {
         						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
         						"!="+forallParameter + ")) ==> packed"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(packed"+
-        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])) ) );\n");
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
         				}
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
@@ -1824,7 +1824,7 @@ public class BoogieVisitor extends NullVisitor {
     
     void helperBinaryExpression(BinaryExpression ast, String operatorSymbol) 
     		throws ParseException 
-    {
+    {	
     	try {
     	String localOperatorSymbol = operatorSymbol;
     	// We replace the linear implies ~=> with ==>.
@@ -1837,11 +1837,11 @@ public class BoogieVisitor extends NullVisitor {
     		//TODO this is a modulo binary expression
     		concatToStatementObjProp("modulo(");
     	}
-    	AST[] children = ast.getChildren();
-    	 
-    	if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
+
+    	if (!namePredicate.equals("") || insidePrecondition || insidePostcondition) {
     		concatToStatementObjProp("(");
     	}
+    	
     	if (localOperatorSymbol.equals("==>")) {
     		inChild1OfImplies = true;
     		ifConditionFractionManipulation = "";
@@ -1851,6 +1851,8 @@ public class BoogieVisitor extends NullVisitor {
 			ifConditionFractionManipulation = 
 					ifConditionFractionManipulation.concat("(");
 		}
+		
+    	AST[] children = ast.getChildren();
 		children[0].accept(this );
 		if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
 			ifConditionFractionManipulation = 
@@ -1885,7 +1887,7 @@ public class BoogieVisitor extends NullVisitor {
 			  inChild2OfImplies = false;
 			  ifConditionFractionManipulation = "";
 		  }
-	    if (!namePredicate.equals("") || (insidePrecondition || insidePostcondition)) {
+	    if (!namePredicate.equals("") || insidePrecondition || insidePostcondition) {
 	    	concatToStatementObjProp(")");
 	    }
 		  
@@ -2119,7 +2121,7 @@ public class BoogieVisitor extends NullVisitor {
         	if (fieldName == null){
         		// This is where FracString is updated
         		// but only when we are inside a predicate.
-        		bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
         				"]"+ packedOrUnpacked+") && \n \t \t(frac"+
         				upperCaseFirstLetter(predName)+"[");
@@ -2128,7 +2130,7 @@ public class BoogieVisitor extends NullVisitor {
         		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(objectString+ "] >= " + fracInObjProp + ")");
         	} else {
-        		bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
         				"[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
@@ -2144,7 +2146,7 @@ public class BoogieVisitor extends NullVisitor {
         	if (fieldName == null){
         		// This is where FracString is updated
         		// but only when we are inside a predicate.       	
-        		bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
+        		bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
         				"] "+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
@@ -2152,7 +2154,7 @@ public class BoogieVisitor extends NullVisitor {
         		bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
         		bodyPredicate = bodyPredicate.concat(objectString+ "] > 0.0)");
         	} else {
-            	bodyMethodOrPredicate = "(packed"+upperCaseFirstLetter(predName)+"[";
+            	bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
     			          "[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+
             			  upperCaseFirstLetter(predName)+"[");
@@ -2186,7 +2188,7 @@ public class BoogieVisitor extends NullVisitor {
     					args,
     					objectString
     			);
-    			modifyMethodSpec(oneObjProp);
+    			modifyMethodSpec(oneObjProp+")");
     		}
  
     		if (insidePrecondition) {
@@ -2851,16 +2853,14 @@ public class BoogieVisitor extends NullVisitor {
     	    	 for (int p=0;p<predObjs.size();p++) {
     	    		result = result.concat("\t frac"+upperCaseFirstLetter(predObjs.get(p).getName())+"["+
     	    	 
-        					 replaceFormalArgsWithActual(
-        							 formalParams,
-        							 actualParams,
-        							 predObjs.get(p).getType() // this is not actually the type but the object
-        							 ) +"] := 0.0;\n");			
+        			replaceFormalArgsWithActual(
+        					 formalParams,
+        					 actualParams,
+        					 predObjs.get(p).getType() // this is not actually the type but the object
+        					 ) +"] := 0.0;\n"
+        			);			
     	    	 }  		
-    	    }
- 
-    		 
-    		 
+    	    }	 
     	 }
     	
     	return result;
