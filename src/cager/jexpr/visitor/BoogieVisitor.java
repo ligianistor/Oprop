@@ -124,12 +124,6 @@ public class BoogieVisitor extends NullVisitor {
 	// Depending on the situation, the other variable might be null.
 	String ifConditionFractionManipulation = "";
 	
-	//Are we inside an IfStatement?
-	//We need this because there are Blocks inside an IfStatement and 
-	//they get confused with the Blocks at the beginning of 
-	//method declarations.
-	boolean inIfStatement = false;
-	
 	boolean inPackUnpackAnnotation = false;
 	
 	//True iff this program contains the modulo operator.
@@ -2950,14 +2944,14 @@ public class BoogieVisitor extends NullVisitor {
     		throws ParseException
     {
     	inMethodSelectionStatement = false;
-    	inIfStatement = true;
     	//An if statement can be only inside a method statement.
     	inStatement = true;
     	AST[] children = ast.getChildren();
     	int size = children.length;
     	statementContent = statementContent.concat("if (");    	
     	children[0].accept(this);
-    	statementContent = statementContent.concat(")\n");
+    	statementContent = statementContent.concat(") {\n");
+    	
     	modifyMethodBody(statementContent);
     	//We make it "" because we have just written it to methodBody.
     	statementContent = "";
@@ -2969,9 +2963,7 @@ public class BoogieVisitor extends NullVisitor {
         	children[2].accept(this);
         	statementContent = "";
     	}
-    	
     	inStatement = false;
-    	inIfStatement = false;
     }
     
     public void visitStatementExpression(StatementExpression ast)
@@ -3050,9 +3042,6 @@ public class BoogieVisitor extends NullVisitor {
     public void visitBlock(Block ast) 
     		throws ParseException 
   	{ 
-    	if (inIfStatement) {
-    		modifyMethodBody("{\n");
-    	}
     	
     	AST[] children = ast.getChildren();
     	for (int i = 0; i < children.length; i++) {  		
