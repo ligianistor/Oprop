@@ -793,42 +793,25 @@ public class BoogieVisitor extends NullVisitor {
     // not know how that predicate changed.
 	// The above algorithm is only for disjunctions, but it should be similar 
 	// for simple fractionManipulationStatements.
-    PairOfStrings inferEnsuresForall(String methodName_, boolean forPacked, String forallParameter) {
-    	 PairOfStrings pairOfStrings = new PairOfStrings();
-		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
-		 
-    	// Use the isPacked in fractionManipulationsListMethodPre and
-    	// fractionManipulationsListMethodPost to infer the changes in packed.
-      	 LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
-       			 fractionManipulationsListMethodPre.get(methodName_);
-       	 
-       	 LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
-       			 fractionManipulationsListMethodPost.get(methodName_);
-       	 
-       	 // For each predicate this map contains which are the 
-       	 // objects for which the objects propositions are packed in the
-       	 // precondition and unpacked in the postcondition 
-       	 // or vice versa, only if they are mentioned both in the pre- and postcondition.
-     	 HashMap<String, Set<String>> packedModifiedObjects =
-    			new HashMap<String, Set<String>>();
-     	 // Same map as above but says for which objects the fractions
-     	 // were modified between the pre and postconditions.
-     	 HashMap<String, Set<String>> fractionsModifiedObjects =
-    			new HashMap<String, Set<String>>();
-     	 
-     	 // For each predicate this map contains whether
-     	 // that predicate (for all objects to which it is bound in the precondition)
-     	 // which was mentioned in the precondition
-     	 // was also mentioned in the postcondition.
-     	 // If it was not mentioned for at least one object for which it was mentioned in the precondition
-     	 // it means that we cannot write an "ensures forall" for that predicate.
-     	 HashMap<String, Boolean> predicateIsMentioned =
-    			new HashMap<String, Boolean>();
-     	  	 
-     	 // This set contains the predicates for which
-     	 // there exists an "unpacked" in the postcondition.
-     	 Set<String> unpackedInPostcondition =
-    			new TreeSet<String>();
+	// This returns void because all these parameters are
+	// passed by value and thus modified by the end of this method.
+    void constructStructuresForInferEnsuresForall(
+    		String methodName_, 
+    		boolean forPacked, 
+    		String forallParameter,
+    		Set<Integer> setDisjunctionNumbersPrecond,
+    		HashMap<String, Set<String>> packedModifiedObjects,
+    		HashMap<String, Set<String>> fractionsModifiedObjects,
+    		HashMap<String, Boolean> predicateIsMentioned,
+    		Set<String> unpackedInPostcondition   		
+    ) {
+
+        LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
+        		 fractionManipulationsListMethodPre.get(methodName_);
+         	 
+        LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
+             	 fractionManipulationsListMethodPost.get(methodName_);
+  	 	
      	 // It is simpler for the map above to be populated right now
      	 // as it only requires a pass over the postconditions.
     	 for (int i=0; i<fractionManipulationsListPost.size(); i++) {
@@ -944,11 +927,7 @@ public class BoogieVisitor extends NullVisitor {
     									 fractionsModifiedObjects,
     									 elementPrecond.getPredName(), 
     									 elementPrecond.getFractionObject()
-    							 );
-    							 // TODO I don't know if packedModifiedObjects
-    							 // was modified because it was given by value?
-    							 // or do I need to do more?
-    							 
+    							 ); 							 
     						 }	 
     					 }
 
@@ -1008,6 +987,19 @@ public class BoogieVisitor extends NullVisitor {
     	 }
  
     }
+    }
+    
+    PairOfStrings inferEnsuresForall(
+    		String methodName_, 
+    		boolean forPacked, 
+    		String forallParameter,
+    		Set<Integer> setDisjunctionNumbersPrecond,
+    		HashMap<String, Set<String>> packedModifiedObjects,
+    		HashMap<String, Set<String>> fractionsModifiedObjects,
+    		HashMap<String, Boolean> predicateIsMentioned,
+    		Set<String> unpackedInPostcondition 		
+   ) {
+    	 PairOfStrings pairOfStrings = new PairOfStrings();
     // Here I write the "ensures forall" for packed as we have the infrastructure in place.
     Iterator<Entry<String, Boolean>> j = 
     		predicateIsMentioned.entrySet().iterator(); 
@@ -1278,8 +1270,47 @@ public class BoogieVisitor extends NullVisitor {
 			System.err.println("Error in visitMethodDeclaration writing this method out, " +
 					"before visitChildren: " + e.getMessage());
 		}
-				
-    	    visitChildren(ast);
+
+    	// I am visiting everything except the method block.
+    	AST[] children = ast.getChildren();
+    	int sizeOfChildren = children.length;
+    	for (int h=0;h<sizeOfChildren-1;h++) {
+    		children[h].accept(this);
+    	}
+    	
+    	////////////////////////////////////////////////////
+    	// The following variables are used for inferring the ensures forall.
+   		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
+          	 
+          	 // For each predicate this map contains which are the 
+          	 // objects for which the objects propositions are packed in the
+          	 // precondition and unpacked in the postcondition 
+          	 // or vice versa, only if they are mentioned both in the pre- and postcondition.
+        	 HashMap<String, Set<String>> packedModifiedObjects =
+       			new HashMap<String, Set<String>>();
+        	 // Same map as above but says for which objects the fractions
+        	 // were modified between the pre and postconditions.
+        	 HashMap<String, Set<String>> fractionsModifiedObjects =
+       			new HashMap<String, Set<String>>();
+        	 
+        	 // For each predicate this map contains whether
+        	 // that predicate (for all objects to which it is bound in the precondition)
+        	 // which was mentioned in the precondition
+        	 // was also mentioned in the postcondition.
+        	 // If it was not mentioned for at least one object for which it was mentioned in the precondition
+        	 // it means that we cannot write an "ensures forall" for that predicate.
+        	 HashMap<String, Boolean> predicateIsMentioned =
+       			new HashMap<String, Boolean>();
+        	  	 
+        	 // This set contains the predicates for which
+        	 // there exists an "unpacked" in the postcondition.
+        	 Set<String> unpackedInPostcondition =
+       			new TreeSet<String>();
+        	 
+        	////////////////////////////////////////
+
+			// Now I am visiting the method block.
+        	children[children.length-1].accept(this);
     	    
     	    try {
     	    //TODO add all parameters when calling function
@@ -1447,8 +1478,7 @@ public class BoogieVisitor extends NullVisitor {
 				}
 			}
 		
-		} else {
-			
+		} else {			
 			//TODO
 			//Need to write what happens when 
 			//there are unpacked object propositions
@@ -1507,10 +1537,30 @@ public class BoogieVisitor extends NullVisitor {
 	    String thisMethodName = ast.getIdentifier().getName();
 	    if (!thisMethodName.equals("main")) {
 	       	// This is for writing "ensures forall for packed.
-	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, true, forallParameter).getEnsuresForallPacked());
+	    	ensuresForall = ensuresForall.concat(
+	    			inferEnsuresForall(
+	    					thisMethodName, 
+	    					true, 
+	    					forallParameter,
+	    					setDisjunctionNumbersPrecond,
+	    		    		packedModifiedObjects,
+	    		    		fractionsModifiedObjects,
+	    		    		predicateIsMentioned,
+	    		    		unpackedInPostcondition		
+	    			).getEnsuresForallPacked());
 	    	
 	        //This is for writing "ensures forall for frac.
-	    	ensuresForall = ensuresForall.concat(inferEnsuresForall(thisMethodName, false, forallParameter).getEnsuresForallFractions());
+	    	ensuresForall = ensuresForall.concat(
+	    			inferEnsuresForall(
+	    					thisMethodName, 
+	    					false, 
+	    					forallParameter,
+	    					setDisjunctionNumbersPrecond,
+	    		    		packedModifiedObjects,
+	    		    		fractionsModifiedObjects,
+	    		    		predicateIsMentioned,
+	    		    		unpackedInPostcondition		
+	    			).getEnsuresForallFractions());
 	        	
 	        if (!ensuresForall.equals(""))
 	        	out.write(ensuresForall+"\n");
@@ -1711,7 +1761,7 @@ public class BoogieVisitor extends NullVisitor {
     	// Add fractionManipulationStatements
     	// First write the fraction manipulations of the preconditions
     	statementContent = statementContent.concat(writeFractionManipulation(
-    			methodName, false, false, true, identifierBeforeMethSel));
+    			methodName, false, false, identifierBeforeMethSel));
   
     	//If the last 2 characters are ";\n" we need to delete them because
     	//they are going to be added at the end of visitStatement.
@@ -2654,11 +2704,11 @@ public class BoogieVisitor extends NullVisitor {
        	if (annotationName.equals("pack")) {
     	 	// Add the fraction manipulations statements
     		toWrite = toWrite.concat(writeFractionManipulation(
-    				predicateNameObjProp, true, true, false, objectObjProp));
+    				predicateNameObjProp, true, true, objectObjProp));
     	} else {
     	 	// Add the fraction manipulations statements
     		toWrite = toWrite.concat(writeFractionManipulation(
-    				predicateNameObjProp, true, false, false, objectObjProp));
+    				predicateNameObjProp, true, false, objectObjProp));
     	}
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
@@ -2746,7 +2796,6 @@ public class BoogieVisitor extends NullVisitor {
     		String namePredOrMethod, 
     		boolean isPredicate, 
     		boolean isPack, 
-    		boolean isPrecond,
     		String callingObject
     ) {
     	 String result = "";
