@@ -795,17 +795,16 @@ public class BoogieVisitor extends NullVisitor {
 	// for simple fractionManipulationStatements.
 	// This returns void because all these parameters are
 	// passed by value and thus modified by the end of this method.
+	// forPacked is true here
     void constructStructuresForInferEnsuresForallPacked(
     		String methodName_, 
-    		boolean forPacked, 
-    		String forallParameter,
-    		Set<Integer> setDisjunctionNumbersPrecond,
     		HashMap<String, Set<String>> packedModifiedObjects,
-    		HashMap<String, Set<String>> fractionsModifiedObjects,
     		HashMap<String, Boolean> predicateIsMentioned,
     		Set<String> unpackedInPostcondition   		
     ) {
 
+  		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
+  		 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
         		 fractionManipulationsListMethodPre.get(methodName_);
          	 
@@ -888,12 +887,9 @@ public class BoogieVisitor extends NullVisitor {
     			 
     			 // For the composite example, we don't go inside this if.
     			 boolean areSetsEqual;
-    			 if (forPacked) {
-    				 areSetsEqual = areEqualSetsPacked(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan);
-    			 } else {
-    				 areSetsEqual = areEqualSetsFractions(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan); 
-    			 }
-    			 
+    			
+    			 areSetsEqual = areEqualSetsPacked(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan);
+    			     			 
     			 if (!areSetsEqual) {
     				 // Any of the objects in this disjunction of the precondition
     				 // that is not equal to one in the postcondition
@@ -922,12 +918,7 @@ public class BoogieVisitor extends NullVisitor {
     									 packedModifiedObjects,
     									 elementPrecond.getPredName(), 
     									 elementPrecond.getFractionObject()
-    							 );
-    							 addToFractionsModifiedObjects(
-    									 fractionsModifiedObjects,
-    									 elementPrecond.getPredName(), 
-    									 elementPrecond.getFractionObject()
-    							 ); 							 
+    							 );							 
     						 }	 
     					 }
 
@@ -953,7 +944,6 @@ public class BoogieVisitor extends NullVisitor {
     		 
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
-        		if (forPacked){
         			if (
         				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
         				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
@@ -967,67 +957,26 @@ public class BoogieVisitor extends NullVisitor {
         			);
         			 // packedModifiedObjects passed by value and thus I don't need to do anything else
         		 }
-        		} else {
-        			// this is same as the body of the if above, but for fractions
-        			if (
-           				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
-           				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
-           				 (!fracMan.getFraction().equals(fracMan.getFraction()))
-           				 //TODO should I compare ifConditions?
-           		 ) {
-           			 addToFractionsModifiedObjects(
-           					 fractionsModifiedObjects,
-           					 fracMan.getPredName(),
-           					 fracMan.getFractionObject()
-           			);
-           			 //packedModifiedObjects passed by value and thus I don't need to do anything else
-           		 }
-        		}
+        		
         	 }
     	 }
  
     }
     }
     
+    // forPacked is false here
     void constructStructuresForInferEnsuresForallFractions(
     		String methodName_, 
-    		boolean forPacked, 
-    		String forallParameter,
-    		Set<Integer> setDisjunctionNumbersPrecond,
-    		HashMap<String, Set<String>> packedModifiedObjects,
-    		HashMap<String, Set<String>> fractionsModifiedObjects,
-    		HashMap<String, Boolean> predicateIsMentioned,
-    		Set<String> unpackedInPostcondition   		
+    		HashMap<String, Set<String>> fractionsModifiedObjects
     ) {
-
-        LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
+  		Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
+       
+  		LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
         		 fractionManipulationsListMethodPre.get(methodName_);
          	 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
              	 fractionManipulationsListMethodPost.get(methodName_);
-  	 	
-     	 // It is simpler for the map above to be populated right now
-     	 // as it only requires a pass over the postconditions.
-    	 for (int i=0; i<fractionManipulationsListPost.size(); i++) {
-    		 FractionManipulationStatement fracMan = fractionManipulationsListPost.get(i);
-    		 boolean isPacked = fracMan.getIsPacked();
-    		 if (!isPacked) {
-    			 String pred = fracMan.getPredName();
-    			 unpackedInPostcondition.add(pred);
-    		 } 
-    	 }
-    	  
-    	 // This has to be done before the main while below because
-    	 // otherwise the true for a predicate that was found before to have false
-    	 // overwrites the false.
-     	 // I need to put True for all predicates that are mentioned in the "modifies" 
-     	 // to start with. 
-    	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {		 		 
-    		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
-    		 // Initialize all the entries in maps to default values.
-    		 predicateIsMentioned.put(fracMan.getPredName(), true);
-    	 }
-       	 
+    	       	 
     	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {		 		 
     		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
     		 
@@ -1082,11 +1031,9 @@ public class BoogieVisitor extends NullVisitor {
     			 
     			 // For the composite example, we don't go inside this if.
     			 boolean areSetsEqual;
-    			 if (forPacked) {
-    				 areSetsEqual = areEqualSetsPacked(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan);
-    			 } else {
-    				 areSetsEqual = areEqualSetsFractions(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan); 
-    			 }
+    			
+    			 areSetsEqual = areEqualSetsFractions(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan); 
+    			 
     			 
     			 if (!areSetsEqual) {
     				 // Any of the objects in this disjunction of the precondition
@@ -1110,13 +1057,8 @@ public class BoogieVisitor extends NullVisitor {
     									 methodName_, 
     									 new FieldAndTypePair(elementPrecond.getPredName(), elementPrecond.getFractionObject())
     							 );
-    							 predicateIsMentioned.put(elementPrecond.getPredName(), false);
+    							 
     						 } else {
-    							 addToPackedModifiedObjects(
-    									 packedModifiedObjects,
-    									 elementPrecond.getPredName(), 
-    									 elementPrecond.getFractionObject()
-    							 );
     							 addToFractionsModifiedObjects(
     									 fractionsModifiedObjects,
     									 elementPrecond.getPredName(), 
@@ -1147,21 +1089,6 @@ public class BoogieVisitor extends NullVisitor {
     		 
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
-        		if (forPacked){
-        			if (
-        				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
-        				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
-        				 (fracMan.getIsPacked()!=fracMan.getIsPacked())
-        				 //TODO should I compare ifConditions?
-        		 ) {
-        			 addToPackedModifiedObjects(
-        					 packedModifiedObjects,
-        					 fracMan.getPredName(),
-        					 fracMan.getFractionObject()
-        			);
-        			 // packedModifiedObjects passed by value and thus I don't need to do anything else
-        		 }
-        		} else {
         			// this is same as the body of the if above, but for fractions
         			if (
            				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
@@ -1176,7 +1103,7 @@ public class BoogieVisitor extends NullVisitor {
            			);
            			 //packedModifiedObjects passed by value and thus I don't need to do anything else
            		 }
-        		}
+        		
         	 }
     	 }
  
@@ -1187,13 +1114,12 @@ public class BoogieVisitor extends NullVisitor {
     		String methodName_, 
     		boolean forPacked, 
     		String forallParameter,
-    		Set<Integer> setDisjunctionNumbersPrecond,
     		HashMap<String, Set<String>> packedModifiedObjects,
     		HashMap<String, Set<String>> fractionsModifiedObjects,
     		HashMap<String, Boolean> predicateIsMentioned,
     		Set<String> unpackedInPostcondition 		
    ) {
-    	 PairOfStrings pairOfStrings = new PairOfStrings();
+    PairOfStrings pairOfStrings = new PairOfStrings();
     // Here I write the "ensures forall" for packed as we have the infrastructure in place.
     Iterator<Entry<String, Boolean>> j = 
     		predicateIsMentioned.entrySet().iterator(); 
@@ -1474,7 +1400,6 @@ public class BoogieVisitor extends NullVisitor {
     	
     	////////////////////////////////////////////////////
     	// The following variables are used for inferring the ensures forall.
-   		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
           	 
           	 // For each predicate this map contains which are the 
           	 // objects for which the objects propositions are packed in the
@@ -1502,24 +1427,14 @@ public class BoogieVisitor extends NullVisitor {
        			new TreeSet<String>();
         	 
         	 constructStructuresForInferEnsuresForallPacked(
-        	    		methodName, 
-        	    		boolean forPacked, 
-        	    		String forallParameter,
-        	    		Set<Integer> setDisjunctionNumbersPrecond,
-        	    		HashMap<String, Set<String>> packedModifiedObjects,
-        	    		HashMap<String, Set<String>> fractionsModifiedObjects,
-        	    		HashMap<String, Boolean> predicateIsMentioned,
-        	    		Set<String> unpackedInPostcondition
+        	    		methodName,       	    		
+        	    		packedModifiedObjects,
+        	    		predicateIsMentioned,
+        	    		unpackedInPostcondition
         	  );
         	 constructStructuresForInferEnsuresForallFractions(
      	    		methodName, 
-     	    		boolean forPacked, 
-     	    		String forallParameter,
-     	    		Set<Integer> setDisjunctionNumbersPrecond,
-     	    		HashMap<String, Set<String>> packedModifiedObjects,
-     	    		HashMap<String, Set<String>> fractionsModifiedObjects,
-     	    		HashMap<String, Boolean> predicateIsMentioned,
-     	    		Set<String> unpackedInPostcondition
+     	    		fractionsModifiedObjects
      	  );
         	 
         	////////////////////////////////////////
@@ -1757,7 +1672,6 @@ public class BoogieVisitor extends NullVisitor {
 	    					thisMethodName, 
 	    					true, 
 	    					forallParameter,
-	    					setDisjunctionNumbersPrecond,
 	    		    		packedModifiedObjects,
 	    		    		fractionsModifiedObjects,
 	    		    		predicateIsMentioned,
@@ -1770,7 +1684,6 @@ public class BoogieVisitor extends NullVisitor {
 	    					thisMethodName, 
 	    					false, 
 	    					forallParameter,
-	    					setDisjunctionNumbersPrecond,
 	    		    		packedModifiedObjects,
 	    		    		fractionsModifiedObjects,
 	    		    		predicateIsMentioned,
