@@ -1,6 +1,6 @@
 package cager.jexpr.ast;
 
-public class FieldAndTypePair {
+public class FieldAndTypePair implements Comparable{
 	String name;
 	String type;
 	
@@ -42,6 +42,12 @@ public boolean equals(Object obj) {
 	public int hashCode(){
 	    return (name.hashCode() * type.hashCode());
 	  }
+	
+	public int compareTo(Object o)
+	{
+		String result = name+" "+type;
+		return result.compareTo(((FieldAndTypePair)o).getName()+" "+((FieldAndTypePair)o).getType());
+	}
 	
 }
 

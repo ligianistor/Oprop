@@ -76,8 +76,8 @@ public class BoogieVisitor extends NullVisitor {
 	
 	// For each method, this map has pairs of (predicate, object)
 	// that are mentioned in the precondition but not in the postcondition.
-	HashMap<String, LinkedList<FieldAndTypePair>> predObjNotMentionedPostcond =
-			new HashMap<String, LinkedList<FieldAndTypePair>>();
+	HashMap<String, Set<FieldAndTypePair>> predObjNotMentionedPostcond =
+			new HashMap<String, Set<FieldAndTypePair>>();
 	
 	// This maps the (predicate, identifier) to the field that the
 	// identifier represents.
@@ -2874,7 +2874,7 @@ public class BoogieVisitor extends NullVisitor {
     	
     }
     
-    // Each formal parameter is surrounded by $ and @ in oldString
+    // Each formal parameter should be!!! surrounded by $ and @ in oldString
     String replaceFormalArgsWithActual(
     	LinkedList<FieldAndTypePair> formalParams,
     	LinkedList<String> actualParams,
@@ -2908,7 +2908,6 @@ public class BoogieVisitor extends NullVisitor {
     		
     	}
     	result = result.concat(oldString);
-
     	return result;
     }
     
@@ -3018,16 +3017,17 @@ public class BoogieVisitor extends NullVisitor {
     		 // This is the list of actual arguments for the current method 
     		 actualParams = actualArgumentsMethod;
     		 
-    		 LinkedList<FieldAndTypePair> predObjs = 
+    		 Set<FieldAndTypePair> predObjs = 
     	    			predObjNotMentionedPostcond.get(namePredOrMethod);
     	     if (predObjs != null) {
-    	    	 for (int p=0;p<predObjs.size();p++) {
-    	    		result = result.concat("\t frac"+upperCaseFirstLetter(predObjs.get(p).getName())+"["+
+    	    	 for (FieldAndTypePair p : predObjs) {
+    	    		result = result.concat("\t frac"+upperCaseFirstLetter(p.getName())+"["+
     	    	 
         			replaceFormalArgsWithActual(
         					 formalParams,
         					 actualParams,
-        					 predObjs.get(p).getType() // this is not actually the type but the object
+        					 '$'+p.getType()+'@' // this is not actually the type but the object
+        					 // and it should be surrounded by $ and @
         					 ) +"] := 0.0;\n"
         			);			
     	    	 }  		
@@ -3581,10 +3581,10 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     void modifyPredObjNotMentionedPostcond(String methodName, FieldAndTypePair s) {
-    	LinkedList<FieldAndTypePair> currentPredObjNotMentionedPostcond = 
+    	Set<FieldAndTypePair> currentPredObjNotMentionedPostcond = 
     			predObjNotMentionedPostcond.get(methodName);
     	if (currentPredObjNotMentionedPostcond == null) {
-    		currentPredObjNotMentionedPostcond = new LinkedList<FieldAndTypePair>();
+    		currentPredObjNotMentionedPostcond = new TreeSet<FieldAndTypePair>();
     	}
     	currentPredObjNotMentionedPostcond.add(s);
     	predObjNotMentionedPostcond.put(methodName, currentPredObjNotMentionedPostcond);    	
