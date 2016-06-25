@@ -149,7 +149,7 @@ if (this.parent != null) {
 	splitFrac(opp#k parent(), 2);
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
-	unpack(opp#0.5 count(opp.count))[oll, orr, count[left[opp]], count[right[opp]]];
+	unpack(opp#0.5 count(opp.count))[oll, orr, opp.left.count, opp.right.count];
 
 	if (this == this.parent.right) {
 

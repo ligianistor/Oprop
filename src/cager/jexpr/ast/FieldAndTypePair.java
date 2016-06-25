@@ -1,6 +1,6 @@
 package cager.jexpr.ast;
 
-public class FieldAndTypePair implements Comparable{
+public class FieldAndTypePair implements Comparable<Object>{
 	String name;
 	String type;
 	
