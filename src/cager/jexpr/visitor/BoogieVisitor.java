@@ -88,7 +88,7 @@ public class BoogieVisitor extends NullVisitor {
 	String className;
 	
 	// For the pre-, or post-conditions of a method,
-	// or for the translation body of a perdicate,
+	// or for the translation body of a predicate,
 	// this is the number of the disjunction member
 	// in the list of conjunctions making up the above.
 	int disjunctionNumber = -1;
@@ -109,11 +109,13 @@ public class BoogieVisitor extends NullVisitor {
 	boolean beforeChild0 = false;
 	
 	// Are we in the left part of the ~=> implies?
-	// This is for setting FractionManipulationStatement.
+	// This is for setting FractionManipulationStatement 
+	// and to figure out if we are inside an implies.
 	boolean inChild1OfImplies = false;
 	
 	// Are we in the right part of the ~=> implies?
-	// This is for setting FractionManipulationStatement.
+	// This is for setting FractionManipulationStatement
+	// and to figure out if we are inside an implies.
 	boolean inChild2OfImplies = false;
 	
 	// The 2 variables needed for the fractionManipulation statements
@@ -206,13 +208,7 @@ public class BoogieVisitor extends NullVisitor {
 	// Not in each block, but in each statement.
 	// A statement is a child of a block.
 	Set<String> fieldsInStatement = new TreeSet<String>();
-	
-	//Set of predicates for the corresponding frac global variables that are 1
-	//in the requires or ensures of the current method.
-	//TODO I think this should only contain the predicates for which the fraction is 1 in the 
-	// postcondition only, it does not matter if it is 1 in the precondition.
-	Set<String> setFracEq1 = new TreeSet<String>();	
-	
+		
 	//For each method, this map tells us which are the
 	//packed object propositions in the precondition of that method.  
 	HashMap<String, LinkedList<ObjPropString>> methodPreconditionsPacked = 
@@ -323,7 +319,7 @@ public class BoogieVisitor extends NullVisitor {
 	//the set of fields in that method. 
 	//This structure only contains the fields, including packedPred and fracPred,
 	//on the left of :=.
-	// XXXX This is what I need, it represents
+	// This represents
 	// what gets put in the "modifies" clause of each method.
 	HashMap<String, Set<String>> fieldsInMethod = 
 			new HashMap<String, Set<String>>();
@@ -383,6 +379,10 @@ public class BoogieVisitor extends NullVisitor {
 	BoogieVisitor[] bv;
 	
 	int numberFilesBefore;
+	
+	// TODO not here
+	// if not in ifcondition, but this is one part of a conjunction
+	// then make it a separate "requires" or "ensures"
 	
 	public BoogieVisitor(
 			BufferedWriter boogieFile, 
@@ -1214,7 +1214,6 @@ public class BoogieVisitor extends NullVisitor {
     public void visitMethodDeclaration(MethodDeclaration ast) 
     		throws ParseException {    	
     	parametersMethod.clear();
-    	setFracEq1.clear();
     	stringOfVarDecls = "";
 		String moduloTranslation = "function modulo(x:int, y:int) returns (int); \n" +
 		"axiom (forall x:int, y:int :: {modulo(x,y)}\n" +
@@ -1520,9 +1519,7 @@ public class BoogieVisitor extends NullVisitor {
 			if (localFieldsInMethod != null) {
 				
 				for (String p : predicates) {					        	
-					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) 
-							&& 
-							!setFracEq1.contains(p)) {
+					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) ) {
 						
 						LinkedList<PredicateAndFieldValue> unpackedPredicatesThisMethod =
 								unpackedPredicatesInPrecondition.get(currentMethod);
@@ -1598,8 +1595,7 @@ public class BoogieVisitor extends NullVisitor {
 				for (int i=0; i<numberFilesBefore; i++) {
 					Set<String> bvPredicates = bv[i].getPredicates();
 					for (String p : bvPredicates) {							        	
-						if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) &&
-				        				!setFracEq1.contains(p) ) {	
+						if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p))) {	
 							requiresPacked = requiresPacked.concat("\t requires (forall "+ 
 									forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
 									"["+ forallParameter+"]);\n");
@@ -1896,6 +1892,8 @@ public class BoogieVisitor extends NullVisitor {
     	statementContent = statementContent.substring(0, statementContent.length() - 2); 	
     }
 
+    // TODO ensures forall are not quite right
+    
     public void visitBinaryExpression(BinaryExpression ast) 
     		throws ParseException
     {
@@ -2023,9 +2021,26 @@ public class BoogieVisitor extends NullVisitor {
 			ifConditionFractionManipulation = 
 					ifConditionFractionManipulation.concat("(");
 		}
+		 
+		// I am dividing the conjunctions that make up pre- and post-conditions
+		// in separate requires or ensures, only if we are not in an "implies"
+		// statement.
+		if (operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)) {
+			if (insidePrecondition) {
+				modifyMethodSpec("\t requires ");
+			} else if (insidePostcondition) {
+				modifyMethodSpec("\t ensures ");
+			}
+		}
 		
     	AST[] children = ast.getChildren();
 		children[0].accept(this );
+		if (operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)) {
+			if (insidePrecondition || insidePostcondition) {
+				modifyMethodSpec(";\n");
+			}
+		}
+		
 		if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
 			ifConditionFractionManipulation = 
 					ifConditionFractionManipulation.concat(")");
@@ -2050,7 +2065,20 @@ public class BoogieVisitor extends NullVisitor {
 				ifConditionFractionManipulation = 
 						ifConditionFractionManipulation.concat("(");
 		  }
+		  
+		 if (operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)) {
+				if (insidePrecondition) {
+					modifyMethodSpec("\t requires ");
+				} else if (insidePostcondition) {
+					modifyMethodSpec("\t ensures ");
+				}
+		}
 		  children[1].accept(this );
+			if (operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)) {
+				if (insidePrecondition || insidePostcondition) {
+					modifyMethodSpec(";\n");
+				}
+			}
 		  if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
 				ifConditionFractionManipulation = 
 						ifConditionFractionManipulation.concat(")");
@@ -2266,9 +2294,6 @@ public class BoogieVisitor extends NullVisitor {
     	fractionObjProp = fracInObjProp;
     	if (fracInObjProp.equals("1")) {
     		fracInObjProp = fracInObjProp.concat(".0");
-    		if (insidePrecondition || insidePostcondition) {
-    			setFracEq1.add(predName);
-    		}
     	}
     	
     	ObjPropString objProp =

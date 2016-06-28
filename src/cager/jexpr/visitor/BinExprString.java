@@ -20,12 +20,10 @@ public class BinExprString {
 	String getObject() {
 		return object;
 	}
-	
-	
-	
+		
 	@Override
 	//Two objects are equal if the field, operand2 and operator are equal.
-public boolean equals(Object obj) {
+	public boolean equals(Object obj) {
 		
 		if (obj == this) {
             return true;
