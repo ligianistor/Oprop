@@ -2035,11 +2035,12 @@ public class BoogieVisitor extends NullVisitor {
 		
     	AST[] children = ast.getChildren();
 		children[0].accept(this );
-		if (operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)) {
+		/*if (operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)) {
 			if (insidePrecondition || insidePostcondition) {
 				modifyMethodSpec(";\n");
 			}
 		}
+		*/
 		
 		if (inChild1OfImplies && ((operatorSymbol.equals("&&")) || (operatorSymbol.equals("||")))) {
 			ifConditionFractionManipulation = 
@@ -2056,7 +2057,10 @@ public class BoogieVisitor extends NullVisitor {
 					  ifConditionFractionManipulation.concat(operatorSymbol);
 		  }
 		  
-		  concatToStatementObjProp(operatorSymbol);
+		  if (!(operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)
+				  && (insidePrecondition || insidePostcondition) ) ) {
+					  concatToStatementObjProp(operatorSymbol);
+				  }
 		  if (localOperatorSymbol.equals("==>")) {
 			  inChild2OfImplies = true;
 		  }
@@ -2087,7 +2091,9 @@ public class BoogieVisitor extends NullVisitor {
 			  inChild2OfImplies = false;
 			  ifConditionFractionManipulation = "";
 		  }
-	    if (!namePredicate.equals("") || insidePrecondition || insidePostcondition) {
+	    if ((!namePredicate.equals("") || insidePrecondition || insidePostcondition)
+	    		&&
+	    	!(operatorSymbol.equals("&&") && !(inChild1OfImplies || inChild2OfImplies)) ){
 	    	concatToStatementObjProp(")");
 	    }
 		  
@@ -2320,7 +2326,7 @@ public class BoogieVisitor extends NullVisitor {
         		// but only when we are inside a predicate.
         		bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-        				"]"+ packedOrUnpacked+") && \n \t \t(frac"+
+        				"]"+ packedOrUnpacked+") && (frac"+
         				upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] >= " 
         				+ fracInObjProp+")");
@@ -2329,7 +2335,7 @@ public class BoogieVisitor extends NullVisitor {
         	} else {
         		bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-        				"[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        				"[this]]"+ packedOrUnpacked+") && (frac"+upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
         				"[this]] >= " + fracInObjProp+")");
 
@@ -2345,7 +2351,7 @@ public class BoogieVisitor extends NullVisitor {
         		// but only when we are inside a predicate.       	
         		bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+
-        				"] "+ packedOrUnpacked+") && \n \t \t(frac"+upperCaseFirstLetter(predName)+"[");
+        				"] "+ packedOrUnpacked+") && (frac"+upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] > 0.0)");
         		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(writePredParamsOutOrToString(predName, 2, true));
@@ -2353,7 +2359,7 @@ public class BoogieVisitor extends NullVisitor {
         	} else {
             	bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
-    			          "[this]]"+ packedOrUnpacked+") && \n \t \t(frac"+
+    			          "[this]]"+ packedOrUnpacked+") && (frac"+
             			  upperCaseFirstLetter(predName)+"[");
             	bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + "[this]] > 0.0)");
             	bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
@@ -3223,7 +3229,7 @@ public class BoogieVisitor extends NullVisitor {
     	methodVariables.accept(this);
     	
     	if (precondition != null) {
-    		modifyMethodSpec("\t requires (this != null) && ");
+    		modifyMethodSpec("\t requires (this != null);\n");
     		insidePrecondition = true;
     		disjunctionNumber = 0;
     		precondition.accept(this);
