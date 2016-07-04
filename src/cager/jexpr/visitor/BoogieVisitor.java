@@ -802,7 +802,7 @@ public class BoogieVisitor extends NullVisitor {
     		HashMap<String, Boolean> predicateIsMentioned,
     		Set<String> unpackedInPostcondition   		
     ) {
-
+System.out.println("methodsName:"+methodName_);
   		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
   		 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
@@ -914,6 +914,8 @@ public class BoogieVisitor extends NullVisitor {
     							 );
     							 predicateIsMentioned.put(elementPrecond.getPredName(), false);
     						 } else {
+    							 System.out.println("setsNotEqual "+elementPrecond.getPredName()+
+    									 " "+elementPrecond.getFractionObject());
     							 addToPackedModifiedObjects(
     									 packedModifiedObjects,
     									 elementPrecond.getPredName(), 
@@ -950,6 +952,8 @@ public class BoogieVisitor extends NullVisitor {
         				 (fracMan.getIsPacked()!=fracMan.getIsPacked())
         				 //TODO should I compare ifConditions?
         		 ) {
+        				 System.out.println("disjNumber==-1 "+fracMan.getPredName()+
+								 " "+fracMan.getFractionObject());
         			 addToPackedModifiedObjects(
         					 packedModifiedObjects,
         					 fracMan.getPredName(),
@@ -1210,7 +1214,7 @@ public class BoogieVisitor extends NullVisitor {
     }
         
     //Since methods are not children of 
-    //Predicate, we might not need namePredicate here
+    //Predicate, we might not need namePredicate here.
     public void visitMethodDeclaration(MethodDeclaration ast) 
     		throws ParseException {    	
     	parametersMethod.clear();
@@ -1384,7 +1388,7 @@ public class BoogieVisitor extends NullVisitor {
     	     	packedMods.put(currentNamePred, new LinkedList<PackObjMods>()); 
     	    }
     			
-    	    out.write("procedure "+ast.getIdentifier().getName()+"(");
+    	    out.write("\nprocedure "+ast.getIdentifier().getName()+"(");
     	}
 	    catch (Exception e) {
 			System.err.println("Error in visitMethodDeclaration writing this method out, " +
@@ -1399,10 +1403,10 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	
     	////////////////////////////////////////////////////
-    	// The following variables are used for inferring the ensures forall.
+    	// The following variables are used for inferring the ensures forall for this method.
           	 
           	 // For each predicate this map contains which are the 
-          	 // objects for which the objects propositions are packed in the
+          	 // objects for which the object propositions are packed in the
           	 // precondition and unpacked in the postcondition 
           	 // or vice versa, only if they are mentioned both in the pre- and postcondition.
         	 HashMap<String, Set<String>> packedModifiedObjects =
@@ -3757,6 +3761,7 @@ public class BoogieVisitor extends NullVisitor {
     //If alterName is true then I add "497" to the end of getName(). 
     //I chose "497" because it is unlikely that the programmer 
     //will write an input parameter of this form.
+    // TODO this is not used, why did I write it???
     String getStringPredParams(String pred, int k, boolean alterName) { 
     	String result = "";
     	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
@@ -3794,3 +3799,17 @@ public class BoogieVisitor extends NullVisitor {
     }
     
 }
+
+// For use in debugging:
+// write a method that iterates through a hashmap that has the key string and the 
+// value a LinkedList of elements. The only requirement is for the elements
+// in the linked list to have a function "writeOut", or "write"?
+// Use generics.
+// Example:
+/*
+for (Map.Entry<String, Object> entry : map.entrySet()) {
+    String key = entry.getKey();
+    Object value = entry.getValue();
+    // ...
+}
+*/

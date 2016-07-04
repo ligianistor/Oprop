@@ -76,6 +76,8 @@ procedure updateCount(c:int, ol:Ref, or:Ref, op:Ref, c1:int, c2:int, c3:int, thi
 	 requires (forall x:Ref :: ((x!=op) ==>  packedLeft[x]));
 	 requires (forall x:Ref :: ((x!=op) ==>  packedRight[x]));
 
+-----------------------these are not right---------------------
+-----------below are the modified ones, not the translated ones---------------------
 	 ensures (forall x:Ref :: ((this!=x)) ==> packedCount[x]==old(packedCount[x]));
 	 ensures (forall x:Ref :: packedLeft[x]==old(packedLeft[x]));
 	 ensures (forall x:Ref ::  packedRight[x]==old(packedRight[x]));
