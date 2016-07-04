@@ -1,6 +1,6 @@
 package cager.jexpr.ast;
 
-public class FractionManipulationStatement implements Comparable<Object>{
+public class FractionManipulationStatement implements WriteOut, Comparable<Object> {
 	private String ifCondition;
 	private String predName;
 	private String fractionObject; 

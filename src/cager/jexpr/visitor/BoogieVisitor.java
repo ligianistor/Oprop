@@ -52,6 +52,7 @@ import cager.jexpr.ast.ReturnStatement;
 import cager.jexpr.ast.StatementExpression;
 import cager.jexpr.ast.TypedAST;
 import cager.jexpr.ast.UnaryExpression;
+import cager.jexpr.ast.WriteOut;
 
 /*
  * This class visits the AST to generate the Boogie code.
@@ -531,7 +532,7 @@ public class BoogieVisitor extends NullVisitor {
     	//TODO
     	//need to take care of formal parameters
     	//Visit expression.
-    	disjunctionNumber = 0;
+    	disjunctionNumber = -1;
     	children[1].accept(this);
     }
     
@@ -807,6 +808,7 @@ System.out.println("methodsName:"+methodName_);
   		 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
         		 fractionManipulationsListMethodPre.get(methodName_);
+        writeLinkedList(fractionManipulationsListPre);
          	 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
              	 fractionManipulationsListMethodPost.get(methodName_);
@@ -1904,6 +1906,7 @@ System.out.println("methodsName:"+methodName_);
     		throws ParseException
     {
     	inBinaryExpression = true;
+    	// TODO next!!! disjunctionNumber is wrong!!!
     	if (ast.op.getId() == JExprConstants.SC_OR) {
     		disjunctionNumber++;
     	}
@@ -3797,19 +3800,34 @@ System.out.println("methodsName:"+methodName_);
 		} 
 		return result;
     }
+ 
+ // For use in debugging:
+ // write a method that iterates through a hashmap that has the key string and the 
+ // value a LinkedList of elements. The only requirement is for the elements
+ // in the linked list to have a function "writeOut", or "write"?
+ // Use generics.
+    
+    public static <E extends WriteOut> void writeHashMap(HashMap<String, LinkedList<E>> hashMap) {
+    	for (Entry<String, LinkedList<E>> entry : hashMap.entrySet()) {
+    	    String key = entry.getKey();
+    	    LinkedList<E> value = entry.getValue();
+    	    System.out.println("key: "+ key);
+    	    for (int i=0; i<value.size();i++) {
+    	    	value.get(i).writeOut();
+    	    }
+    }
+    }
+    
+    public static <E extends WriteOut> void writeLinkedList(LinkedList<E> linkedList) {
+    	    for (int i=0; i<linkedList.size();i++) {
+    	    	linkedList.get(i).writeOut();
+    	    }
+    
+    }
+    
+    
     
 }
 
-// For use in debugging:
-// write a method that iterates through a hashmap that has the key string and the 
-// value a LinkedList of elements. The only requirement is for the elements
-// in the linked list to have a function "writeOut", or "write"?
-// Use generics.
-// Example:
-/*
-for (Map.Entry<String, Object> entry : map.entrySet()) {
-    String key = entry.getKey();
-    Object value = entry.getValue();
-    // ...
-}
-*/
+
+
