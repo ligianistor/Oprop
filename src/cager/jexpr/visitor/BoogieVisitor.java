@@ -809,9 +809,11 @@ System.out.println("methodsName:"+methodName_);
         LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
         		 fractionManipulationsListMethodPre.get(methodName_);
         writeLinkedList(fractionManipulationsListPre);
+        System.out.println("------------");
          	 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
              	 fractionManipulationsListMethodPost.get(methodName_);
+        writeLinkedList(fractionManipulationsListPost);
   	 	
      	 // It is simpler for the map above to be populated right now
      	 // as it only requires a pass over the postconditions.
@@ -844,6 +846,8 @@ System.out.println("methodsName:"+methodName_);
     		 // because Java does it automatically if need be.
     		 if ((disjNumber != -1) && (!setDisjunctionNumbersPrecond.contains(disjNumber))) {
     			 setDisjunctionNumbersPrecond.add(disjNumber);
+    			 // TODO next !!!! remember lastDisjunctionNumber
+    			 // so that I can start from it after I reset it to -1.
     			 // The set of object propositions in the precondition
     			 // that are in the same disjunction with the current object proposition.
     			 Set<FractionManipulationStatement> setPrecondDisjunctionFracMan = 
@@ -858,22 +862,43 @@ System.out.println("methodsName:"+methodName_);
     			 }
     			 
     			 // Now construct the set of object propositions from the postcondition
-    			 // that might be equal to the set setDisjunctionFracMan.
+    			 // that might be equal to the set setDisjunctionFracMan above.
     			 // The following part is all about the postconditions.
     			 // I start the process, the same one as above, but for postconditions.
     			 // The set of object propositions in the postcondition
     			 // that are in the same disjunction with fracMan.
     			 Set<FractionManipulationStatement> setPostcondDisjunctionFracMan = 
     					 new TreeSet<FractionManipulationStatement>();
-    			 for (int j=0; j<fractionManipulationsListPost.size(); j++) {
-    				 FractionManipulationStatement fracManAfter = fractionManipulationsListPost.get(j);
-    				 if (fracManAfter.getFractionObject().equals(fracMan.getFractionObject())
+    			  
+    			 int j;
+    			 int postDisjunctionNumber = -1;
+    			 for (j=0; j<fractionManipulationsListPost.size(); j++) {
+    				 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(j);
+    				 if (fracManPost.getFractionObject().equals(fracMan.getFractionObject())
     						&&
-    					(fracManAfter.getPredName().equals(fracMan.getPredName()))
+    					(fracManPost.getPredName().equals(fracMan.getPredName()))
     						&&
-    					(fracManAfter.getIfCondition().equals(fracMan.getIfCondition()))
+    					(fracManPost.getIfCondition().equals(fracMan.getIfCondition()))
     						 ) {
-    					 setPostcondDisjunctionFracMan.add(fracManAfter);
+    					 System.out.println("in first if");
+    					 setPostcondDisjunctionFracMan.add(fracManPost);
+    					 fracManPost.writeOut();
+    					 postDisjunctionNumber = fracManPost.getDisjunctionNumber();
+    					 break;
+    				 } 				
+    			 }
+    			 
+    			 // Add all the fractionManipulations that have the same disjunctionNumber as 
+    			 //fracManAfter above.
+    			 if (postDisjunctionNumber!=-1) {
+    				 System.out.println("not -1");
+    				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
+    					 FractionManipulationStatement fracManPost1 = fractionManipulationsListPost.get(k);
+    					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {
+    						 System.out.println("in second if");
+    						 fracManPost1.writeOut();
+    						 setPostcondDisjunctionFracMan.add(fracManPost1);
+    					 }
     				 }
     			 }
     			 
@@ -889,7 +914,10 @@ System.out.println("methodsName:"+methodName_);
     			 
     			 // For the composite example, we don't go inside this if.
     			 boolean areSetsEqual;
-    			
+    			 System.out.println("the sets");
+    			 writeSet(setPrecondDisjunctionFracMan);
+    			 writeSet(setPostcondDisjunctionFracMan);
+    			 
     			 areSetsEqual = areEqualSetsPacked(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan);
     			     			 
     			 if (!areSetsEqual) {
@@ -1906,10 +1934,15 @@ System.out.println("methodsName:"+methodName_);
     		throws ParseException
     {
     	inBinaryExpression = true;
-    	// TODO next!!! disjunctionNumber is wrong!!!
+
     	if (ast.op.getId() == JExprConstants.SC_OR) {
     		disjunctionNumber++;
+    	} else {
+    		disjunctionNumber = -1;
     	}
+    	// The above only works if the precondition is
+    	// (a||b) && c && (e||d)
+    	// so if there are only 2 elements in a disjunction.
     	if (ast.op.getId() == JExprConstants.KEYACCESS) {
     		PrimaryExpression e1 = (PrimaryExpression)ast.E1;
     		PrimaryExpression e2 = (PrimaryExpression)ast.E2;
@@ -3816,15 +3849,26 @@ System.out.println("methodsName:"+methodName_);
     	    	value.get(i).writeOut();
     	    }
     }
+    	System.out.println("-----------------");
     }
     
     public static <E extends WriteOut> void writeLinkedList(LinkedList<E> linkedList) {
     	    for (int i=0; i<linkedList.size();i++) {
     	    	linkedList.get(i).writeOut();
     	    }
+    	    System.out.println("-----------------");
     
     }
     
+    public static <E extends WriteOut> void writeSet(Set<E> set) {
+    	  Iterator<E> iterator = set.iterator();
+    	    while(iterator.hasNext()) {
+    	        E setElement = iterator.next();
+    	        setElement.writeOut();
+    	    }
+    	    System.out.println("-----------------");
+    }
+  
     
     
 }
