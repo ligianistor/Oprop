@@ -966,6 +966,7 @@ System.out.println("methodsName:"+methodName_);
     			 // because Boogie does not know which one will hold.	 
     		 }	 
     	 } else if (disjNumber == -1) {
+    		 System.out.println("sets were equal");
     		 // This is a FractionManipulationStatement that is not part of a disjunction.
     		 // If there is an ifCondition or not does not influence what I do.
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
@@ -978,16 +979,16 @@ System.out.println("methodsName:"+methodName_);
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
         			if (
         				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
-        				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
-        				 (fracMan.getIsPacked()!=fracMan.getIsPacked())
+        				 fracMan.getFractionObject().equals(fracManPost.getFractionObject()) &&
+        				 (fracMan.getIsPacked()!=fracManPost.getIsPacked())
         				 //TODO should I compare ifConditions?
         		 ) {
         				 System.out.println("disjNumber==-1 "+fracMan.getPredName()+
 								 " "+fracMan.getFractionObject());
         			 addToPackedModifiedObjects(
         					 packedModifiedObjects,
-        					 fracMan.getPredName(),
-        					 fracMan.getFractionObject()
+        					 fracManPost.getPredName(),
+        					 fracManPost.getFractionObject()
         			);
         			 // packedModifiedObjects passed by value and thus I don't need to do anything else
         		 }
@@ -999,6 +1000,9 @@ System.out.println("methodsName:"+methodName_);
     }
     
     // forPacked is false here
+    // I need to compute fractionsModifiedObjects separately from packedModifiedObjects
+    // in this method because it can happen that the same object proposition is packed in
+    // the pre- and postcondition but the fraction amount has changed.
     void constructStructuresForInferEnsuresForallFractions(
     		String methodName_, 
     		HashMap<String, Set<String>> fractionsModifiedObjects
@@ -1039,17 +1043,35 @@ System.out.println("methodsName:"+methodName_);
     			 // I start the process, the same one as above, but for postconditions.
     			 // The set of object propositions in the postcondition
     			 // that are in the same disjunction with fracMan.
+    			 int postDisjunctionNumber = -1;
+    			 int j;
     			 Set<FractionManipulationStatement> setPostcondDisjunctionFracMan = 
     					 new TreeSet<FractionManipulationStatement>();
-    			 for (int j=0; j<fractionManipulationsListPost.size(); j++) {
-    				 FractionManipulationStatement fracManAfter = fractionManipulationsListPost.get(j);
-    				 if (fracManAfter.getFractionObject().equals(fracMan.getFractionObject())
+    			 for (j=0; j<fractionManipulationsListPost.size(); j++) {
+    				 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(j);
+    				 if (fracManPost.getFractionObject().equals(fracMan.getFractionObject())
     						&&
-    					(fracManAfter.getPredName().equals(fracMan.getPredName()))
+    					(fracManPost.getPredName().equals(fracMan.getPredName()))
     						&&
-    					(fracManAfter.getIfCondition().equals(fracMan.getIfCondition()))
+    					(fracManPost.getIfCondition().equals(fracMan.getIfCondition()))
     						 ) {
-    					 setPostcondDisjunctionFracMan.add(fracManAfter);
+    					 setPostcondDisjunctionFracMan.add(fracManPost); 					 
+    					 postDisjunctionNumber = fracManPost.getDisjunctionNumber();
+    					 break;
+    				 } 				
+    			 }
+    			 
+    			 // Add all the fractionManipulations that have the same disjunctionNumber as 
+    			 //fracManAfter above.
+    			 if (postDisjunctionNumber!=-1) {
+    				 System.out.println("not -1");
+    				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
+    					 FractionManipulationStatement fracManPost1 = fractionManipulationsListPost.get(k);
+    					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {
+    						 System.out.println("in second if");
+    						 fracManPost1.writeOut();
+    						 setPostcondDisjunctionFracMan.add(fracManPost1);
+    					 }
     				 }
     			 }
     			 
@@ -1126,14 +1148,17 @@ System.out.println("methodsName:"+methodName_);
         			// this is same as the body of the if above, but for fractions
         			if (
            				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
-           				 fracMan.getFractionObject().equals(fracMan.getFractionObject()) &&
-           				 (!fracMan.getFraction().equals(fracMan.getFraction()))
+           				 fracMan.getFractionObject().equals(fracManPost.getFractionObject()) &&
+           				 (!fracMan.getFraction().equals(fracManPost.getFraction()))
+           				 // TODO need to see how to deal with constants k
+           				 // they are the same but might have different names in the pre- and
+           				 // postconditions.
            				 //TODO should I compare ifConditions?
            		 ) {
            			 addToFractionsModifiedObjects(
            					 fractionsModifiedObjects,
-           					 fracMan.getPredName(),
-           					 fracMan.getFractionObject()
+           					 fracManPost.getPredName(),
+           					 fracManPost.getFractionObject()
            			);
            			 //packedModifiedObjects passed by value and thus I don't need to do anything else
            		 }
