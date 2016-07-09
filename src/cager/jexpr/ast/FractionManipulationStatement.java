@@ -148,7 +148,8 @@ public boolean equalsForFractions(Object obj) {
 	
 	public void writeOut() {
 		System.out.println("FractionManipulationStatement: " + ifCondition +" "+ 
-				predName + " "+ fractionObject + " " + disjunctionNumber + " " + isPacked + "\n");
+				predName + " "+ fractionObject + " " + fractionValue + " " +
+				+ disjunctionNumber + " " + isPacked + "\n");
 	}
 
 	@Override

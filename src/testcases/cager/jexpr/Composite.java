@@ -137,11 +137,6 @@ requires unpacked(this#k1 parent()) &&
    (this#0.5 right(or, rc))
 ensures (this#k2 parent()) && ( (opp != null) ~=> (opp#k3 parent()) ) 
 {
-// Existential variables for unpack(opp#0.5 count(opp.count))
-Composite oll;
-Composite orr;
-int llc;
-int rrc;
 
 //We already have access to this.parent from the precondition of 
 //this function.
@@ -149,14 +144,14 @@ if (this.parent != null) {
 	splitFrac(opp#k parent(), 2);
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
 	//We get opp#1/2 count(lccc) from unpacking opp in parent()
-	unpack(opp#0.5 count(opp.count))[oll, orr, opp.left.count, opp.right.count];
+	unpack(opp#0.5 count(opp.count))[opp.left, opp.right, opp.left.count, opp.right.count];
 
 	if (this == this.parent.right) {
 
 		//The rule in the formal system should be that
 		//if we have two object propositions with different parameters
 		//that are both packed, then the parameters should be the same.
-		addFrac(opp#0.5 right(this, lcc), opp#0.5 right(orr, rrc));
+		addFrac(opp#0.5 right(this, lcc), opp#0.5 right(opp.right, opp.right.count));
 		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 right(this, lcc))[opp.parent];
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
@@ -169,7 +164,7 @@ if (this.parent != null) {
 		
 	} else {
 
-		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(oll, llc));
+		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(opp.left, opp.left.count));
 		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 left(this, lcc))[opp.parent];
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));

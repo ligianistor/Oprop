@@ -942,8 +942,9 @@ System.out.println("methodsName:"+methodName_);
     									 methodName_, 
     									 new FieldAndTypePair(elementPrecond.getPredName(), elementPrecond.getFractionObject())
     							 );
+    							 
     							 predicateIsMentioned.put(elementPrecond.getPredName(), false);
-    						 } else {
+    						 } else {			 
     							 System.out.println("setsNotEqual "+elementPrecond.getPredName()+
     									 " "+elementPrecond.getFractionObject());
     							 addToPackedModifiedObjects(
@@ -951,7 +952,8 @@ System.out.println("methodsName:"+methodName_);
     									 elementPrecond.getPredName(), 
     									 elementPrecond.getFractionObject()
     							 );							 
-    						 }	 
+    						 }
+    						 
     					 }
 
     			 // This is for the object propositions that are not part of a disjunction.
@@ -966,15 +968,19 @@ System.out.println("methodsName:"+methodName_);
     			 // because Boogie does not know which one will hold.	 
     		 }	 
     	 } else if (disjNumber == -1) {
-    		 System.out.println("sets were equal");
+    		 System.out.println("sets were equal for packed");
     		 // This is a FractionManipulationStatement that is not part of a disjunction.
     		 // If there is an ifCondition or not does not influence what I do.
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
     		 // and if there is one that has the same object and predicate, and the "isPacked"
     		 // changed, I add that object to packedModifiedObjects.
-    		 
-    		 // TODO I also need to change isModified in this branch.
-    		 
+    		 if (!doesFractionManipulationExist(fractionManipulationsListPost, fracMan)) {	
+    			 	modifyPredObjNotMentionedPostcond(
+						 methodName_, 
+						 new FieldAndTypePair(fracMan.getPredName(), fracMan.getFractionObject())
+    				);
+				 	predicateIsMentioned.put(fracMan.getPredName(), false);
+			 }    		 
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
         			if (
@@ -1085,13 +1091,14 @@ System.out.println("methodsName:"+methodName_);
     			 // object propositions in the postcondition and see if there is 
     			 // one that is like this one from the precondition.
     			 
-    			 // For the composite example, we don't go inside this if.
+    			 // For the composite example, we don't go inside the if branch below.
     			 boolean areSetsEqual;
     			
     			 areSetsEqual = areEqualSetsFractions(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan); 
     			 
     			 
     			 if (!areSetsEqual) {
+    				 System.out.println("sets were not equal for fractions");
     				 // Any of the objects in this disjunction of the precondition
     				 // that is not equal to one in the postcondition
     				 // means that they could change and cannot be included in the
@@ -1135,6 +1142,7 @@ System.out.println("methodsName:"+methodName_);
     			 // because Boogie does not know which one will hold.	 
     		 }	 
     	 } else if (disjNumber == -1) {
+    		 System.out.println("sets were equal for fractions");
     		 // This is a FractionManipulationStatement that is not part of a disjunction.
     		 // If there is an ifCondition or not does not influence what I do.
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
@@ -1155,12 +1163,14 @@ System.out.println("methodsName:"+methodName_);
            				 // postconditions.
            				 //TODO should I compare ifConditions?
            		 ) {
+        			System.out.println("before addToFractions:" + fracManPost.getPredName() +
+        					" "+fracManPost.getFractionObject());
            			 addToFractionsModifiedObjects(
            					 fractionsModifiedObjects,
            					 fracManPost.getPredName(),
            					 fracManPost.getFractionObject()
            			);
-           			 //packedModifiedObjects passed by value and thus I don't need to do anything else
+           			 //fractionsModifiedObjects passed by value and thus I don't need to do anything else
            		 }
         		
         	 }
@@ -1219,20 +1229,26 @@ System.out.println("methodsName:"+methodName_);
         			}
         		} else {
         			// This is the generation of the "ensures forall" string for fractions.
-        			if (unpackedInPostcondition.contains(currentNamePred)) {
+    				
+    				LinkedList<FieldAndTypePair> methodsCalledInThisMethod =
+    						methodsInMethod.get(methodName_);
+    				
+        			if (methodsCalledInThisMethod == null) {
         				// We need to add
         				// "ensures (forall y:Ref :: ( (this!=y)  ==> 
         				// (packedPred[y] == old(packedPred[y])) ) );"
         				// to result.
-        				Set<String> currentModifiedObjects = packedModifiedObjects.get(currentNamePred);
+        				Set<String> currentModifiedObjects = fractionsModifiedObjects.get(currentNamePred);
         				if (currentModifiedObjects!=null) {
         					pairOfStrings.concatFractions("\t ensures (forall ");
         					pairOfStrings.concatFractions(forallParameter);
         					pairOfStrings.concatFractions(":Ref :: (");
         				
-        					String[] currentModifiedObjectsArray = currentModifiedObjects.toArray(new String[0]);
-        					for (int z=0; z <currentModifiedObjectsArray.length-1; z++ ) {
-        						pairOfStrings.concatFractions("("+currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
+        					String[] currentModifiedObjectsArray = 
+        							currentModifiedObjects.toArray(new String[0]);
+        					for (int z=0; z < currentModifiedObjectsArray.length-1; z++ ) {
+        						pairOfStrings.concatFractions("("+
+        								currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
         					}
         					pairOfStrings.concatFractions("("+
         						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
@@ -1241,24 +1257,17 @@ System.out.println("methodsName:"+methodName_);
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
         				}
         			} else {
-        				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
-        				// to result.
         				// TODO need to refine the below a bit, maybe check a few more things
-        				
-        				LinkedList<FieldAndTypePair> methodsCalledInThisMethod =
-        						methodsInMethod.get(methodName_);
-        				
-        				if (methodsCalledInThisMethod.isEmpty()) { 
-        						pairOfStrings.concatFractions("\t ensures (forall "+ forallParameter +":Ref :: frac"+
-        							upperCaseFirstLetter(currentNamePred)+"["+ forallParameter +"]);\n");					
-        				} else {
-        					// The resulting string should be similar to:
-        					// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));
-        					// but using forallParameter instead of y.
-    						pairOfStrings.concatFractions("\t ensures (forall "+forallParameter+":Ref :: (old(frac"+
-        							upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]) > 0.0) ==> (frac" +
-        							upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"] > 0.0 ));\n");	
-        				}
+
+        				// TODO I need to check for which objects the fractions were > 0.0
+        				// in the precondition
+        				// but >= 0.0 in the postcondition.
+        				// The resulting string should be similar to:
+        				// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));
+        				// but using forallParameter instead of y.
+    					pairOfStrings.concatFractions("\t ensures (forall "+forallParameter+":Ref :: (old(frac"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]) > 0.0) ==> (frac" +
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"] > 0.0 ));\n");	
         			}
         			
         		}
