@@ -158,7 +158,7 @@ if (this.parent != null) {
 		
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
 		pack(this#k2 parent())[opp, lc + rc + 1];
-		pack(opp#1.0 right(this, lcc))[opp.parent];
+		pack(opp#1.0 right(this, lc + rc + 1))[opp.parent];
 			
 		this.parent.updateCountRec()[opp.parent, opp.count, opp.left, this, opp.left.count, lc + rc + 1];	
 		
@@ -171,7 +171,7 @@ if (this.parent != null) {
 		
 		this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
 		pack(this#k2 parent())[opp, lc + rc + 1];
-		pack(opp#1.0 left(this, lcc))[opp.parent];
+		pack(opp#1.0 left(this, lc + rc + 1))[opp.parent];
 			
 		this.parent.updateCountRec()[opp.parent, opp.count, this, opp.right, opp.left.count, lc + rc + 1];
 	}		

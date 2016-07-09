@@ -803,17 +803,13 @@ public class BoogieVisitor extends NullVisitor {
     		HashMap<String, Boolean> predicateIsMentioned,
     		Set<String> unpackedInPostcondition   		
     ) {
-System.out.println("methodsName:"+methodName_);
   		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
   		 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
         		 fractionManipulationsListMethodPre.get(methodName_);
-        writeLinkedList(fractionManipulationsListPre);
-        System.out.println("------------");
          	 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
              	 fractionManipulationsListMethodPost.get(methodName_);
-        writeLinkedList(fractionManipulationsListPost);
   	 	
      	 // It is simpler for the map above to be populated right now
      	 // as it only requires a pass over the postconditions.
@@ -880,7 +876,7 @@ System.out.println("methodsName:"+methodName_);
     						&&
     					(fracManPost.getIfCondition().equals(fracMan.getIfCondition()))
     						 ) {
-    					 System.out.println("in first if");
+    					 
     					 setPostcondDisjunctionFracMan.add(fracManPost);
     					 fracManPost.writeOut();
     					 postDisjunctionNumber = fracManPost.getDisjunctionNumber();
@@ -890,12 +886,10 @@ System.out.println("methodsName:"+methodName_);
     			 
     			 // Add all the fractionManipulations that have the same disjunctionNumber as 
     			 //fracManAfter above.
-    			 if (postDisjunctionNumber!=-1) {
-    				 System.out.println("not -1");
+    			 if (postDisjunctionNumber!=-1) {				 
     				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
     					 FractionManipulationStatement fracManPost1 = fractionManipulationsListPost.get(k);
-    					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {
-    						 System.out.println("in second if");
+    					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {					 
     						 fracManPost1.writeOut();
     						 setPostcondDisjunctionFracMan.add(fracManPost1);
     					 }
@@ -914,10 +908,7 @@ System.out.println("methodsName:"+methodName_);
     			 
     			 // For the composite example, we don't go inside this if.
     			 boolean areSetsEqual;
-    			 System.out.println("the sets");
-    			 writeSet(setPrecondDisjunctionFracMan);
-    			 writeSet(setPostcondDisjunctionFracMan);
-    			 
+   			 
     			 areSetsEqual = areEqualSetsPacked(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan);
     			     			 
     			 if (!areSetsEqual) {
@@ -945,8 +936,6 @@ System.out.println("methodsName:"+methodName_);
     							 
     							 predicateIsMentioned.put(elementPrecond.getPredName(), false);
     						 } else {			 
-    							 System.out.println("setsNotEqual "+elementPrecond.getPredName()+
-    									 " "+elementPrecond.getFractionObject());
     							 addToPackedModifiedObjects(
     									 packedModifiedObjects,
     									 elementPrecond.getPredName(), 
@@ -968,7 +957,6 @@ System.out.println("methodsName:"+methodName_);
     			 // because Boogie does not know which one will hold.	 
     		 }	 
     	 } else if (disjNumber == -1) {
-    		 System.out.println("sets were equal for packed");
     		 // This is a FractionManipulationStatement that is not part of a disjunction.
     		 // If there is an ifCondition or not does not influence what I do.
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
@@ -989,8 +977,6 @@ System.out.println("methodsName:"+methodName_);
         				 (fracMan.getIsPacked()!=fracManPost.getIsPacked())
         				 //TODO should I compare ifConditions?
         		 ) {
-        				 System.out.println("disjNumber==-1 "+fracMan.getPredName()+
-								 " "+fracMan.getFractionObject());
         			 addToPackedModifiedObjects(
         					 packedModifiedObjects,
         					 fracManPost.getPredName(),
@@ -1070,11 +1056,9 @@ System.out.println("methodsName:"+methodName_);
     			 // Add all the fractionManipulations that have the same disjunctionNumber as 
     			 //fracManAfter above.
     			 if (postDisjunctionNumber!=-1) {
-    				 System.out.println("not -1");
     				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
     					 FractionManipulationStatement fracManPost1 = fractionManipulationsListPost.get(k);
     					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {
-    						 System.out.println("in second if");
     						 fracManPost1.writeOut();
     						 setPostcondDisjunctionFracMan.add(fracManPost1);
     					 }
@@ -1098,7 +1082,6 @@ System.out.println("methodsName:"+methodName_);
     			 
     			 
     			 if (!areSetsEqual) {
-    				 System.out.println("sets were not equal for fractions");
     				 // Any of the objects in this disjunction of the precondition
     				 // that is not equal to one in the postcondition
     				 // means that they could change and cannot be included in the
@@ -1142,7 +1125,6 @@ System.out.println("methodsName:"+methodName_);
     			 // because Boogie does not know which one will hold.	 
     		 }	 
     	 } else if (disjNumber == -1) {
-    		 System.out.println("sets were equal for fractions");
     		 // This is a FractionManipulationStatement that is not part of a disjunction.
     		 // If there is an ifCondition or not does not influence what I do.
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
@@ -1163,8 +1145,6 @@ System.out.println("methodsName:"+methodName_);
            				 // postconditions.
            				 //TODO should I compare ifConditions?
            		 ) {
-        			System.out.println("before addToFractions:" + fracManPost.getPredName() +
-        					" "+fracManPost.getFractionObject());
            			 addToFractionsModifiedObjects(
            					 fractionsModifiedObjects,
            					 fracManPost.getPredName(),
@@ -1262,9 +1242,9 @@ System.out.println("methodsName:"+methodName_);
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
         				}  else {
-        					pairOfStrings.concatPacked("\t ensures (forall ");
-        					pairOfStrings.concatPacked(forallParameter);
-        					pairOfStrings.concatPacked(":Ref :: (frac"+
+        					pairOfStrings.concatFractions("\t ensures (forall ");
+        					pairOfStrings.concatFractions(forallParameter);
+        					pairOfStrings.concatFractions(":Ref :: (frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])));\n");      					
         				}

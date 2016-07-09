@@ -77,6 +77,9 @@ procedure updateCount(c:int, ol:Ref, or:Ref, op:Ref, c1:int, c2:int, c3:int, thi
 	 requires (forall x:Ref :: ((x!=op) ==>  packedLeft[x]));
 	 requires (forall x:Ref :: ((x!=op) ==>  packedRight[x]));
 	 ensures (forall x:Ref :: ((this!=x)) ==> packedCount[x]==old(packedCount[x]));
+	 ensures (forall x:Ref :: (packedLeft[x]==old(packedLeft[x])));
+	 ensures (forall x:Ref :: (packedRight[x]==old(packedRight[x])));
+	 ensures (forall x:Ref :: (fracCount[x]==old(fracCount[x])));
 	 ensures (forall x:Ref :: ((this!=x)) ==> fracLeft[x]==old(fracLeft[x]));
 	 ensures (forall x:Ref :: ((this!=x)) ==> fracRight[x]==old(fracRight[x]));
 
@@ -214,7 +217,7 @@ if (opp==null) {
  fracCount[this] := fracCount[this] - 0.5;
 }
 packedParent[this] := true;
-call PackRight(this, lcc, parent[opp], opp);
+call PackRight(this, lc+rc+1, parent[opp], opp);
 if (this!=null) {
  fracCount[this] := fracCount[this] - 0.5;
 }
@@ -250,7 +253,7 @@ if (opp==null) {
  fracCount[this] := fracCount[this] - 0.5;
 }
 packedParent[this] := true;
-call PackLeft(this, lcc, parent[opp], opp);
+call PackLeft(this, lc+rc+1, parent[opp], opp);
 if (this!=null) {
  fracCount[this] := fracCount[this] - 0.5;
 }
