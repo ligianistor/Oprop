@@ -1219,6 +1219,12 @@ System.out.println("methodsName:"+methodName_);
         						"!="+forallParameter + ")) ==> packed"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(packed"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
+        				} else {
+        					pairOfStrings.concatPacked("\t ensures (forall ");
+        					pairOfStrings.concatPacked(forallParameter);
+        					pairOfStrings.concatPacked(":Ref :: (packed"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(packed"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])));\n");      					
         				}
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
@@ -1255,6 +1261,12 @@ System.out.println("methodsName:"+methodName_);
         						"!="+forallParameter + ")) ==> frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
+        				}  else {
+        					pairOfStrings.concatPacked("\t ensures (forall ");
+        					pairOfStrings.concatPacked(forallParameter);
+        					pairOfStrings.concatPacked(":Ref :: (frac"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
+        						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])));\n");      					
         				}
         			} else {
         				// TODO need to refine the below a bit, maybe check a few more things
