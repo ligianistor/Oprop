@@ -140,6 +140,7 @@ public class BoogieVisitor extends NullVisitor {
 		
 	//The name of the last identifier or keyword expression (for "this").
 	//It is used in visitFieldSelection.
+	//It also can be of the form fieldName[object].
 	String lastIdentifierOrKeyword = "";	
 		
 	String lastPrimaryExpressionType = "";
@@ -878,7 +879,6 @@ public class BoogieVisitor extends NullVisitor {
     						 ) {
     					 
     					 setPostcondDisjunctionFracMan.add(fracManPost);
-    					 fracManPost.writeOut();
     					 postDisjunctionNumber = fracManPost.getDisjunctionNumber();
     					 break;
     				 } 				
@@ -890,7 +890,6 @@ public class BoogieVisitor extends NullVisitor {
     				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
     					 FractionManipulationStatement fracManPost1 = fractionManipulationsListPost.get(k);
     					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {					 
-    						 fracManPost1.writeOut();
     						 setPostcondDisjunctionFracMan.add(fracManPost1);
     					 }
     				 }
@@ -1059,7 +1058,6 @@ public class BoogieVisitor extends NullVisitor {
     				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
     					 FractionManipulationStatement fracManPost1 = fractionManipulationsListPost.get(k);
     					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {
-    						 fracManPost1.writeOut();
     						 setPostcondDisjunctionFracMan.add(fracManPost1);
     					 }
     				 }
@@ -1835,8 +1833,8 @@ public class BoogieVisitor extends NullVisitor {
     public void helperFieldSelection(String identifierName) {
     	try {
     	// TODO add additional checks for lastIdentifierOrKeyword
-    	
     	String fieldName = identifierName +"["+ lastIdentifierOrKeyword +"]";
+    	lastIdentifierOrKeyword = fieldName;
 
     	if (identifierName.contains("[")) fieldName = fieldName.concat("]");
     	fieldsInStatement.add(identifierName);
@@ -1910,8 +1908,6 @@ public class BoogieVisitor extends NullVisitor {
     public void visitMethodSelection(MethodSelection ast) 
     		throws ParseException
     {
-    	//TODO might need to make lastIdentifierOrKeyword
-    	// retain last field[this] also.
     	String identifierBeforeMethSel = lastIdentifierOrKeyword;
     	visitedMethSel = true;
     	// It might be that some object propositions in the "requires" of the call procedure
@@ -3082,13 +3078,16 @@ public class BoogieVisitor extends NullVisitor {
     		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 // This is the list of actual arguments for the current method 
     		 actualParams = actualArgumentsMethod;
+    		 for (int kk=0; kk<actualArgumentsMethod.size(); kk++) {
+    			 System.out.println(namePredOrMethod +" " + actualArgumentsMethod.get(kk));
+    		 }
     		 
     		 Set<FieldAndTypePair> predObjs = 
     	    			predObjNotMentionedPostcond.get(namePredOrMethod);
     	     if (predObjs != null) {
     	    	 for (FieldAndTypePair p : predObjs) {
+        	    	System.out.println(p.getType());
     	    		result = result.concat("\t frac"+upperCaseFirstLetter(p.getName())+"["+
-    	    	 
         			replaceFormalArgsWithActual(
         					 formalParams,
         					 actualParams,
@@ -3863,8 +3862,8 @@ public class BoogieVisitor extends NullVisitor {
  // For use in debugging:
  // write a method that iterates through a hashmap that has the key string and the 
  // value a LinkedList of elements. The only requirement is for the elements
- // in the linked list to have a function "writeOut", or "write"?
- // Use generics.
+ // in the linked list to have a function "writeOut".
+ // Using generics.
     
     public static <E extends WriteOut> void writeHashMap(HashMap<String, LinkedList<E>> hashMap) {
     	for (Entry<String, LinkedList<E>> entry : hashMap.entrySet()) {
@@ -3882,8 +3881,7 @@ public class BoogieVisitor extends NullVisitor {
     	    for (int i=0; i<linkedList.size();i++) {
     	    	linkedList.get(i).writeOut();
     	    }
-    	    System.out.println("-----------------");
-    
+    	    System.out.println("-----------------");    
     }
     
     public static <E extends WriteOut> void writeSet(Set<E> set) {
