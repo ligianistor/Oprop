@@ -22,39 +22,39 @@ procedure ConstructComposite(count1 :int, left1 : Ref, right1 : Ref, parent1 : R
  
 procedure PackCount(c:int, ol: Ref, or: Ref, lc:int, rc:int, this:Ref);
 	 requires (packedCount[this]==false) &&
-	 	((((c==((lc+rc)+1)))&&(fracLeft[this] >= 0.5 && (left[this]==ol) && (count[left[this]]==lc)))&&(fracRight[this] >= 0.5 && (right[this]==or) && (count[right[this]]==rc))) && (count[this]==c); 
+	 	((((c==((lc+rc)+1)))&&((fracLeft[this] >= 0.5) && (left[this]==ol) && (count[left[this]]==lc)))&&((fracRight[this] >= 0.5) && (right[this]==or) && (count[right[this]]==rc))) && (count[this]==c); 
  
 procedure UnpackCount(c:int, ol: Ref, or: Ref, lc:int, rc:int, this:Ref);
 	 requires packedCount[this] &&
 	 	 (fracCount[this] > 0.0);
-	 ensures ((((c==((lc+rc)+1)))&&(fracLeft[this] >= 0.5 && (left[this]==ol) && (count[left[this]]==lc)))&&(fracRight[this] >= 0.5 && (right[this]==or) && (count[right[this]]==rc))) && (count[this]==c);
+	 ensures ((((c==((lc+rc)+1)))&&((fracLeft[this] >= 0.5) && (left[this]==ol) && (count[left[this]]==lc)))&&((fracRight[this] >= 0.5) && (right[this]==or) && (count[right[this]]==rc))) && (count[this]==c);
 
 procedure PackParent(op: Ref, c:int, this:Ref);
 	 requires (packedParent[this]==false) &&
-	 	(((((((op!=this))&&(fracCount[this] >= 0.5 && (count[this]==c)))&&((op!=null)==>(fracParent[parent[this]] > 0.0)))&&(((op!=null)&&(left[op]==this))==>(fracLeft[parent[this]] >= 0.5 && (left[parent[this]]==this) && (count[left[parent[this]]]==c))))&&(((op!=null)&&(right[op]==this))==>(fracRight[parent[this]] >= 0.5 && (right[parent[this]]==this) && (count[right[parent[this]]]==c))))&&((op==null)==>(fracCount[this] >= 0.5 && (count[this]==c)))) && (parent[this]==op); 
+	 	(((((((op!=this))&&((fracCount[this] >= 0.5) && (count[this]==c)))&&((op!=null)==>(fracParent[parent[this]] > 0.0)))&&(((op!=null)&&(left[op]==this))==>((fracLeft[parent[this]] >= 0.5) && (left[parent[this]]==this) && (count[left[parent[this]]]==c))))&&(((op!=null)&&(right[op]==this))==>((fracRight[parent[this]] >= 0.5) && (right[parent[this]]==this) && (count[right[parent[this]]]==c))))&&((op==null)==>((fracCount[this] >= 0.5) && (count[this]==c)))) && (parent[this]==op); 
  
 procedure UnpackParent(op: Ref, c:int, this:Ref);
 	 requires packedParent[this] &&
 	 	 (fracParent[this] > 0.0);
-	 ensures (((((((op!=this))&&(fracCount[this] >= 0.5 && (count[this]==c)))&&((op!=null)==>(fracParent[parent[this]] > 0.0)))&&(((op!=null)&&(left[op]==this))==>(fracLeft[parent[this]] >= 0.5 && (left[parent[this]]==this) && (count[left[parent[this]]]==c))))&&(((op!=null)&&(right[op]==this))==>(fracRight[parent[this]] >= 0.5 && (right[parent[this]]==this) && (count[right[parent[this]]]==c))))&&((op==null)==>(fracCount[this] >= 0.5 && (count[this]==c)))) && (parent[this]==op);
+	 ensures (((((((op!=this))&&((fracCount[this] >= 0.5) && (count[this]==c)))&&((op!=null)==>(fracParent[parent[this]] > 0.0)))&&(((op!=null)&&(left[op]==this))==>((fracLeft[parent[this]] >= 0.5) && (left[parent[this]]==this) && (count[left[parent[this]]]==c))))&&(((op!=null)&&(right[op]==this))==>((fracRight[parent[this]] >= 0.5) && (right[parent[this]]==this) && (count[right[parent[this]]]==c))))&&((op==null)==>((fracCount[this] >= 0.5) && (count[this]==c)))) && (parent[this]==op);
 
 procedure PackLeft(ol: Ref, lc:int, op: Ref, this:Ref);
 	 requires (packedLeft[this]==false) &&
-	 	((((ol==null)==>(lc==0)))&&((ol!=null)==>(((fracCount[left[this]] >= 0.5 && (count[left[this]]==lc))&&(ol!=this))&&(ol!=op)))) && (left[this]==ol) && (parent[this]==op); 
+	 	((((ol==null)==>(lc==0)))&&((ol!=null)==>((((fracCount[left[this]] >= 0.5) && (count[left[this]]==lc))&&(ol!=this))&&(ol!=op)))) && (left[this]==ol) && (parent[this]==op); 
  
 procedure UnpackLeft(ol: Ref, lc:int, op: Ref, this:Ref);
 	 requires packedLeft[this] &&
 	 	 (fracLeft[this] > 0.0);
-	 ensures ((((ol==null)==>(lc==0)))&&((ol!=null)==>(((fracCount[left[this]] >= 0.5 && (count[left[this]]==lc))&&(ol!=this))&&(ol!=op)))) && (left[this]==ol) && (parent[this]==op);
+	 ensures ((((ol==null)==>(lc==0)))&&((ol!=null)==>((((fracCount[left[this]] >= 0.5) && (count[left[this]]==lc))&&(ol!=this))&&(ol!=op)))) && (left[this]==ol) && (parent[this]==op);
 
 procedure PackRight(or: Ref, rc:int, op: Ref, this:Ref);
 	 requires (packedRight[this]==false) &&
-	 	((((or==null)==>(rc==0)))&&((or!=null)==>(((fracCount[right[this]] >= 0.5 && (count[right[this]]==rc))&&(or!=this))&&(or!=op)))) && (right[this]==or) && (parent[this]==op); 
+	 	((((or==null)==>(rc==0)))&&((or!=null)==>((((fracCount[right[this]] >= 0.5) && (count[right[this]]==rc))&&(or!=this))&&(or!=op)))) && (right[this]==or) && (parent[this]==op); 
  
 procedure UnpackRight(or: Ref, rc:int, op: Ref, this:Ref);
 	 requires packedRight[this] &&
 	 	 (fracRight[this] > 0.0);
-	 ensures ((((or==null)==>(rc==0)))&&((or!=null)==>(((fracCount[right[this]] >= 0.5 && (count[right[this]]==rc))&&(or!=this))&&(or!=op)))) && (right[this]==or) && (parent[this]==op);
+	 ensures ((((or==null)==>(rc==0)))&&((or!=null)==>((((fracCount[right[this]] >= 0.5) && (count[right[this]]==rc))&&(or!=this))&&(or!=op)))) && (right[this]==or) && (parent[this]==op);
 
 
 procedure updateCount(c:int, ol:Ref, or:Ref, op:Ref, c1:int, c2:int, c3:int, this:Ref)

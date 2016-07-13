@@ -2281,7 +2281,6 @@ public class BoogieVisitor extends NullVisitor {
     	
         //TODO could make == 1.0 instead of (fracCount[this] >= 1.0)
         //as a special case. It's not in this method.
-        // XXXX TODO this next
     	FracString fracString = new FracString();
     	TypedAST object  = ast.getObject();
     	objectPropString = "";
@@ -2361,8 +2360,8 @@ public class BoogieVisitor extends NullVisitor {
         				upperCaseFirstLetter(predName)+"[");
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(objectString+ "] >= " 
         				+ fracInObjProp+")");
-        		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
-        		bodyPredicate = bodyPredicate.concat(objectString+ "] >= " + fracInObjProp + ")");
+        		bodyPredicate = "((frac"+upperCaseFirstLetter(predName)+"[";
+        		bodyPredicate = bodyPredicate.concat(objectString+ "] >= " + fracInObjProp + "))");
         	} else {
         		bodyMethodOrPredicate = "((packed"+upperCaseFirstLetter(predName)+"[";
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName +
@@ -2370,9 +2369,9 @@ public class BoogieVisitor extends NullVisitor {
         		bodyMethodOrPredicate = bodyMethodOrPredicate.concat(fieldName + 
         				"[this]] >= " + fracInObjProp+")");
 
-        		bodyPredicate = "(frac"+upperCaseFirstLetter(predName)+"[";
+        		bodyPredicate = "((frac"+upperCaseFirstLetter(predName)+"[";
         		bodyPredicate = bodyPredicate.concat(fieldName + 
-        				"[this]] >= " + fracInObjProp + ")");
+        				"[this]] >= " + fracInObjProp + "))");
         		fracString.setField(fieldName);
         		objProp.setObject(fieldName+"[this]");	
         	} 
