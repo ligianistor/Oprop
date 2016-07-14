@@ -21,8 +21,15 @@ procedure ConstructComposite(count1 :int, left1 : Ref, right1 : Ref, parent1 : R
  	 	 (parent[this] == parent1); 
  
 procedure PackCount(c:int, ol: Ref, or: Ref, lc:int, rc:int, this:Ref);
-	 requires (packedCount[this]==false) &&
-	 	((((c==((lc+rc)+1)))&&((fracLeft[this] >= 0.5) && (left[this]==ol) && (count[left[this]]==lc)))&&((fracRight[this] >= 0.5) && (right[this]==or) && (count[right[this]]==rc))) && (count[this]==c); 
+	 requires (packedCount[this]==false);
+	requires (c==((lc+rc)+1));
+	requires (fracLeft[this] >= 0.5);
+	requires (left[this]==ol);
+	requires (count[left[this]]==lc);
+requires (fracRight[this] >= 0.5);
+requires (right[this]==or);
+requires (count[right[this]]==rc);
+requires (count[this]==c);
  
 procedure UnpackCount(c:int, ol: Ref, or: Ref, lc:int, rc:int, this:Ref);
 	 requires packedCount[this] &&
@@ -148,15 +155,21 @@ packedCount[this] := true;
  
 procedure updateCountRec(opp:Ref, lcc:int, ol:Ref, or:Ref, lc:int, rc:int, this:Ref)
 	 modifies count,fracCount,fracLeft,fracParent,fracRight,packedCount,packedLeft,packedParent,packedRight;
-	 requires (this != null) && (((((((((((packedParent[this]  == false) && 
+	 requires (this != null);
+requires  ((((((((packedParent[this]  == false) && 
  	 	(fracParent[this] > 0.0))&&(parent[this]==opp))&&(opp!=this))&&((opp!=null)==>((packedParent[parent[this]]) && 
  	 	(fracParent[parent[this]] > 0.0))))&&(((opp!=null)&&(left[opp]==this))==>((packedLeft[parent[this]]) && 
  	 	(fracLeft[parent[this]] >= 0.5) && (left[opp]==this) && (count[left[opp]]==lcc))))&&(((opp!=null)&&(right[opp]==this))==>((packedRight[parent[this]]) && 
  	 	(fracRight[parent[this]] >= 0.5) && (right[opp]==this) && (count[right[opp]]==lcc))))&&((opp==null)==>((packedCount[this] == false) && 
  	 	(fracCount[this] >= 0.5) && (count[this]==lcc))))&&((packedCount[this] == false) && 
- 	 	(fracCount[this] >= 0.5) && (count[this]==lcc)))&&((packedLeft[this]) && 
- 	 	(fracLeft[this] >= 0.5) && (left[this]==ol) && (count[left[this]]==lc)))&&((packedRight[this]) && 
- 	 	(fracRight[this] >= 0.5) && (right[this]==or) && (count[right[this]]==rc)));
+ 	 	(fracCount[this] >= 0.5) && (count[this]==lcc));
+requires   (packedLeft[this]);
+requires   (fracLeft[this] >= 0.5);
+requires   (left[this]==ol);
+requires   (count[left[this]]==lc);
+requires       ((packedRight[this]) && 
+ 	 	(fracRight[this] >= 0.5) && (right[this]==or) && (count[right[this]]==rc));
+
 	 ensures (((packedParent[this] ) && 
  	 	(fracParent[this] > 0.0))&&((opp!=null)==>((packedParent[parent[this]]) && 
  	 	(fracParent[parent[this]] > 0.0))));
@@ -258,12 +271,12 @@ if (this!=null) {
  fracCount[this] := fracCount[this] - 0.5;
 }
 packedLeft[opp] := true;
-	 call updateCountRec(parent[opp], count[opp], this, right[opp], lc+rc+1,count[right[opp]], parent[this]);
-	 fracCount[ parent[this]] := 0.0;
+	 call updateCountRec(parent[opp], count[opp], this, right[opp], count[left[opp]], lc+rc+1,parent[this]);
+	 fracCount[parent[this]] := 0.0;
 	 fracLeft[parent[opp]] := 0.0;
-	 fracLeft[ parent[this]] := 0.0;
+	 fracLeft[parent[this]] := 0.0;
 	 fracRight[parent[opp]] := 0.0;
-	 fracRight[ parent[this]] := 0.0;
+	 fracRight[parent[this]] := 0.0;
 }
  }
  else {

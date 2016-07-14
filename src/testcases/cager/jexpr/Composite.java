@@ -121,7 +121,7 @@ pack(this#1.0 count(newc))[ol, or, c1, c2];
 void updateCountRec() 
 ~ double k1, double k, double k2, double k3:
 Composite opp, int lcc,
-Composite or, Composite ol,
+Composite ol, Composite or,
 int lc, int rc:
 requires unpacked(this#k1 parent()) &&
 	this.parent -> opp &&
@@ -173,7 +173,7 @@ if (this.parent != null) {
 		pack(this#k2 parent())[opp, lc + rc + 1];
 		pack(opp#1.0 left(this, lc + rc + 1))[opp.parent];
 			
-		this.parent.updateCountRec()[opp.parent, opp.count, this, opp.right, opp.left.count, lc + rc + 1];
+		this.parent.updateCountRec()[opp.parent, opp.count, this, opp.right, lc + rc + 1, opp.right.count];
 	}		
  } else {
 	addFrac(this#0.5 count(lcc), unpacked(this#0.5 count(lcc)));
