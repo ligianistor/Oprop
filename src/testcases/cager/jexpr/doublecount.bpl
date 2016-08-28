@@ -1,32 +1,42 @@
 type Ref;
-type PredicateTypes;
-type FractionType = [Ref, PredicateTypes] int;
-type PackedType = [Ref, PredicateTypes] bool;
-var packed: PackedType;
-var frac: FractionType;
 const null: Ref;
 
 var val: [Ref]int;
 var dbl: [Ref]int;
-const unique OKP: PredicateTypes;
+var packedOK: [Ref] bool;
+var fracOK: [Ref] real;
 
-procedure PackOK(this:Ref);
-requires (dbl[this]==2*val[this]);
+procedure ConstructDoubleCount(val1 :int, dbl1 :int, this: Ref);
+	 ensures (val[this] == val1) &&
+ 	 	 (dbl[this] == dbl1); 
+ 
+procedure PackOK(v:int, d:int, this:Ref);
+	 requires (packedOK[this]==false) &&
+	 	((d==(2*v))) && (val[this]==v) && (dbl[this]==d); 
+ 
+procedure UnpackOK(v:int, d:int, this:Ref);
+	 requires packedOK[this] &&
+	 	 (fracOK[this] > 0.0);
+	 ensures ((d==(2*v))) && (val[this]==v) && (dbl[this]==d);
 
-procedure UnpackOK(this:Ref);
-requires packed[this, OKP];
-ensures (dbl[this]==2*val[this]);
 
 procedure increment(this:Ref)
-modifies val, dbl, packed, frac;
-requires packed[this,okP] && (frac[this,okP] > 0);
-ensures packed[this,okP] && (frac[this,okP] > 0);
+	 modifies dbl,packedOK,val;
+	 requires (this != null) && ((packedOK[this] ) && 
+ 	 	(fracOK[this] > 0.0));
+	 ensures ((packedOK[this] ) && 
+ 	 	(fracOK[this] > 0.0));
+	 requires (forall x:Ref :: packedOK[x]);
+	 ensures (forall x:Ref :: packedOK[x]);
+	 ensures (forall x:Ref :: (fracOK[x]==old(fracOK[x])));
+
 {
-call UnpackOK(this);
-packed[this, OKP]:=false;
+	 assume (forall y:Ref :: (fracOK[y] >= 0.0) );
+call UnpackOK(val[this], dbl[this], this);
+packedOK[this] := false;
 val[this]:=val[this]+1;
 dbl[this]:=dbl[this]+2;
-call PackOK(this);
-packed[this, OKP]:=true;
+call PackOK(val[this], dbl[this], this);
+packedOK[this] := true;
 }
  

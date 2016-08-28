@@ -1,0 +1,596 @@
+Java Parser Version 1.1 (for Java1.2 code):  Reading from file SimpleCell.java...
+before dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: SimpleCell
+      FieldDeclaration: int val
+      FieldDeclaration: SimpleCell next
+      PredicateDeclaration: PredVal
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator ->
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  Identifier: val
+              PrimaryExpression (Type: )
+                Identifier: v
+            BinaryExpression
+              Operator <
+              PrimaryExpression (Type: )
+                Identifier: v
+              PrimaryExpression (Type: )
+                Literal: 15 (Type: int)
+      PredicateDeclaration: PredNext
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: obj type: SimpleCell
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator ->
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  Identifier: next
+              PrimaryExpression (Type: )
+                Identifier: obj
+            PrimaryExpression (Type: )
+              ObjectProposition: 
+                PrimaryExpression (Type: )
+                  Identifier: obj
+                PrimaryExpression (Type: )
+                  Literal: 0.34 (Type: double)
+                PrimaryExpression (Type: )
+                  Identifier: PredVal
+                  ArgumentList:
+      MethodDeclaration: changeVal(void)
+        FormalParameters:
+          FormalParameter: r type: int
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+          BinaryExpression
+            Operator &&
+            PrimaryExpression (Type: )
+              ObjectProposition: 
+                PrimaryExpression (Type: )
+                  KeywordExpression: this
+                PrimaryExpression (Type: )
+                  Literal: 1 (Type: int)
+                PrimaryExpression (Type: )
+                  Identifier: PredVal
+                  ArgumentList:
+            PrimaryExpression (Type: )
+              BinaryExpression
+                Operator <
+                PrimaryExpression (Type: )
+                  Identifier: r
+                PrimaryExpression (Type: )
+                  Literal: 15 (Type: int)
+          ObjectProposition: 
+            PrimaryExpression (Type: )
+              KeywordExpression: this
+            PrimaryExpression (Type: )
+              Literal: 1 (Type: int)
+            PrimaryExpression (Type: )
+              Identifier: PredVal
+              ArgumentList:
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredVal
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                    FieldSelection (Type: )
+                      Identifier: val
+          StatementExpression
+            BinaryExpression
+              Operator =
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  Identifier: val
+              PrimaryExpression (Type: )
+                Identifier: r
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredVal
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Identifier: r
+      MethodDeclaration: main(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+        Block
+          DeclarationStatement
+            LocalVariableDeclaration: SimpleCell c
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new SimpleCell(PredVal)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 2 (Type: int)
+                  PrimaryExpression (Type: )
+                    KeywordExpression: null
+          DeclarationStatement
+            LocalVariableDeclaration: SimpleCell a
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new SimpleCell(PredNext)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 2 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: c
+          DeclarationStatement
+            LocalVariableDeclaration: SimpleCell b
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new SimpleCell(PredNext)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 3 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: c
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    Identifier: a
+                  PrimaryExpression (Type: )
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredNext
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Identifier: c
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    Identifier: b
+                  PrimaryExpression (Type: )
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredNext
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Identifier: c
+          StatementExpression
+            PrimaryExpression (Type: )
+              FractionAnnotation: addFrac
+                ArgumentList:
+                  ObjectProposition: 
+                    PrimaryExpression (Type: )
+                      Identifier: c
+                    PrimaryExpression (Type: )
+                      Identifier: k
+                    PrimaryExpression (Type: )
+                      Identifier: PredVal
+                      ArgumentList:
+                  ObjectProposition: 
+                    PrimaryExpression (Type: )
+                      Identifier: c
+                    PrimaryExpression (Type: )
+                      Literal: 0.34 (Type: double)
+                    PrimaryExpression (Type: )
+                      Identifier: PredVal
+                      ArgumentList:
+                  ObjectProposition: 
+                    PrimaryExpression (Type: )
+                      Identifier: c
+                    PrimaryExpression (Type: )
+                      Literal: 0.34 (Type: double)
+                    PrimaryExpression (Type: )
+                      Identifier: PredVal
+                      ArgumentList:
+          StatementExpression
+            PrimaryExpression (Type: )
+              Identifier: c
+              MethodSelection (Type: )
+                Identifier=changeVal
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 4 (Type: int)
+                ArgumentList:
+before visitor v
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c79a5 is FS and type: int
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e668c2 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2c79a5 cager.jexpr.ast.PrimaryExpression@1e668c2
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e7a4d0 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f55ff2 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e7a4d0 cager.jexpr.ast.PrimaryExpression@f55ff2
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@16e3eb3 cager.jexpr.ast.BinaryExpression@d67d61
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: next
+FS name: next, type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c190a2 is FS and type: SimpleCell
+Evaluating type of IdentifierExpression: obj obj
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@feba21 type: SimpleCell
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c190a2 cager.jexpr.ast.PrimaryExpression@feba21
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: obj obj
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16dd645 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e54f3 type: double
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb3f66 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f5fc2 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@d7cf62 cager.jexpr.ast.PrimaryExpression@8f5fc2
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Visiting Method changeVal
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7040e7 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b51db7 type: int
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b1f800 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@111014a type: boolean
+Evaluating type of IdentifierExpression: r r
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16ba7f9 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e0f945 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@16ba7f9 cager.jexpr.ast.PrimaryExpression@e0f945
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d50a6 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@111014a cager.jexpr.ast.PrimaryExpression@d50a6
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@29de03 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@aea981 type: int
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fa7139 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f7fbe type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fbafbb type: int
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ce2c57 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c118ae is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3b84ee type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19438de is FS and type: int
+Evaluating type of IdentifierExpression: r r
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@217dc8 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@19438de cager.jexpr.ast.PrimaryExpression@217dc8
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c91629 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ce0314 type: int
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c1b13 type: null
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: r r
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a59727 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@66a008 type: null
+Visiting Method main
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@194a8eb type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@de1cb6 type: java.lang.Object
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2f06b6 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@161c602 type: int
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb73e type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@208506 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fd5428 type: int
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a04c26 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e7736c type: null
+Evaluating type of IdentifierExpression: a a
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14ad296 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1479a6b type: int
+Evaluating type of IdentifierExpression: PredNext PredNext
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eae775 type: null
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@101b455 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6529c type: null
+Evaluating type of IdentifierExpression: b b
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1399ae5 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8709d type: int
+Evaluating type of IdentifierExpression: PredNext PredNext
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@397cea type: null
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@380dbe type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e5f1d type: null
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1869929 type: SimpleCell
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b15387 type: null
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2da7a type: null
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@175831e type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f3329a type: double
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17f2ee6 type: null
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e01873 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6558bb type: double
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a49182 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14cf1b9 type: null
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@91cc3a type: int
+Evaluating type of MethodSelection: changeVal
+MS name: changeVal, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f713ed type: SimpleCell
+before second dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: SimpleCell
+      FieldDeclaration: int val
+      FieldDeclaration: SimpleCell next
+      PredicateDeclaration: PredVal
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator ->
+              PrimaryExpression (Type: int)
+                KeywordExpression: this
+                FieldSelection (Type: int)
+                  Identifier: val
+              PrimaryExpression (Type: int)
+                Identifier: v
+            BinaryExpression: boolean
+              Operator <
+              PrimaryExpression (Type: int)
+                Identifier: v
+              PrimaryExpression (Type: int)
+                Literal: 15 (Type: int)
+      PredicateDeclaration: PredNext
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: obj type: SimpleCell
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator ->
+              PrimaryExpression (Type: SimpleCell)
+                KeywordExpression: this
+                FieldSelection (Type: SimpleCell)
+                  Identifier: next
+              PrimaryExpression (Type: SimpleCell)
+                Identifier: obj
+            PrimaryExpression (Type: boolean)
+              ObjectProposition: 
+                PrimaryExpression (Type: SimpleCell)
+                  Identifier: obj
+                PrimaryExpression (Type: double)
+                  Literal: 0.34 (Type: double)
+                PrimaryExpression (Type: )
+                  Identifier: PredVal
+                  ArgumentList:
+      MethodDeclaration: changeVal(void)
+        FormalParameters:
+          FormalParameter: r type: int
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+          BinaryExpression: boolean
+            Operator &&
+            PrimaryExpression (Type: boolean)
+              ObjectProposition: 
+                PrimaryExpression (Type: SimpleCell)
+                  KeywordExpression: this
+                PrimaryExpression (Type: int)
+                  Literal: 1 (Type: int)
+                PrimaryExpression (Type: )
+                  Identifier: PredVal
+                  ArgumentList:
+            PrimaryExpression (Type: boolean)
+              BinaryExpression: boolean
+                Operator <
+                PrimaryExpression (Type: int)
+                  Identifier: r
+                PrimaryExpression (Type: int)
+                  Literal: 15 (Type: int)
+          ObjectProposition: 
+            PrimaryExpression (Type: SimpleCell)
+              KeywordExpression: this
+            PrimaryExpression (Type: int)
+              Literal: 1 (Type: int)
+            PrimaryExpression (Type: )
+              Identifier: PredVal
+              ArgumentList:
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: SimpleCell)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: int)
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredVal
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    KeywordExpression: this
+                    FieldSelection (Type: int)
+                      Identifier: val
+          StatementExpression
+            BinaryExpression: boolean
+              Operator =
+              PrimaryExpression (Type: int)
+                KeywordExpression: this
+                FieldSelection (Type: int)
+                  Identifier: val
+              PrimaryExpression (Type: int)
+                Identifier: r
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: SimpleCell)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: int)
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredVal
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Identifier: r
+      MethodDeclaration: main(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+        Block
+          DeclarationStatement
+            LocalVariableDeclaration: SimpleCell c
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new SimpleCell(PredVal)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 2 (Type: int)
+                  PrimaryExpression (Type: java.lang.Object)
+                    KeywordExpression: null
+          DeclarationStatement
+            LocalVariableDeclaration: SimpleCell a
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new SimpleCell(PredNext)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 2 (Type: int)
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: c
+          DeclarationStatement
+            LocalVariableDeclaration: SimpleCell b
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new SimpleCell(PredNext)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 3 (Type: int)
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: c
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: a
+                  PrimaryExpression (Type: int)
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredNext
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: c
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: b
+                  PrimaryExpression (Type: int)
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: PredNext
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: c
+          StatementExpression
+            PrimaryExpression (Type: )
+              FractionAnnotation: addFrac
+                ArgumentList:
+                  ObjectProposition: 
+                    PrimaryExpression (Type: SimpleCell)
+                      Identifier: c
+                    PrimaryExpression (Type: )
+                      Identifier: k
+                    PrimaryExpression (Type: )
+                      Identifier: PredVal
+                      ArgumentList:
+                  ObjectProposition: 
+                    PrimaryExpression (Type: SimpleCell)
+                      Identifier: c
+                    PrimaryExpression (Type: double)
+                      Literal: 0.34 (Type: double)
+                    PrimaryExpression (Type: )
+                      Identifier: PredVal
+                      ArgumentList:
+                  ObjectProposition: 
+                    PrimaryExpression (Type: SimpleCell)
+                      Identifier: c
+                    PrimaryExpression (Type: double)
+                      Literal: 0.34 (Type: double)
+                    PrimaryExpression (Type: )
+                      Identifier: PredVal
+                      ArgumentList:
+          StatementExpression
+            PrimaryExpression (Type: SimpleCell)
+              Identifier: c
+              MethodSelection (Type: void)
+                Identifier=changeVal
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 4 (Type: int)
+                ArgumentList:

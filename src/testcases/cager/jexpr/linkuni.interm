@@ -1,0 +1,1219 @@
+Java Parser Version 1.1 (for Java1.2 code):  Reading from file LinkUni.java...
+before dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: Link
+      FieldDeclaration: int val
+      FieldDeclaration: Link next
+      PredicateDeclaration: Range
+        FormalParameters:
+          FormalParameter: x type: int
+          FormalParameter: y type: int
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+            QuantifierVariable: o type: Link
+            QuantifierVariable: k type: double
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator &&
+              BinaryExpression
+                Operator &&
+                BinaryExpression
+                  Operator &&
+                  BinaryExpression
+                    Operator ->
+                    PrimaryExpression (Type: )
+                      KeywordExpression: this
+                      FieldSelection (Type: )
+                        ID=val
+                    PrimaryExpression (Type: )
+                      Identifier: v
+                  BinaryExpression
+                    Operator ->
+                    PrimaryExpression (Type: )
+                      KeywordExpression: this
+                      FieldSelection (Type: )
+                        ID=next
+                    PrimaryExpression (Type: )
+                      Identifier: o
+                BinaryExpression
+                  Operator >=
+                  PrimaryExpression (Type: )
+                    Identifier: v
+                  PrimaryExpression (Type: )
+                    Identifier: x
+              BinaryExpression
+                Operator <=
+                PrimaryExpression (Type: )
+                  Identifier: v
+                PrimaryExpression (Type: )
+                  Identifier: y
+            PrimaryExpression (Type: )
+              BinaryExpression
+                Operator ||
+                PrimaryExpression (Type: )
+                  ObjectProposition: 
+                    PrimaryExpression (Type: )
+                      Identifier: o
+                    PrimaryExpression (Type: )
+                      Identifier: k
+                    PrimaryExpression (Type: )
+                      Identifier: Range
+                      ArgumentList:
+                        PrimaryExpression (Type: )
+                          Identifier: x
+                        PrimaryExpression (Type: )
+                          Identifier: y
+                BinaryExpression
+                  Operator ==
+                  PrimaryExpression (Type: )
+                    Identifier: o
+                  PrimaryExpression (Type: )
+                    KeywordExpression: null
+      PredicateDeclaration: UniRange
+        FormalParameters:
+          FormalParameter: x type: int
+          FormalParameter: y type: int
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+            QuantifierVariable: o type: Link
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator &&
+              BinaryExpression
+                Operator &&
+                BinaryExpression
+                  Operator &&
+                  BinaryExpression
+                    Operator ->
+                    PrimaryExpression (Type: )
+                      KeywordExpression: this
+                      FieldSelection (Type: )
+                        ID=val
+                    PrimaryExpression (Type: )
+                      Identifier: v
+                  BinaryExpression
+                    Operator ->
+                    PrimaryExpression (Type: )
+                      KeywordExpression: this
+                      FieldSelection (Type: )
+                        ID=next
+                    PrimaryExpression (Type: )
+                      Identifier: o
+                BinaryExpression
+                  Operator >=
+                  PrimaryExpression (Type: )
+                    Identifier: v
+                  PrimaryExpression (Type: )
+                    Identifier: x
+              BinaryExpression
+                Operator <=
+                PrimaryExpression (Type: )
+                  Identifier: v
+                PrimaryExpression (Type: )
+                  Identifier: y
+            PrimaryExpression (Type: )
+              BinaryExpression
+                Operator ||
+                PrimaryExpression (Type: )
+                  ObjectProposition: 
+                    PrimaryExpression (Type: )
+                      Identifier: o
+                    PrimaryExpression (Type: )
+                      Literal: 1 (Type: int)
+                    PrimaryExpression (Type: )
+                      Identifier: UniRange
+                      ArgumentList:
+                        PrimaryExpression (Type: )
+                          Identifier: x
+                        PrimaryExpression (Type: )
+                          Identifier: y
+                BinaryExpression
+                  Operator ==
+                  PrimaryExpression (Type: )
+                    Identifier: o
+                  PrimaryExpression (Type: )
+                    KeywordExpression: null
+      MethodDeclaration: addModulo11(void)
+        FormalParameters:
+          FormalParameter: x type: int
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+            MethodSpecFracVariable: k type: double
+          MethodSpecVariables:
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator >=
+              PrimaryExpression (Type: )
+                Identifier: x
+              PrimaryExpression (Type: )
+                Literal: 0 (Type: int)
+            PrimaryExpression (Type: )
+              ObjectProposition: 
+                PrimaryExpression (Type: )
+                  KeywordExpression: this
+                PrimaryExpression (Type: )
+                  Identifier: k
+                PrimaryExpression (Type: )
+                  Identifier: Range
+                  ArgumentList:
+                    PrimaryExpression (Type: )
+                      Literal: 0 (Type: int)
+                    PrimaryExpression (Type: )
+                      Literal: 10 (Type: int)
+          PrimaryExpression (Type: )
+            ObjectProposition: 
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+              PrimaryExpression (Type: )
+                Identifier: k
+              PrimaryExpression (Type: )
+                Identifier: Range
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: )
+                    Literal: 10 (Type: int)
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: Range
+                    ArgumentList:
+                      PrimaryExpression (Type: )
+                        Literal: 0 (Type: int)
+                      PrimaryExpression (Type: )
+                        Literal: 10 (Type: int)
+          StatementExpression
+            BinaryExpression
+              Operator =
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  ID=val
+              BinaryExpression
+                Operator %
+                PrimaryExpression (Type: )
+                  BinaryExpression
+                    Operator +
+                    PrimaryExpression (Type: )
+                      KeywordExpression: this
+                      FieldSelection (Type: )
+                        ID=val
+                    PrimaryExpression (Type: )
+                      Identifier: x
+                PrimaryExpression (Type: )
+                  Literal: 11 (Type: int)
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: Range
+                    ArgumentList:
+                      PrimaryExpression (Type: )
+                        Literal: 0 (Type: int)
+                      PrimaryExpression (Type: )
+                        Literal: 10 (Type: int)
+          IfStatement
+            BinaryExpression
+              Operator !=
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  ID=next
+              PrimaryExpression (Type: )
+                KeywordExpression: null
+            Block
+              StatementExpression
+                PrimaryExpression (Type: )
+                  KeywordExpression: this
+                  FieldSelection (Type: )
+                    ID=next
+                  MethodSelection (Type: )
+                    ID=addModulo11
+                    ArgumentList:
+                      PrimaryExpression (Type: )
+                        Identifier: x
+                    ArgumentList:
+      MethodDeclaration: add(void)
+        FormalParameters:
+          FormalParameter: z type: int
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+            MethodSpecVariable: x type: int
+            MethodSpecVariable: y type: int
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator <
+              PrimaryExpression (Type: )
+                Identifier: x
+              PrimaryExpression (Type: )
+                Identifier: y
+            PrimaryExpression (Type: )
+              ObjectProposition: 
+                PrimaryExpression (Type: )
+                  KeywordExpression: this
+                PrimaryExpression (Type: )
+                  Literal: 1 (Type: int)
+                PrimaryExpression (Type: )
+                  Identifier: UniRange
+                  ArgumentList:
+                    PrimaryExpression (Type: )
+                      Identifier: x
+                    PrimaryExpression (Type: )
+                      Identifier: y
+          PrimaryExpression (Type: )
+            ObjectProposition: 
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+              PrimaryExpression (Type: )
+                Literal: 1 (Type: int)
+              PrimaryExpression (Type: )
+                Identifier: UniRange
+                ArgumentList:
+                  BinaryExpression
+                    Operator +
+                    PrimaryExpression (Type: )
+                      Identifier: x
+                    PrimaryExpression (Type: )
+                      Identifier: z
+                  BinaryExpression
+                    Operator +
+                    PrimaryExpression (Type: )
+                      Identifier: y
+                    PrimaryExpression (Type: )
+                      Identifier: z
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: UniRange
+                    ArgumentList:
+                      PrimaryExpression (Type: )
+                        Identifier: x
+                      PrimaryExpression (Type: )
+                        Identifier: y
+          StatementExpression
+            BinaryExpression
+              Operator =
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  ID=val
+              BinaryExpression
+                Operator +
+                PrimaryExpression (Type: )
+                  KeywordExpression: this
+                  FieldSelection (Type: )
+                    ID=val
+                PrimaryExpression (Type: )
+                  Identifier: z
+          IfStatement
+            BinaryExpression
+              Operator !=
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  ID=next
+              PrimaryExpression (Type: )
+                KeywordExpression: null
+            Block
+              StatementExpression
+                PrimaryExpression (Type: )
+                  KeywordExpression: this
+                  FieldSelection (Type: )
+                    ID=next
+                  MethodSelection (Type: )
+                    ID=add
+                    ArgumentList:
+                      PrimaryExpression (Type: )
+                        Identifier: z
+                    ArgumentList:
+                      PrimaryExpression (Type: )
+                        Identifier: x
+                      PrimaryExpression (Type: )
+                        Identifier: y
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: UniRange
+                    ArgumentList:
+                      BinaryExpression
+                        Operator +
+                        PrimaryExpression (Type: )
+                          Identifier: x
+                        PrimaryExpression (Type: )
+                          Identifier: z
+                      BinaryExpression
+                        Operator +
+                        PrimaryExpression (Type: )
+                          Identifier: y
+                        PrimaryExpression (Type: )
+                          Identifier: z
+      MethodDeclaration: main(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+        Block
+          DeclarationStatement
+            LocalVariableDeclaration: Link l1
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Link(Range)
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: )
+                    Literal: 10 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 3 (Type: int)
+                  PrimaryExpression (Type: )
+                    KeywordExpression: null
+          DeclarationStatement
+            LocalVariableDeclaration: Link l2
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Link(Range)
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: )
+                    Literal: 10 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 4 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: l1
+          DeclarationStatement
+            LocalVariableDeclaration: Link l3
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Link(Range)
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: )
+                    Literal: 10 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 5 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: l2
+          StatementExpression
+            PrimaryExpression (Type: )
+              Identifier: l3
+              MethodSelection (Type: )
+                ID=addModulo11
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 20 (Type: int)
+                ArgumentList:
+before visitor v
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f899e9 is FS and type: int
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@40a47f type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1f899e9 cager.jexpr.ast.PrimaryExpression@40a47f
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: next
+FS name: next, type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1efa79f is FS and type: Link
+Evaluating type of IdentifierExpression: o o
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e5d155 type: Link
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1efa79f cager.jexpr.ast.PrimaryExpression@e5d155
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@125b4d cager.jexpr.ast.BinaryExpression@1284f8e
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17f2dac type: int
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f7e20 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@17f2dac cager.jexpr.ast.PrimaryExpression@8f7e20
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@a17378 cager.jexpr.ast.BinaryExpression@1a4071a
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ce4608 type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@157f3a4 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1ce4608 cager.jexpr.ast.PrimaryExpression@157f3a4
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@13cb165 cager.jexpr.ast.BinaryExpression@1a27d4b
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: o o
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@cff5ed type: Link
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11a9f20 type: double
+Evaluating type of IdentifierExpression: Range Range
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c4f498 type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@964f8e type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@412739 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@176343e type: boolean
+Evaluating type of IdentifierExpression: o o
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15fe9c3 type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ec1774 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@15fe9c3 cager.jexpr.ast.PrimaryExpression@1ec1774
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@176343e cager.jexpr.ast.BinaryExpression@f7d41f
+boolean || boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@875750 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1754daa cager.jexpr.ast.PrimaryExpression@875750
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3de71c is FS and type: int
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ffc1c type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@3de71c cager.jexpr.ast.PrimaryExpression@ffc1c
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: next
+FS name: next, type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@170c7a3 is FS and type: Link
+Evaluating type of IdentifierExpression: o o
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@142d884 type: Link
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@170c7a3 cager.jexpr.ast.PrimaryExpression@142d884
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@194d431 cager.jexpr.ast.BinaryExpression@1f71b53
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@22f376 type: int
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9ddfa3 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@22f376 cager.jexpr.ast.PrimaryExpression@9ddfa3
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@c58432 cager.jexpr.ast.BinaryExpression@16a11e4
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bc917c type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f378c8 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@bc917c cager.jexpr.ast.PrimaryExpression@1f378c8
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@17ecdf0 cager.jexpr.ast.BinaryExpression@283d3
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: o o
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11cbec9 type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3184d8 type: int
+Evaluating type of IdentifierExpression: UniRange UniRange
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@108af2a type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1242445 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c94b51 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6fee3a type: boolean
+Evaluating type of IdentifierExpression: o o
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@813486 type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9f624a type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@813486 cager.jexpr.ast.PrimaryExpression@9f624a
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6fee3a cager.jexpr.ast.BinaryExpression@1ee2310
+boolean || boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1400f33 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@a60d19 cager.jexpr.ast.PrimaryExpression@1400f33
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Visiting Method addModulo11
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a5f0f3 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16e0123 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1a5f0f3 cager.jexpr.ast.PrimaryExpression@16e0123
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10cceb3 type: Link
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1d66d2f type: null
+Evaluating type of IdentifierExpression: Range Range
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9a4f8e type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dd2a4f type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4c5b3 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14f8b9a type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@15669ae cager.jexpr.ast.PrimaryExpression@14f8b9a
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@344a47 type: Link
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f889c8 type: null
+Evaluating type of IdentifierExpression: Range Range
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11dc088 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4b5abc type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@13219ed type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4434f7 type: boolean
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f17060 type: Link
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8bae7 type: null
+Evaluating type of IdentifierExpression: Range Range
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@126cb1a type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e0312b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bc345a type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1114133 type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cfa3d2 is FS and type: int
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10c6c6b is FS and type: int
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a1ee92 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@10c6c6b cager.jexpr.ast.PrimaryExpression@a1ee92
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@135bdd3 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@141717f type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@135bdd3 cager.jexpr.ast.PrimaryExpression@141717f
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1cfa3d2 cager.jexpr.ast.BinaryExpression@182600f
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@708aff type: Link
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@b58e73 type: null
+Evaluating type of IdentifierExpression: Range Range
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19b3d1b type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c8c3b8 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a98e77 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c83d89 type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: next
+FS name: next, type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14005e1 is FS and type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@41f871 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@14005e1 cager.jexpr.ast.PrimaryExpression@41f871
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: next
+FS name: next, type: Link
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11df416 type: int
+Evaluating type of MethodSelection: addModulo11
+MS name: addModulo11, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@183d60d is FS and type: Link
+Visiting Method add
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5a1e6b type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@83198c type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@5a1e6b cager.jexpr.ast.PrimaryExpression@83198c
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1025f9f type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d3e83f type: int
+Evaluating type of IdentifierExpression: UniRange UniRange
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3492fc type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19e0994 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@86f847 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1162ab9 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@4eda4a cager.jexpr.ast.PrimaryExpression@1162ab9
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@dd6ae7 type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@956f6b type: int
+Evaluating type of IdentifierExpression: UniRange UniRange
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c5eb8a type: int
+Evaluating type of IdentifierExpression: z z
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eab16b type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@c5eb8a cager.jexpr.ast.PrimaryExpression@1eab16b
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@126099c type: int
+Evaluating type of IdentifierExpression: z z
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@40eca3 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@126099c cager.jexpr.ast.PrimaryExpression@40eca3
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6fe350 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b4b415 type: boolean
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9addef type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1609812 type: int
+Evaluating type of IdentifierExpression: UniRange UniRange
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9fe953 type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f6d64 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@56ff18 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@185b10b type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2a5a5e is FS and type: int
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@92fa70 is FS and type: int
+Evaluating type of IdentifierExpression: z z
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@177d583 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@92fa70 cager.jexpr.ast.PrimaryExpression@177d583
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2a5a5e cager.jexpr.ast.BinaryExpression@628e42
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: next
+FS name: next, type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@69cfe0 is FS and type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ceb8e2 type: java.lang.Object
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@69cfe0 cager.jexpr.ast.PrimaryExpression@ceb8e2
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: next
+FS name: next, type: Link
+Evaluating type of IdentifierExpression: z z
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cc3436 type: int
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@177daaa type: int
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b4de03 type: int
+Evaluating type of MethodSelection: add
+MS name: add, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15bab52 is FS and type: Link
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14cbf3f type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19fd541 type: int
+Evaluating type of IdentifierExpression: UniRange UniRange
+Evaluating type of IdentifierExpression: x x
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@69ae9f type: int
+Evaluating type of IdentifierExpression: z z
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@4764a1 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@69ae9f cager.jexpr.ast.PrimaryExpression@4764a1
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: y y
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@11fb141 type: int
+Evaluating type of IdentifierExpression: z z
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ae3050 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@11fb141 cager.jexpr.ast.PrimaryExpression@1ae3050
+AddTypeResolver: int + int
+Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e5f3d2 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ea9cf9 type: null
+Visiting Method main
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e7da60 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b1d931 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@12a3766 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@9b46a8 type: java.lang.Object
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3bfb66 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f62649 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14b8cdc type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10cc23b type: int
+Evaluating type of IdentifierExpression: l1 l1
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a3c177 type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f2794a type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f92541 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fcfd10 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14a3347 type: int
+Evaluating type of IdentifierExpression: l2 l2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6ca716 type: Link
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14dba7f type: null
+Evaluating type of IdentifierExpression: l3 l3
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f1399 type: int
+Evaluating type of MethodSelection: addModulo11
+MS name: addModulo11, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1cfd41a type: Link
+before second dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: Link
+      FieldDeclaration: int val
+      FieldDeclaration: Link next
+      PredicateDeclaration: Range
+        FormalParameters:
+          FormalParameter: x type: int
+          FormalParameter: y type: int
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+            QuantifierVariable: o type: Link
+            QuantifierVariable: k type: double
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator &&
+              BinaryExpression: boolean
+                Operator &&
+                BinaryExpression: boolean
+                  Operator &&
+                  BinaryExpression: boolean
+                    Operator ->
+                    PrimaryExpression (Type: int)
+                      KeywordExpression: this
+                      FieldSelection (Type: int)
+                        ID=val
+                    PrimaryExpression (Type: int)
+                      Identifier: v
+                  BinaryExpression: boolean
+                    Operator ->
+                    PrimaryExpression (Type: Link)
+                      KeywordExpression: this
+                      FieldSelection (Type: Link)
+                        ID=next
+                    PrimaryExpression (Type: Link)
+                      Identifier: o
+                BinaryExpression: boolean
+                  Operator >=
+                  PrimaryExpression (Type: int)
+                    Identifier: v
+                  PrimaryExpression (Type: int)
+                    Identifier: x
+              BinaryExpression: boolean
+                Operator <=
+                PrimaryExpression (Type: int)
+                  Identifier: v
+                PrimaryExpression (Type: int)
+                  Identifier: y
+            PrimaryExpression (Type: boolean)
+              BinaryExpression: boolean
+                Operator ||
+                PrimaryExpression (Type: boolean)
+                  ObjectProposition: 
+                    PrimaryExpression (Type: Link)
+                      Identifier: o
+                    PrimaryExpression (Type: double)
+                      Identifier: k
+                    PrimaryExpression (Type: )
+                      Identifier: Range
+                      ArgumentList:
+                        PrimaryExpression (Type: int)
+                          Identifier: x
+                        PrimaryExpression (Type: int)
+                          Identifier: y
+                BinaryExpression: boolean
+                  Operator ==
+                  PrimaryExpression (Type: Link)
+                    Identifier: o
+                  PrimaryExpression (Type: java.lang.Object)
+                    KeywordExpression: null
+      PredicateDeclaration: UniRange
+        FormalParameters:
+          FormalParameter: x type: int
+          FormalParameter: y type: int
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: v type: int
+            QuantifierVariable: o type: Link
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator &&
+              BinaryExpression: boolean
+                Operator &&
+                BinaryExpression: boolean
+                  Operator &&
+                  BinaryExpression: boolean
+                    Operator ->
+                    PrimaryExpression (Type: int)
+                      KeywordExpression: this
+                      FieldSelection (Type: int)
+                        ID=val
+                    PrimaryExpression (Type: int)
+                      Identifier: v
+                  BinaryExpression: boolean
+                    Operator ->
+                    PrimaryExpression (Type: Link)
+                      KeywordExpression: this
+                      FieldSelection (Type: Link)
+                        ID=next
+                    PrimaryExpression (Type: Link)
+                      Identifier: o
+                BinaryExpression: boolean
+                  Operator >=
+                  PrimaryExpression (Type: int)
+                    Identifier: v
+                  PrimaryExpression (Type: int)
+                    Identifier: x
+              BinaryExpression: boolean
+                Operator <=
+                PrimaryExpression (Type: int)
+                  Identifier: v
+                PrimaryExpression (Type: int)
+                  Identifier: y
+            PrimaryExpression (Type: boolean)
+              BinaryExpression: boolean
+                Operator ||
+                PrimaryExpression (Type: boolean)
+                  ObjectProposition: 
+                    PrimaryExpression (Type: Link)
+                      Identifier: o
+                    PrimaryExpression (Type: int)
+                      Literal: 1 (Type: int)
+                    PrimaryExpression (Type: )
+                      Identifier: UniRange
+                      ArgumentList:
+                        PrimaryExpression (Type: int)
+                          Identifier: x
+                        PrimaryExpression (Type: int)
+                          Identifier: y
+                BinaryExpression: boolean
+                  Operator ==
+                  PrimaryExpression (Type: Link)
+                    Identifier: o
+                  PrimaryExpression (Type: java.lang.Object)
+                    KeywordExpression: null
+      MethodDeclaration: addModulo11(void)
+        FormalParameters:
+          FormalParameter: x type: int
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+            MethodSpecFracVariable: k type: double
+          MethodSpecVariables:
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator >=
+              PrimaryExpression (Type: int)
+                Identifier: x
+              PrimaryExpression (Type: int)
+                Literal: 0 (Type: int)
+            PrimaryExpression (Type: boolean)
+              ObjectProposition: 
+                PrimaryExpression (Type: Link)
+                  KeywordExpression: this
+                PrimaryExpression (Type: )
+                  Identifier: k
+                PrimaryExpression (Type: )
+                  Identifier: Range
+                  ArgumentList:
+                    PrimaryExpression (Type: int)
+                      Literal: 0 (Type: int)
+                    PrimaryExpression (Type: int)
+                      Literal: 10 (Type: int)
+          PrimaryExpression (Type: boolean)
+            ObjectProposition: 
+              PrimaryExpression (Type: Link)
+                KeywordExpression: this
+              PrimaryExpression (Type: )
+                Identifier: k
+              PrimaryExpression (Type: )
+                Identifier: Range
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: int)
+                    Literal: 10 (Type: int)
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: Link)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: Range
+                    ArgumentList:
+                      PrimaryExpression (Type: int)
+                        Literal: 0 (Type: int)
+                      PrimaryExpression (Type: int)
+                        Literal: 10 (Type: int)
+          StatementExpression
+            BinaryExpression: boolean
+              Operator =
+              PrimaryExpression (Type: int)
+                KeywordExpression: this
+                FieldSelection (Type: int)
+                  ID=val
+              BinaryExpression: int
+                Operator %
+                PrimaryExpression (Type: int)
+                  BinaryExpression: int
+                    Operator +
+                    PrimaryExpression (Type: int)
+                      KeywordExpression: this
+                      FieldSelection (Type: int)
+                        ID=val
+                    PrimaryExpression (Type: int)
+                      Identifier: x
+                PrimaryExpression (Type: int)
+                  Literal: 11 (Type: int)
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: Link)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: Range
+                    ArgumentList:
+                      PrimaryExpression (Type: int)
+                        Literal: 0 (Type: int)
+                      PrimaryExpression (Type: int)
+                        Literal: 10 (Type: int)
+          IfStatement
+            BinaryExpression: boolean
+              Operator !=
+              PrimaryExpression (Type: Link)
+                KeywordExpression: this
+                FieldSelection (Type: Link)
+                  ID=next
+              PrimaryExpression (Type: java.lang.Object)
+                KeywordExpression: null
+            Block
+              StatementExpression
+                PrimaryExpression (Type: Link)
+                  KeywordExpression: this
+                  FieldSelection (Type: Link)
+                    ID=next
+                  MethodSelection (Type: void)
+                    ID=addModulo11
+                    ArgumentList:
+                      PrimaryExpression (Type: int)
+                        Identifier: x
+                    ArgumentList:
+      MethodDeclaration: add(void)
+        FormalParameters:
+          FormalParameter: z type: int
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+            MethodSpecVariable: x type: int
+            MethodSpecVariable: y type: int
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator <
+              PrimaryExpression (Type: int)
+                Identifier: x
+              PrimaryExpression (Type: int)
+                Identifier: y
+            PrimaryExpression (Type: boolean)
+              ObjectProposition: 
+                PrimaryExpression (Type: Link)
+                  KeywordExpression: this
+                PrimaryExpression (Type: int)
+                  Literal: 1 (Type: int)
+                PrimaryExpression (Type: )
+                  Identifier: UniRange
+                  ArgumentList:
+                    PrimaryExpression (Type: int)
+                      Identifier: x
+                    PrimaryExpression (Type: int)
+                      Identifier: y
+          PrimaryExpression (Type: boolean)
+            ObjectProposition: 
+              PrimaryExpression (Type: Link)
+                KeywordExpression: this
+              PrimaryExpression (Type: int)
+                Literal: 1 (Type: int)
+              PrimaryExpression (Type: )
+                Identifier: UniRange
+                ArgumentList:
+                  BinaryExpression: int
+                    Operator +
+                    PrimaryExpression (Type: int)
+                      Identifier: x
+                    PrimaryExpression (Type: int)
+                      Identifier: z
+                  BinaryExpression: int
+                    Operator +
+                    PrimaryExpression (Type: int)
+                      Identifier: y
+                    PrimaryExpression (Type: int)
+                      Identifier: z
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: Link)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: int)
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: UniRange
+                    ArgumentList:
+                      PrimaryExpression (Type: int)
+                        Identifier: x
+                      PrimaryExpression (Type: int)
+                        Identifier: y
+          StatementExpression
+            BinaryExpression: boolean
+              Operator =
+              PrimaryExpression (Type: int)
+                KeywordExpression: this
+                FieldSelection (Type: int)
+                  ID=val
+              BinaryExpression: int
+                Operator +
+                PrimaryExpression (Type: int)
+                  KeywordExpression: this
+                  FieldSelection (Type: int)
+                    ID=val
+                PrimaryExpression (Type: int)
+                  Identifier: z
+          IfStatement
+            BinaryExpression: boolean
+              Operator !=
+              PrimaryExpression (Type: Link)
+                KeywordExpression: this
+                FieldSelection (Type: Link)
+                  ID=next
+              PrimaryExpression (Type: java.lang.Object)
+                KeywordExpression: null
+            Block
+              StatementExpression
+                PrimaryExpression (Type: Link)
+                  KeywordExpression: this
+                  FieldSelection (Type: Link)
+                    ID=next
+                  MethodSelection (Type: void)
+                    ID=add
+                    ArgumentList:
+                      PrimaryExpression (Type: int)
+                        Identifier: z
+                    ArgumentList:
+                      PrimaryExpression (Type: int)
+                        Identifier: x
+                      PrimaryExpression (Type: int)
+                        Identifier: y
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: Link)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: int)
+                    Literal: 1 (Type: int)
+                  PrimaryExpression (Type: )
+                    Identifier: UniRange
+                    ArgumentList:
+                      BinaryExpression: int
+                        Operator +
+                        PrimaryExpression (Type: int)
+                          Identifier: x
+                        PrimaryExpression (Type: int)
+                          Identifier: z
+                      BinaryExpression: int
+                        Operator +
+                        PrimaryExpression (Type: int)
+                          Identifier: y
+                        PrimaryExpression (Type: int)
+                          Identifier: z
+      MethodDeclaration: main(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+        Block
+          DeclarationStatement
+            LocalVariableDeclaration: Link l1
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Link(Range)
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: int)
+                    Literal: 10 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 3 (Type: int)
+                  PrimaryExpression (Type: java.lang.Object)
+                    KeywordExpression: null
+          DeclarationStatement
+            LocalVariableDeclaration: Link l2
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Link(Range)
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: int)
+                    Literal: 10 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 4 (Type: int)
+                  PrimaryExpression (Type: Link)
+                    Identifier: l1
+          DeclarationStatement
+            LocalVariableDeclaration: Link l3
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Link(Range)
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 0 (Type: int)
+                  PrimaryExpression (Type: int)
+                    Literal: 10 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 5 (Type: int)
+                  PrimaryExpression (Type: Link)
+                    Identifier: l2
+          StatementExpression
+            PrimaryExpression (Type: Link)
+              Identifier: l3
+              MethodSelection (Type: void)
+                ID=addModulo11
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 20 (Type: int)
+                ArgumentList:

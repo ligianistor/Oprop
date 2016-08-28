@@ -18,15 +18,17 @@ CompilationUnits:
               BinaryExpression
                 Operator ->
                 PrimaryExpression (Type: )
+                  KeywordExpression: this
                   FieldSelection (Type: )
-                    ID=val
+                    Identifier: val
                 PrimaryExpression (Type: )
                   Identifier: v
               BinaryExpression
                 Operator ->
                 PrimaryExpression (Type: )
+                  KeywordExpression: this
                   FieldSelection (Type: )
-                    ID=dbl
+                    Identifier: dbl
                 PrimaryExpression (Type: )
                   Identifier: d
             BinaryExpression
@@ -36,118 +38,209 @@ CompilationUnits:
               BinaryExpression
                 Operator *
                 PrimaryExpression (Type: )
-                  Literal: 2 (Type: : int)
+                  Literal: 2 (Type: int)
                 PrimaryExpression (Type: )
                   Identifier: v
       MethodDeclaration: increment(void)
         FormalParameters:
         MethodSpecExpression: 
+          MethodSpecFracVariables:
+            MethodSpecFracVariable: k type: double
           MethodSpecVariables:
-            MethodSpecVariable: k type: int
           ObjectProposition: 
             PrimaryExpression (Type: )
+              KeywordExpression: this
             PrimaryExpression (Type: )
               Identifier: k
             PrimaryExpression (Type: )
               Identifier: OK
-              ArgumentList: 
+              ArgumentList:
           ObjectProposition: 
             PrimaryExpression (Type: )
+              KeywordExpression: this
             PrimaryExpression (Type: )
               Identifier: k
             PrimaryExpression (Type: )
               Identifier: OK
-              ArgumentList: 
+              ArgumentList:
         Block
           StatementExpression
-            BinaryExpression
-              Operator =
-              PrimaryExpression (Type: )
-                Identifier: val
-              BinaryExpression
-                Operator +
-                PrimaryExpression (Type: )
-                  Identifier: val
-                PrimaryExpression (Type: )
-                  Literal: 1 (Type: : int)
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: OK
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                    FieldSelection (Type: )
+                      Identifier: val
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                    FieldSelection (Type: )
+                      Identifier: dbl
           StatementExpression
             BinaryExpression
               Operator =
               PrimaryExpression (Type: )
-                Identifier: dbl
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  Identifier: val
               BinaryExpression
                 Operator +
                 PrimaryExpression (Type: )
-                  Identifier: dbl
+                  KeywordExpression: this
+                  FieldSelection (Type: )
+                    Identifier: val
                 PrimaryExpression (Type: )
-                  Literal: 2 (Type: : int)
+                  Literal: 1 (Type: int)
+          StatementExpression
+            BinaryExpression
+              Operator =
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  Identifier: dbl
+              BinaryExpression
+                Operator +
+                PrimaryExpression (Type: )
+                  KeywordExpression: this
+                  FieldSelection (Type: )
+                    Identifier: dbl
+                PrimaryExpression (Type: )
+                  Literal: 2 (Type: int)
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: OK
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                    FieldSelection (Type: )
+                      Identifier: val
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                    FieldSelection (Type: )
+                      Identifier: dbl
 before visitor v
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: val
 FS name: val, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6846c is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@176feaf is FS and type: int
 Evaluating type of IdentifierExpression: v v
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dfeb30 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@6846c cager.jexpr.ast.PrimaryExpression@1dfeb30
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14aa453 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@176feaf cager.jexpr.ast.PrimaryExpression@14aa453
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: dbl
 FS name: dbl, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c9b6eb is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16a4aef is FS and type: int
 Evaluating type of IdentifierExpression: d d
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@817d6 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c9b6eb cager.jexpr.ast.PrimaryExpression@817d6
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@15dbaab type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@16a4aef cager.jexpr.ast.PrimaryExpression@15dbaab
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@154fc43 cager.jexpr.ast.BinaryExpression@7dac02
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@8a3d8f cager.jexpr.ast.BinaryExpression@1cfa4b2
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of IdentifierExpression: d d
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@a7d968 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b2601c type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@145d135 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@a9fd96 type: int
 Evaluating type of IdentifierExpression: v v
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c3d029 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1b2601c cager.jexpr.ast.PrimaryExpression@1c3d029
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@47ad40 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a9fd96 cager.jexpr.ast.PrimaryExpression@47ad40
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@a7d968 cager.jexpr.ast.BinaryExpression@974e4b
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@145d135 cager.jexpr.ast.BinaryExpression@1bf502d
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@1955dd4 cager.jexpr.ast.BinaryExpression@14322ba
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@128d900 cager.jexpr.ast.BinaryExpression@be95bf
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Visiting Method increment
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@9d04dc type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@596a7a type: DoubleCount
 Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@aa2594 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5d75eb type: null
 Evaluating type of IdentifierExpression: OK OK
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@892539 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e8b957 type: null
 Setting type of Object Prop 
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eacdc4 type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e001c8 type: DoubleCount
 Evaluating type of IdentifierExpression: k k
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6b29e6 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1952be0 type: null
 Evaluating type of IdentifierExpression: OK OK
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18bea70 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@739474 type: null
 Setting type of Object Prop 
-Evaluating type of IdentifierExpression: val val
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@cca07b type: int
-Evaluating type of IdentifierExpression: val val
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3c0965 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@18cef0a type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@3c0965 cager.jexpr.ast.PrimaryExpression@18cef0a
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@174be7 type: DoubleCount
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1783d33 type: null
+Evaluating type of IdentifierExpression: OK OK
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fa1b85 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@24cdc7 is FS and type: int
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dbl
+FS name: dbl, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@41e2aa is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1881149 type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2709da is FS and type: int
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f7d5a6 is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eba9b0 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@f7d5a6 cager.jexpr.ast.PrimaryExpression@eba9b0
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@cca07b cager.jexpr.ast.BinaryExpression@1a18493
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2709da cager.jexpr.ast.BinaryExpression@1d17f01
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of IdentifierExpression: dbl dbl
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@106fbd7 type: int
-Evaluating type of IdentifierExpression: dbl dbl
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@17ff759 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@48074a type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@17ff759 cager.jexpr.ast.PrimaryExpression@48074a
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dbl
+FS name: dbl, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e9581b is FS and type: int
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dbl
+FS name: dbl, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@197833e is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@29626a type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@197833e cager.jexpr.ast.PrimaryExpression@29626a
 AddTypeResolver: int + int
 Type Info is OperatorTypeInfo: result=int, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@106fbd7 cager.jexpr.ast.BinaryExpression@d6c6ea
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e9581b cager.jexpr.ast.BinaryExpression@fc4957
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1330af4 type: DoubleCount
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14512e type: null
+Evaluating type of IdentifierExpression: OK OK
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ddbcb1 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: val
+FS name: val, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f337b is FS and type: int
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dbl
+FS name: dbl, type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@17cd18d is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a183d2 type: null
 before second dump 0
 CompilationUnits:
   CompilationUnit:
@@ -167,17 +260,17 @@ CompilationUnits:
               BinaryExpression: boolean
                 Operator ->
                 PrimaryExpression (Type: int)
-                  class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
+                  KeywordExpression: this
                   FieldSelection (Type: int)
-                    ID=val
+                    Identifier: val
                 PrimaryExpression (Type: int)
                   Identifier: v
               BinaryExpression: boolean
                 Operator ->
                 PrimaryExpression (Type: int)
-                  class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
+                  KeywordExpression: this
                   FieldSelection (Type: int)
-                    ID=dbl
+                    Identifier: dbl
                 PrimaryExpression (Type: int)
                   Identifier: d
             BinaryExpression: boolean
@@ -187,50 +280,99 @@ CompilationUnits:
               BinaryExpression: int
                 Operator *
                 PrimaryExpression (Type: int)
-                  Literal: 2 (Type: : int)
+                  Literal: 2 (Type: int)
                 PrimaryExpression (Type: int)
                   Identifier: v
       MethodDeclaration: increment(void)
         FormalParameters:
         MethodSpecExpression: 
+          MethodSpecFracVariables:
+            MethodSpecFracVariable: k type: double
           MethodSpecVariables:
-            MethodSpecVariable: k type: int
           ObjectProposition: 
             PrimaryExpression (Type: DoubleCount)
-              class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
-            PrimaryExpression (Type: int)
+              KeywordExpression: this
+            PrimaryExpression (Type: )
               Identifier: k
             PrimaryExpression (Type: )
               Identifier: OK
-              ArgumentList: 
+              ArgumentList:
           ObjectProposition: 
             PrimaryExpression (Type: DoubleCount)
-              class cager.jexpr.ast.KeywordExpression [Type: DoubleCount]
-            PrimaryExpression (Type: int)
+              KeywordExpression: this
+            PrimaryExpression (Type: )
               Identifier: k
             PrimaryExpression (Type: )
               Identifier: OK
-              ArgumentList: 
+              ArgumentList:
         Block
           StatementExpression
-            BinaryExpression: boolean
-              Operator =
-              PrimaryExpression (Type: int)
-                Identifier: val
-              BinaryExpression: int
-                Operator +
-                PrimaryExpression (Type: int)
-                  Identifier: val
-                PrimaryExpression (Type: int)
-                  Literal: 1 (Type: : int)
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: DoubleCount)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: OK
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    KeywordExpression: this
+                    FieldSelection (Type: int)
+                      Identifier: val
+                  PrimaryExpression (Type: int)
+                    KeywordExpression: this
+                    FieldSelection (Type: int)
+                      Identifier: dbl
           StatementExpression
             BinaryExpression: boolean
               Operator =
               PrimaryExpression (Type: int)
-                Identifier: dbl
+                KeywordExpression: this
+                FieldSelection (Type: int)
+                  Identifier: val
               BinaryExpression: int
                 Operator +
                 PrimaryExpression (Type: int)
-                  Identifier: dbl
+                  KeywordExpression: this
+                  FieldSelection (Type: int)
+                    Identifier: val
                 PrimaryExpression (Type: int)
-                  Literal: 2 (Type: : int)
+                  Literal: 1 (Type: int)
+          StatementExpression
+            BinaryExpression: boolean
+              Operator =
+              PrimaryExpression (Type: int)
+                KeywordExpression: this
+                FieldSelection (Type: int)
+                  Identifier: dbl
+              BinaryExpression: int
+                Operator +
+                PrimaryExpression (Type: int)
+                  KeywordExpression: this
+                  FieldSelection (Type: int)
+                    Identifier: dbl
+                PrimaryExpression (Type: int)
+                  Literal: 2 (Type: int)
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: DoubleCount)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: OK
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    KeywordExpression: this
+                    FieldSelection (Type: int)
+                      Identifier: val
+                  PrimaryExpression (Type: int)
+                    KeywordExpression: this
+                    FieldSelection (Type: int)
+                      Identifier: dbl

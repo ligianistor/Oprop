@@ -1,0 +1,367 @@
+Java Parser Version 1.1 (for Java1.2 code):  Reading from file Share.java...
+before dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: Share
+      FieldDeclaration: DoubleCount dc
+      PredicateDeclaration: ShareCount
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: d type: DoubleCount
+          BinaryExpression
+            Operator &&
+            BinaryExpression
+              Operator ->
+              PrimaryExpression (Type: )
+                KeywordExpression: this
+                FieldSelection (Type: )
+                  Identifier: dc
+              PrimaryExpression (Type: )
+                Identifier: d
+            PrimaryExpression (Type: )
+              ObjectProposition: 
+                PrimaryExpression (Type: )
+                  Identifier: d
+                PrimaryExpression (Type: )
+                  Literal: 0.1 (Type: double)
+                PrimaryExpression (Type: )
+                  Identifier: OK
+                  ArgumentList:
+      MethodDeclaration: touch(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+            MethodSpecFracVariable: k type: double
+          MethodSpecVariables:
+          ObjectProposition: 
+            PrimaryExpression (Type: )
+              KeywordExpression: this
+            PrimaryExpression (Type: )
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: ShareCount
+              ArgumentList:
+          ObjectProposition: 
+            PrimaryExpression (Type: )
+              KeywordExpression: this
+            PrimaryExpression (Type: )
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: ShareCount
+              ArgumentList:
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: ShareCount
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                    FieldSelection (Type: )
+                      Identifier: dc
+          StatementExpression
+            PrimaryExpression (Type: )
+              KeywordExpression: this
+              FieldSelection (Type: )
+                Identifier: dc
+              MethodSelection (Type: )
+                Identifier=increment
+                ArgumentList:
+                ArgumentList:
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: ShareCount
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    KeywordExpression: this
+                    FieldSelection (Type: )
+                      Identifier: dc
+      MethodDeclaration: main(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+        Block
+          DeclarationStatement
+            LocalVariableDeclaration: DoubleCount dc0
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new DoubleCount(OK)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 2 (Type: int)
+                  PrimaryExpression (Type: )
+                    Literal: 4 (Type: int)
+          DeclarationStatement
+            LocalVariableDeclaration: Share s1
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Share(ShareCount)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Identifier: dc0
+          DeclarationStatement
+            LocalVariableDeclaration: Share s2
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Share(ShareCount)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Identifier: dc0
+          StatementExpression
+            PrimaryExpression (Type: )
+              Identifier: s1
+              MethodSelection (Type: )
+                Identifier=touch
+                ArgumentList:
+                ArgumentList:
+          StatementExpression
+            PrimaryExpression (Type: )
+              Identifier: s2
+              MethodSelection (Type: )
+                Identifier=touch
+                ArgumentList:
+                ArgumentList:
+before visitor v
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dc
+FS name: dc, type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3f6843 is FS and type: DoubleCount
+Evaluating type of IdentifierExpression: d d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d6466f type: DoubleCount
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@3f6843 cager.jexpr.ast.PrimaryExpression@d6466f
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: d d
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1aa3554 type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1933d6c type: double
+Evaluating type of IdentifierExpression: OK OK
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a5b7b4 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bfc8d0 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@119087d cager.jexpr.ast.PrimaryExpression@bfc8d0
+boolean && boolean
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Visiting Method touch
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7c808d type: Share
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1dbbaab type: null
+Evaluating type of IdentifierExpression: ShareCount ShareCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bc3ed6 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c19080 type: Share
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f5e4b6 type: null
+Evaluating type of IdentifierExpression: ShareCount ShareCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@7a9bff type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@197950e type: Share
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@bb0257 type: null
+Evaluating type of IdentifierExpression: ShareCount ShareCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@196dcb4 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dc
+FS name: dc, type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@173b35d is FS and type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@104ce99 type: null
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dc
+FS name: dc, type: DoubleCount
+Evaluating type of MethodSelection: increment
+MS name: increment, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@97cb70 is FS and type: DoubleCount
+Evaluating type of Keyword this
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ad65f7 type: Share
+Evaluating type of IdentifierExpression: k k
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1016505 type: null
+Evaluating type of IdentifierExpression: ShareCount ShareCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f53c8 type: null
+Setting type of Object Prop 
+Evaluating type of Keyword this
+Evaluating type of FieldSelection: dc
+FS name: dc, type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c5a30b is FS and type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@5367af type: null
+Visiting Method main
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1bc3013 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f84d01 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@87b71b type: null
+Evaluating type of IdentifierExpression: dc0 dc0
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6812d type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10ab67f type: null
+Evaluating type of IdentifierExpression: dc0 dc0
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@536500 type: DoubleCount
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@10bfedd type: null
+Evaluating type of IdentifierExpression: s1 s1
+Evaluating type of MethodSelection: touch
+MS name: touch, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@896e10 type: Share
+Evaluating type of IdentifierExpression: s2 s2
+Evaluating type of MethodSelection: touch
+MS name: touch, type: void
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@991d56 type: Share
+before second dump 0
+CompilationUnits:
+  CompilationUnit:
+    ClassDeclaration: Share
+      FieldDeclaration: DoubleCount dc
+      PredicateDeclaration: ShareCount
+        FormalParameters:
+        QuantificationExpression: exists
+          QuantifierVariables:
+            QuantifierVariable: d type: DoubleCount
+          BinaryExpression: boolean
+            Operator &&
+            BinaryExpression: boolean
+              Operator ->
+              PrimaryExpression (Type: DoubleCount)
+                KeywordExpression: this
+                FieldSelection (Type: DoubleCount)
+                  Identifier: dc
+              PrimaryExpression (Type: DoubleCount)
+                Identifier: d
+            PrimaryExpression (Type: boolean)
+              ObjectProposition: 
+                PrimaryExpression (Type: DoubleCount)
+                  Identifier: d
+                PrimaryExpression (Type: double)
+                  Literal: 0.1 (Type: double)
+                PrimaryExpression (Type: )
+                  Identifier: OK
+                  ArgumentList:
+      MethodDeclaration: touch(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+            MethodSpecFracVariable: k type: double
+          MethodSpecVariables:
+          ObjectProposition: 
+            PrimaryExpression (Type: Share)
+              KeywordExpression: this
+            PrimaryExpression (Type: )
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: ShareCount
+              ArgumentList:
+          ObjectProposition: 
+            PrimaryExpression (Type: Share)
+              KeywordExpression: this
+            PrimaryExpression (Type: )
+              Identifier: k
+            PrimaryExpression (Type: )
+              Identifier: ShareCount
+              ArgumentList:
+        Block
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: unpack
+                ObjectProposition: 
+                  PrimaryExpression (Type: Share)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: ShareCount
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: DoubleCount)
+                    KeywordExpression: this
+                    FieldSelection (Type: DoubleCount)
+                      Identifier: dc
+          StatementExpression
+            PrimaryExpression (Type: DoubleCount)
+              KeywordExpression: this
+              FieldSelection (Type: DoubleCount)
+                Identifier: dc
+              MethodSelection (Type: void)
+                Identifier=increment
+                ArgumentList:
+                ArgumentList:
+          StatementExpression
+            PrimaryExpression (Type: )
+              PackUnpackAnnotation: pack
+                ObjectProposition: 
+                  PrimaryExpression (Type: Share)
+                    KeywordExpression: this
+                  PrimaryExpression (Type: )
+                    Identifier: k
+                  PrimaryExpression (Type: )
+                    Identifier: ShareCount
+                    ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: DoubleCount)
+                    KeywordExpression: this
+                    FieldSelection (Type: DoubleCount)
+                      Identifier: dc
+      MethodDeclaration: main(void)
+        FormalParameters:
+        MethodSpecExpression: 
+          MethodSpecFracVariables:
+          MethodSpecVariables:
+        Block
+          DeclarationStatement
+            LocalVariableDeclaration: DoubleCount dc0
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new DoubleCount(OK)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 2 (Type: int)
+                  PrimaryExpression (Type: int)
+                    Literal: 4 (Type: int)
+          DeclarationStatement
+            LocalVariableDeclaration: Share s1
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Share(ShareCount)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: DoubleCount)
+                    Identifier: dc0
+          DeclarationStatement
+            LocalVariableDeclaration: Share s2
+            Operator =
+            PrimaryExpression (Type: )
+              AllocationExpression: new Share(ShareCount)
+                ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: DoubleCount)
+                    Identifier: dc0
+          StatementExpression
+            PrimaryExpression (Type: Share)
+              Identifier: s1
+              MethodSelection (Type: void)
+                Identifier=touch
+                ArgumentList:
+                ArgumentList:
+          StatementExpression
+            PrimaryExpression (Type: Share)
+              Identifier: s2
+              MethodSelection (Type: void)
+                Identifier=touch
+                ArgumentList:
+                ArgumentList:
