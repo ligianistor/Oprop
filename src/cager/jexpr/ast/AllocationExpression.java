@@ -9,7 +9,7 @@ public class AllocationExpression extends Expression
 {
 	private String alloc_func;
 	private String predicate;
-	private Expression[] children = new Expression[2];
+	private Expression[] children = new Expression[3];
 	
     public AllocationExpression(
     		String alloc, 
@@ -25,9 +25,14 @@ public class AllocationExpression extends Expression
         children[0] = e;
     }
     
-    public void addNewArgs(Expression e)
+    public void addExistentialPredicateArgs(Expression e)
     {
         children[1] = e;
+    }
+    
+    public void addNewArgs(Expression e)
+    {
+        children[2] = e;
     }
     
     public AST[] getChildren()
@@ -53,8 +58,13 @@ public class AllocationExpression extends Expression
         return children[0];
     }
     
+    public Expression getExistentialPredicateArgs()
+    {
+        return children[1];
+    }
+    
     public Expression getNewArgs() {
-    	return children[1];
+    	return children[2];
     }
     
     public void accept(Visitor v) throws ParseException

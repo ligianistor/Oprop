@@ -24,9 +24,9 @@ class Link {
     }
  
     void main() {
-		Link l1 = new Link(Range(0,10))(3, null);
-		Link l2 = new Link(Range(0,10))(4, l1);
-		Link l3 = new Link(Range(0,10))(5, l2);
+		Link l1 = new Link(Range(0,10)[3, null])(3, null);
+		Link l2 = new Link(Range(0,10)[4, l1])(4, l1);
+		Link l3 = new Link(Range(0,10)[5, l2])(5, l2);
 		l3.addModulo11(20);
 	}
 }

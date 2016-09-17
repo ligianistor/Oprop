@@ -18,9 +18,9 @@ class SimpleCell {
 	}
 	
 	void main() {
-		SimpleCell c = new SimpleCell(PredVal())(2, null);
-		SimpleCell a = new SimpleCell(PredNext())(2, c);
-		SimpleCell b = new SimpleCell(PredNext())(3, c);
+		SimpleCell c = new SimpleCell(PredVal()[2])(2, null);
+		SimpleCell a = new SimpleCell(PredNext()[c])(2, c);
+		SimpleCell b = new SimpleCell(PredNext()[c])(3, c);
 		
 		unpack(a#1 PredNext())[c];
 		unpack(b#1 PredNext())[c];

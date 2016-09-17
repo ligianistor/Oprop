@@ -59,14 +59,14 @@ procedure main(this:Ref)
 	 var b:Ref;
 	 assume (forall y:Ref :: (fracPredNext[y] >= 0.0) );
 	 assume (forall y:Ref :: (fracPredVal[y] >= 0.0) );
-	 call ConstructSimpleCell(c);
+	 call ConstructSimpleCell(2,null,c);
 packedPredVal[c] := true;
 fracPredVal[c] := 1.0;
-null, 	 call ConstructSimpleCell(a);
+null, 	 call ConstructSimpleCell(2,c,a);
 packedPredNext[a] := true;
 fracPredNext[a] := 1.0;
 	fracPredVal[c] := fracPredVal[c] / 2.0;
-	 call ConstructSimpleCell(b);
+	 call ConstructSimpleCell(3,c,b);
 packedPredNext[b] := true;
 fracPredNext[b] := 1.0;
 	fracPredVal[c] := fracPredVal[c] / 2.0;

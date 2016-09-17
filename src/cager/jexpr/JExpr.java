@@ -1288,7 +1288,7 @@ void ConstructorDeclaration() :
       ;
     }
     jj_consume_token(IDENTIFIER);
-                 ider = new Identifier(getToken(0).image);
+    ider = new Identifier(getToken(0).image);
     params = FormalParameters();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case THROWS:
@@ -2678,6 +2678,7 @@ void ConstructorDeclaration() :
     String p = null;
     Expression e = null;
     Expression predicateArgs = null;
+    Expression existentialPredicateArgs = null;
     if (jj_2_25(2)) {
       jj_consume_token(NEW);
       PrimitiveType();
@@ -2698,10 +2699,13 @@ void ConstructorDeclaration() :
           
           //These are the arguments of the predicate.
           predicateArgs = Arguments();
+          //These are the existential arguments, if any are given, of the predicate.
+          existentialPredicateArgs = ExistentialArguments();
           jj_consume_token(RPAREN);
           e = Arguments();
           AllocationExpression allocExpr = new AllocationExpression(n, p);
           allocExpr.addPredicateArgs(predicateArgs);
+          allocExpr.addExistentialPredicateArgs(existentialPredicateArgs);
           allocExpr.addNewArgs(e);
           return allocExpr;
         default:

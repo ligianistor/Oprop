@@ -378,6 +378,10 @@ public class BoogieVisitor extends NullVisitor {
 	//that is currently called.
 	LinkedList<String> argumentsPredicate = new LinkedList<String>();
 	
+	//The actual existential arguments for the predicate in the constructor 
+	//that is currently called.
+	LinkedList<String> existentialArgumentsPredicate = new LinkedList<String>();
+	
 	// The actual arguments for the current method.
 	LinkedList<String> actualArgumentsMethod = new LinkedList<String>();
 	
@@ -2194,6 +2198,7 @@ public class BoogieVisitor extends NullVisitor {
         if (inArgumentList) {
  		   	argumentsConstructor.add(astvalue);
  		   	argumentsPredicate.add(astvalue);
+ 		    existentialArgumentsPredicate.add(astvalue);
         }
         
 		  if (inChild1OfImplies) {
@@ -2624,15 +2629,32 @@ public class BoogieVisitor extends NullVisitor {
     	String predicateOfConstruct = ast.getPredicate();
     	LinkedList<String> localArgumentsConstructor = new LinkedList<String>();
     	LinkedList<String> localArgumentsPredicate = new LinkedList<String>();
+    	LinkedList<String> localExistentialArgumentsPredicate = new LinkedList<String>();
     	
     	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+"(");
     	AST[] children = ast.getChildren();
     	//This is the ArgumentList that contains the arguments
     	//for the fields.
     	argumentsConstructor.clear();
-        children[1].accept(this);
+        children[2].accept(this);
         for (int i=0;i<argumentsConstructor.size();i++) {
         	localArgumentsConstructor.add(argumentsConstructor.get(i));
+        }
+        
+        // parsing the existential arguments of the predicate
+        existentialArgumentsPredicate.clear();
+        children[1].accept(this);
+        for (int i=0;i<existentialArgumentsPredicate.size();i++) {
+        	localExistentialArgumentsPredicate.add(existentialArgumentsPredicate.get(i));
+        }
+        
+        // Write the list of constructor arguments.
+        String argsConstructor = "";
+        if (localArgumentsConstructor.size() > 0) {
+        	for (int i=0;i<localArgumentsConstructor.size();i++) {
+        		argsConstructor = argsConstructor.concat(localArgumentsConstructor.get(i)+ ",");
+        	}
+        	modifyMethodBody(argsConstructor);
         }
               
         modifyMethodBody(localVariableName + ");\n");
@@ -2786,6 +2808,7 @@ public class BoogieVisitor extends NullVisitor {
         if (inArgumentList) {
         	argumentsConstructor.add(keywordString);
         	argumentsPredicate.add(keywordString);
+        	existentialArgumentsPredicate.add(keywordString);
         }
         
 		  if (inChild1OfImplies) {
@@ -3165,6 +3188,7 @@ public class BoogieVisitor extends NullVisitor {
     		if (inArgumentList) {
     			argumentsConstructor.add(identifierName);
     			argumentsPredicate.add(identifierName);
+    			existentialArgumentsPredicate.add(identifierName);
     		}
         	
     		// If we are in field selection, 
