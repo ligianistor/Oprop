@@ -69,7 +69,7 @@ public class BoogieVisitor extends NullVisitor {
 	// points to a set that holds all the objects
 	// of packedPred[object] (even if it's == false)
 	// that are mentioned in the precondition of the method.
-	// The above 3 maps will tell us what to write in the 
+	// This will help us know what to write in the 
 	// "requires forall" for the packed variables
 	// in the pre-conditions of methods.
 	HashMap<String, Set<String>> packedModifiedArgsInPrecondition =
@@ -213,6 +213,7 @@ public class BoogieVisitor extends NullVisitor {
 	//in the requires or ensures of the current method.
 	//TODO I think this should only contain the predicates for which the fraction is 1 in the 
 	// postcondition only, it does not matter if it is 1 in the precondition.
+	// TODO write comment here why does it matter if the fractions are 1.
 	Set<String> setFracEq1 = new TreeSet<String>();	
 	
 	//For each method, this map tells us which are the
@@ -1573,18 +1574,20 @@ public class BoogieVisitor extends NullVisitor {
 		String requiresPacked = "";
 
 		if (methodPreconditionsUnpacked.isEmpty()) {
-			
+			System.out.println("empty!");
 			String forallParameter = getNewForallParameter();		
 			
 			//requires (forall x:Ref :: packedOK[x]);
 			// Not everything is packed, only the ones that are 
 			// not specifically unpacked.
 			if (localFieldsInMethod != null) {
-				
+				System.out.println("notnull");
 				for (String p : predicates) {					        	
 					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) 
-							&& 
-							!setFracEq1.contains(p)) {
+							//&& 
+							//!setFracEq1.contains(p)
+							// TODO not sure why I need the above condition
+							) {
 						
 						LinkedList<PredicateAndFieldValue> unpackedPredicatesThisMethod =
 								unpackedPredicatesInPrecondition.get(currentMethod);
@@ -1607,20 +1610,24 @@ public class BoogieVisitor extends NullVisitor {
 							}
 						}
 
+						// TODO write comment for what does this areEqual means.
 						boolean areEqual = true;
+						System.out.println("areEqual="+areEqual);
 						Set<String> argsInMethod = packedModifiedArgsInMethod.get(p);
 						Set<String> argsInPrecondition = packedModifiedArgsInPrecondition.get(p);
 						if ((argsInMethod == null) || (argsInPrecondition==null)) {
+							System.out.println("isnull");
 							areEqual = false;
 							//TODO what happens when both are null?
 						} else {
 							if (argsInMethod != argsInPrecondition) {
 								areEqual = false;
+								System.out.println("inflse");
 							}
 						}
 						LinkedList<String> unpackedObjects = new LinkedList<String>();
 						unpackedObjects.addAll(unpackedObjectsSet);
-						
+						System.out.println("areEqual="+areEqual);
 						if (unpackedObjects.isEmpty()
 							&&
 							!areEqual
@@ -1660,8 +1667,10 @@ public class BoogieVisitor extends NullVisitor {
 				for (int i=0; i<numberFilesBefore; i++) {
 					Set<String> bvPredicates = bv[i].getPredicates();
 					for (String p : bvPredicates) {							        	
-						if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) &&
-				        				!setFracEq1.contains(p) ) {	
+						if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) 
+								//&&
+				        		//!setFracEq1.contains(p) 
+				        				) {	
 							requiresPacked = requiresPacked.concat("\t requires (forall "+ 
 									forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
 									"["+ forallParameter+"]);\n");
@@ -2656,17 +2665,29 @@ public class BoogieVisitor extends NullVisitor {
         	}
         	modifyMethodBody(argsConstructor);
         }
-              
-        modifyMethodBody(localVariableName + ");\n");
-        modifyMethodBody("packed" +predicateOfConstruct+"[");
+        
         argumentsPredicate.clear();
         children[0].accept(this);
         for (int i=0;i<argumentsPredicate.size();i++) {
         	localArgumentsPredicate.add(argumentsPredicate.get(i));
         }
+              
+        modifyMethodBody(localVariableName + ");\n");
+        modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
+        modifyMethodBody(localVariableName + "] := false;\n");
         
+        String callPack = "\tcall Pack" + upperCaseFirstLetter(predicateOfConstruct)+"(";
+        if (localExistentialArgumentsPredicate.size()>0) {
+        	for (int i=0;i<localExistentialArgumentsPredicate.size();i++) {
+        		callPack = callPack.concat(localExistentialArgumentsPredicate.get(i) + ",");
+        	}
+        }
+        callPack = callPack.concat(localVariableName + ");\n");
+        modifyMethodBody(callPack);
+        
+        modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := true;\n");
-        modifyMethodBody("frac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
+        modifyMethodBody("\tfrac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
         children[0].accept(this);
         modifyMethodBody(localVariableName + "] := 1.0;\n");
         modifyFieldsInMethod("packed" +upperCaseFirstLetter(predicateOfConstruct));
@@ -2761,7 +2782,7 @@ public class BoogieVisitor extends NullVisitor {
      	   //we are not inside a predicate
         	if (!inPackUnpackAnnotation) {
         		if ((currentMethod != "") && inArgumentList && 
-         			   	!inFieldSelection) {
+         			   inStatement && !inFieldSelection) {
         			statementContent = statementContent.concat(keywordString + ", ");
      		   }
      		   
