@@ -50,3 +50,40 @@ call PackPredVal(r, this);
 packedPredVal[this] := true;
 }
  
+procedure main(this:Ref)
+	 modifies fracPredNext,fracPredVal,packedPredNext,packedPredVal,val;
+	 requires (forall x:Ref :: packedPredNext[x]);
+	 requires (forall x:Ref :: packedPredVal[x]);
+{
+	 var c:Ref;
+	 var a:Ref;
+	 var b:Ref;
+	 assume (forall y:Ref :: (fracPredNext[y] >= 0.0) );
+	 assume (forall y:Ref :: (fracPredVal[y] >= 0.0) );
+	 call ConstructSimpleCell(2,null,c);
+	packedPredVal[c] := false;
+	call PackPredVal(2,c);
+	packedPredVal[c] := true;
+	fracPredVal[c] := 1.0;
+	 call ConstructSimpleCell(2,c,a);
+	packedPredNext[a] := false;
+	call PackPredNext(c,a);
+fracPredVal[c] := fracPredVal[c] - 0.34;
+	packedPredNext[a] := true;
+	fracPredNext[a] := 1.0;
+	 call ConstructSimpleCell(3,c,b);
+	packedPredNext[b] := false;
+	call PackPredNext(c,b);
+fracPredVal[c] := fracPredVal[c] - 0.34;
+	packedPredNext[b] := true;
+	fracPredNext[b] := 1.0;
+call UnpackPredNext(c, a);
+fracPredVal[c] := fracPredVal[c] + 0.34;
+packedPredNext[a] := false;
+call UnpackPredNext(c, b);
+fracPredVal[c] := fracPredVal[c] + 0.34;
+packedPredNext[b] := false;
+fracPredVal[c] := fracPredVal[c]+0.34+0.34;
+	 call changeVal(4,c);
+}
+ 

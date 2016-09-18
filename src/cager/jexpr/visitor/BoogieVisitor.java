@@ -1574,14 +1574,14 @@ public class BoogieVisitor extends NullVisitor {
 		String requiresPacked = "";
 
 		if (methodPreconditionsUnpacked.isEmpty()) {
-			System.out.println("empty!");
+			
 			String forallParameter = getNewForallParameter();		
 			
 			//requires (forall x:Ref :: packedOK[x]);
 			// Not everything is packed, only the ones that are 
 			// not specifically unpacked.
 			if (localFieldsInMethod != null) {
-				System.out.println("notnull");
+				
 				for (String p : predicates) {					        	
 					if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(p)) 
 							//&& 
@@ -1612,22 +1612,22 @@ public class BoogieVisitor extends NullVisitor {
 
 						// TODO write comment for what does this areEqual means.
 						boolean areEqual = true;
-						System.out.println("areEqual="+areEqual);
+						
 						Set<String> argsInMethod = packedModifiedArgsInMethod.get(p);
 						Set<String> argsInPrecondition = packedModifiedArgsInPrecondition.get(p);
 						if ((argsInMethod == null) || (argsInPrecondition==null)) {
-							System.out.println("isnull");
+							
 							areEqual = false;
 							//TODO what happens when both are null?
 						} else {
 							if (argsInMethod != argsInPrecondition) {
 								areEqual = false;
-								System.out.println("inflse");
+								
 							}
 						}
 						LinkedList<String> unpackedObjects = new LinkedList<String>();
 						unpackedObjects.addAll(unpackedObjectsSet);
-						System.out.println("areEqual="+areEqual);
+						
 						if (unpackedObjects.isEmpty()
 							&&
 							!areEqual
@@ -2684,6 +2684,10 @@ public class BoogieVisitor extends NullVisitor {
         }
         callPack = callPack.concat(localVariableName + ");\n");
         modifyMethodBody(callPack);
+        argumentsObjProp = copyLinkedList(localArgumentsPredicate);
+        existentialArgsObjProp = copyLinkedList(localExistentialArgumentsPredicate);
+        modifyMethodBody( writeFractionManipulation(
+        		predicateOfConstruct, true, true, localVariableName));
         
         modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := true;\n");
@@ -2693,44 +2697,6 @@ public class BoogieVisitor extends NullVisitor {
         modifyFieldsInMethod("packed" +upperCaseFirstLetter(predicateOfConstruct));
         modifyFieldsInMethod("frac" +upperCaseFirstLetter(predicateOfConstruct));
         
-        LinkedList<FracString> currentPredicateFrac = 
-    			predicateFrac.get(predicateOfConstruct);
-        if (currentPredicateFrac != null) {	
-        	for (int pf = 0; pf < currentPredicateFrac.size(); pf++) {
-                FracString fracString = currentPredicateFrac.get(pf);
-                //replace the formal parameters with the actual ones
-                String field = fracString.getField();
-            
-                int positionInListOfFields=-1;
-                if (field!=null) {
-                	for (int i=0;i<fieldsTypes.size();i++) {
-                		if (fieldsTypes.get(i).getName().equals(field)) {
-                			positionInListOfFields = i;
-                		}
-                	}
-                }
-                LinkedList<String> initialParameters = new LinkedList<String>();
-                initialParameters = fracString.getParameters();
-                if (localArgumentsPredicate!=null) {
-                	fracString.setParameters(localArgumentsPredicate);
-                }
-                
-                if (positionInListOfFields == -1){
-                	modifyMethodBody(fracString.getStatementFracString(true, "this"));
-                } else {
-                	String actualField = localArgumentsConstructor.get(positionInListOfFields);
-                	if (!actualField.equals("null")) {
-                		//I only need to set the field to null temporarily,
-                		//then I set it back to the original field.
-                		fracString.setField(null);
-                		modifyMethodBody(fracString.getStatementFracString(true, actualField));
-                		fracString.setField(field);
-                	}
-                    		
-                }
-                fracString.setParameters(initialParameters);
-        	}
-        }
     }
     
     public void visitDeclarationStatement(DeclarationStatement ast) 
@@ -3057,6 +3023,10 @@ public class BoogieVisitor extends NullVisitor {
     		 // These are the actual parameters of the current object proposition.
     		 // This is right because for the predicate case we are always inside an object proposition
     		 // and argumentsObjProp are accurate.
+    		 // Tricky: Except in this case in the constructor where we
+    		 // are not inside an object proposition.
+    		 // In that case I copy to argumentsObjProp and existentialArgsObjProp
+    		 // the arguments that are the right ones.
     		 actualParams = copyLinkedList(argumentsObjProp);
     		 actualParams.addAll(existentialArgsObjProp);
     		 actualParams.add(callingObject);
@@ -3121,15 +3091,11 @@ public class BoogieVisitor extends NullVisitor {
     		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 // This is the list of actual arguments for the current method 
     		 actualParams = actualArgumentsMethod;
-    		 for (int kk=0; kk<actualArgumentsMethod.size(); kk++) {
-    			 System.out.println(namePredOrMethod +" " + actualArgumentsMethod.get(kk));
-    		 }
-    		 
+    		    		 
     		 Set<FieldAndTypePair> predObjs = 
     	    			predObjNotMentionedPostcond.get(namePredOrMethod);
     	     if (predObjs != null) {
     	    	 for (FieldAndTypePair p : predObjs) {
-        	    	System.out.println(p.getType());
     	    		result = result.concat("\t frac"+upperCaseFirstLetter(p.getName())+"["+
         			replaceFormalArgsWithActual(
         					 formalParams,
