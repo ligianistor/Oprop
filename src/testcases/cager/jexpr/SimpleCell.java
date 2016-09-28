@@ -6,7 +6,8 @@ class SimpleCell {
 	
 	predicate PredVal() = exists int v : this.val -> v && v<15
 			
-	predicate PredNext() = exists SimpleCell obj : this.next -> obj && (obj#0.34 PredVal())	
+	predicate PredNext() = exists SimpleCell obj : 
+		this.next -> obj && (obj#0.34 PredVal())	
 
 	void changeVal(int r) 
 	requires (this#1 PredVal()) && (r<15) 

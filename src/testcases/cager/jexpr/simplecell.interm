@@ -137,6 +137,9 @@ CompilationUnits:
                 ArgumentList:
                   PrimaryExpression (Type: )
                     Literal: 2 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Literal: 2 (Type: int)
                   PrimaryExpression (Type: )
                     KeywordExpression: null
           DeclarationStatement
@@ -145,6 +148,9 @@ CompilationUnits:
             PrimaryExpression (Type: )
               AllocationExpression: new SimpleCell(PredNext)
                 ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Identifier: c
                 ArgumentList:
                   PrimaryExpression (Type: )
                     Literal: 2 (Type: int)
@@ -156,6 +162,9 @@ CompilationUnits:
             PrimaryExpression (Type: )
               AllocationExpression: new SimpleCell(PredNext)
                 ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: )
+                    Identifier: c
                 ArgumentList:
                   PrimaryExpression (Type: )
                     Literal: 3 (Type: int)
@@ -230,143 +239,148 @@ before visitor v
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: val
 FS name: val, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c79a5 is FS and type: int
-Evaluating type of IdentifierExpression: v v
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e668c2 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@2c79a5 cager.jexpr.ast.PrimaryExpression@1e668c2
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e668c2 is FS and type: int
 Evaluating type of IdentifierExpression: v v
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1e7a4d0 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@f55ff2 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e7a4d0 cager.jexpr.ast.PrimaryExpression@f55ff2
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1e668c2 cager.jexpr.ast.PrimaryExpression@1e7a4d0
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@16e3eb3 cager.jexpr.ast.BinaryExpression@d67d61
+Evaluating type of IdentifierExpression: v v
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@f55ff2 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16e3eb3 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@f55ff2 cager.jexpr.ast.PrimaryExpression@16e3eb3
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@d67d61 cager.jexpr.ast.BinaryExpression@1c190a2
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: next
 FS name: next, type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c190a2 is FS and type: SimpleCell
-Evaluating type of IdentifierExpression: obj obj
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@feba21 type: SimpleCell
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@1c190a2 cager.jexpr.ast.PrimaryExpression@feba21
-Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@feba21 is FS and type: SimpleCell
 Evaluating type of IdentifierExpression: obj obj
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@16dd645 type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e54f3 type: double
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@feba21 cager.jexpr.ast.PrimaryExpression@16dd645
+Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
+Evaluating type of IdentifierExpression: obj obj
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e54f3 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb3f66 type: double
 Evaluating type of IdentifierExpression: PredVal PredVal
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb3f66 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f5fc2 type: null
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@8f5fc2 type: boolean
-Evaluating type of Binary cager.jexpr.ast.BinaryExpression@d7cf62 cager.jexpr.ast.PrimaryExpression@8f5fc2
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d7cf62 type: boolean
+Evaluating type of Binary cager.jexpr.ast.BinaryExpression@7040e7 cager.jexpr.ast.PrimaryExpression@d7cf62
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Visiting Method changeVal
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@7040e7 type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b51db7 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b51db7 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b1f800 type: int
 Evaluating type of IdentifierExpression: PredVal PredVal
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b1f800 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@111014a type: null
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@111014a type: boolean
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@16ba7f9 type: boolean
 Evaluating type of IdentifierExpression: r r
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@16ba7f9 type: int
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@e0f945 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@16ba7f9 cager.jexpr.ast.PrimaryExpression@e0f945
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@d50a6 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@e0f945 cager.jexpr.ast.PrimaryExpression@d50a6
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@d50a6 type: boolean
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@111014a cager.jexpr.ast.PrimaryExpression@d50a6
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@29de03 type: boolean
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@16ba7f9 cager.jexpr.ast.PrimaryExpression@29de03
 boolean && boolean
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@29de03 type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@aea981 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@aea981 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@fa7139 type: int
 Evaluating type of IdentifierExpression: PredVal PredVal
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@fa7139 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f7fbe type: null
 Setting type of Object Prop 
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f7fbe type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fbafbb type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1fbafbb type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@ce2c57 type: int
 Evaluating type of IdentifierExpression: PredVal PredVal
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@ce2c57 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c118ae type: null
 Setting type of Object Prop 
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: val
 FS name: val, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1c118ae is FS and type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@3b84ee type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3b84ee is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@19438de type: null
 Evaluating type of Keyword this
 Evaluating type of FieldSelection: val
 FS name: val, type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@19438de is FS and type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@217dc8 is FS and type: int
 Evaluating type of IdentifierExpression: r r
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@217dc8 type: int
-Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@19438de cager.jexpr.ast.PrimaryExpression@217dc8
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@c91629 type: int
+Evaluating type of Binary cager.jexpr.ast.PrimaryExpression@217dc8 cager.jexpr.ast.PrimaryExpression@c91629
 Type Info is OperatorTypeInfo: result=boolean, cast1=null, cast2=null
 Evaluating type of Keyword this
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@c91629 type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ce0314 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1ce0314 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c1b13 type: int
 Evaluating type of IdentifierExpression: PredVal PredVal
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2c1b13 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a59727 type: null
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: r r
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a59727 type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@66a008 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@66a008 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@194a8eb type: null
 Visiting Method main
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@194a8eb type: int
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@de1cb6 type: java.lang.Object
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@2f06b6 type: null
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@161c602 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@de1cb6 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@2f06b6 type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@161c602 type: java.lang.Object
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb73e type: null
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@eb73e type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@208506 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@208506 type: SimpleCell
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@fd5428 type: int
 Evaluating type of IdentifierExpression: c c
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a04c26 type: SimpleCell
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@e7736c type: null
-Evaluating type of IdentifierExpression: a a
+Evaluating type of IdentifierExpression: c c
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@14ad296 type: SimpleCell
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1479a6b type: int
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eae775 type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@101b455 type: null
+Evaluating type of IdentifierExpression: a a
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6529c type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1399ae5 type: int
 Evaluating type of IdentifierExpression: PredNext PredNext
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1eae775 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8709d type: null
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@101b455 type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e6529c type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@397cea type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@380dbe type: null
 Evaluating type of IdentifierExpression: b b
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1399ae5 type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e8709d type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e5f1d type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1869929 type: int
 Evaluating type of IdentifierExpression: PredNext PredNext
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@397cea type: null
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@380dbe type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e5f1d type: null
-Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1869929 type: SimpleCell
-Evaluating type of IdentifierExpression: k k
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@1b15387 type: null
-Evaluating type of IdentifierExpression: PredVal PredVal
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2da7a type: null
 Setting type of Object Prop 
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@175831e type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f3329a type: double
-Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e2da7a type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@175831e type: null
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f3329a type: SimpleCell
+Evaluating type of IdentifierExpression: k k
 PrimaryExpression cager.jexpr.ast.PrimaryExpression@17f2ee6 type: null
-Setting type of Object Prop 
-Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@e01873 type: SimpleCell
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@6558bb type: double
 Evaluating type of IdentifierExpression: PredVal PredVal
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a49182 type: null
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@e01873 type: null
 Setting type of Object Prop 
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@14cf1b9 type: null
 Evaluating type of IdentifierExpression: c c
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@91cc3a type: int
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@6558bb type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1a49182 type: double
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@14cf1b9 type: null
+Setting type of Object Prop 
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@91cc3a type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f713ed type: double
+Evaluating type of IdentifierExpression: PredVal PredVal
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@3d58b2 type: null
+Setting type of Object Prop 
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@18a3745 type: null
+Evaluating type of IdentifierExpression: c c
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@132ca2b type: int
 Evaluating type of MethodSelection: changeVal
 MS name: changeVal, type: void
-PrimaryExpression cager.jexpr.ast.PrimaryExpression@1f713ed type: SimpleCell
+PrimaryExpression cager.jexpr.ast.PrimaryExpression@176ed77 type: SimpleCell
 before second dump 0
 CompilationUnits:
   CompilationUnit:
@@ -505,6 +519,9 @@ CompilationUnits:
                 ArgumentList:
                   PrimaryExpression (Type: int)
                     Literal: 2 (Type: int)
+                ArgumentList:
+                  PrimaryExpression (Type: int)
+                    Literal: 2 (Type: int)
                   PrimaryExpression (Type: java.lang.Object)
                     KeywordExpression: null
           DeclarationStatement
@@ -513,6 +530,9 @@ CompilationUnits:
             PrimaryExpression (Type: )
               AllocationExpression: new SimpleCell(PredNext)
                 ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: c
                 ArgumentList:
                   PrimaryExpression (Type: int)
                     Literal: 2 (Type: int)
@@ -524,6 +544,9 @@ CompilationUnits:
             PrimaryExpression (Type: )
               AllocationExpression: new SimpleCell(PredNext)
                 ArgumentList:
+                ArgumentList:
+                  PrimaryExpression (Type: SimpleCell)
+                    Identifier: c
                 ArgumentList:
                   PrimaryExpression (Type: int)
                     Literal: 3 (Type: int)
