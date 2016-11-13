@@ -23,10 +23,6 @@ void setValue(int x) {
 	value = x;
 }
 
-Integer getValueInteger() {
-	return new Integer(value);
-}	
-
 int getValueInt() {
 	return value;
 }
