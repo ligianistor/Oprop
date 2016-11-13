@@ -1,12 +1,14 @@
 package testcases.cager.jexpr;
 
 class StateClient { 
+	
 private StateContext scon; 
 predicate stateClientMultiple2() = exists k:real :: scon@k stateContextMultiple2()  
 predicate stateClientMultiple3() = exists k:real :: scon@k stateContextMultiple3()  
 public StateClient(StateContext scon1) { 
 scon = scon1; 
 } 
+
 this@1 stateClientMultiple3() --> 
 boolean stateClientCheckMultiplicity3() { 
 return scon.stateContextCheckMultiplicity3(); 
