@@ -1,30 +1,31 @@
 package testcases.cager.jexpr;
 
-//on System B 
 class ProxySum implements Sum {
-    private RealSum realSum = null;
-    private int n = 0;
-    /**
-     * Constructor
-     * @param filename 
-     */
-    public ProxySum(final int n) { 
-        this.n = n; 
-    }
+predicate sumOK() = exists s1:int, n1:int :: sum -> s1 && n -> n1 &&
+( s1 == n1 * (n1 + 1) / 2 )
+predicate sumGreater0() = exists s1:int :: sum -> s1 && s1 > 0;
 
-    /**
-     * Calculates the sum
-     */
-    public int calculateSum() {
-        if (realSum == null) {
-           realSum = new RealSum(n);
-        } 
-      return realSum.calculateSum();
-    }
-    
-	@Override
-	public void displaySum() {
-		System.out.println(realSum.calculateSum());	
-	}
+private RealSum realSum = null;
+private int sum = 0;
+private int n = 0;
+ 
+public ProxySum(int n1) { 
+this.n = n1; 
+}
 
+public int calculateSum() {
+if (realSum == null) {
+realSum = new RealSum(n);
+} 
+sum = realSum.calculateSum();
+return sum; 
+}
+
+public boolean sumIsOK() {
+return (sum == (n * (n + 1) / 2));
+}
+
+public boolean sumIsGreater0() {
+return (sum > 0);
+}
 }

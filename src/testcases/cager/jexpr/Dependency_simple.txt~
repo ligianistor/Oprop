@@ -1,7 +1,0 @@
-package testcases.cager.jexpr;
-
-class Dependency {
-	Cell ce;
-	int input;
-
-}
