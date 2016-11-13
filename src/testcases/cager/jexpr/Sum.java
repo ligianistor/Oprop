@@ -1,6 +1,10 @@
 package testcases.cager.jexpr;
 
-public interface Sum {
-    public int calculateSum();
-    public void displaySum();
+interface Sum {
+//predicate sumOK(); 
+//predicate sumGreater0();
+
+int calculateSum();
+boolean sumIsOK();
+boolean sumIsGreater0();
 }
