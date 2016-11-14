@@ -6,14 +6,12 @@ int campusNumber;
 IntCell facilities;
 int collegeNumber;
 
-/*
 predicate facilitiesOK() = exists f:IntCell, c:int :: 
 	this.facilities -> f && this.collegeNumber -> c &&
-	(f#1 MultipleOf(c))
-*/
+	(f#1.0 MultipleOf(c))
 
 StudentApplication(College college, int campusNumber) 
-//ensures this#1 facilitiesOK()
+ensures this#1.0 facilitiesOK()
 {
 		this.college = college;
 		this.campusNumber = campusNumber;
@@ -22,7 +20,7 @@ StudentApplication(College college, int campusNumber)
 }
 
 boolean checkNumberFacilities() 
-//requires this#1 facilitiesOK()
+requires this#1.0 facilitiesOK()
 {        
 	return (this.facilities.getValueInt() % this.collegeNumber == 0);
 }
