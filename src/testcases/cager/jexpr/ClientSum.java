@@ -6,13 +6,13 @@ ClientSum(Sum sum1) { sum = sum1; }
 	
 
 boolean checkSumIsOK() 
-requires s#1.0 sumOK() 
+requires sum#1.0 sumOK() 
 {
 	return sum.sumIsOK();
 }
 
 boolean checkSumGreater0() 
-requires s#1.0 sumGreater0()
+requires sum#1.0 sumGreater0()
 {
 	return sum.sumIsGreater0();
 }
@@ -26,12 +26,12 @@ void main() {
 	s.calculateSum();
 	client2.checkSumIsOK();
 
-	Sum s2 = new Sum(sumGreater0()[])(7);
-	ClientSum client3 = new ClientSum(s);
-	ClientSum client4 = new ClientSum(s);
-	s.calculateSum();
+	Sum s2 = new ProxySum(sumGreater0()[])(7);
+	ClientSum client3 = new ClientSum(s2);
+	ClientSum client4 = new ClientSum(s2);
+	s2.calculateSum();
 	client3.checkSumGreater0();
-	s.calculateSum();
+	s2.calculateSum();
 	client4.checkSumGreater0();
 }
 }

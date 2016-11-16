@@ -12,6 +12,7 @@ class ProxySum implements Sum {
  
 ProxySum(int n1) { 
 	this.n = n1; 
+	calculateSum();
 }
 
 int calculateSum() {
