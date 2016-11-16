@@ -1,20 +1,20 @@
 package testcases.cager.jexpr;
 
 class ClientSum {
-Sum sum;
-ClientSum(Sum sum1) { sum = sum1; }
+Sum sumClient;
+ClientSum(Sum sum1) { sumClient = sum1; }
 	
 
 boolean checkSumIsOK() 
-requires sum#1.0 sumOK() 
+requires sumClient#1.0 sumOK() 
 {
-	return sum.sumIsOK();
+	return sumClient.sumIsOK();
 }
 
 boolean checkSumGreater0() 
-requires sum#1.0 sumGreater0()
+requires sumClient#1.0 sumGreater0()
 {
-	return sum.sumIsGreater0();
+	return sumClient.sumIsGreater0();
 }
 
 void main() {
