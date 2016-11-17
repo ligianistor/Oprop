@@ -10,8 +10,15 @@ class RealSum implements Sum {
 
 	int n;
 	int sum;
+	
+	/*
+	RealSum() {
+		sum = 0;
+		n = 0;	
+	}
+	 */
 
-RealSum(int n1) {
+void sumConstr(int n1) {
 	n = n1; 
 	calculateRealSum(n);
 }

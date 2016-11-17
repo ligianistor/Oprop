@@ -7,10 +7,17 @@ class ProxySum implements Sum {
 	predicate sumGreater0() = exists s1:int :: sum -> s1 && s1 > 0;
 
 	RealSum realSum = null;
-	int sum = 0;
-	int n = 0;
- 
-ProxySum(int n1) { 
+	int sum;
+	int n;
+
+/*
+ProxySum() {
+	sum = 0;
+	n = 0;	
+}
+ */
+	
+void sumConstr(int n1) { 
 	this.n = n1; 
 	calculateSum();
 }
