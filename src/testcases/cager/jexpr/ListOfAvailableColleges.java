@@ -1,19 +1,15 @@
 package testcases.cager.jexpr;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 // ListOfAvailableColleges acts as a factory and cache for College flyweight objects
 class ListOfAvailableColleges {
-	Map<Integer, College> listOfColleges = 
-			new ConcurrentHashMap<Integer, College>();
+	MapCollege mapOfColleges;
 
 	College lookup(int collegeNumber, int multNumber) {
-		if (!listOfColleges.containsKey(collegeNumber)) {
-			listOfColleges.put(collegeNumber, new College(collegeNumber, multNumber));
+		if (!mapOfColleges.containsKey(collegeNumber)) {
+			mapOfColleges.put(collegeNumber, new College(collegeNumber, multNumber));
 		}
 		
-		return listOfColleges.get(collegeNumber);
+		return mapOfColleges.get(collegeNumber);
 	}
 }
 

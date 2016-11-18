@@ -5,7 +5,7 @@ class IntCell {
 //for flyweight
 predicate MultipleOf(int a) = value->v && (v % a == 0)
 	
-//for proxy
+//for state
 predicate MultipleOf3() = value->v && (v % 3 == 0) 
 predicate MultipleOf2() = value->v && (v % 2 == 0) 
 predicate MultipleOf6() = value->v && (v % 6 == 0) 

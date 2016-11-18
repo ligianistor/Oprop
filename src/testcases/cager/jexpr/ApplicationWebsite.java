@@ -1,14 +1,10 @@
 package testcases.cager.jexpr;
 
-import java.util.List;
-import java.util.Vector;
-
 class ApplicationWebsite {
-List<StudentApplication> listStudentApplications;
+//List<StudentApplication> listStudentApplications;
 ListOfAvailableColleges listOfAvailableColleges;
 
 ApplicationWebsite() {
-	this.listStudentApplications = new Vector<StudentApplication>();
 	this.listOfAvailableColleges = new ListOfAvailableColleges();
 }
 
@@ -21,9 +17,9 @@ ensures ((multNumber == 4) ~=> result#1 collegeBuildingsFew()) &&
 ((multNumber == 10) ~=> result#1 collegeBuildingsMany())
 {
 	College college = this.listOfAvailableColleges.lookup(collegeNumber, multNumber);
-	StudentApplication studentApplication = 
-			new StudentApplication(college, campusNumber);
-	this.listStudentApplications.add(studentApplication);
+	//StudentApplication studentApplication = 
+	//		new StudentApplication(college, campusNumber);
+	//this.listStudentApplications.add(studentApplication);
 	return college;
 }
 
