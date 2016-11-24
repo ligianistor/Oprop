@@ -1,6 +1,9 @@
 package testcases.cager.jexpr;
 
-class StateMultiplyEighteen implements Statelike { 	
+class StateMultiplyEighteen implements Statelike {
+	
+	IntCell cell;
+	
 predicate StateMultipleOf18() = cell ->c && c#1 MultipleOf18() 
 predicate StateMultipleOf3() = cell -> c && c#1 MultipleOf3() 
 predicate StateMultipleOf2() = cell -> c && c#1 MultipleOf2() 

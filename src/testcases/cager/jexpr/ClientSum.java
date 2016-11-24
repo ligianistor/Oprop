@@ -11,7 +11,6 @@ predicate clientSumGreater0() =
 
 ClientSum(Sum sum1) { sumClient = sum1; }
 	
-
 boolean checkSumIsOK() 
 requires this#1.0 clientSumOK()
 {

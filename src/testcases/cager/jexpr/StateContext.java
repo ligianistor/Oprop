@@ -22,7 +22,6 @@ void setState(Statelike newState) {
 	myState = newState; 
 } 
 
-
 public IntCell computeResult(int num) 
 ensures (this#1.0 state6() ~=> (this#1.0 stateContextMultiple6() && this#1.0 state18())) 
 && 
