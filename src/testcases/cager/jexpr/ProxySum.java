@@ -11,27 +11,16 @@ class ProxySum implements Sum {
 	RealSum realSum = null;
 	double sum;
 	int n;
-
-/*
-ProxySum() {
-	sum = 0;
-	n = 0;	
-}
- */
 	
-void sumConstr(int n1) { 
-	this.n = n1; 
-	calculateSum();
-}
-
-double calculateSum()
+double calculateSum(int n1)
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
 {
+	this.n = n1; 
 	if (realSum == null) {
-		realSum = new RealSum(this.n);
+		realSum = new RealSum(sumOK()[0,0])(0, 0);
 	} 
-	this.sum = realSum.calculateSum();
+	this.sum = realSum.calculateSum(this.n);
 	return this.sum; 
 }
 

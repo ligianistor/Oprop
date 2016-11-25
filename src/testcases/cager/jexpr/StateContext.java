@@ -22,7 +22,7 @@ void setState(Statelike newState) {
 	myState = newState; 
 } 
 
-public IntCell computeResult(int num) 
+public IntCell computeResultSC(int num) 
 ensures (this#1.0 state6() ~=> (this#1.0 stateContextMultiple6() && this#1.0 state18())) 
 && 
 (this#1.0 state18() ~=> (this#1.0 stateContextMultiple18() && this#1.0 state6())) 
@@ -30,7 +30,7 @@ ensures (this#1.0 state6() ~=> (this#1.0 stateContextMultiple6() && this#1.0 sta
 	return myState.computeResult(this, num); 
 } 
 
-public IntCell computeResult2(int num) 
+public IntCell computeResult2SC(int num) 
 ensures (this#1.0 state6() ~=> (this#1 stateContextMultiple6() && this#1.0 state12())) 
 && 
 (this#1.0 state12() ~=> (this#1 stateContextMultiple12() && this#1.0 state6())) 

@@ -13,23 +13,12 @@ class RealSum implements Sum {
 
 	int n;
 	double sum;
-	
-	/*
-	RealSum() {
-		sum = 0;
-		n = 0;	
-	}
-	 */
-
-void sumConstr(int n1) {
-	this.n = n1; 
-	calculateSum();
-}
 
 double calculateSum() 
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
 {
+	this.n = n1;
 	return calculateRealSum(this.n);
 }
 

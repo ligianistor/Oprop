@@ -7,9 +7,7 @@ predicate sumOK();
 predicate sumGreater0();
 //might need to add another predicate that simply gives access to the fields
 
-void sumConstr(int n1);
-
-double calculateSum();
+double calculateSum(int n1);
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
 
