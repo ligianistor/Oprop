@@ -3,6 +3,8 @@ package testcases.cager.jexpr;
 class StateContext { 
 Statelike myState; 
 
+	predicate BasicFieldsContext() = exists m:StateLike :: this.myState -> m
+
 	predicate state6() = myState instanceof StateMultiplySix 
 	predicate state18() = myState instanceof StateMultiplyEighteen 
 	predicate state12() = myState instanceof StateMultiplyTwelve 
