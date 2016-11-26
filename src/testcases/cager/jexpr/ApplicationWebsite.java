@@ -13,8 +13,9 @@ int collegeNumber,
 int multNumber,
 int campusNumber
 ) 
-ensures ((multNumber == 4) ~=> result#1 collegeBuildingsFew()) &&
-((multNumber == 10) ~=> result#1 collegeBuildingsMany())
+~double k1, k2:
+ensures ((multNumber == 4) ~=> result#k1 collegeBuildingsFew()) &&
+((multNumber == 10) ~=> result#k2 collegeBuildingsMany())
 {
 	College college = this.listOfAvailableColleges.lookup(collegeNumber, multNumber);
 	//StudentApplication studentApplication = 
