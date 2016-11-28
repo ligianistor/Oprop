@@ -20,7 +20,7 @@ ensures this#1.0 sumOK()
 	if (realSum == null) {
 		realSum = new RealSum(sumOK()[0,0])(0, 0);
 	} 
-	this.sum = realSum.calculateSum(this.n);
+	this.sum = this.realSum.calculateSum(this.n);
 	return this.sum; 
 }
 

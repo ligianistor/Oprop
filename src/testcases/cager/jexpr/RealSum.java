@@ -15,14 +15,17 @@ class RealSum implements Sum {
 	double sum;
 
 double calculateSum() 
-requires this#1.0 basicFields()
-ensures this#1.0 sumOK()
+requires this#1.0 basicFields()[]
+ensures this#1.0 sumOK()[]
 {
 	this.n = n1;
 	return calculateRealSum(this.n);
 }
 
-double calculateRealSum(int n1) { 
+double calculateRealSum(int n1)
+requires this#1.0 basicFields()[]
+ensures this#1.0 sumOK()[]
+{ 
 	if (n1 == 0) {
 		this.sum := 0;
 		return this.sum;
