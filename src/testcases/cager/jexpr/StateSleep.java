@@ -1,17 +1,17 @@
 package testcases.cager.jexpr;
 
-class StateMultiplyEighteen implements Statelike {
+class StateSleep implements Statelike {
 	
 	IntCell cell;
 	
 predicate BasicFieldsState() = this.cell ->c
 	
-predicate StateMultipleOf18() = this.cell ->c && c#1 MultipleOf18() 
-predicate StateMultipleOf3() = this.cell -> c && c#1 MultipleOf3() 
-predicate StateMultipleOf2() = this.cell -> c && c#1 MultipleOf2() 
+//predicate StateMultipleOf18() = this.cell ->c && c#1 MultipleOf18() 
+//predicate StateMultipleOf3() = this.cell -> c && c#1 MultipleOf3() 
+//predicate StateMultipleOf2() = this.cell -> c && c#1 MultipleOf2() 
 
-//predicate StateMultipleOf3() = this.cell -> c && c#1 MultipleOf18() 
-//predicate StateMultipleOf2() = this.cell -> c && c#1 MultipleOf18() 
+predicate StateMultipleOf3() = this.cell -> c && c#1 MultipleOf33() 
+predicate StateMultipleOf2() = this.cell -> c && c#1 MultipleOf4() 
 // StateMultipleOf3 and StateMultipleOf2 have different implementations in
 // each implementing class.
 
@@ -26,19 +26,19 @@ in the boogie files
 
 IntCell computeResult(StateContext context, int num) 
 requires (this#1.0 BasicFieldsState()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf18()) && (context#1.0 state6())
+ensures (this#1.0 StateMultipleOf3()) && (context#1.0 stateLive())
 { 
-	this.cell.setValue(num*18); 
-	context.setState(new StateMultiplySix()[]); 
+	this.cell.setValue(num*33); 
+	context.setState(new StateLive()[]); 
 	return this.cell; 
 }  
  
 IntCell computeResult2(StateContext context, int num) 
 requires (this#1.0 BasicFieldsState()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf18()) && (context#1.0 state12())
+ensures (this#1.0 StateMultipleOf2()) && (context#1.0 state())
 { 
-	this.cell.setValue(num*18); 
-	context.setState(new StateMultiplyTwelve()[]); 
+	this.cell.setValue(num*4); 
+	context.setState(new StateLimbo()[]); 
 	return this.cell; 
 }  
 

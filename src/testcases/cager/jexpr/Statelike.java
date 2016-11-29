@@ -27,3 +27,5 @@ interface Statelike {
 	requires this#1.0 StateMultipleOf2()
 	ensures this#1.0 StateMultipleOf2()
 }
+
+//StateLive, StateSleep, StateLimbo

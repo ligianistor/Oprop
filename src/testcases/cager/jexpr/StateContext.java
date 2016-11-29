@@ -5,19 +5,17 @@ Statelike myState;
 
 	predicate BasicFieldsContext() = exists m:StateLike :: this.myState -> m
 
-	predicate state6() = myState instanceof StateMultiplySix 
-	predicate state18() = myState instanceof StateMultiplyEighteen 
-	predicate state12() = myState instanceof StateMultiplyTwelve 
+	predicate stateLive() = myState instanceof StateLive
+	predicate stateSleep() = myState instanceof StateSleep
+	predicate stateLimbo() = myState instanceof StateLimbo
 	predicate stateContextMultiple2() = myState#1 StateMultipleOf2() 
 	predicate stateContextMultiple3() = myState#1 StateMultipleOf3() 
-	predicate stateContextMultiple6() = myState#1 StateMultipleOf6() 
-	predicate stateContextMultiple18() = myState#1 StateMultipleOf18() 
-	predicate stateContextMultiple12() = myState#1 StateMultipleOf12() 
+	
 
 StateContext() 
-ensures this#1 state6() 
+ensures this#1 stateLive() 
 { 
-	setState(new StateMultiplySix()); 
+	setState(new StateLive()); 
 } 
 
 void setState(Statelike newState) { 
@@ -25,17 +23,23 @@ void setState(Statelike newState) {
 } 
 
 public IntCell computeResultSC(int num) 
-ensures (this#1.0 state6() ~=> (this#1.0 stateContextMultiple6() && this#1.0 state18())) 
+ensures (this#1.0 stateContextMultiple3())
+ensures (this#1.0 stateLive() ~=> (this#1.0 stateLimbo())) 
 && 
-(this#1.0 state18() ~=> (this#1.0 stateContextMultiple18() && this#1.0 state6())) 
+(this#1.0 stateLimbo() ~=> this#1.0 stateSleep())
+&&
+(this#1.0 stateSleep() ~=> this#1.0 stateLive())
 { 
 	return myState.computeResult(this, num); 
 } 
 
 public IntCell computeResult2SC(int num) 
-ensures (this#1.0 state6() ~=> (this#1 stateContextMultiple6() && this#1.0 state12())) 
+ensures (this#1 stateContextMultiple2())
+ensures (this#1.0 stateLive() ~=> (this#1.0 stateSleep())) 
 && 
-(this#1.0 state12() ~=> (this#1 stateContextMultiple12() && this#1.0 state6())) 
+(this#1.0 stateSleep() ~=> (this#1.0 stateLimbo())) 
+&&
+(this#1.0 stateLimbo() ~=> (this#1.0 stateLive()))
 { 
 	return myState.computeResult2(this, num); 
 } 
