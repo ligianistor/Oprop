@@ -1,7 +1,7 @@
 package testcases.cager.jexpr;
 
 interface Statelike { 
-	predicate BasicFieldsState();
+	predicate BasicFields();
 	predicate StateMultipleOf3(); 
 	predicate StateMultipleOf2(); 
 

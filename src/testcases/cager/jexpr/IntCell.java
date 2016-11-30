@@ -3,25 +3,27 @@ package testcases.cager.jexpr;
 class IntCell {
 	
 //for flyweight
-predicate MultipleOf(int a) = value->v && (v % a == 0)
+predicate MultipleOf(int a) = this.value->v && (v % a == 0)
 	
 //for state
-predicate MultipleOf3() = value->v && (v % 3 == 0) 
-predicate MultipleOf2() = value->v && (v % 2 == 0) 
-predicate MultipleOf6() = value->v && (v % 6 == 0) 
-predicate MultipleOf18() = value->v && (v % 18 == 0) 
+predicate MultipleOf21() = this.value->v && (v % 21 == 0) 
+predicate MultipleOf16() = this.value->v && (v % 16 == 0) 
+predicate MultipleOf15() = this.value->v && (v % 15 == 0) 
+predicate MultipleOf14() = this.value->v && (v % 14 == 0) 
+predicate MultipleOf33() = this.value->v && (v % 33 == 0) 
+predicate MultipleOf4() = this.value->v && (v % 4 == 0) 
 
 int value;
 
 IntCell(int x) {
-	value  = x;
+	this.value  = x;
 }
 
 void setValue(int x) {
-	value = x;
+	this.value = x;
 }
 
 int getValueInt() {
-	return value;
+	return this.value;
 }
 }

@@ -4,19 +4,15 @@ class StateSleep implements Statelike {
 	
 	IntCell cell;
 	
-predicate BasicFieldsState() = this.cell ->c
-	
-//predicate StateMultipleOf18() = this.cell ->c && c#1 MultipleOf18() 
-//predicate StateMultipleOf3() = this.cell -> c && c#1 MultipleOf3() 
-//predicate StateMultipleOf2() = this.cell -> c && c#1 MultipleOf2() 
+predicate BasicFields() = exists c:IntCell : this.cell ->c
 
-predicate StateMultipleOf3() = this.cell -> c && c#1 MultipleOf33() 
-predicate StateMultipleOf2() = this.cell -> c && c#1 MultipleOf4() 
+predicate StateMultipleOf3() = exists c:IntCell : this.cell -> c && c#1 MultipleOf33() 
+predicate StateMultipleOf2() = exists c:IntCell : this.cell -> c && c#1 MultipleOf4() 
 // StateMultipleOf3 and StateMultipleOf2 have different implementations in
 // each implementing class.
 
 /*
-StateMultiplyEighteen(IntCell ic)
+StateSleep(IntCell ic)
 {
 	this.cell = ic;
 }
@@ -25,20 +21,22 @@ in the boogie files
 */
 
 IntCell computeResult(StateContext context, int num) 
-requires (this#1.0 BasicFieldsState()) && (context#1.0 BasicFieldsContext())
+requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
 ensures (this#1.0 StateMultipleOf3()) && (context#1.0 stateLive())
 { 
+	StateLike s = new StateLive()[];
 	this.cell.setValue(num*33); 
-	context.setState(new StateLive()[]); 
+	context.setState(s); 
 	return this.cell; 
 }  
  
 IntCell computeResult2(StateContext context, int num) 
-requires (this#1.0 BasicFieldsState()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf2()) && (context#1.0 state())
+requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
+ensures (this#1.0 StateMultipleOf2()) && (context#1.0 stateLimbo())
 { 
+	StateLike s = new StateLimbo()[];
 	this.cell.setValue(num*4); 
-	context.setState(new StateLimbo()[]); 
+	context.setState(s); 
 	return this.cell; 
 }  
 

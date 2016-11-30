@@ -11,7 +11,6 @@ Statelike myState;
 	predicate stateContextMultiple2() = myState#1 StateMultipleOf2() 
 	predicate stateContextMultiple3() = myState#1 StateMultipleOf3() 
 	
-
 StateContext() 
 ensures this#1 stateLive() 
 { 
