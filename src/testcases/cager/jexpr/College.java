@@ -8,6 +8,9 @@ int numberBuildings;
 predicate CollegeNumberField(int c) = 
 	this.collegeNumber -> c
 
+predicate NumberBuildingsField(int n) = 
+	this.numberBuildings -> n
+
 predicate collegeBuildingsMany() = 
 	exists c:int, n:int ::
 		(this.collegeNumber -> c) && (this.numberBuildings -> n) && 
@@ -16,7 +19,10 @@ predicate collegeBuildingsMany() =
 predicate collegeBuildingsFew() = exists c:int, n:int ::
 	(this.collegeNumber -> c) && (this.numberBuildings -> n) && (n == 4 * c) 
 
-College(int number, int multNumber) {
+// there is a default constructor that sets collegeNumber and numberBuildings 
+// to default values
+
+void setCollege(int number, int multNumber) {
 	this.collegeNumber = number;
 	this.numberBuildings = this.collegeNumber * multNumber;
 }
