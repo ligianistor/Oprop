@@ -8,8 +8,8 @@ Statelike myState;
 	predicate stateLive() = myState instanceof StateLive
 	predicate stateSleep() = myState instanceof StateSleep
 	predicate stateLimbo() = myState instanceof StateLimbo
-	predicate stateContextMultiple2() = myState#1 StateMultipleOf2() 
-	predicate stateContextMultiple3() = myState#1 StateMultipleOf3() 
+	predicate stateContextMultiple2() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf2() 
+	predicate stateContextMultiple3() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf3() 
 	
 StateContext() 
 ensures this#1 stateLive() 
@@ -21,7 +21,7 @@ void setState(Statelike newState) {
 	myState = newState; 
 } 
 
-public IntCell computeResultSC(int num) 
+IntCell computeResultSC(int num) 
 ensures (this#1.0 stateContextMultiple3())
 ensures (this#1.0 stateLive() ~=> (this#1.0 stateLimbo())) 
 && 
@@ -32,7 +32,7 @@ ensures (this#1.0 stateLive() ~=> (this#1.0 stateLimbo()))
 	return myState.computeResult(this, num); 
 } 
 
-public IntCell computeResult2SC(int num) 
+IntCell computeResult2SC(int num) 
 ensures (this#1 stateContextMultiple2())
 ensures (this#1.0 stateLive() ~=> (this#1.0 stateSleep())) 
 && 

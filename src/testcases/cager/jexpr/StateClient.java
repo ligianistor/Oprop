@@ -4,11 +4,11 @@ class StateClient {
 	
 StateContext scon; 
 
-	predicate stateClientMultiple2() = exists k:real :: scon#k stateContextMultiple2()  
-	predicate stateClientMultiple3() = exists k:real :: scon#k stateContextMultiple3()  
+	predicate stateClientMultiple2() = exists k:real, s:StateContext :: this.scon->s && s#k stateContextMultiple2()  
+	predicate stateClientMultiple3() = exists k:real, s:StateContext :: this.scon->s && s#k stateContextMultiple3()  
 
 StateClient(StateContext scon1) { 
-	scon = scon1; 
+	this.scon = scon1; 
 } 
 
 boolean stateClientCheckMultiplicity3() 
