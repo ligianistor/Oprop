@@ -32,14 +32,12 @@ ensures result#1 MultipleOf(this.collegeNumber)
 return new IntCell(campusNumber * this.collegeNumber);
 }
 
-
 boolean checkFewBuildings() 
 requires this#1 collegeBuildingsFew()
 ensures this#1 collegeBuildingsFew()
 {
 return (this.numberBuildings == 4 * this.collegeNumber);
 }
-
 
 boolean checkManyBuildings() 
 requires this#1 collegeBuildingsMany()
