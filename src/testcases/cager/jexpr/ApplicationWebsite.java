@@ -2,19 +2,10 @@ package testcases.cager.jexpr;
 
 class ApplicationWebsite {
 // Each ApplicationWebsite has its own mapOfAvailableColleges 
-//List<StudentApplication> listStudentApplications;
 MapCollege mapOfAvailableColleges;
 
 predicate applicationWebsiteField() = exists m:MapCollege :: 
 	this.mapOfAvailableColleges -> m
-
-/*
- // This will be generated automatically in Boogie 
- // with the initial variables for each field.
-ApplicationWebsite() {
-	this.mapOfAvailableColleges = new MapCollege();
-}
-*/
 
 College submitApplicationGetCollege(
 int collegeNumber, 
@@ -27,9 +18,6 @@ ensures ((multNumber == 4) ~=> result#k1 collegeBuildingsFew()) &&
 ((multNumber == 10) ~=> result#k2 collegeBuildingsMany())
 {
 	College college = this.mapOfAvailableColleges.lookup(collegeNumber, multNumber);
-	//StudentApplication studentApplication = 
-	//		new StudentApplication(college, campusNumber);
-	//this.listStudentApplications.add(studentApplication);
 	return college;
 }
 

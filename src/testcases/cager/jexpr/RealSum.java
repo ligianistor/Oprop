@@ -2,9 +2,6 @@ package testcases.cager.jexpr;
 
 class RealSum implements Sum {
 	
-	// in both implementations, all predicates need to have the
-	// same number and type of existential variables
-	
 	predicate basicFields() = exists s1:double, n1:int :: this.sum -> s1 && this.n -> n1
 			
 	predicate sumOK() = exists s1:double, n1:int :: this.sum -> s1 && this.n -> n1 &&

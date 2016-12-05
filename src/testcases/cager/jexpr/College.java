@@ -19,9 +19,6 @@ predicate collegeBuildingsMany() =
 predicate collegeBuildingsFew() = exists c:int, n:int ::
 	(this.collegeNumber -> c) && (this.numberBuildings -> n) && (n == 4 * c) 
 
-// there is a default constructor that sets collegeNumber and numberBuildings 
-// to default values
-
 void setCollege(int number, int multNumber) {
 	this.collegeNumber = number;
 	this.numberBuildings = this.collegeNumber * multNumber;

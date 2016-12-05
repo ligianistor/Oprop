@@ -10,18 +10,20 @@ Statelike myState;
 	predicate stateLimbo() = myState instanceof StateLimbo
 	predicate stateContextMultiple2() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf2() 
 	predicate stateContextMultiple3() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf3() 
-	
-StateContext() 
-ensures this#1 stateLive() 
-{ 
-	setState(new StateLive()); 
-} 
 
-void setState(Statelike newState) { 
+	// This is the constructor of StateContext,
+	// which initializes myState with the given value.
+	// This constructor will be written automatically in the
+	// Boogie translation, no need to put it in this file.
+	/*
+State(Statelike newState) 	
+{ 
 	myState = newState; 
 } 
+*/
 
 IntCell computeResultSC(int num) 
+requires (this#1.0 BasicFieldsContext())
 ensures (this#1.0 stateContextMultiple3())
 ensures (this#1.0 stateLive() ~=> (this#1.0 stateLimbo())) 
 && 
@@ -45,12 +47,14 @@ ensures (this#1.0 stateLive() ~=> (this#1.0 stateSleep()))
 
 boolean stateContextCheckMultiplicity3() 
 requires this#1.0 stateContextMultiple3() 
+ensures this#1.0 stateContextMultiple3() 
 { 
 	return myState.checkMod3(); 
 } 
 
 boolean stateContextCheckMultiplicity2() 
 requires this#1.0 stateContextMultiple2() 
+ensures this#1.0 stateContextMultiple2()
 { 
 	return myState.checkMod2(); 
 } 

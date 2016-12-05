@@ -4,10 +4,6 @@ package testcases.cager.jexpr;
 class MapCollege {
 	map<int, College> mapOfColleges;
 	int maxSize; // the maxSize of entries in the map
-	 
-	// this will be put in the constructor of MapCollege
-	// =new map<int, College>();
-	// map will be represented in boogie as a map of map
 	
 	int size;
 	
@@ -16,16 +12,14 @@ class MapCollege {
 		
 	void makeMapNull(i : int)
 	ensures (forall j:int :: (j<=i) => this#1.0 isEntryNull(j))
-{
-if (i==0) {
-	this.mapOfColleges[i] = null;	
-} else {
-	makeMapNull(i-1);
-}
-}
-	
-	// mapOfColleges[key1] == null or not
-	// make everything null in the constructor of MapCollege
+	{
+		if (i==0) {
+			this.mapOfColleges[i] = null;	
+		} else {
+			makeMapNull(i-1);
+		}
+	}
+
 	bool containsKey(int key1) {
 		boolean b = true;
 		if (this.mapOfColleges[key1] == null) {

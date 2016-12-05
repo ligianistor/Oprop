@@ -8,17 +8,6 @@ predicate BasicFields() = exists c:IntCell : this.cell ->c
 
 predicate StateMultipleOf3() = exists c:IntCell : this.cell -> c && c#1 MultipleOf33() 
 predicate StateMultipleOf2() = exists c:IntCell : this.cell -> c && c#1 MultipleOf4() 
-// StateMultipleOf3 and StateMultipleOf2 have different implementations in
-// each implementing class.
-
-/*
-StateSleep(IntCell ic)
-{
-	this.cell = ic;
-}
-this is commented out because it will be generated automatically 
-in the boogie files
-*/
 
 IntCell computeResult(StateContext context, int num) 
 requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())

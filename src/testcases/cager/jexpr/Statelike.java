@@ -4,12 +4,6 @@ interface Statelike {
 	predicate BasicFields();
 	predicate StateMultipleOf3(); 
 	predicate StateMultipleOf2(); 
-
-	// if computeResult() has a precondition like
-	// StateMultipleOf3, depending on which actual implementation calls computeResult()
-	// it is the implementation of predicate StateMultipleOf3 in that implementation
-	// that has to hold.
-	
 	
 	IntCell computeResult(StateContext context, int num);
 	requires (this#1.0 BasicFieldsState()) && (context#1.0 BasicFieldsContext())
@@ -28,4 +22,3 @@ interface Statelike {
 	ensures this#1.0 StateMultipleOf2()
 }
 
-//StateLive, StateSleep, StateLimbo

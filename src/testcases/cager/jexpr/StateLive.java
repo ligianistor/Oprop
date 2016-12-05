@@ -9,12 +9,6 @@ class StateLive implements Statelike {
 	predicate StateMultipleOf3() = exists c:IntCell : this.cell -> c && c#1 MultipleOf15() 
 	predicate StateMultipleOf2() = exists c:IntCell : this.cell -> c && c#1 MultipleOf14() 
 	
-	/*
-	StateLive(IntCell ic)
-	{
-		this.cell = ic;
-	}
-	*/
 IntCell computeResult(StateContext context, int num) 
 requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
 ensures (this#1.0 StateMultipleOf3()) && (context#1.0 stateLimbo())

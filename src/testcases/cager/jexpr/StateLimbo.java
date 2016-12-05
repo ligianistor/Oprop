@@ -8,13 +8,6 @@ class StateLimbo implements Statelike {
 	
 	predicate StateMultipleOf3() = exists c:IntCell : this.cell -> c && c#1 MultipleOf21() 
 	predicate StateMultipleOf2() = exists c:IntCell : this.cell -> c && c#1 MultipleOf16()
-	
-	/*
-	StateLimbo(IntCell ic)
-	{
-		this.cell = ic;
-	}
-	*/
 
 IntCell computeResult(StateContext context, int num)
 requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
