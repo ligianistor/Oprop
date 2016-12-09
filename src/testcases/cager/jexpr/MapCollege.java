@@ -40,7 +40,8 @@ class MapCollege {
 	
 	College lookup(int collegeNumber, int multNumber) {
 		if (!this.containsKey(collegeNumber)) {
-			College c = new College(collegeNumber, multNumber);
+			College c = new College(0, 0);
+			c.setCollege(collegeNumber, multNumber);
 			this.put(collegeNumber, c);
 		}
 		College ret = this.get(collegeNumber)

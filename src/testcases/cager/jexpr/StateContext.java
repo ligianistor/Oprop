@@ -22,7 +22,7 @@ State(Statelike newState)
 } 
 */
 
-IntCell computeResultSC(int num) 
+IntCell computeResult(int num) 
 requires (this#1.0 BasicFieldsContext())
 ensures (this#1.0 stateContextMultiple3())
 ensures (this#1.0 stateLive() ~=> (this#1.0 stateLimbo())) 
@@ -34,7 +34,7 @@ ensures (this#1.0 stateLive() ~=> (this#1.0 stateLimbo()))
 	return myState.computeResult(this, num); 
 } 
 
-IntCell computeResult2SC(int num) 
+IntCell computeResult2(int num) 
 ensures (this#1 stateContextMultiple2())
 ensures (this#1.0 stateLive() ~=> (this#1.0 stateSleep())) 
 && 
