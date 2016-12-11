@@ -44,22 +44,22 @@ class MapCollege {
 		return c;
 	}
 	
-	College lookupOrPutFew(int collegeNumber, int multNumber) 
+	College lookupOrPutFew(int collegeNumber, int campusNumber) 
 	
 	{
 		if (!this.containsKey(collegeNumber)) {
-			College c = new College()(collegeNumber);
+			College c = new College(collegeFacilitiesFew(campusNumber))(collegeNumber);
 			this.put(collegeNumber, c);
 		}
 		College ret = this.get(collegeNumber);
 		return ret;
 	}
 	
-	College lookupOrPutMany(int collegeNumber, int multNumber) 
+	College lookupOrPutMany(int collegeNumber, int campusNumber) 
 	
 	{
 		if (!this.containsKey(collegeNumber)) {
-			College c = new College()(collegeNumber);
+			College c = new College(collegeFacilitiesMany(campusNumber))(collegeNumber);
 			this.put(collegeNumber, c);
 		}
 		College ret = this.get(collegeNumber);
