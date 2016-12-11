@@ -2,9 +2,9 @@ package testcases.cager.jexpr;
 
 class StudentApplication {
 College college; 
+IntCell facilities;
 int campusNumber; 
 // TODO Maybe I need to add here collegeNumber too?
-IntCell facilities;
 
 predicate studentApplicationFields() = exists c:College,
 			camp:int, fac:IntCell::
@@ -14,19 +14,20 @@ predicate studentApplicationFields() = exists c:College,
 
 predicate StudentAppFacilitiesMany() = exists col:College, f:IntCell, c:int :: 
 	this.college -> col && this.campusNumber -> c && this.facilities -> f &&
-	(col#1.0 collegeFacilitiesMany()[col.collegeNumber, col.numberFacilities])
+	(col#1.0 collegeFacilitiesMany(c)[col.collegeNumber])
 	
 predicate StudentAppFacilitiesFew() = exists col:College, f:IntCell, c:int :: 
 	this.college -> col && this.campusNumber -> c && this.facilities -> f &&
-	(col#1.0 collegeFacilitiesFew()[col.collegeNumber, col.numberFacilities])
+	(col#1.0 collegeFacilitiesFew(c)[col.collegeNumber])
 
-void setStudentApplication(College college, int campusNumber) 
+StudentApplication(College col, int campusNum) 
 requires this#1.0 studentApplicationFields()
 ensures this#1.0 facilitiesOK()
 {
-		this.college = college;
-		this.campusNumber = campusNumber;
-		this.facilities = this.college.getNumberFacilities(campusNumber);
+		this.college = col;
+		this.facilities = this.college.getNumberFacilities(campusNum);
+		this.campusNumber = campusNum;
+		
 }
 	
 void changeApplicationFew(int newCampusNumber)
@@ -46,13 +47,6 @@ ensures this#1.0 StudentAppFacilitiesMany()
 	this.facilities = this.college.getNumberFacilities(this.campusNumber);
 }
 
-boolean checkNumberFacilities() 
-requires this#1.0 facilitiesOK()
-ensures this#1.0 facilitiesOK()
-{        
-	return (this.facilities.getValueInt() % this.campusNumber == 0);
-}
-
 boolean checkFacilitiesFew() 
 requires this#1.0 StudentAppFacilitiesFew()
 ensures this#1.0 StudentAppFacilitiesFew()
@@ -66,11 +60,3 @@ ensures this#1.0 StudentAppFacilitiesMany()
 {        
 	return (this.facilities.getValueInt() % this.campusNumber == 0);
 }
-
-
-(n >= 10 * c)
-
-predicate collegeFacilitiesFew() = exists c:int, n:int ::
-(this.collegeNumber -> c) && (this.numberFacilities -> n) && (n <= 4 + c) 
-}
-

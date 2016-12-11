@@ -20,7 +20,9 @@ class MapCollege {
 		}
 	}
 
-	bool containsKey(int key1) {
+	bool containsKey(int key1) 
+	
+	{
 		boolean b = true;
 		if (this.mapOfColleges[key1] == null) {
 			b = false;	
@@ -28,23 +30,39 @@ class MapCollege {
 		return b;
 	}
 	
-	void put(int key1, College college1) {
+	void put(int key1, College college1) 
+	
+	{
 		this.mapOfColleges[key1] = college1;	
 	}
 	
-	College get(int key1) {
+	College get(int key1) 
+	
+	{
 		College c;
 		c = this.mapOfColleges[key1];
 		return c;
 	}
 	
-	College lookup(int collegeNumber, int multNumber) {
+	College lookupOrPutFew(int collegeNumber, int multNumber) 
+	
+	{
 		if (!this.containsKey(collegeNumber)) {
-			College c = new College(0, 0);
-			c.setCollege(collegeNumber, multNumber);
+			College c = new College()(collegeNumber);
 			this.put(collegeNumber, c);
 		}
-		College ret = this.get(collegeNumber)
+		College ret = this.get(collegeNumber);
+		return ret;
+	}
+	
+	College lookupOrPutMany(int collegeNumber, int multNumber) 
+	
+	{
+		if (!this.containsKey(collegeNumber)) {
+			College c = new College()(collegeNumber);
+			this.put(collegeNumber, c);
+		}
+		College ret = this.get(collegeNumber);
 		return ret;
 	}
 }

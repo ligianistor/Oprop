@@ -3,51 +3,49 @@ package testcases.cager.jexpr;
 class College {
 	
 int collegeNumber; //intrinsic state
-int numberFacilities; //extrinsic state, initialized to 0 here 
-// only in setCo
+int endowment; // also intrinsic state that needs to be stored for each college
 
-predicate CollegeNumberField(int c) = 
-	this.collegeNumber -> c
+predicate CollegeNumberField() = 
+	exists c:int :: this.collegeNumber -> c
 
-predicate NumberFacilitiesField(int n) = 
-	this.numberFacilities -> n
-
-predicate collegeFacilitiesMany() = 
-	exists c:int, n:int ::
-		(this.collegeNumber -> c) && (this.numberFacilities -> n) && 
-		(n >= 10 * c)
+predicate collegeFacilitiesMany(int num) = 
+	exists c:int::
+		(this.collegeNumber -> c) && 
+		(num >= 10 * c)
 		
-predicate collegeFacilitiesFew() = exists c:int, n:int ::
-	(this.collegeNumber -> c) && (this.numberFacilities -> n) && (n <= 4 + c) 
+predicate collegeFacilitiesFew(int num) = exists c:int ::
+	(this.collegeNumber -> c) && (num <= 4 * c) 
 
-void setCollege(int number, int campusNumber) {
+College(int number) 
+
+{
 	this.collegeNumber = number;
-	this.numberFacilities = this.collegeNumber * campusNumber;
+	this.endowment = (this.collegeNumber *1000) - 5;
 }
 
 int getCollegeNumber() {
 	return this.collegeNumber;
 }
 
+// the method that calculates the extrinsic state
 IntCell getNumberFacilities(int campusNumber) 
 requires this#1 CollegeNumberField(this.collegeNumber)
 ensures result#1 MultipleOf(this.collegeNumber)
 {
-	this.numberFacilities = this.collegeNumber * campusNumber;
-return new IntCell(campusNumber * this.collegeNumber);
+	return new IntCell(this.collegeNumber * campusNumber);
 }
 
-boolean checkFewFacilities() 
-requires this#1 collegeFacilitiesFew()
-ensures this#1 collegeFacilitiesFew()
+boolean checkFewFacilities(int num) 
+requires this#1 collegeFacilitiesFew(num)
+ensures this#1 collegeFacilitiesFew(num)
 {
-return (this.numberFacilities == 4 * this.collegeNumber);
+return (num <= 4 * this.collegeNumber);
 }
 
-boolean checkManyFacilities() 
-requires this#1 collegeFacilitiesMany()
-ensures this#1 collegeFacilitiesMany()
+boolean checkManyFacilities(int num) 
+requires this#1 collegeFacilitiesMany(num)
+ensures this#1 collegeFacilitiesMany(num)
 {
-return (this.numberFacilities == 10 * this.collegeNumber);
+return (num >= 10 * this.collegeNumber);
 }
 }

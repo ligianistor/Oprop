@@ -13,10 +13,15 @@ int campusNumber
 ) 
 ~double k1, k2, k3:
 requires this#k3 applicationWebsiteField()
-ensures ((campusNumber == 4) ~=> result#k1 collegeFacilitiesFew()) &&
-((campusNumber == 10) ~=> result#k2 collegeFacilitiesMany())
+ensures ((campusNumber <= 4) ~=> result#k1 collegeFacilitiesFew()) &&
+((campusNumber >= 10) ~=> result#k2 collegeFacilitiesMany())
 {
-	College college = this.mapOfAvailableColleges.lookup(collegeNumber, campusNumber);
+	College college;
+	if (campusNumber <= 4) {
+		this.mapOfAvailableColleges.lookupOrPutFew(collegeNumber, campusNumber);
+	} else  if (campusNumber >= 10){
+		this.mapOfAvailableColleges.lookupOrPutMany(collegeNumber, campusNumber);
+	}
 	return college;
 }
 
@@ -28,10 +33,8 @@ void main() {
 	college2.checkManyFacilities();
 
 	College college = new College(collegeFacilitiesFew()[])(2, 4);
-	StudentApplication app1 = new StudentApplication()();
-	app1.setStudentApplication(college, 3);
-	StudentApplication app2 = new StudentApplication()();
-	app2.setStudentApplication(college, 5);
+	StudentApplication app1 = new StudentApplication()(college, 3);
+	StudentApplication app2 = new StudentApplication()(college, 5);
 
 	app1.checkNumberFacilities();
 	app2.checkNumberFacilities();

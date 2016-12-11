@@ -326,7 +326,7 @@ public class BoogieVisitor extends NullVisitor {
 	//the set of fields in that method. 
 	//This structure only contains the fields, including packedPred and fracPred,
 	//on the left of :=.
-	// XXXX This is what I need, it represents
+	// This represents
 	// what gets put in the "modifies" clause of each method.
 	HashMap<String, Set<String>> fieldsInMethod = 
 			new HashMap<String, Set<String>>();
@@ -578,6 +578,11 @@ public class BoogieVisitor extends NullVisitor {
     		visitChildren(ast);
     	}
     }
+    
+    // TODO constructors of classes shouldn't be generated automatically
+    // they should be given in the input class,
+    // and translated like the other methods.
+    // Only if they are not given they should be generated automatically.
     
     String writeAllPredArgWhichField(String namePred, String predBody) 
     {
@@ -1212,7 +1217,8 @@ public class BoogieVisitor extends NullVisitor {
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
-        				//TODO need to add an if here!!
+        				// TODO need to add an if here!!
+        				// TODO only add an ensures forall for the variables that are in the modifies statement!!!
         				pairOfStrings.concatPacked("\t ensures (forall "+ forallParameter +":Ref :: packed"+
         					upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]);\n");
         			}
