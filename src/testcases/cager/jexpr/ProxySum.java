@@ -24,6 +24,19 @@ ensures this#1.0 sumOK()
 	return this.sum; 
 }
 
+double addOneToSum(int n1)
+requires this#1.0 basicFields()
+ensures this#1.0 sumGreater0()
+{
+	this.n = n1;// maybe this should be in the constructor?
+	
+	if (realSum == null) {
+		realSum = new RealSum(sumOK()[0,0])(0, 0);
+	} 
+	this.sum = this.realSum.addOneToSum(this.n) ;
+	return this.sum; 
+}
+
 boolean sumIsOK()
 requires this#1.0 sumOK()
 ensures this#1.0 sumOK()

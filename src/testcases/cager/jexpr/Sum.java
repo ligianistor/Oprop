@@ -10,6 +10,10 @@ double calculateSum(int n1);
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
 
+double addOneToSum(int n1)
+requires this#1.0 basicFields()
+ensures this#1.0 sumGreater0()
+
 boolean sumIsOK();
 requires this#1.0 sumOK()
 ensures this#1.0 sumOK()

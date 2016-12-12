@@ -1,6 +1,8 @@
 package testcases.cager.jexpr;
 
 //MapCollege acts as a factory and cache for College flyweight objects
+// so that the complicated value of endowment does not need to be calculated every time,
+// if the college is already in the cache.
 class MapCollege {
 	map<int, College> mapOfColleges;
 	int maxSize; // the maxSize of entries in the map
@@ -44,22 +46,11 @@ class MapCollege {
 		return c;
 	}
 	
-	College lookupOrPutFew(int collegeNumber, int campusNumber) 
+	College lookup(int collegeNumber) 
 	
 	{
 		if (!this.containsKey(collegeNumber)) {
-			College c = new College(collegeFacilitiesFew(campusNumber))(collegeNumber);
-			this.put(collegeNumber, c);
-		}
-		College ret = this.get(collegeNumber);
-		return ret;
-	}
-	
-	College lookupOrPutMany(int collegeNumber, int campusNumber) 
-	
-	{
-		if (!this.containsKey(collegeNumber)) {
-			College c = new College(collegeFacilitiesMany(campusNumber))(collegeNumber);
+			College c = new College()(collegeNumber);
 			this.put(collegeNumber, c);
 		}
 		College ret = this.get(collegeNumber);

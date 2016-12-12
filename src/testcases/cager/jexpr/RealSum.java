@@ -10,12 +10,22 @@ class RealSum implements Sum {
 
 	int n;
 	double sum;
+	
+double addOneToSum(int n1)
+requires this#1.0 basicFields()
+ensures this#1.0 sumGreater0()
+{
+	this.n = n1;// maybe this should be in the constructor?
+	double temp = calculateRealSum(this.n);
+	this.sum = temp+1;
+	return this.sum;
+}
 
-double calculateSum() 
+double calculateSum(int n1) 
 requires this#1.0 basicFields()[]
 ensures this#1.0 sumOK()[]
 {
-	this.n = n1;
+	this.n = n1;// maybe this should be in the constructor?
 	return calculateRealSum(this.n);
 }
 

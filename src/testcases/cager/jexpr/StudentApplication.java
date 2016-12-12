@@ -11,7 +11,6 @@ predicate studentApplicationFields() = exists c:College,
 			(this.college -> c) && (this.campusNumber -> camp) &&
 			(this.facilities -> fac) 
 			
-
 predicate StudentAppFacilitiesMany() = exists col:College, f:IntCell, c:int :: 
 	this.college -> col && this.campusNumber -> c && this.facilities -> f &&
 	(col#1.0 collegeFacilitiesMany(c)[col.collegeNumber])
@@ -26,8 +25,7 @@ ensures this#1.0 facilitiesOK()
 {
 		this.college = col;
 		this.facilities = this.college.getNumberFacilities(campusNum);
-		this.campusNumber = campusNum;
-		
+		this.campusNumber = campusNum;	
 }
 	
 void changeApplicationFew(int newCampusNumber)
@@ -59,4 +57,6 @@ requires this#1.0 StudentAppFacilitiesMany()
 ensures this#1.0 StudentAppFacilitiesMany()
 {        
 	return (this.facilities.getValueInt() % this.campusNumber == 0);
+}
+
 }
