@@ -51,7 +51,8 @@ ensures this#1.0 sumOK()
 
 boolean sumIsGreater0()
 requires this#1.0 sumGreater0()
-ensures this#1.0 sumGreater0(){
+ensures this#1.0 sumGreater0()
+{
 	return (this.sum > 0);
 }
 }

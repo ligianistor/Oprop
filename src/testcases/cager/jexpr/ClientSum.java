@@ -37,11 +37,9 @@ void main() {
 	Sum s2 = new ProxySum(sumGreater0()[])(0, 0);
 	ClientSum client3 = new ClientSum(clientSumGreater0()[])(s2);
 	ClientSum client4 = new ClientSum(clientSumGreater0()[])(s2);
-	s2.calculateSum(7);
+	s2.addOneToSum(7);
 	client3.checkSumGreater0();
-	s2.addOneToSum(7); // takes the value that is in the proxy
-	// if it's there, otherwise if this is the first time
-	//it's called, calculates sum
+	s2.addOneToSum(7); 
 	client4.checkSumGreater0();
 }
 }

@@ -12,7 +12,7 @@ class MapCollege {
 	predicate isEntryNull(int key1) = exists m : map<int, College> :: 
 		(this.mapOfColleges -> m) && (m[key1] == null)
 		
-	void makeMapNull(i : int)
+	void makeMapNull(int i)
 	ensures (forall j:int :: (j<=i) => this#1.0 isEntryNull(j))
 	{
 		if (i==0) {
