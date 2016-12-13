@@ -28,7 +28,7 @@ double addOneToSum(int n1)
 requires this#1.0 basicFields()
 ensures this#1.0 sumGreater0()
 {
-	this.n = n1;// maybe this should be in the constructor?
+	this.n = n1;
 	
 	if (realSum == null) {
 		realSum = new RealSum(sumOK()[0,0])(0, 0);

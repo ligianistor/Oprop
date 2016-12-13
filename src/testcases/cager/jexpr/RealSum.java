@@ -15,7 +15,7 @@ double addOneToSum(int n1)
 requires this#1.0 basicFields()
 ensures this#1.0 sumGreater0()
 {
-	this.n = n1;// maybe this should be in the constructor?
+	this.n = n1;
 	double temp = calculateRealSum(this.n);
 	this.sum = temp+1;
 	return this.sum;
@@ -25,7 +25,7 @@ double calculateSum(int n1)
 requires this#1.0 basicFields()[]
 ensures this#1.0 sumOK()[]
 {
-	this.n = n1;// maybe this should be in the constructor?
+	this.n = n1;
 	return calculateRealSum(this.n);
 }
 
@@ -34,10 +34,10 @@ requires this#1.0 basicFields()[]
 ensures this#1.0 sumOK()[]
 { 
 	if (n1 == 0) {
-		this.sum := 0;
+		this.sum = 0;
 		return this.sum;
 	} else {
-		this.sum := n1 + calculateRealSum(n1-1);
+		this.sum = n1 + calculateRealSum(n1-1);
 		return this.sum;
 	}
 }
