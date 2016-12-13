@@ -1,9 +1,7 @@
 package testcases.cager.jexpr;
 
 class ApplicationWebsite {
-// Each ApplicationWebsite has its own mapOfAvailableColleges 
 MapCollege mapOfAvailableColleges;
-// might need one map for Few and another one for Many
 
 predicate applicationWebsiteField() = exists m:MapCollege :: 
 	this.mapOfAvailableColleges -> m

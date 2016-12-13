@@ -32,7 +32,6 @@ ensures this#1.0 StudentAppFacilitiesFew()
 {
 	this.campusNumber = newCampusNumber % 4;
 	this.facilities = this.college.getNumberFacilities(this.campusNumber);
-	
 }
 
 void changeApplicationMany(int newCampusNumber)
@@ -56,5 +55,4 @@ ensures this#1.0 StudentAppFacilitiesMany()
 {        
 	return (this.facilities.getValueInt() >= 10 * this.campusNumber);
 }
-
 }

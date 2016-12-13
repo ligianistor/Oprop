@@ -1,13 +1,11 @@
 package testcases.cager.jexpr;
 
-//MapCollege acts as a factory and cache for College flyweight objects
+// MapCollege acts as a factory and cache for College flyweight objects
 // so that the complicated value of endowment does not need to be calculated every time,
 // if the college is already in the cache.
 class MapCollege {
 	map<int, College> mapOfColleges;
 	int maxSize; // the maxSize of entries in the map
-	
-	int size;
 	
 	predicate MapOfCollegesField() = exists m:map<int, College> :: mapOfColleges -> m
 			
@@ -16,6 +14,13 @@ class MapCollege {
 	
 	predicate isEntryNull(int key1) = exists m : map<int, College> :: 
 		(this.mapOfColleges -> m) && (m[key1] == null)
+		
+	MapCollege(int maxSize1) 
+	ensures (forall j:int :: (j<=maxSize1) => this#1.0 isEntryNull(j))
+	{
+		this.maxSize = maxSize1;
+		makeMapNull(maxSize);		
+	}
 		
 	void makeMapNull(int i)
 	requires this#1.0 MapOfCollegesField()

@@ -11,16 +11,10 @@ Statelike myState;
 	predicate stateContextMultiple2() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf2() 
 	predicate stateContextMultiple3() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf3() 
 
-	// This is the constructor of StateContext,
-	// which initializes myState with the given value.
-	// This constructor will be written automatically in the
-	// Boogie translation, no need to put it in this file.
-	/*
 State(Statelike newState) 	
 { 
 	myState = newState; 
 } 
-*/
 
 IntCell computeResult(int num) 
 requires (this#1.0 BasicFieldsContext())
