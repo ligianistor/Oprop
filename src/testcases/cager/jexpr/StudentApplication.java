@@ -4,7 +4,6 @@ class StudentApplication {
 College college; 
 IntCell facilities;
 int campusNumber; 
-// TODO Maybe I need to add here collegeNumber too?
 
 predicate studentApplicationFields() = exists c:College,
 			camp:int, fac:IntCell::
@@ -20,8 +19,7 @@ predicate StudentAppFacilitiesFew() = exists col:College, f:IntCell, c:int ::
 	(col#1.0 collegeFacilitiesFew(c)[col.collegeNumber])
 
 StudentApplication(College col, int campusNum) 
-requires this#1.0 studentApplicationFields()
-ensures this#1.0 facilitiesOK()
+ensures this#1.0 studentApplicationFields()
 {
 		this.college = col;
 		this.facilities = this.college.getNumberFacilities(campusNum);
@@ -49,14 +47,14 @@ boolean checkFacilitiesFew()
 requires this#1.0 StudentAppFacilitiesFew()
 ensures this#1.0 StudentAppFacilitiesFew()
 {        
-	return (this.facilities.getValueInt() >= 10 * this.campusNumber);
+	return (this.facilities.getValueInt() <= 4 * this.campusNumber);
 }
 
 boolean checkFacilitiesMany() 
 requires this#1.0 StudentAppFacilitiesMany()
 ensures this#1.0 StudentAppFacilitiesMany()
 {        
-	return (this.facilities.getValueInt() % this.campusNumber == 0);
+	return (this.facilities.getValueInt() >= 10 * this.campusNumber);
 }
 
 }

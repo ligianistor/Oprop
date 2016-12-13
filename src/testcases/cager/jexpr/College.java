@@ -6,7 +6,7 @@ int collegeNumber; //intrinsic state
 int endowment; // also intrinsic state that needs to be stored for each college
 
 predicate CollegeNumberField() = 
-	exists c:int :: this.collegeNumber -> c
+	exists c:int :: this.collegeNumber -> c 
 
 predicate collegeFacilitiesMany(int num) = 
 	exists c:int::
@@ -17,13 +17,15 @@ predicate collegeFacilitiesFew(int num) = exists c:int ::
 	(this.collegeNumber -> c) && (num <= 4 * c) 
 
 College(int number) 
-
+ensures this#1.0 CollegeNumberField()[number]
 {
 	this.collegeNumber = number;
 	this.endowment = (this.collegeNumber *1000) - 5;
 }
 
-int getCollegeNumber() {
+int getCollegeNumber() 
+ensures this#1.0 CollegeNumberField()[result]
+{
 	return this.collegeNumber;
 }
 
