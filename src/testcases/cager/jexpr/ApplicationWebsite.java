@@ -17,7 +17,7 @@ ensures (result#k1 collegeBuildingsFew() ||
 }
 
 void main() {
-	ApplicationWebsite website = new ApplicationWebsite();
+	ApplicationWebsite website = new ApplicationWebsite()();
 	College college = website.submitApplicationGetCollege(2);
 	StudentApplication app1 = new StudentApplication(StudentAppFacilitiesFew())(college, 3);
 	StudentApplication app2 = new StudentApplication(StudentAppFacilitiesFew())(college, 2);
