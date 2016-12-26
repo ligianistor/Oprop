@@ -2,19 +2,19 @@ package testcases.cager.jexpr;
 
 class StudentApplication {
 College college; 
-IntCell facilities;
 int campusNumber; 
+IntCell facilities;
 
 predicate studentApplicationFields() = exists c:College,
 			camp:int, fac:IntCell::
 			(this.college -> c) && (this.campusNumber -> camp) &&
 			(this.facilities -> fac) 
 			
-predicate StudentAppFacilitiesMany() = exists col:College, f:IntCell, c:int :: 
+predicate StudentAppFacilitiesMany() = exists col:College, c:int, f:IntCell :: 
 	this.college -> col && this.campusNumber -> c && this.facilities -> f &&
 	(col#1.0 collegeFacilitiesMany(c)[col.collegeNumber])
 	
-predicate StudentAppFacilitiesFew() = exists col:College, f:IntCell, c:int :: 
+predicate StudentAppFacilitiesFew() = exists col:College, c:int, f:IntCell :: 
 	this.college -> col && this.campusNumber -> c && this.facilities -> f &&
 	(col#1.0 collegeFacilitiesFew(c)[col.collegeNumber])
 
