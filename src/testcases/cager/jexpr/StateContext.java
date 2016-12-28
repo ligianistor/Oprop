@@ -11,9 +11,10 @@ Statelike myState;
 	predicate stateContextMultiple2() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf2() 
 	predicate stateContextMultiple3() = exists m:StateLike :: this.myState -> m && m#1 StateMultipleOf3() 
 
-State(Statelike newState) 	
+StateContext(Statelike newState) 
+ensures (this#1.0 stateContextMultiple2()) || (this#1.0 stateContextMultiple3())
 { 
-	myState = newState; 
+		this.myState = newState; 
 } 
 
 IntCell computeResult(int num) 

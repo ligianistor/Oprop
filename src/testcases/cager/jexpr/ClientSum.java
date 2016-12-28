@@ -4,10 +4,10 @@ class ClientSum {
 Sum sumClient;
 
 predicate clientSumOK() =
-	exists k:real, s:Sum :: this.sumClient->s && s#k sumOK() 
+	exists k:real, s:Sum :: this.sumClient->s && (s#k sumOK()) 
 	
 predicate clientSumGreater0() =
-	exists k:real, s:Sum :: this.sumClient->s && s#k sumGreater0() 
+	exists k:real, s:Sum :: this.sumClient->s && (s#k sumGreater0()) 
 
 ClientSum(Sum sum1) { this.sumClient = sum1; }
 	

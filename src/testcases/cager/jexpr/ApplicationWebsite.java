@@ -5,6 +5,11 @@ MapCollege mapOfAvailableColleges;
 
 predicate applicationWebsiteField() = exists m:MapCollege :: 
 	this.mapOfAvailableColleges -> m
+	
+ApplicationWebsite()
+{
+		
+}
 
 College submitApplicationGetCollege(int collegeNumber) 
 ~double k1, k2, k3:

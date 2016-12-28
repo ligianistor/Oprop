@@ -7,10 +7,10 @@ class MapCollege {
 	map<int, College> mapOfColleges;
 	int maxSize; // the maxSize of entries in the map
 	
-	predicate MapOfCollegesField() = exists m:map<int, College> :: mapOfColleges -> m
+	predicate MapOfCollegesField() = exists m:map<int, College> :: this.mapOfColleges -> m
 			
 	predicate KeyValuePair(int key, College value) = 
-			exists m:map<int, College> :: mapOfColleges -> m && (mapOfColleges[key] == value)
+			exists m:map<int, College> :: this.mapOfColleges -> m && (m[key] == value)
 	
 	predicate isEntryNull(int key1) = exists m : map<int, College> :: 
 		(this.mapOfColleges -> m) && (m[key1] == null)
@@ -19,7 +19,7 @@ class MapCollege {
 	ensures (forall j:int :: (j<=maxSize1) => this#1.0 isEntryNull(j))
 	{
 		this.maxSize = maxSize1;
-		makeMapNull(maxSize);		
+		this.makeMapNull(maxSize);		
 	}
 		
 	void makeMapNull(int i)
@@ -29,7 +29,7 @@ class MapCollege {
 		if (i==0) {
 			this.mapOfColleges[i] = null;	
 		} else {
-			makeMapNull(i-1);
+			this.makeMapNull(i-1);
 		}
 	}
 

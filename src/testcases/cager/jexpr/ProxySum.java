@@ -12,6 +12,11 @@ class ProxySum implements Sum {
 	double sum;
 	int n;
 	
+ProxySum()
+{
+	
+}
+	
 double calculateSum(int n1)
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
