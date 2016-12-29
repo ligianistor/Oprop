@@ -39,7 +39,7 @@ IntCell getNumberFacilities(int campusNumber)
 requires this#1.0 CollegeNumberField(this.collegeNumber)
 ensures result#1.0 MultipleOf(this.collegeNumber)
 {
-	return new IntCell(this.collegeNumber * campusNumber);
+	return new IntCell(MultipleOf(this.collegeNumber))(this.collegeNumber * campusNumber);
 }
 
 boolean checkFewFacilities(int num) 

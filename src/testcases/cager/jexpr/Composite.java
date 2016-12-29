@@ -43,10 +43,7 @@ predicate parent() =
 	(((op != null) && (op.right == this)) ~=> op#0.5 right(this, c)) &&
 	(op == null ~=> (this#0.5 count(c)))
 	
-Composite()
-{
-		
-}
+// Composite() {}
 	
 	// If in the ensures we have ==constant for a fraction
 	// I don't need to do frac=frac-constant1. if constant1 is mentioned in the
