@@ -5,18 +5,21 @@ College college;
 int campusNumber; 
 IntCell facilities;
 
-predicate studentApplicationFields() = exists c:College,
-			camp:int, fac:IntCell::
-			(this.college -> c) && (this.campusNumber -> camp) &&
-			(this.facilities -> fac) 
-			
-predicate StudentAppFacilitiesMany() = exists col:College, c:int, f:IntCell :: 
-	this.college -> col && this.campusNumber -> c && this.facilities -> f &&
-	(col#1.0 collegeFacilitiesMany(c)[col.collegeNumber])
+// facilites is college.collegeNumber * campusNumber
+// Since facilities is always calculated, it doesn't need
+// to be provided together with the other witnesses for existentials
+
+predicate studentApplicationFields() = 
+			exists c:College, campNum:int::
+			(this.college -> c) && (this.campusNumber -> campNum) 
+		
+predicate StudentAppFacilitiesMany() = exists col:College, campNum:int :: 
+	this.college -> col && this.campusNumber -> campNum &&
+	(col#1.0 collegeFacilitiesMany(campNum)[])
 	
-predicate StudentAppFacilitiesFew() = exists col:College, c:int, f:IntCell :: 
-	this.college -> col && this.campusNumber -> c && this.facilities -> f &&
-	(col#1.0 collegeFacilitiesFew(c)[col.collegeNumber])
+predicate StudentAppFacilitiesFew() = exists col:College, campNum:int :: 
+	this.college -> col && this.campusNumber -> campNum &&
+	(col#1.0 collegeFacilitiesFew(campNum)[])
 
 StudentApplication(College col, int campusNum) 
 ensures this#1.0 studentApplicationFields()

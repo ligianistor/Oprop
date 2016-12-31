@@ -9,20 +9,18 @@ predicate CollegeNumberField() =
 	exists c:int :: this.collegeNumber -> c 
 	
 predicate CollegeFields() = 
-	exists c:int, e:int :: 
+	exists c:int :: 
 	this.collegeNumber -> c && 
-	this.endowment -> e
+	this.endowment -> (c*1000 - 5)
 
-predicate collegeFacilitiesMany(int num) = 
-	exists c:int::
-		(this.collegeNumber -> c) && 
-		(num >= 10 * c)
+predicate collegeFacilitiesMany(int campusNum) = 
+		(campusNum >= 10)
 		
-predicate collegeFacilitiesFew(int num) = exists c:int ::
-	(this.collegeNumber -> c) && (num <= 4 * c) 
+predicate collegeFacilitiesFew(int campusNum) = 
+		(campusNum <= 4) 
 
 College(int number) 
-ensures this#1.0 CollegeFields()[number, (number*1000)-5]
+ensures this#1.0 CollegeFields()[number, (number*1000) - 5]
 {
 	this.collegeNumber = number;
 	this.endowment = (number *1000) - 5;

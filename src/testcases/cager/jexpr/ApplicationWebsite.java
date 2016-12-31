@@ -6,9 +6,12 @@ MapCollege mapOfAvailableColleges;
 predicate applicationWebsiteField() = exists m:MapCollege :: 
 	this.mapOfAvailableColleges -> m
 	
-ApplicationWebsite()
+ApplicationWebsite(int maxSize)
+	ensures this#1.0 applicationWebsiteField()
+	//TODO is this a place where the existentials should be 
+	//spelled out 
 {
-		
+		mapOfAvailableColleges = new MapCollege(maxSize);	
 }
 
 College submitApplicationGetCollege(int collegeNumber) 
@@ -22,7 +25,7 @@ ensures (result#k1 collegeBuildingsFew() ||
 }
 
 void main() {
-	ApplicationWebsite website = new ApplicationWebsite()();
+	ApplicationWebsite website = new ApplicationWebsite(applicationWebsiteField())(5);
 	College college = website.submitApplicationGetCollege(2);
 	StudentApplication app1 = new StudentApplication(StudentAppFacilitiesFew())(college, 3);
 	StudentApplication app2 = new StudentApplication(StudentAppFacilitiesFew())(college, 2);

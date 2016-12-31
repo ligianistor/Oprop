@@ -67,7 +67,7 @@ class MapCollege {
 	ensures this#1.0 KeyValuePair(collegeNumber, result)
 	{
 		if (!this.containsKey(collegeNumber)) {
-			College c = new College()(collegeNumber);
+			College c = new College(CollegeFields()[collegeNumber])(collegeNumber);
 			this.put(collegeNumber, c);
 		}
 		College ret = this.get(collegeNumber);
