@@ -10,16 +10,18 @@ IntCell facilities;
 // to be provided together with the other witnesses for existentials
 
 predicate studentApplicationFields() = 
-			exists c:College, campNum:int::
+			exists College c, int campNum::
 			(this.college -> c) && (this.campusNumber -> campNum) 
 		
-predicate StudentAppFacilitiesMany() = exists col:College, campNum:int :: 
+predicate StudentAppFacilitiesMany() = 
+	exists double k, College col, int campNum :: 
 	this.college -> col && this.campusNumber -> campNum &&
-	(col#1.0 collegeFacilitiesMany(campNum)[])
+	(col#k collegeFacilitiesMany(campNum)[])
 	
-predicate StudentAppFacilitiesFew() = exists col:College, campNum:int :: 
+predicate StudentAppFacilitiesFew() = 
+	exists double k, College col, int campNum :: 
 	this.college -> col && this.campusNumber -> campNum &&
-	(col#1.0 collegeFacilitiesFew(campNum)[])
+	(col#k collegeFacilitiesFew(campNum)[])
 
 StudentApplication(College col, int campusNum) 
 ensures this#1.0 studentApplicationFields()
