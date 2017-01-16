@@ -2,18 +2,20 @@ package testcases.cager.jexpr;
 
 class RealSum implements Sum {
 	
+	// this predicate does not have to satisfy any special properties
 	predicate basicFields() = exists s1:double, n1:int :: this.sum -> s1 && this.n -> n1
 			
-	predicate sumOK() = exists s1:double, n1:int :: this.sum -> s1 && this.n -> n1 &&
-			( s1 == n1 * (n1+1) /2 )
+	predicate sumOK() = exists s1:double, n1:int :: this.n -> n1 && this.sum -> (n1 * (n1+1) /2)
+	
 	predicate sumGreater0() = exists s1:double :: this.sum -> s1 && s1 > 0
 
 	int n;
 	double sum;
 	
-RealSum()
+RealSum(int n1)
 {
-		
+	this.n = n1;
+	this.calculateRealSum(n1);
 }
 	
 double addOneToSum(int n1)
@@ -26,18 +28,17 @@ ensures this#1.0 sumGreater0()
 	return this.sum;
 }
 
-double calculateSum(int n1) 
+double calculateSum() 
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
 {
-	this.n = n1;
-	return this.calculateRealSum(this.n);
+	return this.sum;
 }
 
 double calculateRealSum(int n1)
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
-{ 
+{ /*
 	if (n1 == 0) {
 		this.sum = 0;
 		return this.sum;
@@ -45,6 +46,9 @@ ensures this#1.0 sumOK()
 		this.sum = n1 + this.calculateRealSum(n1-1);
 		return this.sum;
 	}
+	*/ 
+	this.sum = (this.n1 * (this.n1+1) / 2);
+	return this.sum;
 }
 
 boolean sumIsOK() 

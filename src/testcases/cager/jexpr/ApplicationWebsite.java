@@ -29,15 +29,15 @@ void main() {
 	College college = website.submitApplicationGetCollege(2);
 	StudentApplication app1 = new StudentApplication(StudentAppFacilitiesFew())(college, 3);
 	StudentApplication app2 = new StudentApplication(StudentAppFacilitiesFew())(college, 2);
-	app1.checkFewFacilities();
+	app1.checkFacilitiesFew();
 	app1.changeApplicationFew(34);
-	app2.checkFewFacilities();
+	app2.checkFacilitiesFew();
 	
 	College college2 = website.submitApplicationGetCollege(56);
 	StudentApplication app3 = new StudentApplication(StudentAppFacilitiesMany())(college2, 45);
 	StudentApplication app4 = new StudentApplication(StudentAppFacilitiesMany())(college2, 97);
-	app3.checkManyFacilities();
+	app3.checkFacilitiesMany();
 	app3.changeApplicationMany(78);
-	app4.checkManyFacilities();
+	app4.checkFacilitiesMany();
 }
 }

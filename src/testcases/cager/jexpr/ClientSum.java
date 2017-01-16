@@ -26,12 +26,12 @@ ensures this#1.0 clientSumGreater0()
 }
 
 void main() {
-	Sum s = new ProxySum(sumOK()[])(0, 0);
+	Sum s = new ProxySum(sumOK()[5])(5);
 	ClientSum client1 = new ClientSum(clientSumOK()[])(s);
 	ClientSum client2 = new ClientSum(clientSumOK()[])(s);
-	s.calculateSum(5);
+	s.calculateSum();
 	client1.checkSumIsOK();
-	s.calculateSum(5);
+	s.calculateSum();
 	client2.checkSumIsOK();
 
 	Sum s2 = new ProxySum(sumGreater0()[])(0, 0);

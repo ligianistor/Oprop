@@ -4,26 +4,25 @@ class ProxySum implements Sum {
 	
 	predicate basicFields() = exists s1:double, n1:int :: this.sum -> s1 && this.n -> n1
 	
-	predicate sumOK() = exists s1:double, n1:int :: this.sum -> s1 && this.n -> n1 &&
-			( s1 == n1 * (n1 + 1) / 2 )
+	predicate sumOK() = exists n1:int :: this.n -> n1 && this.sum -> (n1 * (n1 + 1) / 2 ) 
 	predicate sumGreater0() = exists s1:double :: this.sum -> s1 && s1 > 0
 
 	RealSum realSum = null;
 	double sum;
 	int n;
 	
-ProxySum()
+ProxySum(int n1)
 {
-	
+	this.n = n1;
+	this.sum = 0;
 }
 	
-double calculateSum(int n1)
+double calculateSum()
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
 {
-	this.n = n1; 
 	if (realSum == null) {
-		realSum = new RealSum(sumOK()[0,0])(0, 0);
+		realSum = new RealSum(sumOK()[this.n])(this.n);
 	} 
 	this.sum = this.realSum.calculateSum(this.n);
 	return this.sum; 

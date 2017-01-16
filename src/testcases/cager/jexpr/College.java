@@ -40,17 +40,4 @@ ensures result#1.0 MultipleOf(this.collegeNumber)
 	return new IntCell(MultipleOf(this.collegeNumber))(this.collegeNumber * campusNumber);
 }
 
-boolean checkFewFacilities(int num) 
-requires this#1.0 collegeFacilitiesFew(num)
-ensures this#1.0 collegeFacilitiesFew(num)
-{
-return (num <= 4 * this.collegeNumber);
-}
-
-boolean checkManyFacilities(int num) 
-requires this#1.0 collegeFacilitiesMany(num)
-ensures this#1.0 collegeFacilitiesMany(num)
-{
-return (num >= 10 * this.collegeNumber);
-}
 }
