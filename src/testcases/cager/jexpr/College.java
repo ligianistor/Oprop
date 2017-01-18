@@ -26,6 +26,7 @@ ensures this#1.0 CollegeFields()[number, (number*1000) - 5]
 	this.endowment = (number *1000) - 5;
 }
 
+//result should be a reserved word in Oprop
 int getCollegeNumber() 
 ensures this#1.0 CollegeNumberField()[result]
 {
@@ -33,11 +34,21 @@ ensures this#1.0 CollegeNumberField()[result]
 }
 
 // the method that calculates the extrinsic state
-IntCell getNumberFacilities(int campusNumber) 
-requires this#1.0 CollegeNumberField(this.collegeNumber)
-ensures result#1.0 MultipleOf(this.collegeNumber)
+// This method is not related to College, only slightly.
+// A predicate about IntCellhas to hold about the result. 
+IntCell getNumberFacilities(int campNum) 
+ensures (campNum>=10) ==> (result#1.0 IntCellMany());
+ensures (campNum<=4) ==> (result#1.0 IntCellFew());
 {
-	return new IntCell(MultipleOf(this.collegeNumber))(this.collegeNumber * campusNumber);
+	IntCell res;
+	if (campNum>=10) {
+		res = new IntCell(IntCellMany()[this.collegeNumber, this.collegeNumber * campNum])
+						 (this.collegeNumber, this.collegeNumber * campNum);
+	} else if (campNum<=4) {
+		res = new IntCell(IntCellFew()[this.collegeNumber, this.collegeNumber * campNum])
+		 (this.collegeNumber, this.collegeNumber * campNum);
+	}
+	return res;
 }
 
 }
