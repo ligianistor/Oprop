@@ -20,14 +20,14 @@ StateLive(IntCell c)
 		this.cell = c; 		
 }
 	
-IntCell computeResult(StateContext context, int num) 
+Statelike computeResult(StateContext context, int num) 
 requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf3()) && (context#1.0 stateLimbo())
+ensures (context#1.0 stateContextMultiple3()) && (context#1.0 stateLimbo())
 { 
 	StateLike s = new StateLimbo()();
 	context.setState(s); 
-	this.cell.setValue(num*15); 
-	return this.cell; 
+	s.cell.setValue(num*15); 
+	return s;
 } 
  
 IntCell computeResult2(StateContext context, int num) 

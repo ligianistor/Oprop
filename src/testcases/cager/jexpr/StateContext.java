@@ -16,6 +16,10 @@ ensures (this#1.0 stateContextMultiple2()) || (this#1.0 stateContextMultiple3())
 { 
 		this.myState = newState; 
 } 
+	
+void setState(Statelike newState) {
+	this.myState = newState; 
+}
 
 IntCell computeResult(int num) 
 requires (this#1.0 BasicFieldsContext())
@@ -30,6 +34,7 @@ ensures (this#1.0 stateLive() ~=> (this#1.0 stateLimbo()))
 } 
 
 IntCell computeResult2(int num) 
+requires (this#1.0 BasicFieldsContext())
 ensures (this#1 stateContextMultiple2())
 ensures (this#1.0 stateLive() ~=> (this#1.0 stateSleep())) 
 && 
