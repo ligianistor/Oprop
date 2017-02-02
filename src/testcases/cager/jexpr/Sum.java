@@ -10,16 +10,18 @@ double calculateSum(int n1);
 requires this#1.0 basicFields()
 ensures this#1.0 sumOK()
 
-double addOneToSum(int n1)
+void addOneToSum(int n1)
 requires this#1.0 basicFields()
 ensures this#1.0 sumGreater0()
 
 boolean sumIsOK();
-requires this#1.0 sumOK()
-ensures this#1.0 sumOK()
+~double k:
+requires this#k sumOK()
+ensures this#k sumOK()
 
 boolean sumIsGreater0();
-requires this#1.0 sumGreater0()
-ensures this#1.0 sumGreater0()
+~double k:
+requires this#k sumGreater0()
+ensures this#k sumGreater0()
 
 }

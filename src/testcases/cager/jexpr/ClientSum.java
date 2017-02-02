@@ -12,15 +12,17 @@ predicate clientSumGreater0() =
 ClientSum(Sum sum1) { this.sumClient = sum1; }
 	
 boolean checkSumIsOK() 
-requires this#1.0 clientSumOK()
-ensures this#1.0 clientSumOK()
+~double k:
+requires this#k clientSumOK()
+ensures this#k clientSumOK()
 {
 	return sumClient.sumIsOK();
 }
 
 boolean checkSumGreater0() 
-requires this#1.0 clientSumGreater0()
-ensures this#1.0 clientSumGreater0()
+~double k:
+requires this#k clientSumGreater0()
+ensures this#k clientSumGreater0()
 {
 	return sumClient.sumIsGreater0();
 }
