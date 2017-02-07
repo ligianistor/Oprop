@@ -1,24 +1,27 @@
 package testcases.cager.jexpr;
 
 interface Statelike { 
-	predicate BasicFields();
 	predicate StateMultipleOf3(); 
 	predicate StateMultipleOf2(); 
 	
 	IntCell computeResult(StateContext context, int num);
-	requires (this#1.0 BasicFieldsState()) && (context#1.0 BasicFieldsContext())
-	ensures (this#1.0 StateMultipleOf3()) && (context#1.0 state6() || context#1.0 state18()) 
+	~ double k, k2:
+		requires (context#k stateContextMultiple3()) 
+		ensures (context#k stateContextMultiple3())
 	
 	IntCell computeResult2(StateContext context, int num); 
-	requires (this#1.0 BasicFieldsState()) && (context#1.0 BasicFieldsContext())
-	ensures (this#1.0 StateMultipleOf2()) && (context#1.0 state12() || context#1.0 state6())
+	~ double k, k2:
+		requires (context#k stateContextMultiple2()) 
+		ensures (context#k stateContextMultiple2())
 	
 	boolean checkMod3(); 
-	requires this#1.0 StateMultipleOf3()
-	ensures this#1.0 StateMultipleOf3()
+	~double k:
+		requires this#k StateMultipleOf3()
+		ensures this#k StateMultipleOf3()
 	
 	boolean checkMod2(); 
-	requires this#1.0 StateMultipleOf2()
-	ensures this#1.0 StateMultipleOf2()
+	~double k:
+		requires this#k StateMultipleOf2()
+		ensures this#k StateMultipleOf2()
 }
 

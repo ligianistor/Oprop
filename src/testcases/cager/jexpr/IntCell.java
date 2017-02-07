@@ -1,37 +1,33 @@
 package testcases.cager.jexpr;
 
 class IntCell {
+
+	int divider;
+	int value;
 	
-//for state
-predicate IntCellMany() = exists divi:int, val:int :: 
-						this.divider -> divi &&  this.value -> val && 
-						(this.value/this.divider >= 10.0)
-predicate IntCellFew() = exists divi:int, val:int :: 
-						this.divider -> divi &&  this.value -> val && 
-						(this.value/this.divider <= 4.0)
-/*
- * These are no longer needed because
- * they are all expressed in terms of MultipleOf above.
-predicate MultipleOf21() = this.value->v && (v % 21 == 0) 
-predicate MultipleOf16() = this.value->v && (v % 16 == 0) 
-predicate MultipleOf15() = this.value->v && (v % 15 == 0) 
-predicate MultipleOf14() = this.value->v && (v % 14 == 0) 
-predicate MultipleOf33() = this.value->v && (v % 33 == 0) 
-predicate MultipleOf4() = this.value->v && (v % 4 == 0) 
-*/
+	predicate BasicIntCell() = exists int divi, int val :: 
+							this.divider -> divi &&  this.value -> val
+							
+	predicate MultipleOf(int a) = exists int v ::
+							this.divider -> a &&  this.value -> v &&
+							( (v - int(v/a)*a )==0 )						
+							
+	predicate IntCellMany(int quot) = exists int divi, int val :: 
+							this.divider -> divi &&  this.value -> val && 
+							(quot >= 10.0)
+	predicate IntCellFew(int quot) = exists int divi, int val :: 
+							this.divider -> divi &&  this.value -> val && 
+							(quot <= 4.0)
+							
+	IntCell(int divider1, int value1) 
+	ensures this.value == value1;
+	ensures this.divider == divider1;
+	{
+		this.value  = value1;
+		this.divider = divider1;
+	}
 
-int divider;
-int value;
-
-IntCell(int divi, int val) {
-	this.value  = x;
-}
-
-void setValue(int x) {
-	this.value = x;
-}
-
-int getValueInt() {
-	return this.value;
-}
+	int getValueInt() {
+		return this.value;
+	}
 }
