@@ -7,12 +7,14 @@ predicate sumOK();
 predicate sumGreater0();
 
 double calculateSum(int n1);
-requires this#1.0 basicFields()
-ensures this#1.0 sumOK()
+~double k:
+requires this#k basicFields()
+ensures this#k sumOK()
 
-double addOneToSum(int n1)
-requires this#1.0 basicFields()
-ensures this#1.0 sumGreater0()
+double addOneToSum(int n1);
+~double k:
+requires this#k basicFields()
+ensures this#k sumGreater0()
 
 boolean sumIsOK();
 ~double k:
