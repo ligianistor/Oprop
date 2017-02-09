@@ -4,10 +4,8 @@ class StateSleep implements Statelike {
 	
 	IntCell cell;
 	
-predicate BasicFields() = exists c:IntCell : this.cell -> c
-
-predicate StateMultipleOf3() = exists c:IntCell : this.cell -> c && (c#1.0 MultipleOf33()) 
-predicate StateMultipleOf2() = exists c:IntCell : this.cell -> c && (c#1.0 MultipleOf4()) 
+predicate StateMultipleOf3() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(15)) 
+predicate StateMultipleOf2() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(16)) 
 
 StateSleep() 
 {
@@ -15,41 +13,43 @@ StateSleep()
 		this.cell = temp; 		
 }
 
-// TODO might need to call this constructor StateSleep2
-// because Boogie might not allow 2 methods with the
-// same name even if their parameters differ
 StateSleep(IntCell c) 
+ensures this.cell == c;
 {
 	this.cell = c; 		
 }
 
 IntCell computeResult(StateContext context, int num) 
-requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf3()) && (context#1.0 stateLive())
+~ double k, k2:
+	requires (context#k stateContextMultiple3()) 
+	ensures (context#k stateContextMultiple3()) && (context#k2 stateLive())
 { 
-	StateLike s = new StateLive()();
-	this.cell.setValue(num*33); 
-	context.setState(s); 
-	return this.cell; 
+	IntCell i1 = new IntCell(MultipleOf(15)[num*15])(15, num*15);
+	StateLike r = new StateSleep(StateMultipleOf3()[i1])(i1);
+	context.setState3(s); 
+	return r; 
 }  
  
 IntCell computeResult2(StateContext context, int num) 
-requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf2()) && (context#1.0 stateLimbo())
+~ double k, k2:
+	requires (context#k stateContextMultiple2()) 
+	ensures (context#k stateContextMultiple2()) && (context#k2 stateLimbo())
 { 
-	StateLike s = new StateLimbo()();
-	this.cell.setValue(num*4); 
-	context.setState(s); 
-	return this.cell; 
+	IntCell i1 = new IntCell(MultipleOf(16)[num*16])(16, num*16);
+	StateLike r = new StateLive(StateMultipleOf2()[i1])(i1);
+	context.setState2(r); 
+	return r;
 }  
 
 boolean checkMod3() 
+~double k:
 requires this#1.0 StateMultipleOf3()
 ensures this#1.0 StateMultipleOf3()
 { 
 	return (this.cell.getValueInt() % 3 == 0); 
 }  
 boolean checkMod2() 
+~double k:
 requires this#1.0 StateMultipleOf2()
 ensures this#1.0 StateMultipleOf2()
 { 

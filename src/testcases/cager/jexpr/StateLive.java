@@ -4,8 +4,8 @@ class StateLive implements Statelike {
 	
 	IntCell cell;
 
-	predicate StateMultipleOf3() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(15))
-	predicate StateMultipleOf2() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(14)) 
+	predicate StateMultipleOf3() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(21))
+	predicate StateMultipleOf2() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(4)) 
 	
 StateLive() 
 {

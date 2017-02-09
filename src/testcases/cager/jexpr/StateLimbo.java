@@ -4,10 +4,8 @@ class StateLimbo implements Statelike {
 	
 	IntCell cell;
 	
-	predicate BasicFields() = exists c:IntCell : this.cell -> c
-	
-	predicate StateMultipleOf3() = exists c:IntCell : this.cell -> c && (c#1.0 MultipleOf21()) 
-	predicate StateMultipleOf2() = exists c:IntCell : this.cell -> c && (c#1 MultipleOf16())
+	predicate StateMultipleOf3() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(33)) 
+	predicate StateMultipleOf2() = exists IntCell c, double k : this.cell -> c && (c#k MultipleOf(14))
 
 StateLimbo() 
 {
@@ -16,41 +14,46 @@ StateLimbo()
 }
 	
 StateLimbo(IntCell c) 
+ensures this.cell == c;
 {
 		this.cell = c; 		
 }
 
 IntCell computeResult(StateContext context, int num)
-requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf3()) && (context#1.0 stateSleep())
+~ double k, k2:
+	requires (context#k stateContextMultiple3()) 
+	ensures (context#k stateContextMultiple3()) && (context#k2 stateSleep())
 { 
-	StateLike s = new StateSleep()();
-	context.setState(s); 
-	this.cell.setValue(num*21); 
-	return this.cell; 
+	IntCell i1 = new IntCell(MultipleOf(33)[num*33])(33, num*33);
+	StateLike r = new StateSleep(StateMultipleOf3()[i1])(i1);
+	context.setState3(s); 
+	return r; 
 }  
 
 IntCell computeResult2(StateContext context, int num) 
-requires (this#1.0 BasicFields()) && (context#1.0 BasicFieldsContext())
-ensures (this#1.0 StateMultipleOf2()) && (context#1.0 stateLive() )
+~ double k, k2:
+requires (context#k stateContextMultiple2()) 
+ensures (context#k stateContextMultiple2()) && (context#k2 stateLive())
 { 
-	StateLike s = new StateLive()();
-	context.setState(s); 
-	this.cell.setValue(num*16); 
-	return this.cell; 
-}   
+	IntCell i1 = new IntCell(MultipleOf(14)[num*14])(14, num*14);
+	StateLike r = new StateLive(StateMultipleOf2()[i1])(i1);
+	context.setState2(r); 
+	return r;
+}  
 
 boolean checkMod3()
-requires this#1.0 StateMultipleOf3()
-ensures this#1.0 StateMultipleOf3()
+~double k:
+requires this#k StateMultipleOf3()
+ensures this#k StateMultipleOf3()
 { 
-	return (this.cell.getValueInt() % 21 == 0); 
+	return (this.cell.getValueInt() % 33 == 0); 
 }  
 
 boolean checkMod2() 
-requires this#1.0 StateMultipleOf2()
-ensures this#1.0 StateMultipleOf2()
+~double k:
+requires this#k StateMultipleOf2()
+ensures this#k StateMultipleOf2()
 { 
-	return (this.cell.getValueInt() % 16 == 0); 
+	return (this.cell.getValueInt() % 14 == 0); 
 } 
 }
