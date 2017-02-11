@@ -22,30 +22,36 @@ ensures this.realSum == null;
 	this.sum = 0;
 	this.realSum = null;
 }
-	
+
 double calculateSum()
-~double k:
-requires this#k basicFields()
-ensures this#k sumOK()
+~double k1, k2:
+requires unpacked(this#k1 basicFields()) && (this.n > 0)
+requires (this.realSum != null) ~=> (this.realSum#k2 sumOK()[this.n])
+ensures this#k1 sumOK()
 {
 	if (this.realSum == null) {
 		this.realSum = new RealSum(sumOK()[this.n])(this.n);
 	} 
 	this.sum = this.realSum.calculateSum(this.n);
+    transfer(this#k1 sumOK(), this#k1 basicFields());
+    pack(this#k1 sumOK());
 	return this.sum; 
 }
 
 void addOneToSum(int n1)
-~double k:
-requires this#1.0 basicFields()
-ensures this#1.0 sumGreater0()
+~double k1, k2:
+requires unpacked(this#k1 basicFields()) && (this.n > 0)
+requires (this.realSum != null) ~=> (this.realSum#k2 basicFields()[this.n])
+ensures this#k1 sumGreater0()
 {
-	this.n = n1;
-	
-	if (this.realSum == null) {
-		this.realSum = new RealSum(sumOK()[this.n])(this.n);
-	} 
-	this.realSum.addOneToSum(this.n) ;
+		if (this.realSum == null) {
+			this.realSum = new RealSum(sumOK()[this.n])(this.n);
+			transfer(this.realSum#1.0 basicFields(), this.realSum#1.0 sumOK())
+		} 
+		this.sum = this.realSum.addOneToSum(this.n);
+	    transfer(this#k1 sumGreater0(), this#k1 basicFields());
+	    pack(this#k1 sumGreater0());
+		return this.sum; 
 }
 
 boolean sumIsOK()
@@ -53,7 +59,9 @@ boolean sumIsOK()
 requires this#k sumOK()
 ensures this#k sumOK()
 {
+	unpack(this#k sumOK())[this.n];
 	return (this.sum == (this.n * (this.n + 1) / 2));
+	pack(this#k sumOK())[this.n];
 }
 
 boolean sumIsGreater0()
@@ -61,6 +69,8 @@ boolean sumIsGreater0()
 requires this#k sumGreater0()
 ensures this#k sumGreater0()
 {
+	unpack(this#k sumGreater0())[this.sum];
 	return (this.sum > 0);
+	pack(this#k sumGreater0())[this.sum];
 }
 }

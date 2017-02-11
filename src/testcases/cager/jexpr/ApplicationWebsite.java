@@ -11,7 +11,7 @@ class ApplicationWebsite {
 	int maxSize; // the maxSize of entries in the map
 
 	predicate applicationWebsiteField() = exists m:map<int, College> :: 
-	this.mapOfColleges -> m
+		this.mapOfColleges -> m
 			
 	predicate KeyValuePair(int key, College value) = 
 			exists m:map<int, College> :: this.mapOfColleges -> m && (m[key] == value)
