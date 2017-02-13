@@ -6,21 +6,24 @@ int collegeNumber; //intrinsic state
 int endowment; // also intrinsic state that needs to be stored for each college
 
 predicate CollegeNumberField() = 
-	exists c:int :: this.collegeNumber -> c 
+	exists int c :: this.collegeNumber -> c 
 	
 predicate CollegeFields() = 
-	exists c:int :: 
+	exists int c :: 
 	this.collegeNumber -> c && 
 	this.endowment -> (c*1000 - 5)
 
-predicate collegeFacilitiesMany(int campusNum) = 
-		(campusNum >= 10)
+predicate collegeFacilitiesMany(int numFacilities) = 
+	exists int c :: 
+	this.collegeNumber -> c && (numFacilities >= 10 * c)
 		
-predicate collegeFacilitiesFew(int campusNum) = 
-		(campusNum <= 4) 
+predicate collegeFacilitiesFew(int numFacilities) = 
+	exists int c :: 
+	this.collegeNumber -> c && (numFacilities <= 4 * c)
 
 College(int number) 
-ensures this#1.0 CollegeFields()[number, (number*1000) - 5]
+ensures	this.collegeNumber == number;
+ensures	this.endowment == (number *1000) - 5;
 {
 	this.collegeNumber = number;
 	this.endowment = (number *1000) - 5;
@@ -28,27 +31,29 @@ ensures this#1.0 CollegeFields()[number, (number*1000) - 5]
 
 //result should be a reserved word in Oprop
 int getCollegeNumber() 
-ensures this#1.0 CollegeNumberField()[result]
+~ double k:
+requires this#k CollegeNumberField()
+ensures this#k CollegeNumberField()
 {
+	unpack(this#k CollegeNumberField());	
 	return this.collegeNumber;
+	pack(this#k CollegeNumberField());	
 }
 
 // the method that calculates the extrinsic state
 // This method is not related to College, only slightly.
 // A predicate about IntCellhas to hold about the result. 
-IntCell getNumberFacilities(int campNum) 
-ensures (campNum>=10) ==> (result#1.0 IntCellMany());
-ensures (campNum<=4) ==> (result#1.0 IntCellFew());
+int getNumberFacilities(int campNum, int colNum) 
+~double k:
+requires unpacked(this#k CollegeNumberField())
+requires (this.collegeNumber == colNum);
+requires campNum > 0;
+requires colNum > 0;
+ensures result == colNum * campNum;
+ensures result > 0;
+
 {
-	IntCell res;
-	if (campNum>=10) {
-		res = new IntCell(IntCellMany()[this.collegeNumber, this.collegeNumber * campNum])
-						 (this.collegeNumber, this.collegeNumber * campNum);
-	} else if (campNum<=4) {
-		res = new IntCell(IntCellFew()[this.collegeNumber, this.collegeNumber * campNum])
-		 (this.collegeNumber, this.collegeNumber * campNum);
-	}
-	return res;
+	return colNum * campNum;
 }
 
 }
