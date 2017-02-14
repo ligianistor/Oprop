@@ -13,15 +13,15 @@ predicate studentApplicationFields() =
 			exists College c, int campNum::
 			(this.college -> c) && (this.campusNumber -> campNum) 
 		
-predicate StudentAppFacilitiesMany() = 
+predicate StudentAppFacilitiesMany(int fa) = 
 	exists double k, College col, int campNum :: 
 	this.college -> col && this.campusNumber -> campNum &&
-	(col#k collegeFacilitiesMany(campNum)[])
+	(col#k collegeFacilitiesMany(fa)[campNum])
 	
-predicate StudentAppFacilitiesFew() = 
+predicate StudentAppFacilitiesFew(int fa) = 
 	exists double k, College col, int campNum :: 
 	this.college -> col && this.campusNumber -> campNum &&
-	(col#k collegeFacilitiesFew(campNum)[])
+	(col#k collegeFacilitiesFew(fa)[campNum])
 
 StudentApplication(College col, int campusNum) 
 ensures this#1.0 studentApplicationFields()

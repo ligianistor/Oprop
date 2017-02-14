@@ -71,7 +71,7 @@ class ApplicationWebsite {
 	ensures this#1.0 KeyValuePair(collegeNumber, result)
 	{
 		if (!this.containsKey(collegeNumber)) {
-			College c = new College(CollegeFields()[collegeNumber])(collegeNumber);
+			College c = new College(CollegeNumberField()[collegeNumber])(collegeNumber);
 			this.put(collegeNumber, c);
 		}
 		College ret = this.get(collegeNumber);
