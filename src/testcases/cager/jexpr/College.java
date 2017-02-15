@@ -25,7 +25,6 @@ ensures	this.collegeNumber == number;
 	this.endowment = (number *1000) - 5;
 }
 
-//result should be a reserved word in Oprop
 int getCollegeNumber() 
 ~ double k:
 requires this#k CollegeNumberField()
@@ -39,6 +38,7 @@ ensures this#k CollegeNumberField()
 // the method that calculates the extrinsic state
 // This method is not related to College, only slightly.
 // A predicate about IntCellhas to hold about the result. 
+// result should be a reserved word in Oprop
 int getNumberFacilities(int campNum, int colNum) 
 ~double k:
 requires unpacked(this#k CollegeNumberField())

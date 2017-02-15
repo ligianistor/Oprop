@@ -5,13 +5,14 @@ College college;
 int campusNumber; 
 IntCell facilities;
 
+// TODO remove all comments before putting in thesis.
 // facilites is college.collegeNumber * campusNumber
 // Since facilities is always calculated, it doesn't need
 // to be provided together with the other witnesses for existentials
 
 predicate studentApplicationFields() = 
-			exists College c, int campNum::
-			(this.college -> c) && (this.campusNumber -> campNum) 
+	exists College c, int campNum::
+	(this.college -> c) && (this.campusNumber -> campNum) 
 		
 predicate StudentAppFacilitiesMany(int fa) = 
 	exists double k, College col, int campNum :: 
@@ -46,32 +47,51 @@ ensures (campusNum >= 10) ~=> (col#k CollegeFacilitiesMany(this.facilities));
 }
 		
 void changeApplicationFew(int newCampusNumber)
-requires this#1.0 StudentAppFacilitiesFew()
-ensures this#1.0 StudentAppFacilitiesFew()
+~double k, k2:
+requires newCampusNumber > 0;
+requires this#k StudentAppFacilitiesFew()
+ensures this#k StudentAppFacilitiesFew()
 {
+	unpack(this#k StudentAppFacilitiesFew());
 	this.campusNumber = newCampusNumber % 4;
+	transfer(this.college#k2 CollegeNumberField(), this.college#k2 CollegeFacilitiesFew());
+	unpack(this.college#k2 CollegeNumberField());
 	this.facilities = this.college.getNumberFacilities(this.campusNumber);
+	pack(this#k StudentAppFacilitiesFew());
 }
 
 void changeApplicationMany(int newCampusNumber)
-requires this#1.0 StudentAppFacilitiesMany()
-ensures this#1.0 StudentAppFacilitiesMany()
+~double k, k2:
+requires newCampusNumber > 0;
+requires this#k StudentAppFacilitiesMany()
+ensures this#k StudentAppFacilitiesMany()
 {
+	unpack(this#k StudentAppFacilitiesMany());
 	this.campusNumber = newCampusNumber * 10 + 1;
+	transfer(this.college#k2 CollegeNumberField(), this.college#k2 CollegeFacilitiesMany());
+	unpack(this.college#k2 CollegeNumberField());
 	this.facilities = this.college.getNumberFacilities(this.campusNumber);
+	pack(this#k StudentAppFacilitiesMany());
 }
 
 boolean checkFacilitiesFew() 
-requires this#1.0 StudentAppFacilitiesFew()
-ensures this#1.0 StudentAppFacilitiesFew()
+~double k:
+requires this#k StudentAppFacilitiesFew()
+ensures this#k StudentAppFacilitiesFew()
 {        
+	unpack(this#k StudentAppFacilitiesFew());
 	return (this.facilities.getValueInt() <= 4 * this.campusNumber);
+	pack(this#k StudentAppFacilitiesFew())
 }
 
 boolean checkFacilitiesMany() 
-requires this#1.0 StudentAppFacilitiesMany()
-ensures this#1.0 StudentAppFacilitiesMany()
+~double k:
+requires this#k StudentAppFacilitiesMany()
+ensures this#k StudentAppFacilitiesMany()
 {        
+	unpack(this#k StudentAppFacilitiesMany());
 	return (this.facilities.getValueInt() >= 10 * this.campusNumber);
+	pack(this#k StudentAppFacilitiesMany());
 }
+
 }
