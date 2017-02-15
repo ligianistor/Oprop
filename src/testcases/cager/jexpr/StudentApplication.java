@@ -16,21 +16,35 @@ predicate studentApplicationFields() =
 predicate StudentAppFacilitiesMany(int fa) = 
 	exists double k, College col, int campNum :: 
 	this.college -> col && this.campusNumber -> campNum &&
-	(col#k collegeFacilitiesMany(fa)[campNum])
+	(col#k collegeFacilitiesMany(fa)[col.number])
 	
 predicate StudentAppFacilitiesFew(int fa) = 
 	exists double k, College col, int campNum :: 
 	this.college -> col && this.campusNumber -> campNum &&
-	(col#k collegeFacilitiesFew(fa)[campNum])
+	(col#k collegeFacilitiesFew(fa)[col.number])
 
 StudentApplication(College col, int campusNum) 
-ensures this#1.0 studentApplicationFields()
+~double k:
+requires campusNum > 0;
+requires unpacked(col#k CollegeNumberField())
+requires col.collegeNumber > 0 
+ensures (this.college == col);
+ensures (this.campusNumber == campusNum);
+ensures ( (campusNum <= 4) && (campusNum > 0) ) ~=> (col#k CollegeFacilitiesFew(this.facilities));
+ensures (campusNum >= 10) ~=> (col#k CollegeFacilitiesMany(this.facilities));
 {
 		this.college = col;
-		this.facilities = this.college.getNumberFacilities(campusNum);
+		this.facilities = this.college.getNumberFacilities(campusNum, col.collegeNumber);
 		this.campusNumber = campusNum;	
+		if (0 < campusNum  && campusNum <= 4) {
+			transfer(col#k CollegeFacilitiesFew(this.facilities), col#k CollegeNumberField());
+			pack(col#k CollegeFacilitiesFew(this.facilities));
+		} else if (campusNum >= 10) {
+			transfer(col#k CollegeFacilitiesMany(this.facilities), col#k CollegeNumberField());
+			pack(col#k CollegeFacilitiesMany(this.facilities));
+		}
 }
-	
+		
 void changeApplicationFew(int newCampusNumber)
 requires this#1.0 StudentAppFacilitiesFew()
 ensures this#1.0 StudentAppFacilitiesFew()
