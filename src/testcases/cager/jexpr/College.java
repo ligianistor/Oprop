@@ -5,6 +5,8 @@ class College {
 int collegeNumber; //intrinsic state
 int endowment; // also intrinsic state that needs to be stored for each college
 
+// TODO all predicates should start with capital letter
+// TODO fix indentation in all these files
 predicate CollegeNumberField() = 
 	exists int c :: this.collegeNumber -> c && (c>0)
 
