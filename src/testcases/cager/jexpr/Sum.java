@@ -2,28 +2,27 @@ package testcases.cager.jexpr;
 
 interface Sum {
 	
-predicate basicFields();
-predicate sumOK(); 
-predicate sumGreater0();
+  predicate BasicFields();
+  predicate SumOK(); 
+  predicate SumGreater0();
 
-double calculateSum(int n1);
-~double k:
-requires this#k basicFields()
-ensures this#k sumOK()
+  double calculateSum(int n1);
+  ~double k:
+    requires this#k BasicFields()
+    ensures this#k SumOK()
 
-double addOneToSum(int n1);
-~double k:
-requires this#k basicFields()
-ensures this#k sumGreater0()
+  double addOneToSum(int n1);
+  ~double k:
+    requires this#k BasicFields()
+    ensures this#k SumGreater0()
 
-boolean sumIsOK();
-~double k:
-requires this#k sumOK()
-ensures this#k sumOK()
+  boolean sumIsOK();
+  ~double k:
+    requires this#k SumOK()
+    ensures this#k SumOK()
 
-boolean sumIsGreater0();
-~double k:
-requires this#k sumGreater0()
-ensures this#k sumGreater0()
-
+  boolean sumIsGreater0();
+  ~double k:
+    requires this#k SumGreater0()
+    ensures this#k SumGreater0()
 }
