@@ -25,7 +25,7 @@ class StateSleep implements Statelike {
     requires (context#k StateContextMultiple3()) 
     ensures (context#k StateContextMultiple3()) && (context#k2 StateLive())
   { 
-    IntCell i1 = new IntCell(MultipleOf(15)[num*15])(15, num*15);
+    IntCell i1 = new IntCell(MultipleOf(21)[num*21])(21, num*21);
     StateLike r = new StateSleep(StateMultipleOf3()[i1])(i1);
     context.setState3(s); 
     return r; 
@@ -36,7 +36,7 @@ class StateSleep implements Statelike {
     requires (context#k StateContextMultiple2()) 
     ensures (context#k StateContextMultiple2()) && (context#k2 StateLimbo())
   { 
-    IntCell i1 = new IntCell(MultipleOf(16)[num*16])(16, num*16);
+	IntCell i1 = new IntCell(MultipleOf(14)[num*14])(14, num*14);
     StateLike r = new StateLive(StateMultipleOf2()[i1])(i1);
     context.setState2(r); 
     return r;

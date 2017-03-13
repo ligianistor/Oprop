@@ -1,7 +1,6 @@
 package testcases.cager.jexpr;
 
 interface Sum {
-	
   predicate BasicFields();
   predicate SumOK(); 
   predicate SumGreater0();

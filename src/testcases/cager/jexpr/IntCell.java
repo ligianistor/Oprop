@@ -24,7 +24,13 @@ class IntCell {
     this.divider = divider1;
   }
 
-  int getValueInt() {
+  int getValueInt() 
+  ~double k:
+    requires this#k BasicIntCell()
+    ensures this#k BasicIntCell()
+  {
+    unpack(this#k BasicIntCell());
     return this.value;
+    pack(this#k BasicIntCell());
   }
 }

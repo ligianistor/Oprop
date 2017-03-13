@@ -10,12 +10,12 @@ class SimpleCell {
 		this.next -> obj && (obj#0.34 PredVal())	
 
 	void changeVal(int r) 
-	requires (this#1 PredVal()) && (r<15) 
-	ensures this#1 PredVal()
+	~double k : requires (this#k PredVal()) && (r<15) 
+	ensures this#k PredVal()
 	{
-		unpack(this#1 PredVal())[this.val];
+		unpack(this#k PredVal())[this.val];
 		this.val = r;
-		pack(this#1 PredVal())[r];
+		pack(this#k PredVal())[r];
 	}
 	
 	void main() {
@@ -25,8 +25,6 @@ class SimpleCell {
 		
 		unpack(a#1 PredNext())[c];
 		unpack(b#1 PredNext())[c];
-		addFrac(c#k PredVal(), c#0.34 PredVal(), c#0.34 PredVal());
-		c.changeVal(4);
-		
+		c.changeVal(4);	
 	}
 }

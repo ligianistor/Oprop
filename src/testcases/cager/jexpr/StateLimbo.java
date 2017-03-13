@@ -26,7 +26,7 @@ class StateLimbo implements Statelike {
     ensures (context#k stateContextMultiple3()) && 
       (context#k2 stateSleep())
   { 
-    IntCell i1 = new IntCell(MultipleOf(33)[num*33])(33, num*33);
+	IntCell i1 = new IntCell(MultipleOf(15)[num*15])(15, num*15);
     StateLike r = new StateSleep(StateMultipleOf3()[i1])(i1);
     context.setState3(s); 
     return r; 
@@ -38,7 +38,7 @@ class StateLimbo implements Statelike {
     ensures (context#k stateContextMultiple2()) && 
       (context#k2 stateLive())
   { 
-    IntCell i1 = new IntCell(MultipleOf(14)[num*14])(14, num*14);
+    IntCell i1 = new IntCell(MultipleOf(4)[num*4])(4, num*4);
     StateLike r = new StateLive(StateMultipleOf2()[i1])(i1);
     context.setState2(r); 
     return r;
@@ -50,7 +50,7 @@ class StateLimbo implements Statelike {
     ensures this#k StateMultipleOf3()
   { 
     unpack(this#k StateMultipleOf3());
-    return (this.cell.getValueInt() % 33 == 0); 
+    return (this.cell.getValueInt() % 3 == 0); 
     pack(this#k StateMultipleOf3());
   }  
 
@@ -60,7 +60,7 @@ class StateLimbo implements Statelike {
     ensures this#k StateMultipleOf2()
   { 
     unpack(this#k StateMultipleOf2());
-    return (this.cell.getValueInt() % 14 == 0); 
+    return (this.cell.getValueInt() % 2 == 0); 
     pack(this#k StateMultipleOf2());
   } 
 }
