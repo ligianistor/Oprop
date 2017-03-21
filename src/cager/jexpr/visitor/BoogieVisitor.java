@@ -21,6 +21,7 @@ import cager.jexpr.ast.Block;
 import cager.jexpr.ast.ClassDeclaration;
 import cager.jexpr.ast.CompilationUnit;
 import cager.jexpr.ast.CompilationUnits;
+import cager.jexpr.ast.ConstructorDeclaration;
 import cager.jexpr.ast.DeclarationStatement;
 import cager.jexpr.ast.Expression;
 import cager.jexpr.ast.FieldAndTypePair;
@@ -58,6 +59,11 @@ import cager.jexpr.ast.WriteOut;
  * This class visits the AST to generate the Boogie code.
  */
 public class BoogieVisitor extends NullVisitor {
+	// TODO need to parse the body of the constructors
+	// just like for any other method!!!
+	
+	// TODO optional, but necessary for the VSTTE submission about 
+	// design patterns!!!
 	
 	// For each "packed" in the current method, this map
 	// points to a set that holds all the objects
@@ -163,9 +169,17 @@ public class BoogieVisitor extends NullVisitor {
 			new HashMap<String, LinkedList<ArgumentAndFieldPair>>();
 	
 	// For each predicate name, this maps it to its body represented 
-	// as a String.
+	// as a String, except for the part "requires field[this] == f", where
+	// f is an existential variable. 
 	HashMap<String, FieldTypePredbody> paramsPredicateBody = 
 			new HashMap<String, FieldTypePredbody>();
+	
+	// For each predicate name, this maps it to 
+	// the part "requires field[this] == f", where
+	// f is an existential variable of this predicate.
+	HashMap<String, String> requiresExistential = 
+			new HashMap<String, String>();
+	
 	
 	// For each predicate or method, I have a list of 
 	// (if condition) (fracPredicate[object], fractionAmount) 
@@ -487,6 +501,18 @@ public class BoogieVisitor extends NullVisitor {
         visitChildren(ast);
     }
     
+    public void visitConstructorDeclaration(ConstructorDeclaration ast) 
+    		throws ParseException
+    {
+    	try {
+        currentMethod = ast.getIdentifier().getName();
+    	}
+    	catch (Exception e) {
+    		System.err.println("Error in : visitConstructorDeclaration" + e.getMessage());
+    	}
+        visitChildren(ast);
+    }
+        
     public void visitFieldDeclaration(FieldDeclaration ast) 
     		throws ParseException 
   { 
@@ -646,6 +672,7 @@ public class BoogieVisitor extends NullVisitor {
 								"[this]=="+argField.getArgument()+")");
 					}
 				}
+				// XXX the == is where the existential gets written 
 				predBody = predBody.concat(argsToFieldsString);
 		}
 
@@ -1842,8 +1869,7 @@ public class BoogieVisitor extends NullVisitor {
     		String last = leftover.substring(index, leftover.length());
     		result = result.concat(first+"@"+last);
     		return result;
-    	}
-    	
+    	} 	
     }
     
     // This is instead of visitFieldSelection.

@@ -6,6 +6,13 @@ Composite left;
 Composite right;
 Composite parent;
 
+Composite(int c, Composite l, Composite r, Composite p) {
+	count = c;
+	left = l;
+	right = r;
+	parent = p;
+}
+
 predicate left(Composite ol, int lc) =
 	exists Composite op :
 	this.parent -> op &&
