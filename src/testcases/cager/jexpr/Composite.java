@@ -6,13 +6,6 @@ Composite left;
 Composite right;
 Composite parent;
 
-Composite(int c, Composite l, Composite r, Composite p) {
-	count = c;
-	left = l;
-	right = r;
-	parent = p;
-}
-
 predicate left(Composite ol, int lc) =
 	exists Composite op :
 	this.parent -> op &&
@@ -36,7 +29,7 @@ predicate count(int c) =
 		(c == lc + rc + 1)		
 		&& (this#0.5 left(ol, lc)) 
 		&& (this#0.5 right(or, rc)) 
-			
+		
 // Surround op in FractionManipulationStatement by $op$
 // where op can be identifier or keyword, etc.
 //We do need to surround the fraction annotations by the respective if.
@@ -51,6 +44,15 @@ predicate parent() =
 	(op == null ~=> (this#0.5 count(c)))
 	
 // Composite() {}
+Composite(int c, Composite l, Composite r, Composite p) 
+ensures (this.count == c) && (this.left == l) && (this.right == r)
+		&& (this.parent == p)
+{
+	this.count = c;
+	this.left = l;
+	this.right = r;
+	this.parent = p;
+}
 	
 	// If in the ensures we have ==constant for a fraction
 	// I don't need to do frac=frac-constant1. if constant1 is mentioned in the
@@ -83,7 +85,6 @@ ensures (this#1.0 count(c1+c2+1)) &&
     (op!=null ~=> unpacked(op#k count(c3)))  &&
     (this#0.0 left(this.left, this.left.count)) && 
     (this#0.0 right(this.right, this.right.count))
-    
 {
 // Existential variables for 
 // unpack(ol#0.5 count(c1)).

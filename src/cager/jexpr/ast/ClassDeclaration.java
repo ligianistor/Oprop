@@ -210,8 +210,8 @@ import cager.jexpr.visitor.Visitor;
 public class ClassDeclaration extends AST
 {
 	private List<FieldDeclaration> fields = new ArrayList<FieldDeclaration>(); //jhlee
-	private List<ConstructorDeclaration> constructors = new ArrayList<ConstructorDeclaration>(); //jhlee
 	private List<PredicateDeclaration> predicates = new ArrayList<PredicateDeclaration>(); //jhlee 
+	private List<ConstructorDeclaration> constructors = new ArrayList<ConstructorDeclaration>(); //jhlee
     private List<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
     //private MethodDeclaration[] children = null;
     private AST[] children = null; //jhlee
@@ -311,8 +311,8 @@ public class ClassDeclaration extends AST
     	if (children == null) {
     		List<AST> temp = new java.util.ArrayList<AST>();
     		temp.addAll(fields);
-    		temp.addAll(constructors);
     		temp.addAll(predicates);
+    		temp.addAll(constructors);
     		temp.addAll(methods);
     		children = (AST[]) temp.toArray(new AST[0]);
     	}

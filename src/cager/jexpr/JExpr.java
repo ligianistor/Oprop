@@ -288,8 +288,8 @@ public class JExpr implements JExprConstants {
   final public ClassDeclaration ClassDeclaration() throws ParseException {
     ClassDeclaration cd = new ClassDeclaration();
     FieldDeclaration[] fds; //jhlee
-    ConstructorDeclaration cond; //jhlee
     PredicateDeclaration pd; //jhlee
+    ConstructorDeclaration cond; //jhlee
     MethodDeclaration md;
     jj_consume_token(CLASS);
     jj_consume_token(IDENTIFIER);
@@ -1247,20 +1247,10 @@ FieldDeclaration FieldDeclaration() : //jhlee
     return new FormalParameter(id, t);
   }
 
-/** Not implemented. 
-void ConstructorDeclaration() :
-{}
-{
-  [ "public" | "protected" | "private" ]
-  <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
-  "{"
-    [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
-    ( BlockStatement() )*
-  "}" { throw new NotImplementedException("Constructor"); }
-}*/
   final public ConstructorDeclaration ConstructorDeclaration() throws ParseException {
-        ConstructorDeclaration cond = new ConstructorDeclaration();
-        FormalParameters params;
+    ConstructorDeclaration cond = new ConstructorDeclaration();
+    FormalParameters params;
+    MethodSpecExpression mse = null;
     Identifier ider;
     Block block;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1290,6 +1280,8 @@ void ConstructorDeclaration() :
     jj_consume_token(IDENTIFIER);
     ider = new Identifier(getToken(0).image);
     params = FormalParameters();
+    mse = MethodSpecExpression();
+   
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case THROWS:
       jj_consume_token(THROWS);
@@ -1300,8 +1292,11 @@ void ConstructorDeclaration() :
       ;
     }
     block = Block();
+    // the constructor does not return a type. 
+   // cond.setType(Types.getType("void"));
     cond.setIdentifier(ider);
     cond.setParameters(params);
+    cond.setMethodSpecExpression(mse);
     cond.setBlock(block);
     return cond;
   }

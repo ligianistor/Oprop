@@ -106,6 +106,11 @@ public class BoogieVisitor extends NullVisitor {
 	//Is this the first method that is being translated 
 	boolean isFirstMethod = true;
 	
+	//Is this method a constructor?
+	//I need this because constructors are derived from methods, but 
+	//the predicates are not declared until after the constructors.
+	//boolean isConstructor = false;
+	
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
@@ -504,13 +509,7 @@ public class BoogieVisitor extends NullVisitor {
     public void visitConstructorDeclaration(ConstructorDeclaration ast) 
     		throws ParseException
     {
-    	try {
-        currentMethod = ast.getIdentifier().getName();
-    	}
-    	catch (Exception e) {
-    		System.err.println("Error in : visitConstructorDeclaration" + e.getMessage());
-    	}
-        visitChildren(ast);
+    	visitMethodDeclaration(ast);
     }
         
     public void visitFieldDeclaration(FieldDeclaration ast) 
@@ -1341,7 +1340,8 @@ public class BoogieVisitor extends NullVisitor {
     	
     	//When we hit the first method, we write out the constructors for this 
     	//class and the Pack and Unpack procedures. 
-    	if (isFirstMethod) {   	
+    	if (isFirstMethod) {   
+    		System.out.println("isfirstMethod: " + currentMethod);
     		//This if is for when the modulo symbol is in the body of a predicate.
     		if (programContainsModulo && !writtenModuloFunction) {
     			try{
@@ -1355,10 +1355,8 @@ public class BoogieVisitor extends NullVisitor {
     			writtenModuloFunction = true;
     		}
 		
-    		//Write the constructors to out. The constructor 
-    		//that does not pack to anything
-    		//and the ones that pack to predicates.
-    		makeConstructors(out);
+    		//Write the packed and frac global variables to out. 
+    		writePackedAndFrac(out);
     	
     		Iterator<Entry<String, FieldTypePredbody>> j = 
     			paramsPredicateBody.entrySet().iterator(); 
@@ -1817,7 +1815,9 @@ public class BoogieVisitor extends NullVisitor {
 					"after visitChildren: "
 					+ e.getMessage());
 		}
-    	isFirstMethod = false;
+    	//if (!isConstructor) {
+    		isFirstMethod = false;
+    	//}
     }
     
     void addArgToPackedModifiedArgsInMethod(String predName, String object) {
@@ -3359,6 +3359,7 @@ public class BoogieVisitor extends NullVisitor {
     
     void modifyMethodBody(String s) {
     	String currentMethodBody = methodBody.get(currentMethod);
+    	System.out.println("currentMethod=" + currentMethodBody);
 		currentMethodBody = currentMethodBody.concat(s);
 		methodBody.put(currentMethod, currentMethodBody);
     }
@@ -3711,13 +3712,14 @@ public class BoogieVisitor extends NullVisitor {
     	return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
    
-    void makeConstructors(BufferedWriter out) {
+    void writePackedAndFrac(BufferedWriter out) {
+    	System.out.println("in predicate!!");
     	//I also declare the packed and frac global variables for this class.
     	try {
     		for (String p : predicates) {
+    			System.out.println(upperCaseFirstLetter(p) + " predicate!!");
     			out.write("var packed" + upperCaseFirstLetter(p) + ": [Ref] bool;\n");
-    			out.write("var frac" + upperCaseFirstLetter(p) + ": [Ref] real;\n");
-    			
+    			out.write("var frac" + upperCaseFirstLetter(p) + ": [Ref] real;\n");			
     		}
     		out.write("\n");
     	}
@@ -3725,31 +3727,6 @@ public class BoogieVisitor extends NullVisitor {
     		System.err.println("Error in makeConstructors declaration of packed and frac: " +
     					e.getMessage());
     	}
-    	    	
-    	try {
-    		//write a constructor that doesn't pack to any predicate
-    		out.write("procedure Construct" + className + "(");
-            for (FieldAndTypePair s : fieldsTypes) {
-            	String type = s.getType();
-            		if (type.equals("int") || type.equals("double") || type.equals("boolean")) {
-            			out.write(s.getName() + "1 :"+ type + ", ");
-            		} else {
-            			out.write(s.getName() + "1 : Ref, ");
-            		}
-        		}
-            	out.write("this: Ref);\n");
-            	out.write("\t ensures ");
-            	for (int i = 0; i < fieldsTypes.size()-1; i++) {
-            		out.write("(" + fieldsTypes.get(i).getName() + "[this] == "+ 
-            				fieldsTypes.get(i).getName() + "1) &&\n \t \t ");
-            	}
-            	out.write("(" + fieldsTypes.get(fieldsTypes.size()-1).getName() + "[this] == "+ 
-            			fieldsTypes.get(fieldsTypes.size()-1).getName() + "1); \n \n");
-    		}
-        	catch (Exception e) {
-        		System.err.println("Error in makeConstructors writing of procedure Construct: " + 
-        					e.getMessage());
-        	}
     }
         
     static boolean isNumeric(String str) {

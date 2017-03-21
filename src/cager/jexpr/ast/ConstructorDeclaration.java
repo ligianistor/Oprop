@@ -89,12 +89,13 @@ import java.io.BufferedWriter;
 import cager.jexpr.*;
 import cager.jexpr.visitor.Visitor;
 
-public class ConstructorDeclaration extends AST
+public class ConstructorDeclaration extends MethodDeclaration
 {
 	private Identifier identifier;
     private FormalParameters parameters;
+    private MethodSpecExpression msexp;
     private Block block;
-    
+
     public Identifier getIdentifier()
     {
         return identifier;
@@ -115,6 +116,16 @@ public class ConstructorDeclaration extends AST
         parameters = p;
     }
     
+    public MethodSpecExpression getMethodSpecExpression()
+    {
+        return this.msexp;
+    }
+
+    public void setMethodSpecExpression(MethodSpecExpression p)
+    {
+        msexp = p;
+    }
+    
     public Block getBlock()
     {
         return block;
@@ -127,7 +138,8 @@ public class ConstructorDeclaration extends AST
 
     public AST[] getChildren()
     {
-        return new AST[] { parameters, block };
+    	if (msexp == null) return new AST[] { parameters, block };
+        return new AST[] { parameters, msexp, block };
     }
 
     public void accept(Visitor v) throws ParseException
