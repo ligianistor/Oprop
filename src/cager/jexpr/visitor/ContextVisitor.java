@@ -90,14 +90,14 @@ public class ContextVisitor extends NullVisitor
     }
 
     public void visitMethodDeclaration(MethodDeclaration ast) throws ParseException
-    {
+    {/*
     	try {
         out.write("Visiting Method " + ast.getIdentifier()+"\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
-
+*/
         visitChildren(ast);
 
     }
@@ -114,13 +114,13 @@ public class ContextVisitor extends NullVisitor
     	
     	if (ast.getType() == null) {
     		
-    		try {
+    		/*try {
                 out.write("Evaluating type of MethodSelection: " + ast.getIdentifier().name+"\n");
         		}
-        		catch (Exception e) {
+        	catch (Exception e) {
         			System.err.println("Error: " + e.getMessage());
         		}
-    		
+    		*/
 
             AST parent = ast;
             
@@ -190,31 +190,31 @@ public class ContextVisitor extends NullVisitor
             	if (fd != null) {
             		Type t = fd.getType();
             		ast.setType(t);
-            		try {
-            		out.write("MS name: " + ast.getIdentifier().name + ", type: " + t + "\n");
+            		/*try {
+            			out.write("MS name: " + ast.getIdentifier().name + ", type: " + t + "\n");
             		}
             		catch (Exception e) {
             			System.err.println("Error: " + e.getMessage());
-            		}
+            		}*/
             	} else {
             		MethodDeclaration md = cd.getMethod(ast.getIdentifier().name);
             		if (md != null) {
             			Type t = md.getType();
             			ast.setType(t);
-            			try {
-            			out.write("MS name: " + ast.getIdentifier().name + ", type: " + t+"\n");
+            			/*try {
+            				out.write("MS name: " + ast.getIdentifier().name + ", type: " + t+"\n");
             			}
             			catch (Exception e) {
             				System.err.println("Error: " + e.getMessage());
-            			}
+            			}*/
             		} 
             		else {
-            		try {
-            		out.write("MS name: " + ast.getIdentifier().name + ", type: ???\n" );
+            		/*try {
+            			out.write("MS name: " + ast.getIdentifier().name + ", type: ???\n" );
             		}
             		catch (Exception e) {
             			System.err.println("Error: " + e.getMessage());
-            		}
+            		}*/
             		}
             	}
             }
@@ -235,12 +235,12 @@ public class ContextVisitor extends NullVisitor
     	
     	if (ast.getType() == null)
         {
-    		try {
-            out.write("Evaluating type of FieldSelection: " + ast.getIdentifier().name+"\n");
+    		/*try {
+    			out.write("Evaluating type of FieldSelection: " + ast.getIdentifier().name+"\n");
     		}
     		catch (Exception e) {
     			System.err.println("Error: " + e.getMessage());
-    		}
+    		}*/
             
             AST parent = ast;
             
@@ -286,30 +286,30 @@ public class ContextVisitor extends NullVisitor
             	if (fd != null) {
             		Type t = fd.getType();
             		ast.setType(t);
-            		try {
-            		out.write("FS name: " + ast.getIdentifier().name + ", type: " + t + "\n");
+            		/*try {
+            			out.write("FS name: " + ast.getIdentifier().name + ", type: " + t + "\n");
             		}
             		catch (Exception e) {
             			System.err.println("Error: " + e.getMessage());
-            		}
+            		}*/
             	} else {
             		MethodDeclaration md = cd.getMethod(ast.getIdentifier().name);
             		if (md != null) {
             			Type t = md.getType();
             			ast.setType(t);
-            			try {
-            			out.write("FS name: " + ast.getIdentifier().name + ", type: " + t+"\n");
+            			/*try {
+            				out.write("FS name: " + ast.getIdentifier().name + ", type: " + t+"\n");
             			}
             			catch (Exception e) {
             				System.err.println("Error: " + e.getMessage());
-            			}
+            			}*/
             		} else {
-            		try {
-            		out.write("FS name: " + ast.getIdentifier().name + ", type: ???\n" );
+            		/*try {
+            			out.write("FS name: " + ast.getIdentifier().name + ", type: ???\n" );
             		}
             		catch (Exception e) {
             			System.err.println("Error: " + e.getMessage());
-            		}
+            		}*/
             		}
             	}
             }
@@ -325,22 +325,22 @@ public class ContextVisitor extends NullVisitor
         {
             try
             {
-            	try {
-                out.write("Evaluating type of Binary " + ast.E1.toString() + " " + ast.E2.toString()+"\n");
+            	/*try {
+            		out.write("Evaluating type of Binary " + ast.E1.toString() + " " + ast.E2.toString()+"\n");
             	}
             	catch (Exception e) {
             		System.err.println("Error: " + e.getMessage());
-            	}
+            	}*/
                 Type t1 = ast.E1.getType();
                 Type t2 = ast.E2.getType();
                 
                 OperatorTypeInfo ti = ast.op.getTypeInfo(t1, t2, out);
-                try {
-                out.write("Type Info is " + ti+ "\n");
+                /*try {
+                	out.write("Type Info is " + ti+ "\n");
                 }
                 catch (Exception e) {
                 	System.err.println("Error: " + e.getMessage());
-                }
+                }*/
 
                 ast.setType(ti.getResultType());
                 if (ti.getImplicitCast1() != null)
@@ -357,12 +357,12 @@ public class ContextVisitor extends NullVisitor
             }
             catch (ParseException pe)
             {
-            	try {
-                out.write("TODO: visitBinaryExpression exception: " + pe + "\n");
+            	/*try {
+            		out.write("TODO: visitBinaryExpression exception: " + pe + "\n");
             	}
             	catch (Exception e) {
             		System.err.println("Error: " + e.getMessage());
-            	}
+            	}*/
             }
         }
     }
@@ -373,12 +373,12 @@ public class ContextVisitor extends NullVisitor
 
         if (ast.getType() == null)
         {
-        	try {
-            out.write("Setting type of Object Prop \n");
+        	/*try {
+        		out.write("Setting type of Object Prop \n");
         	}
         	catch (Exception e) {
         		System.err.println("Error: " + e.getMessage());
-        	}
+        	}*/
             ast.setType(Type.BOOLEAN);
         }
 
@@ -419,12 +419,12 @@ public class ContextVisitor extends NullVisitor
         	component = components[i];
         	if (component instanceof FieldSelection) {
             	ast.setType(component.getType());
-            	try {
-            	out.write("PrimaryExpression " + ast + " is FS and type: " + component.getType()+"\n");
+            	/*try {
+            		out.write("PrimaryExpression " + ast + " is FS and type: " + component.getType()+"\n");
             	}
             	catch (Exception e) {
             		System.err.println("Error: " + e.getMessage());
-            	}
+            	}*/
             	return;
             }
         	
@@ -439,12 +439,12 @@ public class ContextVisitor extends NullVisitor
         Expression e1 = (Expression)(ast.getChildren()[0]);
         ast.setType(e1.getType());
 
-        try {
-        out.write("PrimaryExpression " + ast + " type: " + e1.getType()+"\n");
+        /*try {
+        	out.write("PrimaryExpression " + ast + " type: " + e1.getType()+"\n");
         }
         catch (Exception e) {
         	System.err.println("Error: " + e.getMessage());
-        }
+        }*/
     }
     
     public void visitFormalParameter(FormalParameter ast) throws ParseException
@@ -472,12 +472,12 @@ public class ContextVisitor extends NullVisitor
     	
     	if (ast.getType() == null)
         {
-    		try {
-            out.write("Evaluating type of Keyword " + ast.getValue() + "\n");
+    		/*try {
+    			out.write("Evaluating type of Keyword " + ast.getValue() + "\n");
     		}
     		catch (Exception e) {
     			System.err.println("Error: " + e.getMessage());
-    		}
+    		}*/
             
 	        AST parent = ast;
 	        while (parent != null && !(parent instanceof ClassDeclaration))
@@ -590,12 +590,12 @@ public class ContextVisitor extends NullVisitor
     {
         if (ast.getType() == null)
         {
-        	try {
-            out.write("Evaluating type of " + ast.toString() + " " + ast.getName()+ "\n");
+        	/*try {
+        		out.write("Evaluating type of " + ast.toString() + " " + ast.getName()+ "\n");
         	}
         	catch (Exception e) {
         		System.err.println("Error: " + e.getMessage());
-        	}
+        	}*/
         	
             //cu.parameters.dump(4);
 

@@ -1341,8 +1341,7 @@ public class BoogieVisitor extends NullVisitor {
     	//When we hit the first method, we write out the constructors for this 
     	//class and the Pack and Unpack procedures. 
     	if (isFirstMethod) {   
-    		System.out.println("isfirstMethod: " + currentMethod);
-    		//This if is for when the modulo symbol is in the body of a predicate.
+    			//This if is for when the modulo symbol is in the body of a predicate.
     		if (programContainsModulo && !writtenModuloFunction) {
     			try{
     				out.write(moduloTranslation);
@@ -3359,7 +3358,6 @@ public class BoogieVisitor extends NullVisitor {
     
     void modifyMethodBody(String s) {
     	String currentMethodBody = methodBody.get(currentMethod);
-    	System.out.println("currentMethod=" + currentMethodBody);
 		currentMethodBody = currentMethodBody.concat(s);
 		methodBody.put(currentMethod, currentMethodBody);
     }
@@ -3713,11 +3711,9 @@ public class BoogieVisitor extends NullVisitor {
     }
    
     void writePackedAndFrac(BufferedWriter out) {
-    	System.out.println("in predicate!!");
     	//I also declare the packed and frac global variables for this class.
     	try {
     		for (String p : predicates) {
-    			System.out.println(upperCaseFirstLetter(p) + " predicate!!");
     			out.write("var packed" + upperCaseFirstLetter(p) + ": [Ref] bool;\n");
     			out.write("var frac" + upperCaseFirstLetter(p) + ": [Ref] real;\n");			
     		}
