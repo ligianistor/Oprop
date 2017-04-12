@@ -156,6 +156,10 @@ public class BoogieVisitor extends NullVisitor {
 	// all the local variables declared in a method
 	String stringOfVarDecls = "";
 	
+	// all the local variables declared in a method
+	// that are of type class
+	LinkedList<String> listOfVarDecls = new LinkedList<String>();
+	
 	//For each predicate name, this maps to a list of PackObjMods. 
 	//This map needs to be reset in the beginning of each method.
 	//The first String represents the name of the predicate.
@@ -1334,6 +1338,7 @@ public class BoogieVisitor extends NullVisitor {
     	parametersMethod.clear();
     	setFracEq1.clear();
     	stringOfVarDecls = "";
+    	listOfVarDecls.clear();
 		String moduloTranslation = "function modulo(x:int, y:int) returns (int); \n" +
 		"axiom (forall x:int, y:int :: {modulo(x,y)}\n" +
 	    "\t ((0 <= x) &&(0 < y) ==> (0 <= modulo(x,y) ) && (modulo(x,y) < y) )\n" +
@@ -1844,6 +1849,9 @@ public class BoogieVisitor extends NullVisitor {
 				writtenModuloFunction = true;
 			}
 			out.write("{\n"+stringOfVarDecls);
+			// here I write assume (a!=b) && (b!=c) && (c!=a);
+			// for all the local variables that are of type class
+			out.write(writeListOfVarDecls());
 			out.write(writeAssumeForall(currentMethod));
 			out.write(methodBody.get(currentMethod));				
 		}
@@ -1852,9 +1860,9 @@ public class BoogieVisitor extends NullVisitor {
 					"after visitChildren: "
 					+ e.getMessage());
 		}
-    	//if (!isConstructor) {
+    
     		isFirstMethod = false;
-    	//}
+    
     }
     
     void addArgToPackedModifiedArgsInMethod(String predName, String object) {
@@ -2796,6 +2804,7 @@ public class BoogieVisitor extends NullVisitor {
 
     		if (isClass) {
     			stringOfVarDecls = stringOfVarDecls.concat("\t var " + localVariableName +":Ref;\n");
+    			listOfVarDecls.add(localVariableName);
     		}
     		else 
     			stringOfVarDecls = stringOfVarDecls.concat("\t var " +
@@ -3611,6 +3620,24 @@ public class BoogieVisitor extends NullVisitor {
     				temp +
     				"[y] >= 0.0) );\n");
     		}
+    	}
+    	return result;
+    }
+    
+    String writeListOfVarDecls() {
+    	String result = "";
+    	if (listOfVarDecls.size() != 0) {
+    		result = "assume ";
+    		int numVars = listOfVarDecls.size();
+    	
+    		for (int i=0 ; i<numVars-1; i++) {
+    			for (int j=i+1; j<numVars; j++) {
+    				result = result + "(" + listOfVarDecls.get(i) + "!=" + listOfVarDecls.get(j) + ") && ";
+    			} 		
+    		}
+    	
+    		result = result.substring(0, result.length()-3);
+    		result += ";\n";
     	}
     	return result;
     }
