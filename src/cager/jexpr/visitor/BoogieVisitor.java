@@ -357,7 +357,8 @@ public class BoogieVisitor extends NullVisitor {
 			new HashMap<String, LinkedList<PredicateAndFieldValue>>();
 	
 	//For each method, methodsInMethod contains 
-	//the set of methods called in that method.
+	//the set of methods called in that method + the constructors
+	//called in this method.
 	HashMap<String, LinkedList<FieldAndTypePair>> methodsInMethod = 
 			new HashMap<String, LinkedList<FieldAndTypePair>>();
 	
@@ -1535,7 +1536,7 @@ public class BoogieVisitor extends NullVisitor {
 			// Now I am visiting the method block.
         	children[children.length-1].accept(this);
     	    
-    	    try {
+    	 try {
     	    //TODO add all parameters when calling function
     	    LinkedList<FieldAndTypePair> currentMethodParams = methodParams.get(currentMethod);
     	    for (int i=0; i<currentMethodParams.size(); i++) {
@@ -1548,7 +1549,7 @@ public class BoogieVisitor extends NullVisitor {
     	    	}
     	    }
     	    out.write("this:Ref)\n");
-							
+    	  							
     	    //Need to automatically detect what is being modified, 
     	    //according to the Boogie manual.
     	    //We do this after we parse and translate the body of the current method.
@@ -1556,30 +1557,42 @@ public class BoogieVisitor extends NullVisitor {
     	    		fieldsInMethod.get(currentMethod);
 				
     	    //Put in modifies the fields that were in the modifies of 
-    	    //the methods that were called in this method.
+    	    //the methods that were called in this method and in the constructors
+    	    //that were called in this method. 
     	    LinkedList<FieldAndTypePair> currentMethodsInMethod = 
     	    		methodsInMethod.get(currentMethod);
+
         	if (currentMethodsInMethod !=null) {
+
         		for (int i=0;i<currentMethodsInMethod.size();i++) {
+        	
         			FieldAndTypePair ft = currentMethodsInMethod.get(i);
         			Set<String> callMethodsSetOfFields = new TreeSet<String>();
+        			System.out.println("type:"+ ft.getType().toString());
         			if (ft.getType().equals(className)) {
+        				System.out.println("classname");
         				callMethodsSetOfFields = fieldsInMethod.get(ft.getName());
         			} else {
+        			
         				int classOfCallMethod = -1;
         	        	for (int l=0; l < numberFilesBefore; l++) {
         	        		if (bv[l].getClassName().equals(ft.getType()))
         	        			classOfCallMethod = l;
         	        	}
+        	        	
         	        	callMethodsSetOfFields = 
-        	        		bv[classOfCallMethod].getFieldsInMethod().get(ft.getName());	
+        	        		bv[classOfCallMethod].getFieldsInMethod().get(ft.getName());
+        	        	// XXXX this is where the error is, in the line above, null !!!
+        	        	// what am I doing here?
+        	        
         			}
         			localFieldsInMethod.addAll(callMethodsSetOfFields);
         		}
         	}
         	
         	//localFieldsInMethod is the set of elements that are modified.
-        	if (localFieldsInMethod!=null) {       	
+        	if (localFieldsInMethod!=null) {   
+        		System.out.println("im herex 5");
         		String[] fieldsInMethodArray = 
 					localFieldsInMethod.toArray(new String[0]);
         		
@@ -1766,6 +1779,7 @@ public class BoogieVisitor extends NullVisitor {
 	    // other procedures that are not main.
 	    // "main" is the client code.
 	    String thisMethodName = ast.getIdentifier().getName();
+	    System.out.println( " this method name " + thisMethodName);
 	    if (!thisMethodName.equals("main")) {
 	       	// This is for writing "ensures forall for packed.
 	    	ensuresForall = ensuresForall.concat(
@@ -2671,7 +2685,13 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<String> localArgumentsPredicate = new LinkedList<String>();
     	LinkedList<String> localExistentialArgumentsPredicate = new LinkedList<String>();
     	
-    	modifyMethodBody("\t call Construct" + ast.getAlloc_func()+"(");
+    	// The second argument represents the class that this method belongs to.
+    	// Since it's the constructor, the class has the same name.
+    	modifyMethodsInMethod(
+    			new FieldAndTypePair(ast.getAlloc_func(), ast.getAlloc_func()));
+    	
+    	modifyMethodBody("\t call " + ast.getAlloc_func()+"(");
+    	    	
     	AST[] children = ast.getChildren();
     	//This is the ArgumentList that contains the arguments
     	//for the fields.
@@ -3677,12 +3697,17 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     void modifyMethodsInMethod(FieldAndTypePair s) {
+    	System.out.println(currentMethod);
     	LinkedList<FieldAndTypePair> currentMethodsInMethod = 
     			methodsInMethod.get(currentMethod);
+    	System.out.println("im here 1");
     	if (currentMethodsInMethod == null) {
+    		System.out.println("im here 2");
     		currentMethodsInMethod = new LinkedList<FieldAndTypePair>();
     	}
+    	System.out.println("im here 3");
     	currentMethodsInMethod.add(s);
+    	System.out.println("im here 4");
     	methodsInMethod.put(currentMethod, currentMethodsInMethod);    	
     }
     
