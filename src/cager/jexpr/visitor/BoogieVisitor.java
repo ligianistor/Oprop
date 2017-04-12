@@ -1,7 +1,6 @@
 package cager.jexpr.visitor;
 
 import java.io.BufferedWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,11 +58,6 @@ import cager.jexpr.ast.WriteOut;
  * This class visits the AST to generate the Boogie code.
  */
 public class BoogieVisitor extends NullVisitor {
-	// TODO need to parse the body of the constructors
-	// just like for any other method!!!
-	
-	// TODO optional, but necessary for the VSTTE submission about 
-	// design patterns!!!
 	
 	// For each "packed" in the current method, this map
 	// points to a set that holds all the objects
@@ -105,6 +99,9 @@ public class BoogieVisitor extends NullVisitor {
 	
 	//Is this the first method that is being translated 
 	boolean isFirstMethod = true;
+	
+	//Is this method a constructor
+	boolean isConstructor = false;	
 	
 	//Is this method a constructor?
 	//I need this because constructors are derived from methods, but 
@@ -331,9 +328,11 @@ public class BoogieVisitor extends NullVisitor {
 	//This includes packed and frac, but fieldsTypes does not.
 	Set<String> fields = new TreeSet<String>();
 	
-	//The arraylist of (field, type) pairs of this Oprop class.
-	ArrayList<FieldAndTypePair> fieldsTypes = 
-			new ArrayList<FieldAndTypePair>();
+	//The set of (field, type) pairs of this Oprop class.
+	// TODO maybe this should be a map from a class name to 
+	// the fields in that class!!!
+	Set<FieldAndTypePair> fieldsTypes = 
+			new TreeSet<FieldAndTypePair>();
 	
 	//The set of predicates of this Oprop class.
 	Set<String> predicates = new TreeSet<String>();
@@ -510,7 +509,9 @@ public class BoogieVisitor extends NullVisitor {
     public void visitConstructorDeclaration(ConstructorDeclaration ast) 
     		throws ParseException
     {
+    	isConstructor = true;
     	visitMethodDeclaration(ast);
+    	isConstructor = false;
     }
         
     public void visitFieldDeclaration(FieldDeclaration ast) 
@@ -1304,6 +1305,27 @@ public class BoogieVisitor extends NullVisitor {
     }  	
     	return pairOfStrings;			
     }
+    
+    // this method generates strings of the form 
+    // ensures (forall y:Ref :: ( (y!=this) ==> (next[y] == old(next[y]) ) ) );
+    String inferEnsuresForallForConstructor(
+    		String constructorName_,  
+    		String forallParameter		
+   ) {
+    	String result = "";
+    	    	
+    	for (FieldAndTypePair ft : fieldsTypes) {
+    		result = result + "ensures (forall "  +
+    				forallParameter + ": ";
+    		result += "Ref";
+    		result +=
+    				":: ( (" + forallParameter + "!=this) ==> (" +
+    				ft.getName()+"["+forallParameter + "] == old(" +
+    				ft.getName()+"["+forallParameter + "]) ) ) );\n";		
+    	}
+    	
+    	return result;
+    }
         
     //Since methods are not children of 
     //Predicate, we might not need namePredicate here.
@@ -1474,6 +1496,7 @@ public class BoogieVisitor extends NullVisitor {
     				paramsPredicateBody.entrySet().iterator(); 
     	    	
     	    while(j.hasNext()) {
+    	    	// TODO try to delete packedmods and see if the tool still works
     	    	String currentNamePred = j.next().getKey();
     	     	packedMods.put(currentNamePred, new LinkedList<PackObjMods>()); 
     	    }
@@ -1520,6 +1543,7 @@ public class BoogieVisitor extends NullVisitor {
         	 Set<String> unpackedInPostcondition =
        			new TreeSet<String>();
         	 
+        	 System.out.println("ensures forall " + methodName );
         	 constructStructuresForInferEnsuresForallPacked(
         	    		methodName,       	    		
         	    		packedModifiedObjects,
@@ -1568,9 +1592,7 @@ public class BoogieVisitor extends NullVisitor {
         	
         			FieldAndTypePair ft = currentMethodsInMethod.get(i);
         			Set<String> callMethodsSetOfFields = new TreeSet<String>();
-        			System.out.println("type:"+ ft.getType().toString());
         			if (ft.getType().equals(className)) {
-        				System.out.println("classname");
         				callMethodsSetOfFields = fieldsInMethod.get(ft.getName());
         			} else {
         			
@@ -1581,10 +1603,7 @@ public class BoogieVisitor extends NullVisitor {
         	        	}
         	        	
         	        	callMethodsSetOfFields = 
-        	        		bv[classOfCallMethod].getFieldsInMethod().get(ft.getName());
-        	        	// XXXX this is where the error is, in the line above, null !!!
-        	        	// what am I doing here?
-        	        
+        	        		bv[classOfCallMethod].getFieldsInMethod().get(ft.getName());      	        
         			}
         			localFieldsInMethod.addAll(callMethodsSetOfFields);
         		}
@@ -1592,7 +1611,6 @@ public class BoogieVisitor extends NullVisitor {
         	
         	//localFieldsInMethod is the set of elements that are modified.
         	if (localFieldsInMethod!=null) {   
-        		System.out.println("im herex 5");
         		String[] fieldsInMethodArray = 
 					localFieldsInMethod.toArray(new String[0]);
         		
@@ -1699,8 +1717,7 @@ public class BoogieVisitor extends NullVisitor {
 										":Ref :: (" + notEquals +" packed"+
 										upperCaseFirstLetter(p)+"[" +
 										forallParameter+"]));\n"
-										);
-							
+										);							
 						}
 					}
 				}
@@ -1804,6 +1821,13 @@ public class BoogieVisitor extends NullVisitor {
 	    		    		predicateIsMentioned,
 	    		    		unpackedInPostcondition		
 	    			).getEnsuresForallFractions());
+	    	if (isConstructor) {
+	    		ensuresForall = ensuresForall.concat(
+	    				inferEnsuresForallForConstructor(
+	    						thisMethodName,
+	    						forallParameter
+	    						));
+	    	}
 	        	
 	        if (!ensuresForall.equals(""))
 	        	out.write(ensuresForall+"\n");

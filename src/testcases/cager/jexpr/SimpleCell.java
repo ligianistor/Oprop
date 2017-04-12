@@ -8,6 +8,14 @@ class SimpleCell {
 			
 	predicate PredNext() = exists SimpleCell obj : 
 		this.next -> obj && (obj#0.34 PredVal())	
+		
+	// SimpleCell() {}
+	SimpleCell(int v, SimpleCell n) 
+	ensures (this.val == v) && (this.next == n)
+	{
+		this.val = v;
+		this.next = n;
+	}
 
 	void changeVal(int r) 
 	~double k : requires (this#k PredVal()) && (r<15) 
