@@ -690,6 +690,44 @@ public class BoogieVisitor extends NullVisitor {
 	
     }
     
+    String getArgsToFieldsString(String namePred) {
+    	String argsToFieldsString = "";
+    	FieldTypePredbody currentParamsPredicateBody = 
+				paramsPredicateBody.get(namePred);
+    	LinkedList<FieldAndTypePair> currentExistentialParameters =
+    			currentParamsPredicateBody.getExistentialParameters();
+		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
+				predArgWhichField.get(namePred);
+			if (listArgsToFieldsThisPred != null) {
+				for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
+					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
+					String field = argField.getField();
+					boolean exists = false;
+					for (int j=0; j<currentExistentialParameters.size();j++) {
+						if (argField.getArgument().equals(
+								currentExistentialParameters.get(j).getName())) {
+							exists = true;
+							break;
+						}
+					}
+					
+					// The second part of this condition says that this is a proper field
+					// of this predicate,
+					// that it is not a field of another object proposition.
+					if (!field.equals("") && (!field.contains(" ")) && exists ) {
+						argsToFieldsString = argsToFieldsString.concat(
+								"("+field+ 
+								"[this]=="+argField.getArgument()+") && ");
+					}
+				}
+		}
+		if (argsToFieldsString.length() >4) {
+			argsToFieldsString = argsToFieldsString.substring(0, argsToFieldsString.length() - 4);
+		}
+		return argsToFieldsString;
+    }
+    
+    
     boolean areEqualSetsPacked(
     		Set<FractionManipulationStatement> setPre,
     		Set<FractionManipulationStatement> setPost 		
@@ -1449,6 +1487,7 @@ public class BoogieVisitor extends NullVisitor {
     						upperCaseFirstLetter(currentNamePred)+"(");
     				writePredParamsOutOrToString(currentNamePred, 1, false);
     				out.write("this:Ref);\n"); 
+    				
     				out.write("\t requires (packed"+
     						upperCaseFirstLetter(currentNamePred)+"[");
     				out.write("this]==false) &&\n");
@@ -1468,6 +1507,10 @@ public class BoogieVisitor extends NullVisitor {
     				out.write("(frac"+
     						upperCaseFirstLetter(currentNamePred)+"[");
     				out.write("this] > 0.0);\n");
+    				String argsToFieldsString = getArgsToFieldsString(currentNamePred);
+    				if (!argsToFieldsString.equals("")) {
+    					out.write("\t requires " + argsToFieldsString + ";\n");
+    				}
 			
     				//TODO need to update predBody in the appropriate map.
     				out.write("\t ensures "+predBody+";\n");
@@ -3626,7 +3669,7 @@ public class BoogieVisitor extends NullVisitor {
     
     String writeListOfVarDecls() {
     	String result = "";
-    	if (listOfVarDecls.size() != 0) {
+    	if (listOfVarDecls.size() > 1) {
     		result = "assume ";
     		int numVars = listOfVarDecls.size();
     	
