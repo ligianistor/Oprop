@@ -110,22 +110,13 @@ requires unpacked(this#k1 parent()) &&
    (this#0.5 right(or, rc))
 ensures (this#k2 parent()) && ( (opp != null) ~=> (opp#k3 parent()) ) 
 {
-
-//We already have access to this.parent from the precondition of 
-//this function.
 if (this.parent != null) {
 	splitFrac(opp#k parent(), 2);
 	unpack(opp#k/2 parent())[opp.parent, opp.count];
-	//We get opp#1/2 count(lccc) from unpacking opp in parent()
 	unpack(opp#0.5 count(opp.count))[opp.left, opp.right, opp.left.count, opp.right.count];
 
 	if (this == this.parent.right) {
-
-		//The rule in the formal system should be that
-		//if we have two object propositions with different parameters
-		//that are both packed, then the parameters should be the same.
 		addFrac(opp#0.5 right(this, lcc), opp#0.5 right(opp.right, opp.right.count));
-		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 right(this, lcc))[opp.parent];
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
 		
@@ -136,9 +127,7 @@ if (this.parent != null) {
 		this.parent.updateCountRec()[opp.parent, opp.count, opp.left, this, opp.left.count, lc + rc + 1];	
 		
 	} else {
-
 		addFrac(opp#0.5 left(this, lcc), opp#0.5 left(opp.left, opp.left.count));
-		//Explain why we need the full fraction!!!
 		unpack(opp#1.0 left(this, lcc))[opp.parent];
 		addFrac(unpacked(this#0.5 count(lcc)), this#0.5 count(lcc));
 		
@@ -150,7 +139,6 @@ if (this.parent != null) {
 	}		
  } else {
 	addFrac(this#0.5 count(lcc), unpacked(this#0.5 count(lcc)));
-	//After this addFrac, we know that this is unpacked in count()
 	 this.updateCount()[lcc, ol, or, opp, lc, rc, opp.count];
 	splitFrac(unpacked(this#1.0 count(lcc)), 2);
 	pack(this#k2 parent())[this.parent, lc + rc + 1];
