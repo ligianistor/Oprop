@@ -1591,7 +1591,6 @@ public class BoogieVisitor extends NullVisitor {
         	 Set<String> unpackedInPostcondition =
        			new TreeSet<String>();
         	 
-        	 System.out.println("ensures forall " + methodName );
         	 constructStructuresForInferEnsuresForallPacked(
         	    		methodName,       	    		
         	    		packedModifiedObjects,
@@ -1844,7 +1843,7 @@ public class BoogieVisitor extends NullVisitor {
 	    // other procedures that are not main.
 	    // "main" is the client code.
 	    String thisMethodName = ast.getIdentifier().getName();
-	    System.out.println( " this method name " + thisMethodName);
+
 	    if (!thisMethodName.equals("main")) {
 	       	// This is for writing "ensures forall for packed.
 	    	ensuresForall = ensuresForall.concat(
@@ -3791,17 +3790,16 @@ public class BoogieVisitor extends NullVisitor {
     }
     
     void modifyMethodsInMethod(FieldAndTypePair s) {
-    	System.out.println(currentMethod);
     	LinkedList<FieldAndTypePair> currentMethodsInMethod = 
     			methodsInMethod.get(currentMethod);
-    	System.out.println("im here 1");
+    	
     	if (currentMethodsInMethod == null) {
-    		System.out.println("im here 2");
+    		
     		currentMethodsInMethod = new LinkedList<FieldAndTypePair>();
     	}
-    	System.out.println("im here 3");
+    	
     	currentMethodsInMethod.add(s);
-    	System.out.println("im here 4");
+    	
     	methodsInMethod.put(currentMethod, currentMethodsInMethod);    	
     }
     
