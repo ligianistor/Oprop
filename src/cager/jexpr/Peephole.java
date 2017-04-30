@@ -56,7 +56,8 @@ public class Peephole {
     String            pat   = "IfInstruction ICONST_0 GOTO ICONST_1 NOP (IFEQ|IFNE)";
     int               count = 0;
 
-    for(Iterator it = f.search(pat, constraint); it.hasNext(); )
+    for(@SuppressWarnings("rawtypes")
+        Iterator it = f.search(pat, constraint); it.hasNext(); )
     {
       InstructionHandle[] match = (InstructionHandle[])it.next();
       InstructionHandle   last  = match[match.length - 1];
@@ -97,7 +98,8 @@ public class Peephole {
     System.out.println("Before NOPs");
     System.out.println(il.toString(true));
 
-    for(Iterator it = f.search(pat); it.hasNext(); )
+    for(@SuppressWarnings("rawtypes") 
+    Iterator it = f.search(pat); it.hasNext(); )
     {
       InstructionHandle[] match = (InstructionHandle[])it.next();
       InstructionHandle   first = match[0];

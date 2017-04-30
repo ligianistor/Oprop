@@ -59,8 +59,8 @@ public class JExpr implements JExprConstants {
         		for (int j=1; j <= numberOfInputFiles; j++) {
         		
         		filename = args[j];
-                int extensionStart = filename.indexOf('.');
-                String fileNoExtension = (filename.substring(0, extensionStart)).toLowerCase();
+        		int extensionStart = filename.lastIndexOf('.');
+        		String fileNoExtension = filename.substring(0, extensionStart);
                 String intermFile = fileNoExtension.concat(".interm");
                 String boogieFile = fileNoExtension.concat(".bpl");
                 // Create file 
