@@ -59,8 +59,8 @@ public class JExpr implements JExprConstants {
         		for (int j=1; j <= numberOfInputFiles; j++) {
         		
         		filename = args[j];
-                int extensionStart = filename.lastIndexOf('.');
-                String fileNoExtension = filename.substring(0, extensionStart);
+                int extensionStart = filename.indexOf('.');
+                String fileNoExtension = (filename.substring(0, extensionStart)).toLowerCase();
                 String intermFile = fileNoExtension.concat(".interm");
                 String boogieFile = fileNoExtension.concat(".bpl");
                 // Create file 
@@ -68,7 +68,7 @@ public class JExpr implements JExprConstants {
                 out = new BufferedWriter(fstream);
                 
                 try {
-                	//out.write("Java Parser Version 1.1 (for Java1.2 code):  Reading from file " + filename + "...\n");
+                	out.write("Java Parser Version 1.1 (for Java1.2 code):  Reading from file " + filename + "...\n");
                     	try {
                             parser = new JExpr(new java.io.FileInputStream(filename));
                         } 
@@ -82,22 +82,24 @@ public class JExpr implements JExprConstants {
                 	System.err.println("Error: " + e.getMessage());
                 }
             
-                CompilationUnits ast_top = new CompilationUnits();
-                setParents(ast_top);
+
+                        CompilationUnits ast_top = new CompilationUnits();
+                        setParents(ast_top);
+
 
                 parser = new JExpr(new java.io.FileReader(args[j]));
                 CompilationUnit ast = parser.CompilationUnit();
                 ast_top.add(ast);
                 setParents(ast, ast_top);
      
-            //out.write("before dump 0\n");
-            //ast_top.dump(0, out);
-            //out.write("before visitor v\n");
+            out.write("before dump 0\n");
+            ast_top.dump(0, out);
+            out.write("before visitor v\n");
             ContextVisitor cv = new ContextVisitor(out, j-1, contextVisitors);
             contextVisitors[j-1] = cv;
             ast_top.accept(cv);
-            //out.write("before second dump 0\n");
-            //ast_top.dump(0, out);
+            out.write("before second dump 0\n");
+            ast_top.dump(0, out);
             out.close();
             FileWriter fstreamBoogie = new FileWriter(boogieFile);
             outBoogie = new BufferedWriter(fstreamBoogie);

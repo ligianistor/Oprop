@@ -304,6 +304,7 @@ public class ClassDeclaration extends AST
     
     public AST[] getChildren()
     {
+    	
         //if (children == null)
             //children = (MethodDeclaration[])(methods.toArray(new MethodDeclaration[0]));
         //return children;
