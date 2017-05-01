@@ -9,6 +9,13 @@ class DoubleCount {
 	  this.val -> v && this.dbl -> d 
 	  && d == 2*v
 	  
+	DoubleCount(int v, int d)
+	ensures (this.val == v) && (this.dbl == d)
+	{
+		  this.val = v;
+		  this.dbl = d;
+	}
+	  
 	void increment()
 	~ double k:
 	requires this#k OK()

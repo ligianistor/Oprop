@@ -3057,7 +3057,7 @@ public class BoogieVisitor extends NullVisitor {
         	LinkedList<String> actualParams,
         	String formalParameter) {
     	String result = "";
-    	
+    	System.out.println("formalParameter=" + formalParameter);
     	int indexOfCurrentParam = -1;
 		for (int i=0; i<formalParams.size(); i++) {
 			if (formalParams.get(i).getName().equals(formalParameter)) {

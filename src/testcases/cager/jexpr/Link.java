@@ -10,8 +10,15 @@ class Link {
     	&& v >= x && v <= y &&
     	((o#k Range(x,y)) || o == null) 
     	
+    Link(int v, Link n)
+    ensures (this.val == v) && (this.next == n)
+    {
+    	this.val = v;
+    	this.next = n;
+    }
+    	
     void addModulo11(int x)
-    ~ double k: //int k 
+    ~ double k:
     requires x >= 0 && (this#k Range(0,10))
     ensures (this#k Range(0,10))
     {

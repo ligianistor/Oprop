@@ -6,6 +6,12 @@ class Share {
 	predicate ShareCount() = 
 	  exists DoubleCount d : 
 	  this.dc -> d && (d#0.1 OK())
+	  
+	Share(DoubleCount d)
+	ensures (this.dc == d)
+	{
+		  this.dc = d;
+	}
 		       
 	void touch() 
 	~ double k:
