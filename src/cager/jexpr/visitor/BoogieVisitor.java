@@ -186,7 +186,6 @@ public class BoogieVisitor extends NullVisitor {
 	HashMap<String, String> requiresExistential = 
 			new HashMap<String, String>();
 	
-	
 	// For each predicate or method, I have a list of 
 	// (if condition) (fracPredicate[object], fractionAmount) 
 	// representing the fraction annotations that will be added 
@@ -194,12 +193,15 @@ public class BoogieVisitor extends NullVisitor {
 	// and right after calling a method.
 	// The String key in the HashMap is the name of the predicate or 
 	// method.
-	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListPredicate = 
-			new HashMap<String, LinkedList<FractionManipulationStatement>>();
-	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPre = 
-			new HashMap<String, LinkedList<FractionManipulationStatement>>();
-	HashMap<String, LinkedList<FractionManipulationStatement>>  fractionManipulationsListMethodPost = 
-			new HashMap<String, LinkedList<FractionManipulationStatement>>();
+	HashMap<String, LinkedList<FractionManipulationStatement>>  
+		fractionManipulationsListPredicate = 
+		new HashMap<String, LinkedList<FractionManipulationStatement>>();
+	HashMap<String, LinkedList<FractionManipulationStatement>>  
+		fractionManipulationsListMethodPre = 
+		new HashMap<String, LinkedList<FractionManipulationStatement>>();
+	HashMap<String, LinkedList<FractionManipulationStatement>>  
+		fractionManipulationsListMethodPost = 
+		new HashMap<String, LinkedList<FractionManipulationStatement>>();
 	
 	// This maps each method name to its String method body.
 	HashMap<String, String> methodBody = new HashMap<String, String>();
@@ -3110,8 +3112,10 @@ public class BoogieVisitor extends NullVisitor {
     
     public <K> LinkedList<K> copyLinkedList(LinkedList<K> l) {
     	 LinkedList<K> result = new LinkedList<K>();
-    	 for (int i = 0; i< l.size(); i++) {
-    		 result.add(l.get(i));
+    	 if (l!=null) {
+    		 for (int i = 0; i< l.size(); i++) {
+    			 result.add(l.get(i));
+    		 }
     	 }
     	 return result;
     }
@@ -3135,15 +3139,17 @@ public class BoogieVisitor extends NullVisitor {
     	 LinkedList<String> actualParams = new LinkedList<String>();
     	 
     	 if (isPredicate) {
+    		 System.out.println("namePredOrMethod = " + namePredOrMethod);
     		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
     		 // use paramsPredicateBody for formal params.
     		 // for actual params use argumentsObjProp and existentialArgsObjProp
     		 FieldTypePredbody args = paramsPredicateBody.get(namePredOrMethod);
     		 // Here I am making a copy of the actual list of formal paramters
     		 // because I do not want to add elements to the original list.
-    		 formalParams = copyLinkedList(args.getFormalParameters());
-
-    		 formalParams.addAll(args.getExistentialParameters());
+    		 if (args!= null) {
+    			 formalParams = copyLinkedList(args.getFormalParameters());
+    			 formalParams.addAll(args.getExistentialParameters());
+    		 }
     		 formalParams.add(new FieldAndTypePair("this", "Ref"));
     		 
     		 // These are the actual parameters of the current object proposition.
@@ -3156,9 +3162,8 @@ public class BoogieVisitor extends NullVisitor {
     		 actualParams = copyLinkedList(argumentsObjProp);
     		 actualParams.addAll(existentialArgsObjProp);
     		 actualParams.add(callingObject);
-    		 
-    		 
-        	 for (int i=0; i<fractionManipulationsList.size(); i++) {
+    		 if (fractionManipulationsList != null) { 		 
+        	   for (int i=0; i<fractionManipulationsList.size(); i++) {
         		 FractionManipulationStatement fracMan = fractionManipulationsList.get(i);
         		
         		 if (!fracMan.getIfCondition().equals("")) {
@@ -3208,30 +3213,35 @@ public class BoogieVisitor extends NullVisitor {
         			 result = result.concat("}\n");
         		 }
         	 }
+    	   }
 
     	 } else { 
     		 // look in methodParams for formal params
     		 // need to separate the comma separated params, then add "this" as it's not added yet.
     		 // for actual params need to add a new LinkedList in visitMethodSelection
-    		 formalParams = copyLinkedList(methodParams.get(namePredOrMethod));
-    		 formalParams.add(new FieldAndTypePair("this", "Ref"));
-    		 // This is the list of actual arguments for the current method 
-    		 actualParams = actualArgumentsMethod;
+    		 System.out.println("namePredOrMethod ="+ namePredOrMethod);
+    		
+    			 formalParams = copyLinkedList(methodParams.get(namePredOrMethod));
+    			 formalParams.add(new FieldAndTypePair("this", "Ref"));
+    			 // This is the list of actual arguments for the current method 
+    			 actualParams = actualArgumentsMethod;
     		    		 
-    		 Set<FieldAndTypePair> predObjs = 
-    	    			predObjNotMentionedPostcond.get(namePredOrMethod);
-    	     if (predObjs != null) {
-    	    	 for (FieldAndTypePair p : predObjs) {
-    	    		result = result.concat("\t frac"+upperCaseFirstLetter(p.getName())+"["+
-        			replaceFormalArgsWithActual(
-        					 formalParams,
-        					 actualParams,
-        					 '$'+p.getType()+'@' // this is not actually the type but the object
-        					 // and it should be surrounded by $ and @
-        					 ) +"] := 0.0;\n"
-        			);			
-    	    	 }  		
-    	    }	 
+    			 Set<FieldAndTypePair> predObjs = 
+    					 predObjNotMentionedPostcond.get(namePredOrMethod);
+    			 if (predObjs != null) {
+    				 for (FieldAndTypePair p : predObjs) {
+    					 result = result.concat("\t frac"+upperCaseFirstLetter(p.getName())+"["+
+    							 replaceFormalArgsWithActual(
+    									 formalParams,
+    									 actualParams,
+    									 '$'+p.getType()+'@' 
+    									 // this is not actually the type but the object
+    									 // and it should be surrounded by $ and @
+    									 ) +"] := 0.0;\n"
+    							 );			
+    				 }  		
+    			 
+    		 }
     	 }
     	
     	return result;
