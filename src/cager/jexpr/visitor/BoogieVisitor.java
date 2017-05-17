@@ -607,6 +607,33 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
+    boolean isArgOnlyUsedInRecPred(int i, String namePred, String field) {
+    	LinkedList<String> localFieldParts = separateParameters(field, ' ');
+		String localNamePred = localFieldParts.get(0);  					 					
+		int localNumber = Integer.parseInt(localFieldParts.get(2));
+		
+		if (namePred.equals(localNamePred) && (i==localNumber)) {
+			return true;
+		} else {
+			//It can happen that this parameter is used as a parameter in
+			//another predicate. This else represents the recursive step.
+			// Oprop currently goes only one step down but it should be a 
+			// closure in the general case.  	
+    		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
+				predArgWhichField.get(localNamePred);
+    		
+			if (listArgsToFieldsThisPred != null) {
+					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(localNumber);
+					String fieldRec = argField.getField();			
+					if (fieldRec.equals("")) {
+						return true;
+					}
+			}
+		}
+    	
+    	return false;
+    }
+    
     // This function returns the string containing the
     // declaration of maps for all parameters of all predicates that
     // are not associated with any fields.
@@ -624,20 +651,19 @@ public class BoogieVisitor extends NullVisitor {
     		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
 				predArgWhichField.get(currentNamePred);
 			if (listArgsToFieldsThisPred != null) {
-				System.out.println("size=" + listArgsToFieldsThisPred.size());
 				for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
 					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
 					String field = argField.getField();
-					System.out.println(field);				
-					if (field.equals("")) {
-						System.out.println("Yes "+field);
+					String arg = argField.getArgument();
+								
+					if (field.equals("") || 
+							( field.contains(" ") && isArgOnlyUsedInRecPred(i,currentNamePred,field)) ) {
 						result = result.concat(
 								"var param"+upperCaseFirstLetter(currentNamePred)+ 
-								upperCaseFirstLetter(field) +
-								"[Ref] " +  paramsPred.getType(field) + ";\n");
+								upperCaseFirstLetter(arg) +
+								": [Ref]" +  paramsPred.getType(arg) + ";\n");
 					}
 				}
-				System.out.println("size=" + listArgsToFieldsThisPred.size());
 			}
     	}
         	
@@ -2139,7 +2165,6 @@ public class BoogieVisitor extends NullVisitor {
     			if (namePredicate != "") {
     				//This only has a side effect if fieldValue is 
     				//an argument of the predicate.
-    				System.out.println("fieldValue=" + fieldValue+" nameField="+nameField);
     				addFieldToPredArgWhichField(fieldValue, nameField);
     			}
     		} else if (e2.getChildren()[0] instanceof LiteralExpression) {
@@ -2769,7 +2794,7 @@ public class BoogieVisitor extends NullVisitor {
     		String type = ast.getType().toString();
     		if (namePredicate!="") {
     			modifyFormalParams(name, type); 
-    			System.out.println("name="+name);
+    			
     			addArgToPredArgWhichField(name);
     		} else if (currentMethod !="") {
     			modifyMethodParams(name, type);
