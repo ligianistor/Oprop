@@ -22,9 +22,9 @@ class Link {
     requires x >= 0 && (this#k Range(0,10))
     ensures (this#k Range(0,10))
     {
-    	unpack(this#k Range(0,10));
+    	unpack(this#k Range(0,10))[this.val, this.next];
     	this.val = (this.val + x)%11;
-    	pack(this#k Range(0,10));
+    	pack(this#k Range(0,10))[this.val, this.next];
     	if (this.next != null) {
     		this.next.addModulo11(x);
     		}

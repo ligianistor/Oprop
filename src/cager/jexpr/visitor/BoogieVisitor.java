@@ -160,13 +160,6 @@ public class BoogieVisitor extends NullVisitor {
 	// that are of type class
 	LinkedList<String> listOfVarDecls = new LinkedList<String>();
 	
-	//For each predicate name, this maps to a list of PackObjMods. 
-	//This map needs to be reset in the beginning of each method.
-	//The first String represents the name of the predicate.
-	//See class PackObjMods for more insight.
-	HashMap<String, LinkedList<PackObjMods>> packedMods = 
-			new HashMap<String, LinkedList<PackObjMods>>();
-	
 	// For each predicate, this gives the list of the field that each 
 	// argument of the predicate represents. If the argument does not 
 	// represent the current value of a 
@@ -598,7 +591,6 @@ public class BoogieVisitor extends NullVisitor {
     			if(! (type.equals("double")) ) {
     				modifyExistentialParams(name, type); 
     				addArgToPredArgWhichField(name);
-    				// TODO need to write a similar method for methods
     			}
     		}
     		else if (currentMethod !="") {
@@ -612,10 +604,12 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
-    // TODO constructors of classes shouldn't be generated automatically
+    // Constructors of classes are not generated automatically
     // they should be given in the input class,
     // and translated like the other methods.
     // Only if they are not given they should be generated automatically.
+    // TODO This is left for future work, the constructors that are
+    // generated automatically.
     
     String writeAllPredArgWhichField(String namePred, String predBody) 
     {
@@ -1520,36 +1514,12 @@ public class BoogieVisitor extends NullVisitor {
     			}
     			catch (Exception e) {
     				System.err.println("Error in visitMethodDeclaration writing specifications: " + e.getMessage());
-    			}
-    			//We are initializing packedMods here, with the names of all predicates.
-    			packedMods.put(currentNamePred, new LinkedList<PackObjMods>());   
-    		}
-        
-    		// We have to initialize packedMods with the names of the predicates in the 
-    		// previous classes too.
-    		for (int i=0; i<numberFilesBefore; i++) {
-    			Set<String> predicatesOfi = bv[i].getPredicates();
-    			for (String namePredicateOfi : predicatesOfi) {
-    				packedMods.put(	
-    						namePredicateOfi, 
-    						new LinkedList<PackObjMods>()
-    				);   
-    			}	
+    			}  
     		}
     	}
     	     		
         //Writing the current procedure out.
     	try {		
-    		// We reset packedMods here.
-    		// Before we enter the body of the current method.
-    		Iterator<Entry<String, FieldTypePredbody>> j = 
-    				paramsPredicateBody.entrySet().iterator(); 
-    	    	
-    	    while(j.hasNext()) {
-    	    	// TODO try to delete packedmods and see if the tool still works
-    	    	String currentNamePred = j.next().getKey();
-    	     	packedMods.put(currentNamePred, new LinkedList<PackObjMods>()); 
-    	    }
     			
     	    out.write("\nprocedure "+ast.getIdentifier().getName()+"(");
     	}
