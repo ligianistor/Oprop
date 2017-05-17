@@ -164,6 +164,9 @@ public class BoogieVisitor extends NullVisitor {
 	// argument of the predicate represents. If the argument does not 
 	// represent the current value of a 
 	// field, then I put "" in this list.
+	// For all arguments x that do not have a corresponding field 
+	// I have to add a paramPredX map that maps from Refs to the type of x
+	// and represents the current value of that parameter.
 	HashMap<String, LinkedList<ArgumentAndFieldPair>> predArgWhichField = 
 			new HashMap<String, LinkedList<ArgumentAndFieldPair>>();
 	
@@ -604,11 +607,48 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
+    // This function returns the string containing the
+    // declaration of maps for all parameters of all predicates that
+    // are not associated with any fields.
+    String writeMapsParamsNotField() {
+    	String result = "";
+    	
+    	Iterator<Entry<String, FieldTypePredbody>> j = 
+    		paramsPredicateBody.entrySet().iterator(); 
+    
+    	while(j.hasNext()) {
+    		String currentNamePred = j.next().getKey();
+    		FieldTypePredbody paramsPred = 
+    				paramsPredicateBody.get(currentNamePred);
+    	
+    		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
+				predArgWhichField.get(currentNamePred);
+			if (listArgsToFieldsThisPred != null) {
+				System.out.println("size=" + listArgsToFieldsThisPred.size());
+				for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
+					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
+					String field = argField.getField();
+					System.out.println(field);				
+					if (field.equals("")) {
+						System.out.println("Yes "+field);
+						result = result.concat(
+								"var param"+upperCaseFirstLetter(currentNamePred)+ 
+								upperCaseFirstLetter(field) +
+								"[Ref] " +  paramsPred.getType(field) + ";\n");
+					}
+				}
+				System.out.println("size=" + listArgsToFieldsThisPred.size());
+			}
+    	}
+        	
+    	return result;
+    }
+    
     // Constructors of classes are not generated automatically
     // they should be given in the input class,
     // and translated like the other methods.
     // Only if they are not given they should be generated automatically.
-    // TODO This is left for future work, the constructors that are
+    // XXX This is left for future work, the constructors that are
     // generated automatically.
     
     String writeAllPredArgWhichField(String namePred, String predBody) 
@@ -673,7 +713,6 @@ public class BoogieVisitor extends NullVisitor {
 								"[this]=="+argField.getArgument()+")");
 					}
 				}
-				// XXX the == is where the existential gets written 
 				predBody = predBody.concat(argsToFieldsString);
 		}
 
@@ -717,7 +756,7 @@ public class BoogieVisitor extends NullVisitor {
 					}
 				}
 		}
-		if (argsToFieldsString.length() >4) {
+		if (argsToFieldsString.length() > 4) {
 			argsToFieldsString = argsToFieldsString.substring(0, argsToFieldsString.length() - 4);
 		}
 		return argsToFieldsString;
@@ -1284,6 +1323,7 @@ public class BoogieVisitor extends NullVisitor {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
         				// TODO need to add an if here!!
+        				//XXXX
         				// TODO only add an ensures forall for the variables that are in the modifies statement!!!
         				pairOfStrings.concatPacked("\t ensures (forall "+ forallParameter +":Ref :: packed"+
         					upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]);\n");
@@ -1418,6 +1458,16 @@ public class BoogieVisitor extends NullVisitor {
 		
     		//Write the packed and frac global variables to out. 
     		writePackedAndFrac(out);
+    		
+    		//Write the params global maps for predicate parameters that don't
+    		//correspond to any fields.
+    		try{
+    			out.write(writeMapsParamsNotField());
+			}
+			catch(Exception e) {
+				System.err.println("Error in visitMethodDeclaration first method: " 
+						+ e.getMessage());
+			}
     	
     		Iterator<Entry<String, FieldTypePredbody>> j = 
     			paramsPredicateBody.entrySet().iterator(); 
@@ -1497,7 +1547,7 @@ public class BoogieVisitor extends NullVisitor {
     				out.write("\t requires packed"+
     						upperCaseFirstLetter(currentNamePred)+"[");
     				out.write("this] &&\n\t \t ");
-    				//TODO we don't do this for Pack because 
+    				//We don't do this for Pack because 
     				//we do it in the code after we call the Pack procedure
 			
     				out.write("(frac"+
@@ -1691,6 +1741,7 @@ public class BoogieVisitor extends NullVisitor {
 						}
 
 						// TODO write comment for what does this areEqual means.
+						//XXXX
 						boolean areEqual = true;
 						
 						Set<String> argsInMethod = packedModifiedArgsInMethod.get(p);
@@ -2088,6 +2139,7 @@ public class BoogieVisitor extends NullVisitor {
     			if (namePredicate != "") {
     				//This only has a side effect if fieldValue is 
     				//an argument of the predicate.
+    				System.out.println("fieldValue=" + fieldValue+" nameField="+nameField);
     				addFieldToPredArgWhichField(fieldValue, nameField);
     			}
     		} else if (e2.getChildren()[0] instanceof LiteralExpression) {
@@ -2513,7 +2565,6 @@ public class BoogieVisitor extends NullVisitor {
         	addArgToPackedModifiedArgsInMethod(predName, objectString);
     	}
     	
-    	// TODO don't I need to add if I am in inPackUnpackAnnotation also???
     	if ((currentMethod != "") && !inPackUnpackAnnotation) {
     		if (insidePrecondition || insidePostcondition) {
     			modifyMethodSpec(bodyMethodOrPredicate);
@@ -2565,10 +2616,14 @@ public class BoogieVisitor extends NullVisitor {
     		}
     	} else if (currentMethod == "") {
     		int locationEndObjProp = modifyPredicateBody(bodyPredicate);
-    		// This is where I write
-    		// add count_ol_2 to the map
+    		// In the way each parameter is matched with the field that it corresponds to 
+    		// in the definition of a pack predicate, here I am doing 
+    		// this one step recursively. The code below is for a parameter that does not 
+    		// correspond to the parameters of this predicate, but to the parameters of an 
+    		// object proposition inside this predicate.
+    		// This is where I add
+    		// count_ol_2 to the predArgWhichField map
     		// to be searched for recursively.
-    		// TODO need to add a much bigger comment here
     		addObjPropToPredArgWhichField(objProp);
     		
     		//We want to add the FracString to predicateFrac for
@@ -2714,6 +2769,7 @@ public class BoogieVisitor extends NullVisitor {
     		String type = ast.getType().toString();
     		if (namePredicate!="") {
     			modifyFormalParams(name, type); 
+    			System.out.println("name="+name);
     			addArgToPredArgWhichField(name);
     		} else if (currentMethod !="") {
     			modifyMethodParams(name, type);
@@ -3027,7 +3083,6 @@ public class BoogieVisitor extends NullVisitor {
         	LinkedList<String> actualParams,
         	String formalParameter) {
     	String result = "";
-    	System.out.println("formalParameter=" + formalParameter);
     	int indexOfCurrentParam = -1;
 		for (int i=0; i<formalParams.size(); i++) {
 			if (formalParams.get(i).getName().equals(formalParameter)) {
@@ -3109,7 +3164,6 @@ public class BoogieVisitor extends NullVisitor {
     	 LinkedList<String> actualParams = new LinkedList<String>();
     	 
     	 if (isPredicate) {
-    		 System.out.println("namePredOrMethod = " + namePredOrMethod);
     		 fractionManipulationsList = fractionManipulationsListPredicate.get(namePredOrMethod);
     		 // use paramsPredicateBody for formal params.
     		 // for actual params use argumentsObjProp and existentialArgsObjProp
@@ -3188,9 +3242,7 @@ public class BoogieVisitor extends NullVisitor {
     	 } else { 
     		 // look in methodParams for formal params
     		 // need to separate the comma separated params, then add "this" as it's not added yet.
-    		 // for actual params need to add a new LinkedList in visitMethodSelection
-    		 System.out.println("namePredOrMethod ="+ namePredOrMethod);
-    		
+    		 // for actual params need to add a new LinkedList in visitMethodSelection  		
     			 formalParams = copyLinkedList(methodParams.get(namePredOrMethod));
     			 formalParams.add(new FieldAndTypePair("this", "Ref"));
     			 // This is the list of actual arguments for the current method 
@@ -3473,8 +3525,7 @@ public class BoogieVisitor extends NullVisitor {
     	);
     }
     
-    //Adds the field corresponding to 
-    //the argument 
+    //Adds the field corresponding to the argument 
     void addFieldToPredArgWhichField(String arg, String field) {
     	LinkedList<ArgumentAndFieldPair> list =
     			predArgWhichField.get(namePredicate);
@@ -3927,55 +3978,11 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	return result;
     }    
-    
-    //k=1 is for writing nameParam: type
-    //k=2 is for writing the current value of the parameters
-    //k=3 is for writing the types of the parameters
-    //If alterName is true then I add "497" to the end of getName(). 
-    //I chose "497" because it is unlikely that the programmer 
-    //will write an input parameter of this form.
-    // TODO this is not used, why did I write it???
-    String getStringPredParams(String pred, int k, boolean alterName) { 
-    	String result = "";
-    	FieldTypePredbody currentParamsPredicateBody = paramsPredicateBody.get(pred);
-		if (currentParamsPredicateBody != null) {
-			LinkedList<FieldAndTypePair> formalParamsList =
-					currentParamsPredicateBody.getFormalParameters();
-			if (!formalParamsList.isEmpty()) {
-				for (int i=0;i<formalParamsList.size();i++) {
-					FieldAndTypePair f = formalParamsList.get(i);
-					switch (k) {
-		            case 1:  
-		            	if (alterName) {
-		            	result = result.concat(f.getName() + "497:"+f.getType()+", ");
-		            	} else {
-		            	result = result.concat(f.getName() + ":"+f.getType()+", ");
-		            	}
-		                break; 
-		            case 2: 
-		            	if (alterName) {
-		            	result = result.concat(f.getName() + "497, ");
-		            	} else {
-		            	result = result.concat(f.getName() + ", ");
-		            	}
-		            	break;
-		            case 3: 
-		            	result = result.concat(f.getType() + ", ");
-		            	break;
-		            default: 
-		            	break;
-					}	
-				}
-			}	
-		} 
-		return result;
-    }
- 
+     
  // For use in debugging:
  // write a method that iterates through a hashmap that has the key string and the 
  // value a LinkedList of elements. The only requirement is for the elements
  // in the linked list to have a function "writeOut".
- // Using generics.
     
     public static <E extends WriteOut> void writeHashMap(HashMap<String, LinkedList<E>> hashMap) {
     	for (Entry<String, LinkedList<E>> entry : hashMap.entrySet()) {

@@ -33,6 +33,20 @@ public class FieldTypePredbody {
 		return existentialParameters;
 	}
 	
+	public String getType(String paramName) {
+		for (int i=0;i< formalParameters.size();i++){
+			if (paramName.equals(formalParameters.get(i).getName())) {
+				return formalParameters.get(i).getType();
+			}
+		}
+		for (int i=0;i< existentialParameters.size();i++){
+			if (paramName.equals(existentialParameters.get(i).getName())) {
+				return existentialParameters.get(i).getType();
+			}
+		}
+		return "";	
+	}
+	
 	public String getPredicateBody() {
 		return predBody;
 	}
