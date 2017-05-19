@@ -89,7 +89,7 @@ public class BoogieVisitor extends NullVisitor {
 	String className;
 	
 	// For the pre-, or post-conditions of a method,
-	// or for the translation body of a perdicate,
+	// or for the translation body of a predicate,
 	// this is the number of the disjunction member
 	// in the list of conjunctions making up the above.
 	int disjunctionNumber = -1;
@@ -100,14 +100,11 @@ public class BoogieVisitor extends NullVisitor {
 	//Is this the first method that is being translated 
 	boolean isFirstMethod = true;
 	
-	//Is this method a constructor
-	boolean isConstructor = false;	
-	
 	//Is this method a constructor?
 	//I need this because constructors are derived from methods, but 
 	//the predicates are not declared until after the constructors.
-	//boolean isConstructor = false;
-	
+	boolean isConstructor = false;	
+		
 	//Are we in an argument list?
 	boolean inArgumentList = false;
 	
@@ -303,8 +300,7 @@ public class BoogieVisitor extends NullVisitor {
 	//gets updated in the same way like methodPreconditions.
 	//This will let us make updates to fracOK, etc
 	//when a Pack procedure is called.
-	
-	
+		
 	//At the beginning of each statement, this is made "".
 	//This contains the string of each statement.
 	String statementContent;
@@ -331,8 +327,6 @@ public class BoogieVisitor extends NullVisitor {
 	Set<String> fields = new TreeSet<String>();
 	
 	//The set of (field, type) pairs of this Oprop class.
-	// TODO maybe this should be a map from a class name to 
-	// the fields in that class!!!
 	Set<FieldAndTypePair> fieldsTypes = 
 			new TreeSet<FieldAndTypePair>();
 	
@@ -478,7 +472,11 @@ public class BoogieVisitor extends NullVisitor {
 	public HashMap<String, LinkedList<BinExprString>> getPredicateBinExpr() {
 		return predicateBinExpr;
 	}
-
+	
+	public Set<FieldAndTypePair> getFieldsTypes() {
+		return fieldsTypes;
+	}
+	
 	//visit methods
 	
     public void visitCompilationUnits(CompilationUnits ast) 
@@ -512,6 +510,9 @@ public class BoogieVisitor extends NullVisitor {
     		throws ParseException
     {
     	isConstructor = true;
+    	//xxxx around here I need to look at all the parameters of a predicate and
+        // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
+        // field.
     	visitMethodDeclaration(ast);
     	isConstructor = false;
     }
@@ -736,7 +737,6 @@ public class BoogieVisitor extends NullVisitor {
     	// of fields in the current predicate.	
     	// The list of which field each argument of 
 		// this predicate represents.
-    	// XXXX This is the place where I put the paramPredVal[] == 
 		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
 				predArgWhichField.get(namePred);
 			if (listArgsToFieldsThisPred != null) {
@@ -2422,15 +2422,17 @@ public class BoogieVisitor extends NullVisitor {
     		LinkedList<ArgumentAndFieldPair> listArgsToFields, 
     		LinkedList<String> args, 
     		String objectString,
-    		String predName) {
+    		String predName
+    ) {
     	String result = "";
-    try {
+      try {
     	for (int i=0;i<args.size();i++) {
     		ArgumentAndFieldPair argField = listArgsToFields.get(i);
     		//This can be null for predicates that have no arguments.
     		if (argField!=null){
     			if (!(argField.equals(""))) {
     				String localField = argField.getField();
+    				String formalArg = argField.getArgument();
     				if (localField.contains(" ")) {
     					
     					//If the field contains " " it means
@@ -2451,22 +2453,22 @@ public class BoogieVisitor extends NullVisitor {
     					// It should be made generally recursive in future work.
     		        	LinkedList<ArgumentAndFieldPair> listArgsToFieldsRecursive =
     		        			predArgWhichField.get(localNamePred);
-    		            // localObject is of the form field[this], but I need to 
-    		        	// transform it to field[objectString]
-    		        	localObject = localObject.replaceFirst("this", objectString);
-
+    		      
     					if (isFirstWordPred(i, predName, localField)){
-        				//xxxx
-        				//here check if the first word in compact object proposition
+        				// Here I check if the first word in compact object proposition
         				// is same as current predicate. Yes, that is only one case 
-        				//that isArgOnlyUsedInRecPred looks at, but first try to implement this one.!!
+        				// that isArgOnlyUsedInRecPred looks at, but first I implemented this one.
+    						
 							result = result.concat(" && (param"+ 
 									upperCaseFirstLetter(predName)+ 
-									upperCaseFirstLetter(args.get(i)) +
+									upperCaseFirstLetter(formalArg) +
 	    							"["+localObject+"]=="+args.get(i)+")"
 	    							);		
     					} else {
-    					result = result.concat(" && ("+ 
+    						// localObject is of the form field[this], but I need to 
+        		        	// transform it to field[objectString]
+        		        	localObject = localObject.replaceFirst("this", objectString);
+        		        	result = result.concat(" && ("+ 
     							listArgsToFieldsRecursive.get(localNumber).getField()+
     							"["+localObject+"]=="+args.get(i)+")"
     							);
@@ -2632,7 +2634,7 @@ public class BoogieVisitor extends NullVisitor {
             	// this predicate (the predicate of this object proposition) represents.
             	LinkedList<ArgumentAndFieldPair> listArgsToFields =
             			predArgWhichField.get(predName);
-            	//XXXX this is where the params should be written out
+
     			String oneObjProp = writePredArgWhichField(
     					listArgsToFields,
     					args,
@@ -2891,6 +2893,9 @@ public class BoogieVisitor extends NullVisitor {
         modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := false;\n");
         
+        //xxxx around here I need to look at all the parameters of a predicate and
+        // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
+        // field.
         String callPack = "\tcall Pack" + upperCaseFirstLetter(predicateOfConstruct)+"(";
         if (localExistentialArgumentsPredicate.size()>0) {
         	for (int i=0;i<localExistentialArgumentsPredicate.size();i++) {
@@ -2906,6 +2911,7 @@ public class BoogieVisitor extends NullVisitor {
         
         modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := true;\n");
+        //xxxx this is where I need to put param
         modifyMethodBody("\tfrac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
         children[0].accept(this);
         modifyMethodBody(localVariableName + "] := 1.0;\n");
@@ -3100,6 +3106,9 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	inArgumentList = false;
     	
+    	 //xxxx around here I need to look at all the parameters of a predicate and
+        // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
+        // field.
     	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("call Pack"); 
     	} else {
