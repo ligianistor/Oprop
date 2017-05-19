@@ -607,6 +607,17 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
+    boolean isFirstWordPred(int i, String namePred, String field){
+    	LinkedList<String> localFieldParts = separateParameters(field, ' ');
+		String localNamePred = localFieldParts.get(0);  					 					
+		int localNumber = Integer.parseInt(localFieldParts.get(2));
+		
+		if (namePred.equals(localNamePred) && (i==localNumber)) {
+			return true;
+		}
+		return false;
+    }
+    
     boolean isArgOnlyUsedInRecPred(int i, String namePred, String field) {
     	LinkedList<String> localFieldParts = separateParameters(field, ' ');
 		String localNamePred = localFieldParts.get(0);  					 					
@@ -657,7 +668,8 @@ public class BoogieVisitor extends NullVisitor {
 					String arg = argField.getArgument();
 								
 					if (field.equals("") || 
-							( field.contains(" ") && isArgOnlyUsedInRecPred(i,currentNamePred,field)) ) {
+						(field.contains(" ") && isArgOnlyUsedInRecPred(i,currentNamePred,field))) 
+					{
 						result = result.concat(
 								"var param"+upperCaseFirstLetter(currentNamePred)+ 
 								upperCaseFirstLetter(arg) +
@@ -706,7 +718,8 @@ public class BoogieVisitor extends NullVisitor {
     			String oneObjProp = writePredArgWhichField(
     					listArgsToFields, 
     					objProp.getParams(), 
-    					objProp.getObject()
+    					objProp.getObject(),
+    					objProp.getName()
     					);
     		
     			int location = objProp.getLocation();
@@ -723,6 +736,7 @@ public class BoogieVisitor extends NullVisitor {
     	// of fields in the current predicate.	
     	// The list of which field each argument of 
 		// this predicate represents.
+    	// XXXX This is the place where I put the paramPredVal[] == 
 		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
 				predArgWhichField.get(namePred);
 			if (listArgsToFieldsThisPred != null) {
@@ -730,14 +744,24 @@ public class BoogieVisitor extends NullVisitor {
 				for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
 					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
 					String field = argField.getField();
+					String arg = argField.getArgument();
 					// The second part of this condition says that this is a proper field
 					// of this predicate,
 					// that it is not a field of another object proposition.
 					if (!field.equals("") && (!field.contains(" ")) ) {
 						argsToFieldsString = argsToFieldsString.concat(
 								" && ("+field+ 
-								"[this]=="+argField.getArgument()+")");
-					}
+								"[this]=="+arg+")");
+					} else 
+						// This means the parameter is not a field and also it is
+						// not used as a parameter for another object proposition. 
+						if (field.equals("")) 
+						{
+							argsToFieldsString = argsToFieldsString.concat(
+									" && (param"+upperCaseFirstLetter(namePred)+ 
+									upperCaseFirstLetter(arg) +
+									"[this]=="+arg+")");
+						}
 				}
 				predBody = predBody.concat(argsToFieldsString);
 		}
@@ -2397,7 +2421,8 @@ public class BoogieVisitor extends NullVisitor {
     String writePredArgWhichField(
     		LinkedList<ArgumentAndFieldPair> listArgsToFields, 
     		LinkedList<String> args, 
-    		String objectString) {
+    		String objectString,
+    		String predName) {
     	String result = "";
     try {
     	for (int i=0;i<args.size();i++) {
@@ -2407,6 +2432,7 @@ public class BoogieVisitor extends NullVisitor {
     			if (!(argField.equals(""))) {
     				String localField = argField.getField();
     				if (localField.contains(" ")) {
+    					
     					//If the field contains " " it means
     					//it is of the form 
     					//name_predicate object number 
@@ -2414,7 +2440,6 @@ public class BoogieVisitor extends NullVisitor {
     					// The name_predicate object number is for
     					// when an argument is itself the argument of another 
     					//object proposition inclosed in this predicate.
-
     					LinkedList<String> localFieldParts = separateParameters(localField, ' ');
     					String localNamePred = localFieldParts.get(0);  					
     					String localObject = localFieldParts.get(1);  					
@@ -2429,18 +2454,30 @@ public class BoogieVisitor extends NullVisitor {
     		            // localObject is of the form field[this], but I need to 
     		        	// transform it to field[objectString]
     		        	localObject = localObject.replaceFirst("this", objectString);
+
+    					if (isFirstWordPred(i, predName, localField)){
+        				//xxxx
+        				//here check if the first word in compact object proposition
+        				// is same as current predicate. Yes, that is only one case 
+        				//that isArgOnlyUsedInRecPred looks at, but first try to implement this one.!!
+							result = result.concat(" && (param"+ 
+									upperCaseFirstLetter(predName)+ 
+									upperCaseFirstLetter(args.get(i)) +
+	    							"["+localObject+"]=="+args.get(i)+")"
+	    							);		
+    					} else {
     					result = result.concat(" && ("+ 
     							listArgsToFieldsRecursive.get(localNumber).getField()+
     							"["+localObject+"]=="+args.get(i)+")"
-    							);	
+    							);
+    					}
     				} else {
     					result = result.concat(" && ("+argField.getField() + 
     							"["+objectString+"]=="+args.get(i)+")");
     				}
     			}
     		}
-    	}
-    	
+    	}    	
 	}
 	catch (Exception e) {
 		System.err.println("Error in  writePredArgWhichField"	+ e.getMessage());
@@ -2461,8 +2498,6 @@ public class BoogieVisitor extends NullVisitor {
         	isPacked = false;
         }
     	
-        //TODO could make == 1.0 instead of (fracCount[this] >= 1.0)
-        //as a special case. It's not in this method.
     	FracString fracString = new FracString();
     	TypedAST object  = ast.getObject();
     	objectPropString = "";
@@ -2597,10 +2632,12 @@ public class BoogieVisitor extends NullVisitor {
             	// this predicate (the predicate of this object proposition) represents.
             	LinkedList<ArgumentAndFieldPair> listArgsToFields =
             			predArgWhichField.get(predName);
+            	//XXXX this is where the params should be written out
     			String oneObjProp = writePredArgWhichField(
     					listArgsToFields,
     					args,
-    					objectString
+    					objectString,
+    					predName
     			);
     			modifyMethodSpec(oneObjProp+")");
     		}
@@ -3582,6 +3619,8 @@ public class BoogieVisitor extends NullVisitor {
     						// This is the compact representation of
     						// an object proposition that has the argument as one of its
     						// parameters.
+    						//xxxx this tells me how to get the object that paramPredVal 
+    						//will refer to.
     						String compactObjProp = ops.getName()+" "+ops.getObject()+" "+i;   				
     						o.setField(compactObjProp);
     						break;
