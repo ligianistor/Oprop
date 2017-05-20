@@ -2843,15 +2843,18 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
-    
-   void writeAssignToParamInMethod(
+    // Here I look at all the parameters of a predicate and
+    // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
+    // field.
+   String writeAssignToParamInMethod(
 		   String pred, 
 		   LinkedList<String> localArgumentsPredicate,
 	       LinkedList<String> localExistentialArgumentsPredicate,
 	       String object
    ){   
+	   String result="";
 	    int si = localArgumentsPredicate.size();
-	
+	    
 		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
 			predArgWhichField.get(pred);
 		if (listArgsToFieldsThisPred != null) {
@@ -2863,18 +2866,21 @@ public class BoogieVisitor extends NullVisitor {
 				if (field.equals("") || 
 					(field.contains(" ") && isArgOnlyUsedInRecPred(i,pred,field))) 
 				{
-					 modifyMethodBody(
+					 result=result.concat(
 								"param"+upperCaseFirstLetter(pred)+ 
 								upperCaseFirstLetter(arg) +
 								"[" +object+"] := ");
+					modifyFieldsInMethod("param"+upperCaseFirstLetter(pred)+ 
+								upperCaseFirstLetter(arg));
 					if (i<si){
-						modifyMethodBody(localArgumentsPredicate.get(i) + ";\n");
+						result=result.concat(localArgumentsPredicate.get(i) + ";\n");
 					} else {
-						modifyMethodBody(localExistentialArgumentsPredicate.get(i) + ";\n");
+						result=result.concat(localExistentialArgumentsPredicate.get(i) + ";\n");
 					}
 				}
 			}
 		}
+		return result;
     }
     
     public void visitAllocationExpression(AllocationExpression ast) 
@@ -2927,9 +2933,6 @@ public class BoogieVisitor extends NullVisitor {
         modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := false;\n");
         
-        //xxxx around here I need to look at all the parameters of a predicate and
-        // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
-        // field.
         String callPack = "\tcall Pack" + upperCaseFirstLetter(predicateOfConstruct)+"(";
         if (localExistentialArgumentsPredicate.size()>0) {
         	for (int i=0;i<localExistentialArgumentsPredicate.size();i++) {
@@ -2945,13 +2948,13 @@ public class BoogieVisitor extends NullVisitor {
         
         modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := true;\n");
-        //xxxx this is where I need to put param
-        writeAssignToParamInMethod(
+        
+        modifyMethodBody(writeAssignToParamInMethod(
         		predicateOfConstruct,
         		localArgumentsPredicate,
      	        localExistentialArgumentsPredicate,
      	       localVariableName
-     	);
+     	));
         modifyMethodBody("\tfrac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
         children[0].accept(this);
         modifyMethodBody(localVariableName + "] := 1.0;\n");
@@ -3146,9 +3149,6 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	inArgumentList = false;
     	
-    	 //xxxx around here I need to look at all the parameters of a predicate and
-        // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
-        // field.
     	if (annotationName.equals("pack")) {
     		toWrite = toWrite.concat("call Pack"); 
     	} else {
@@ -3179,10 +3179,17 @@ public class BoogieVisitor extends NullVisitor {
     	toWrite = toWrite.concat(objectObjProp + "] := "); 
     	
        	if (annotationName.equals("pack")) {
-    		toWrite = toWrite.concat("true"); 
+    		toWrite = toWrite.concat("true;\n"); 
     	} else {
-    		toWrite = toWrite.concat("false"); 
+    		toWrite = toWrite.concat("false;\n"); 
     	}
+       	toWrite = toWrite.concat(writeAssignToParamInMethod(
+        	   predicateNameObjProp, 
+        	   argumentsObjProp,
+        	   existentialArgsObjProp,
+        	   objectObjProp
+        ));
+       	
        	modifyFieldsInMethod("packed"+upperCaseFirstLetter(predicateNameObjProp));
     
     	modifyMethodBody(toWrite);
