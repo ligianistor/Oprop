@@ -2843,6 +2843,40 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
+    
+   void writeAssignToParamInMethod(
+		   String pred, 
+		   LinkedList<String> localArgumentsPredicate,
+	       LinkedList<String> localExistentialArgumentsPredicate,
+	       String object
+   ){   
+	    int si = localArgumentsPredicate.size();
+	
+		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
+			predArgWhichField.get(pred);
+		if (listArgsToFieldsThisPred != null) {
+			for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
+				ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
+				String field = argField.getField();
+				String arg = argField.getArgument();
+							
+				if (field.equals("") || 
+					(field.contains(" ") && isArgOnlyUsedInRecPred(i,pred,field))) 
+				{
+					 modifyMethodBody(
+								"param"+upperCaseFirstLetter(pred)+ 
+								upperCaseFirstLetter(arg) +
+								"[" +object+"] := ");
+					if (i<si){
+						modifyMethodBody(localArgumentsPredicate.get(i) + ";\n");
+					} else {
+						modifyMethodBody(localExistentialArgumentsPredicate.get(i) + ";\n");
+					}
+				}
+			}
+		}
+    }
+    
     public void visitAllocationExpression(AllocationExpression ast) 
     		throws ParseException 
     {
@@ -2912,6 +2946,12 @@ public class BoogieVisitor extends NullVisitor {
         modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := true;\n");
         //xxxx this is where I need to put param
+        writeAssignToParamInMethod(
+        		predicateOfConstruct,
+        		localArgumentsPredicate,
+     	        localExistentialArgumentsPredicate,
+     	       localVariableName
+     	);
         modifyMethodBody("\tfrac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
         children[0].accept(this);
         modifyMethodBody(localVariableName + "] := 1.0;\n");
