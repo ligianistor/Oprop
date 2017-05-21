@@ -59,6 +59,12 @@ import cager.jexpr.ast.WriteOut;
  */
 public class BoogieVisitor extends NullVisitor {
 	
+	public enum GlobalMap {
+		PACKED,
+		FRAC,
+		PARAM
+	}
+	
 	// For each "packed" in the current method, this map
 	// points to a set that holds all the objects
 	// that are modified through "packed" in the body of the method.
@@ -1324,7 +1330,7 @@ public class BoogieVisitor extends NullVisitor {
     
     PairOfStrings inferEnsuresForall(
     		String methodName_, 
-    		boolean forPacked, 
+    		GlobalMap globalMap, 
     		String forallParameter,
     		HashMap<String, Set<String>> packedModifiedObjects,
     		HashMap<String, Set<String>> fractionsModifiedObjects,
@@ -1340,7 +1346,8 @@ public class BoogieVisitor extends NullVisitor {
     		Boolean currentIsMentioned = pair.getValue();
     		if (currentIsMentioned.booleanValue()) {
         		String currentNamePred = pair.getKey();
-        		if (forPacked) {
+        		switch (globalMap) {
+        		case PACKED : 
         			// This is the generation of the "ensures forall" string for packed.
         			if (unpackedInPostcondition.contains(currentNamePred)) {
         				// We need to add
@@ -1380,7 +1387,8 @@ public class BoogieVisitor extends NullVisitor {
         							upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]);\n");
         				}
         			}
-        		} else {
+        			break;
+        		case FRAC:
         			// This is the generation of the "ensures forall" string for fractions.
     				
     				LinkedList<FieldAndTypePair> methodsCalledInThisMethod =
@@ -1428,11 +1436,17 @@ public class BoogieVisitor extends NullVisitor {
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]) > 0.0) ==> (frac" +
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"] > 0.0 ));\n");	
         			}
-        			
+            		break;
+            	case PARAM:
+            		
+            		break;
+            	default:
+            		break;
         		}
-        		    			
+    			
     		}
-    }  	
+    }
+      	
     	return pairOfStrings;			
     }
     
@@ -1924,7 +1938,7 @@ public class BoogieVisitor extends NullVisitor {
 	    	ensuresForall = ensuresForall.concat(
 	    			inferEnsuresForall(
 	    					thisMethodName, 
-	    					true, 
+	    					GlobalMap.PACKED, 
 	    					forallParameter,
 	    		    		packedModifiedObjects,
 	    		    		fractionsModifiedObjects,
@@ -1936,7 +1950,7 @@ public class BoogieVisitor extends NullVisitor {
 	    	ensuresForall = ensuresForall.concat(
 	    			inferEnsuresForall(
 	    					thisMethodName, 
-	    					false, 
+	    					GlobalMap.FRAC, 
 	    					forallParameter,
 	    		    		packedModifiedObjects,
 	    		    		fractionsModifiedObjects,
@@ -2879,7 +2893,7 @@ public class BoogieVisitor extends NullVisitor {
 					} else {
 						result=result.concat(localExistentialArgumentsPredicate.get(i) + ";\n");
 					}
-					// xxxx around here is the problem with that extra ;\n
+					// xxxxyy around here is the problem with that extra ;\n
 				}
 			}
 		}
@@ -3177,21 +3191,21 @@ public class BoogieVisitor extends NullVisitor {
     		toWrite = toWrite.concat(writeFractionManipulation(
     				predicateNameObjProp, true, false, objectObjProp));
     	}
+       	toWrite = toWrite.concat(writeAssignToParamInMethod(
+         	   predicateNameObjProp, 
+         	   argumentsObjProp,
+         	   existentialArgsObjProp,
+         	   objectObjProp
+         ));
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
     	toWrite = toWrite.concat(objectObjProp + "] := "); 
     	
        	if (annotationName.equals("pack")) {
-    		toWrite = toWrite.concat("true;\n"); 
+    		toWrite = toWrite.concat("true"); 
     	} else {
-    		toWrite = toWrite.concat("false;\n"); 
+    		toWrite = toWrite.concat("false"); 
     	}
-       	toWrite = toWrite.concat(writeAssignToParamInMethod(
-        	   predicateNameObjProp, 
-        	   argumentsObjProp,
-        	   existentialArgsObjProp,
-        	   objectObjProp
-        ));
        	
        	modifyFieldsInMethod("packed"+upperCaseFirstLetter(predicateNameObjProp));
     
