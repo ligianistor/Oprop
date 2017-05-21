@@ -1372,11 +1372,13 @@ public class BoogieVisitor extends NullVisitor {
         			} else {
         				// We need to add "ensures (forall y:Ref :: packedParent[y]);"
         				// to result.
-        				// TODO need to add an if here!!
-        				//XXXX
-        				// TODO only add an ensures forall for the variables that are in the modifies statement!!!
-        				pairOfStrings.concatPacked("\t ensures (forall "+ forallParameter +":Ref :: packed"+
-        					upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]);\n");
+        				Set<String> localFieldsInMethod = 
+        	    	    		fieldsInMethod.get(methodName_);
+        				if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(currentNamePred))) {
+        					pairOfStrings.concatPacked("\t ensures (forall "+ 
+        							forallParameter +":Ref :: packed"+
+        							upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]);\n");
+        				}
         			}
         		} else {
         			// This is the generation of the "ensures forall" string for fractions.
