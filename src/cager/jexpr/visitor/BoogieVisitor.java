@@ -2877,6 +2877,7 @@ public class BoogieVisitor extends NullVisitor {
 					} else {
 						result=result.concat(localExistentialArgumentsPredicate.get(i) + ";\n");
 					}
+					// xxxx around here is the problem with that extra ;\n
 				}
 			}
 		}
