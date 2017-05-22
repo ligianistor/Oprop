@@ -933,8 +933,10 @@ public class BoogieVisitor extends NullVisitor {
 		fractionsModifiedObjects.put(predName, currentSetOfObjects);		
 	}
     
-    // First look at one obj prop, say objProp1, element in the precondition and what is its disjunction number.
-    // Then put in a set all the obj props elements that have the same disjunction number in the precondition.
+    // First look at one obj prop, say objProp1, element in the precondition and what is its 
+	// disjunction number.
+    // Then put in a set all the obj props elements that have the same disjunction number 
+	// in the precondition.
     // Then look for the obj props in the postcondition that 
     // are equal to objProp1, but don't include in the equality 
     // the disjunction number.
@@ -1301,6 +1303,7 @@ public class BoogieVisitor extends NullVisitor {
     		 // changed, I add that object to packedModifiedObjects.
     		 
     		 // TODO I also need to change isModified in this branch.
+    		 //xxxx
     		 
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
@@ -1328,7 +1331,13 @@ public class BoogieVisitor extends NullVisitor {
     }
     }
     
-    PairOfStrings inferEnsuresForall(
+    void constructStructuresForInferEnsuresForallParam(
+    		String methodName_, 
+    		HashMap<String, Set<String>> paramModifiedObjects
+    ) {
+    }
+    
+    TupleOfEnsures inferEnsuresForall(
     		String methodName_, 
     		GlobalMap globalMap, 
     		String forallParameter,
@@ -1337,7 +1346,7 @@ public class BoogieVisitor extends NullVisitor {
     		HashMap<String, Boolean> predicateIsMentioned,
     		Set<String> unpackedInPostcondition 		
    ) {
-    PairOfStrings pairOfStrings = new PairOfStrings();
+    TupleOfEnsures tupleOfEnsures = new TupleOfEnsures();
     // Here I write the "ensures forall" for packed as we have the infrastructure in place.
     Iterator<Entry<String, Boolean>> j = 
     		predicateIsMentioned.entrySet().iterator(); 
@@ -1356,23 +1365,23 @@ public class BoogieVisitor extends NullVisitor {
         				// to result.
         				Set<String> currentModifiedObjects = packedModifiedObjects.get(currentNamePred);
         				if (currentModifiedObjects!=null) {
-        					pairOfStrings.concatPacked("\t ensures (forall ");
-        					pairOfStrings.concatPacked(forallParameter);
-        					pairOfStrings.concatPacked(":Ref :: (");
+        					tupleOfEnsures.concatPacked("\t ensures (forall ");
+        					tupleOfEnsures.concatPacked(forallParameter);
+        					tupleOfEnsures.concatPacked(":Ref :: (");
         				
         					String[] currentModifiedObjectsArray = currentModifiedObjects.toArray(new String[0]);
         					for (int z=0; z <currentModifiedObjectsArray.length-1; z++ ) {
-        						pairOfStrings.concatPacked("("+currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
+        						tupleOfEnsures.concatPacked("("+currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
         					}
-        					pairOfStrings.concatPacked("("+
+        					tupleOfEnsures.concatPacked("("+
         						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
         						"!="+forallParameter + ")) ==> packed"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(packed"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
         				} else {
-        					pairOfStrings.concatPacked("\t ensures (forall ");
-        					pairOfStrings.concatPacked(forallParameter);
-        					pairOfStrings.concatPacked(":Ref :: (packed"+
+        					tupleOfEnsures.concatPacked("\t ensures (forall ");
+        					tupleOfEnsures.concatPacked(forallParameter);
+        					tupleOfEnsures.concatPacked(":Ref :: (packed"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(packed"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])));\n");      					
         				}
@@ -1382,7 +1391,7 @@ public class BoogieVisitor extends NullVisitor {
         				Set<String> localFieldsInMethod = 
         	    	    		fieldsInMethod.get(methodName_);
         				if (localFieldsInMethod.contains("packed"+upperCaseFirstLetter(currentNamePred))) {
-        					pairOfStrings.concatPacked("\t ensures (forall "+ 
+        					tupleOfEnsures.concatPacked("\t ensures (forall "+ 
         							forallParameter +":Ref :: packed"+
         							upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]);\n");
         				}
@@ -1401,25 +1410,25 @@ public class BoogieVisitor extends NullVisitor {
         				// to result.
         				Set<String> currentModifiedObjects = fractionsModifiedObjects.get(currentNamePred);
         				if (currentModifiedObjects!=null) {
-        					pairOfStrings.concatFractions("\t ensures (forall ");
-        					pairOfStrings.concatFractions(forallParameter);
-        					pairOfStrings.concatFractions(":Ref :: (");
+        					tupleOfEnsures.concatFractions("\t ensures (forall ");
+        					tupleOfEnsures.concatFractions(forallParameter);
+        					tupleOfEnsures.concatFractions(":Ref :: (");
         				
         					String[] currentModifiedObjectsArray = 
         							currentModifiedObjects.toArray(new String[0]);
         					for (int z=0; z < currentModifiedObjectsArray.length-1; z++ ) {
-        						pairOfStrings.concatFractions("("+
+        						tupleOfEnsures.concatFractions("("+
         								currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
         					}
-        					pairOfStrings.concatFractions("("+
+        					tupleOfEnsures.concatFractions("("+
         						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
         						"!="+forallParameter + ")) ==> frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]));\n");
         				}  else {
-        					pairOfStrings.concatFractions("\t ensures (forall ");
-        					pairOfStrings.concatFractions(forallParameter);
-        					pairOfStrings.concatFractions(":Ref :: (frac"+
+        					tupleOfEnsures.concatFractions("\t ensures (forall ");
+        					tupleOfEnsures.concatFractions(forallParameter);
+        					tupleOfEnsures.concatFractions(":Ref :: (frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]==old(frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"])));\n");      					
         				}
@@ -1432,7 +1441,7 @@ public class BoogieVisitor extends NullVisitor {
         				// The resulting string should be similar to:
         				// ensures (forall y:Ref :: (old(fracParent[y]) > 0.0) ==> (fracParent[y] > 0.0));
         				// but using forallParameter instead of y.
-    					pairOfStrings.concatFractions("\t ensures (forall "+forallParameter+":Ref :: (old(frac"+
+    					tupleOfEnsures.concatFractions("\t ensures (forall "+forallParameter+":Ref :: (old(frac"+
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"]) > 0.0) ==> (frac" +
         						upperCaseFirstLetter(currentNamePred)+"["+forallParameter+"] > 0.0 ));\n");	
         			}
@@ -1447,7 +1456,7 @@ public class BoogieVisitor extends NullVisitor {
     		}
     }
       	
-    	return pairOfStrings;			
+    	return tupleOfEnsures;			
     }
     
     // this method generates strings of the form 
@@ -1665,6 +1674,11 @@ public class BoogieVisitor extends NullVisitor {
         	 HashMap<String, Set<String>> fractionsModifiedObjects =
        			new HashMap<String, Set<String>>();
         	 
+        	 // Same map as above but says for which objects the params
+        	 // were modified between the pre and postconditions.
+        	 HashMap<String, Set<String>> paramModifiedObjects =
+       			new HashMap<String, Set<String>>();
+        	 
         	 // For each predicate this map contains whether
         	 // that predicate (for all objects to which it is bound in the precondition)
         	 // which was mentioned in the precondition
@@ -1688,7 +1702,12 @@ public class BoogieVisitor extends NullVisitor {
         	 constructStructuresForInferEnsuresForallFractions(
      	    		methodName, 
      	    		fractionsModifiedObjects
-     	  );
+        	 );
+        	 
+        	 constructStructuresForInferEnsuresForallParam(
+      	    		methodName, 
+      	    		paramModifiedObjects
+         	 );
         	 
         	////////////////////////////////////////
 
@@ -1877,6 +1896,7 @@ public class BoogieVisitor extends NullVisitor {
 		
 		} else {			
 			//TODO
+			//xxxx
 			//Need to write what happens when 
 			//there are unpacked object propositions
 			//in the precondition.
@@ -1957,6 +1977,18 @@ public class BoogieVisitor extends NullVisitor {
 	    		    		predicateIsMentioned,
 	    		    		unpackedInPostcondition		
 	    			).getEnsuresForallFractions());
+	    	
+	        //This is for writing "ensures forall for param.
+	    	ensuresForall = ensuresForall.concat(
+	    			inferEnsuresForall(
+	    					thisMethodName, 
+	    					GlobalMap.PARAM, 
+	    					forallParameter,
+	    		    		packedModifiedObjects,
+	    		    		fractionsModifiedObjects,
+	    		    		predicateIsMentioned,
+	    		    		unpackedInPostcondition		
+	    			).getEnsuresForallParam());
 	    	if (isConstructor) {
 	    		ensuresForall = ensuresForall.concat(
 	    				inferEnsuresForallForConstructor(
@@ -2158,6 +2190,7 @@ public class BoogieVisitor extends NullVisitor {
     			substring(statementContentBefore.length(), statementContentAfter.length());
     	// TODO need to add a new LinkedList here to hold the actual params
     	// calculated from the string that I get from the visitChildren() above
+    	//xxxx
     	statementContent = statementContent +identifierBeforeMethSel+");\n";
     	listOfActualParams = listOfActualParams.concat(identifierBeforeMethSel);
     	
