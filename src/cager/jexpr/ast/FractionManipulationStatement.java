@@ -1,5 +1,9 @@
 package cager.jexpr.ast;
 
+import java.util.LinkedList;
+
+import cager.jexpr.visitor.BinExprString;
+
 public class FractionManipulationStatement implements WriteOut, Comparable<Object> {
 	private String ifCondition;
 	private String predName;
@@ -7,12 +11,17 @@ public class FractionManipulationStatement implements WriteOut, Comparable<Objec
 	private String fractionValue;
 	private int disjunctionNumber;
 	private boolean isPacked;
+	//The objects of type BinExprString here actually represent pairs 
+	//of strings: the first one is the name of the parameter, such as paramPredVal,
+	//and the second one is the actual value for that parameter, stored as a string.
+	private LinkedList<BinExprString> params = new LinkedList<BinExprString>();
 	
 	public FractionManipulationStatement(
 			String ifCondition_,
 			String predName_,
 			String fractionObject_,
-			String fractionValue_		
+			String fractionValue_,
+			LinkedList<BinExprString> params_
 	) {
 		ifCondition = ifCondition_;
 		predName = predName_;
@@ -23,6 +32,7 @@ public class FractionManipulationStatement implements WriteOut, Comparable<Objec
 		disjunctionNumber = -1;
 		// The object propositions are usually packed than not.
 		isPacked = true;
+		params = params_;
 	}
 	
 	public String getIfCondition() {
@@ -39,6 +49,10 @@ public class FractionManipulationStatement implements WriteOut, Comparable<Objec
 	
 	public String getFraction() {
 		return fractionValue;
+	}
+	
+	public LinkedList<BinExprString> getParams() {
+		return params;
 	}
 	
 	public void setDisjunctionNumber(int d) {

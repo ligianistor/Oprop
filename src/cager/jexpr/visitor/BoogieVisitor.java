@@ -649,6 +649,64 @@ public class BoogieVisitor extends NullVisitor {
     	return false;
     }
     
+    // Here I look at all the parameters of a predicate and
+    // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
+    // field.
+    String modifyResultForParam(
+    		String pred, 
+    		int option,
+    		FieldTypePredbody paramsPred,
+    		LinkedList<String> localArgumentsPredicate,
+ 	       	LinkedList<String> localExistentialArgumentsPredicate,
+ 	       	String object
+ 	      ) {
+    	String result = "";
+    	int si=0;
+        if (option==2) {
+        	si = localArgumentsPredicate.size();
+        }
+    	LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
+				predArgWhichField.get(pred);
+			if (listArgsToFieldsThisPred != null) {
+				for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
+					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
+					String field = argField.getField();
+					String arg = argField.getArgument();
+								
+					if (field.equals("") || 
+						(field.contains(" ") && isArgOnlyUsedInRecPred(i,pred,field))) 
+					{
+						switch (option) {
+						case 1:
+							result = result.concat(
+								"var param"+upperCaseFirstLetter(pred)+ 
+								upperCaseFirstLetter(arg) +
+								": [Ref]" +  paramsPred.getType(arg) + ";\n");
+							break;
+						case 2:
+							 
+							 result=result.concat(
+										"param"+upperCaseFirstLetter(pred)+ 
+										upperCaseFirstLetter(arg) +
+										"[" +object+"] := ");
+							modifyFieldsInMethod("param"+upperCaseFirstLetter(pred)+ 
+										upperCaseFirstLetter(arg));
+							if (i<si){
+								result=result.concat(localArgumentsPredicate.get(i) + ";\n");
+							} else {
+								result=result.concat(localExistentialArgumentsPredicate.get(i-si) + ";\n");
+							}
+							
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
+			return result;
+    }
+    
     // This function returns the string containing the
     // declaration of maps for all parameters of all predicates that
     // are not associated with any fields.
@@ -660,27 +718,18 @@ public class BoogieVisitor extends NullVisitor {
     
     	while(j.hasNext()) {
     		String currentNamePred = j.next().getKey();
-    		FieldTypePredbody paramsPred = 
-    				paramsPredicateBody.get(currentNamePred);
-    	
-    		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
-				predArgWhichField.get(currentNamePred);
-			if (listArgsToFieldsThisPred != null) {
-				for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
-					ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
-					String field = argField.getField();
-					String arg = argField.getArgument();
-								
-					if (field.equals("") || 
-						(field.contains(" ") && isArgOnlyUsedInRecPred(i,currentNamePred,field))) 
-					{
-						result = result.concat(
-								"var param"+upperCaseFirstLetter(currentNamePred)+ 
-								upperCaseFirstLetter(arg) +
-								": [Ref]" +  paramsPred.getType(arg) + ";\n");
-					}
-				}
-			}
+        	// This variable is only used for option 1.
+        	FieldTypePredbody paramsPred = paramsPredicateBody.get(currentNamePred);
+        	
+    		result = result.concat(
+    				modifyResultForParam(
+    						currentNamePred, 
+    						1,
+    						paramsPred,
+    						null,
+    						null,
+    						null
+    				));	
     	}
         	
     	return result;
@@ -2557,12 +2606,6 @@ public class BoogieVisitor extends NullVisitor {
     	childrenPredDecl[0].accept(this);
     	String predName = objectPropString;
     	
-    	// The list of which field each argument of 
-    	// this predicate represents.
-
-    	/*LinkedList<ArgumentAndFieldPair> listArgsToFields =
-    			predArgWhichField.get(predName);*/
-    	
     	objectPropString = "";
     	ArgumentList argList = (ArgumentList)childrenPredDecl[1];
     	
@@ -2687,6 +2730,9 @@ public class BoogieVisitor extends NullVisitor {
     			addArgToPackedModifiedArgsInPrecondition(predName, objectString);
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString); 
+    			
+    			//TODO make one single function to call for putting together param!!!
+    			// I need to put param together before calling addToFra
     			
     		    addToFractionManipulationsList(
     		    		1, // 1 for method precondition
@@ -2882,46 +2928,6 @@ public class BoogieVisitor extends NullVisitor {
     	}
     }
     
-    // Here I look at all the parameters of a predicate and
-    // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
-    // field.
-   String writeAssignToParamInMethod(
-		   String pred, 
-		   LinkedList<String> localArgumentsPredicate,
-	       LinkedList<String> localExistentialArgumentsPredicate,
-	       String object
-   ){   
-	   String result="";
-	    int si = localArgumentsPredicate.size();
-	    
-		LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
-			predArgWhichField.get(pred);
-		if (listArgsToFieldsThisPred != null) {
-			for (int i = 0; i < listArgsToFieldsThisPred.size(); i++) {
-				ArgumentAndFieldPair argField = listArgsToFieldsThisPred.get(i);
-				String field = argField.getField();
-				String arg = argField.getArgument();
-							
-				if (field.equals("") || 
-					(field.contains(" ") && isArgOnlyUsedInRecPred(i,pred,field))) 
-				{
-					 result=result.concat(
-								"param"+upperCaseFirstLetter(pred)+ 
-								upperCaseFirstLetter(arg) +
-								"[" +object+"] := ");
-					modifyFieldsInMethod("param"+upperCaseFirstLetter(pred)+ 
-								upperCaseFirstLetter(arg));
-					if (i<si){
-						result=result.concat(localArgumentsPredicate.get(i) + ";\n");
-					} else {
-						result=result.concat(localExistentialArgumentsPredicate.get(i) + ";\n");
-					}
-				}
-			}
-		}
-		return result;
-    }
-    
     public void visitAllocationExpression(AllocationExpression ast) 
     		throws ParseException 
     {
@@ -2988,12 +2994,15 @@ public class BoogieVisitor extends NullVisitor {
         modifyMethodBody("\tpacked" +predicateOfConstruct+"[");
         modifyMethodBody(localVariableName + "] := true;\n");
         
-        modifyMethodBody(writeAssignToParamInMethod(
-        		predicateOfConstruct,
-        		localArgumentsPredicate,
-     	        localExistentialArgumentsPredicate,
-     	       localVariableName
-     	));
+        modifyMethodBody(
+        		modifyResultForParam(
+        				predicateOfConstruct, 
+						2,
+						null,
+						localArgumentsPredicate,
+						localArgumentsPredicate,
+						localVariableName
+				));
         modifyMethodBody("\tfrac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
         children[0].accept(this);
         modifyMethodBody(localVariableName + "] := 1.0;\n");
@@ -3213,12 +3222,15 @@ public class BoogieVisitor extends NullVisitor {
     		toWrite = toWrite.concat(writeFractionManipulation(
     				predicateNameObjProp, true, false, objectObjProp));
     	}
-       	toWrite = toWrite.concat(writeAssignToParamInMethod(
-         	   predicateNameObjProp, 
-         	   argumentsObjProp,
-         	   existentialArgsObjProp,
-         	   objectObjProp
-         ));
+       	toWrite = toWrite.concat(
+       			modifyResultForParam(
+       					predicateNameObjProp, 
+						2,
+						null,
+						argumentsObjProp,
+						existentialArgsObjProp,
+						objectObjProp
+				));
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
     	toWrite = toWrite.concat(objectObjProp + "] := "); 
@@ -3894,7 +3906,8 @@ public class BoogieVisitor extends NullVisitor {
     		String predName,
     		String fractionObject,
     		String fraction,
-    		boolean isPacked
+    		boolean isPacked,
+    		LinkedList<BinExprString> params
     ) {
     	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
 				
@@ -3914,7 +3927,8 @@ public class BoogieVisitor extends NullVisitor {
     					ifCondition,
     					predName,
     					fractionObject,
-    					fraction	
+    					fraction,
+    					params
     			);
     	newFracMani.setDisjunctionNumber(disjunctionNumber);
     	newFracMani.setIsPacked(isPacked);
