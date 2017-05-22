@@ -134,7 +134,6 @@ public boolean equalsForFractions(Object obj) {
 	return false;
 }
 	
-	
 	@Override
 	public int hashCode(){
 		int result = 1;

@@ -516,9 +516,6 @@ public class BoogieVisitor extends NullVisitor {
     		throws ParseException
     {
     	isConstructor = true;
-    	//xxxx around here I need to look at all the parameters of a predicate and
-        // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
-        // field.
     	visitMethodDeclaration(ast);
     	isConstructor = false;
     }
@@ -977,7 +974,7 @@ public class BoogieVisitor extends NullVisitor {
     		HashMap<String, Boolean> predicateIsMentioned,
     		Set<String> unpackedInPostcondition   		
     ) {
-  		 Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
+  		Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
   		 
         LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
         		 fractionManipulationsListMethodPre.get(methodName_);
@@ -1103,7 +1100,8 @@ public class BoogieVisitor extends NullVisitor {
     						 if (!doesFractionManipulationExist(fractionManipulationsListPost, elementPrecond)) {
     							 modifyPredObjNotMentionedPostcond(
     									 methodName_, 
-    									 new FieldAndTypePair(elementPrecond.getPredName(), elementPrecond.getFractionObject())
+    									 new FieldAndTypePair(elementPrecond.getPredName(), 
+    											 elementPrecond.getFractionObject())
     							 );
     							 
     							 predicateIsMentioned.put(elementPrecond.getPredName(), false);
@@ -1159,7 +1157,6 @@ public class BoogieVisitor extends NullVisitor {
         		
         	 }
     	 }
- 
     }
     }
     
@@ -1226,10 +1223,11 @@ public class BoogieVisitor extends NullVisitor {
     			 }
     			 
     			 // Add all the fractionManipulations that have the same disjunctionNumber as 
-    			 //fracManAfter above.
+    			 // fracManAfter above.
     			 if (postDisjunctionNumber!=-1) {
     				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
-    					 FractionManipulationStatement fracManPost1 = fractionManipulationsListPost.get(k);
+    					 FractionManipulationStatement fracManPost1 = 
+    							 fractionManipulationsListPost.get(k);
     					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {
     						 setPostcondDisjunctionFracMan.add(fracManPost1);
     					 }
@@ -1249,14 +1247,15 @@ public class BoogieVisitor extends NullVisitor {
     			 // For the composite example, we don't go inside the if branch below.
     			 boolean areSetsEqual;
     			
-    			 areSetsEqual = areEqualSetsFractions(setPrecondDisjunctionFracMan, setPostcondDisjunctionFracMan); 
-    			 
-    			 
+    			 areSetsEqual = areEqualSetsFractions(setPrecondDisjunctionFracMan, 
+    					 setPostcondDisjunctionFracMan); 
+    			 		 
     			 if (!areSetsEqual) {
     				 // Any of the objects in this disjunction of the precondition
     				 // that is not equal to one in the postcondition
     				 // means that they could change and cannot be included in the
-    				 // ensures forall. Only if it was the exact same as the disjunction in the postcondition
+    				 // ensures forall. Only if it was the exact same as the disjunction 
+    				 // in the postcondition
     				 // it could have been included in the ensures forall.
     				 // The objects of the object propositions in the pre set could
     				 // be put straight in packedModifiedObjects, but it could be that
@@ -1265,14 +1264,20 @@ public class BoogieVisitor extends NullVisitor {
     				 // So we do need to find at least one object proposition in the postcondition
     				 // that has the same object and predicate as the current one 
     				 // taken from setPrecondDisjunctionFracMan.
-    				Iterator<FractionManipulationStatement> iterPrecond = setPrecondDisjunctionFracMan.iterator();
+    				Iterator<FractionManipulationStatement> iterPrecond = 
+    						setPrecondDisjunctionFracMan.iterator();
     				while (iterPrecond.hasNext()) {
     						 FractionManipulationStatement elementPrecond = iterPrecond.next();
     						 
-    						 if (!doesFractionManipulationExist(fractionManipulationsListPost, elementPrecond)) {
+    						 if (!doesFractionManipulationExist(
+    								 fractionManipulationsListPost, 
+    								 elementPrecond)) 
+    						 {
     							 modifyPredObjNotMentionedPostcond(
     									 methodName_, 
-    									 new FieldAndTypePair(elementPrecond.getPredName(), elementPrecond.getFractionObject())
+    									 new FieldAndTypePair(
+    											 elementPrecond.getPredName(), 
+    											 elementPrecond.getFractionObject())
     							 );
     							 
     						 } else {
@@ -1302,9 +1307,6 @@ public class BoogieVisitor extends NullVisitor {
     		 // and if there is one that has the same object and predicate, and the "isPacked"
     		 // changed, I add that object to packedModifiedObjects.
     		 
-    		 // TODO I also need to change isModified in this branch.
-    		 //xxxx
-    		 
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
         			// this is same as the body of the if above, but for fractions
@@ -1314,7 +1316,7 @@ public class BoogieVisitor extends NullVisitor {
            				 (!fracMan.getFraction().equals(fracManPost.getFraction()))
            				 // TODO need to see how to deal with constants k
            				 // they are the same but might have different names in the pre- and
-           				 // postconditions.
+           				 // postconditions. xxxx
            				 //TODO should I compare ifConditions?
            		 ) {
            			 addToFractionsModifiedObjects(
@@ -1323,8 +1325,7 @@ public class BoogieVisitor extends NullVisitor {
            					 fracManPost.getFractionObject()
            			);
            			 //fractionsModifiedObjects passed by value and thus I don't need to do anything else
-           		 }
-        		
+           		 }        		
         	 }
     	 }
  
@@ -1788,9 +1789,7 @@ public class BoogieVisitor extends NullVisitor {
 		//then it means that all are packed.
 		String requiresPacked = "";
 
-		if (methodPreconditionsUnpacked.isEmpty()) {
-			
-			String forallParameter = getNewForallParameter();		
+			String forallParameter1 = getNewForallParameter();		
 			
 			//requires (forall x:Ref :: packedOK[x]);
 			// Not everything is packed, only the ones that are 
@@ -1825,16 +1824,14 @@ public class BoogieVisitor extends NullVisitor {
 							}
 						}
 
-						// TODO write comment for what does this areEqual means.
-						//XXXX
 						boolean areEqual = true;
 						
 						Set<String> argsInMethod = packedModifiedArgsInMethod.get(p);
 						Set<String> argsInPrecondition = packedModifiedArgsInPrecondition.get(p);
+						
+						//when both argsInMethod and argsInPrecondition are null, areEqual remains true
 						if ((argsInMethod == null) || (argsInPrecondition==null)) {
-							
-							areEqual = false;
-							//TODO what happens when both are null?
+							areEqual = false;						
 						} else {
 							if (argsInMethod != argsInPrecondition) {
 								areEqual = false;
@@ -1850,10 +1847,10 @@ public class BoogieVisitor extends NullVisitor {
 						) {
 							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
-										forallParameter+
+										forallParameter1+
 										":Ref :: packed"+
 										upperCaseFirstLetter(p)+"[" +
-										forallParameter+"]);\n"
+										forallParameter1+"]);\n"
 										);
 						} else if  (!unpackedObjects.isEmpty()){
 							// create something like 
@@ -1861,17 +1858,17 @@ public class BoogieVisitor extends NullVisitor {
 							String notEquals = "";
 						
 							for (int m=0; m<unpackedObjects.size() - 1; m++) {
-								notEquals = notEquals.concat("("+forallParameter+"!="+unpackedObjects.get(m) +") && ");
+								notEquals = notEquals.concat("("+forallParameter1+"!="+unpackedObjects.get(m) +") && ");
 							}
-							notEquals = notEquals.concat("("+forallParameter+"!="+
+							notEquals = notEquals.concat("("+forallParameter1+"!="+
 									unpackedObjects.get(
 											unpackedObjects.size() - 1) +") ==> ");
 							requiresPacked = 
 								requiresPacked.concat("\t requires (forall " + 
-										forallParameter+
+										forallParameter1+
 										":Ref :: (" + notEquals +" packed"+
 										upperCaseFirstLetter(p)+"[" +
-										forallParameter+"]));\n"
+										forallParameter1+"]));\n"
 										);							
 						}
 					}
@@ -1887,20 +1884,13 @@ public class BoogieVisitor extends NullVisitor {
 				        		//!setFracEq1.contains(p) 
 				        				) {	
 							requiresPacked = requiresPacked.concat("\t requires (forall "+ 
-									forallParameter+":Ref :: packed"+upperCaseFirstLetter(p)+
-									"["+ forallParameter+"]);\n");
+									forallParameter1+":Ref :: packed"+upperCaseFirstLetter(p)+
+									"["+ forallParameter1+"]);\n");
 							}
 					}
 				}
 			}
 		
-		} else {			
-			//TODO
-			//xxxx
-			//Need to write what happens when 
-			//there are unpacked object propositions
-			//in the precondition.
-		}
 		out.write(requiresPacked);
 		//Here I generate 
 		//"ensures (forall x:Ref :: (packedOK[x] == old(packedOK[x])));"
@@ -2926,7 +2916,6 @@ public class BoogieVisitor extends NullVisitor {
 					} else {
 						result=result.concat(localExistentialArgumentsPredicate.get(i) + ";\n");
 					}
-					// xxxxyy around here is the problem with that extra ;\n
 				}
 			}
 		}
@@ -3725,8 +3714,6 @@ public class BoogieVisitor extends NullVisitor {
     						// This is the compact representation of
     						// an object proposition that has the argument as one of its
     						// parameters.
-    						//xxxx this tells me how to get the object that paramPredVal 
-    						//will refer to.
     						String compactObjProp = ops.getName()+" "+ops.getObject()+" "+i;   				
     						o.setField(compactObjProp);
     						break;
