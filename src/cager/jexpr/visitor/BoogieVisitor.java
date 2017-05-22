@@ -651,14 +651,16 @@ public class BoogieVisitor extends NullVisitor {
     
     // Here I look at all the parameters of a predicate and
     // do paramPredVal[] := actualValue for each parameter that does not correspond to a 
-    // field.
+    // field, when option == 2.
     String modifyResultForParam(
     		String pred, 
     		int option,
     		FieldTypePredbody paramsPred,
     		LinkedList<String> localArgumentsPredicate,
  	       	LinkedList<String> localExistentialArgumentsPredicate,
- 	       	String object
+ 	       	String object,
+ 	        LinkedList<BinExprString> paramsOfPred,
+ 	        LinkedList<String> actualArgsObjProp
  	      ) {
     	String result = "";
     	int si=0;
@@ -683,8 +685,7 @@ public class BoogieVisitor extends NullVisitor {
 								upperCaseFirstLetter(arg) +
 								": [Ref]" +  paramsPred.getType(arg) + ";\n");
 							break;
-						case 2:
-							 
+						case 2: 
 							 result=result.concat(
 										"param"+upperCaseFirstLetter(pred)+ 
 										upperCaseFirstLetter(arg) +
@@ -697,6 +698,14 @@ public class BoogieVisitor extends NullVisitor {
 								result=result.concat(localExistentialArgumentsPredicate.get(i-si) + ";\n");
 							}
 							
+							break;
+						case 3:
+							BinExprString paramPredNameAndArg = new BinExprString(
+									"param"+upperCaseFirstLetter(pred)+ 
+									upperCaseFirstLetter(arg),
+									actualArgsObjProp.get(i)
+									);
+							paramsOfPred.add(paramPredNameAndArg);
 							break;
 						default:
 							break;
@@ -726,6 +735,8 @@ public class BoogieVisitor extends NullVisitor {
     						currentNamePred, 
     						1,
     						paramsPred,
+    						null,
+    						null,
     						null,
     						null,
     						null
@@ -2636,6 +2647,22 @@ public class BoogieVisitor extends NullVisitor {
     	ObjPropString objProp =
     			new ObjPropString(objectString, fracInObjProp, 
     	    			predName, args);
+    	//xxxx this is where I calculate the linkedlist<pairsofstrings>
+    	// for params. First declare it here, then pass it and populate it in 
+    	//modifyResultForParam and then pass it to addToFractionManipulationsList.
+    	LinkedList<BinExprString> paramsOfPred = new LinkedList<BinExprString>();
+    	modifyResultForParam(
+    			predName, 
+        		3,
+        		null,
+        		null,
+     	        null,
+     	       	null,
+     	        paramsOfPred,
+     	        args
+     	      );
+    	
+    	
     	if (isNumeric(fracInObjProp)) {
     		double d = Double.parseDouble(fracInObjProp); 
     		objProp.setExactFrac(d);
@@ -2649,6 +2676,7 @@ public class BoogieVisitor extends NullVisitor {
         fracString.setNameFrac("frac"+upperCaseFirstLetter(predName));
         
         //TODO does fracString need parameters?
+        // xxxx I don't use them so probably not
         fracString.setParameters(argumentsObjProp);       
 
         if (isNumeric(fracInObjProp)) {
@@ -2730,10 +2758,8 @@ public class BoogieVisitor extends NullVisitor {
     			addArgToPackedModifiedArgsInPrecondition(predName, objectString);
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString); 
-    			
-    			//TODO make one single function to call for putting together param!!!
-    			// I need to put param together before calling addToFra
-    			
+     			
+    			// TODO replace random option numbers with enums
     		    addToFractionManipulationsList(
     		    		1, // 1 for method precondition
     		    		currentMethod, 
@@ -2741,7 +2767,8 @@ public class BoogieVisitor extends NullVisitor {
     		    		predName,
     		    		objectString,
     		    		fracInObjProp,
-    		    		isPacked
+    		    		isPacked,
+    		    		paramsOfPred
     		    );
     		    
     		    // add the (predicate, object) to 
@@ -2760,7 +2787,8 @@ public class BoogieVisitor extends NullVisitor {
     		    		predName,
     		    		objectString,
     		    		fracInObjProp,
-    		    		isPacked
+    		    		isPacked,
+    		    		paramsOfPred
     		    );
     		}
     	} else if (currentMethod == "") {
@@ -2793,7 +2821,8 @@ public class BoogieVisitor extends NullVisitor {
 		    		predName,
 		    		objectString,
 		    		fracInObjProp,
-		    		isPacked
+		    		isPacked,
+		    		paramsOfPred
 		    );
     		
     	}
@@ -3001,7 +3030,9 @@ public class BoogieVisitor extends NullVisitor {
 						null,
 						localArgumentsPredicate,
 						localArgumentsPredicate,
-						localVariableName
+						localVariableName,
+						null,
+						null
 				));
         modifyMethodBody("\tfrac" +upperCaseFirstLetter(predicateOfConstruct)+"[");
         children[0].accept(this);
@@ -3229,7 +3260,9 @@ public class BoogieVisitor extends NullVisitor {
 						null,
 						argumentsObjProp,
 						existentialArgsObjProp,
-						objectObjProp
+						objectObjProp,
+						null,
+						null
 				));
     	
     	toWrite = toWrite.concat("packed" + upperCaseFirstLetter(predicateNameObjProp)+"[");
