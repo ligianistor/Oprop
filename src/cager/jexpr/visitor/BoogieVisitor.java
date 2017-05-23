@@ -1771,7 +1771,13 @@ public class BoogieVisitor extends NullVisitor {
             						"!="+forallParameter + ")) ==> "+
             						currentNameParam+"["+forallParameter+"]==old("+
             						currentNameParam+"["+forallParameter+"]));\n");
-            			}
+            			} else {
+        					tupleOfEnsures.concatParams("\t ensures (forall ");
+        					tupleOfEnsures.concatParams(forallParameter);
+        					tupleOfEnsures.concatParams(":Ref :: ("+
+        							currentNameParam+"["+forallParameter+"]==old("+
+        							currentNameParam+"["+forallParameter+"])));\n");      					
+        				}
             		}
             		
             		break;
