@@ -43,7 +43,7 @@ public class TupleOfEnsures {
 	  ensuresForallFractions = ensuresForallFractions.concat(s);
   }
   
-  void concatParam(String s) {
+  void concatParams(String s) {
 	  ensuresForallParam = ensuresForallParam.concat(s);
   }
   

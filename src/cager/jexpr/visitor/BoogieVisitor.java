@@ -1607,7 +1607,7 @@ public class BoogieVisitor extends NullVisitor {
            				 // TODO need to see how to deal with constants k
            				 // they are the same but might have different names in the pre- and
            				 // postconditions. xxxx
-           				 //TODO should I compare ifConditions?
+           				 // TODO should I compare ifConditions? YES!!
            		 ) {
         				LinkedList<BinExprString> paramsFracMan = fracMan.getParams();
         				LinkedList<BinExprString> paramsFracManPost = fracManPost.getParams();
@@ -1616,7 +1616,7 @@ public class BoogieVisitor extends NullVisitor {
         					BinExprString currentParamFracManPost = paramsFracManPost.get(p);
         					if (!currentParamFracMan.getObject().equals(
         							currentParamFracManPost.getObject())) {
-        						// Note: class BinExprString is misused here!
+        						// Note: class BinExprString is intentionally misused here!
         						// It is used only because it is a pair of strings
         						// that has the equals() function implemented.
         						 addToParamsModifiedObjects(
@@ -1641,6 +1641,7 @@ public class BoogieVisitor extends NullVisitor {
     		String forallParameter,
     		HashMap<String, Set<String>> packedModifiedObjects,
     		HashMap<String, Set<String>> fractionsModifiedObjects,
+    		HashMap<String, Set<String>> paramsModifiedObjects,
     		HashMap<String, Boolean> predicateIsMentioned,
     		Set<String> unpackedInPostcondition 		
    ) {
@@ -1745,6 +1746,33 @@ public class BoogieVisitor extends NullVisitor {
         			}
             		break;
             	case PARAM:
+            		// This is the generation of the "ensures forall" string for params.
+            		// HashMap<String, Set<String>> paramsModifiedObjects,
+            		Iterator<Entry<String, Set<String>>> paramsIter = 
+            				paramsModifiedObjects.entrySet().iterator(); 
+            
+            		while(paramsIter.hasNext()) {
+            			String currentNameParam = paramsIter.next().getKey();
+            			Set<String> currentModifiedObjects = paramsIter.next().getValue();
+
+            			if (currentModifiedObjects!=null) {
+            				tupleOfEnsures.concatParams("\t ensures (forall ");
+            				tupleOfEnsures.concatParams(forallParameter);
+            				tupleOfEnsures.concatParams(":Ref :: (");
+    				
+            				String[] currentModifiedObjectsArray = 
+            						currentModifiedObjects.toArray(new String[0]);
+            				for (int z=0; z < currentModifiedObjectsArray.length-1; z++ ) {
+            					tupleOfEnsures.concatParams("("+
+            							currentModifiedObjectsArray[z]+"!="+forallParameter + ") &&");
+            				}
+            				tupleOfEnsures.concatParams("("+
+            						currentModifiedObjectsArray[currentModifiedObjectsArray.length-1]+
+            						"!="+forallParameter + ")) ==> "+
+            						currentNameParam+"["+forallParameter+"]==old("+
+            						currentNameParam+"["+forallParameter+"]));\n");
+            			}
+            		}
             		
             		break;
             	default:
@@ -1974,7 +2002,7 @@ public class BoogieVisitor extends NullVisitor {
         	 
         	 // Same map as above but says for which objects the params
         	 // were modified between the pre and postconditions.
-        	 HashMap<String, Set<String>> paramModifiedObjects =
+        	 HashMap<String, Set<String>> paramsModifiedObjects =
        			new HashMap<String, Set<String>>();
         	 
         	 // For each predicate this map contains whether
@@ -2002,10 +2030,9 @@ public class BoogieVisitor extends NullVisitor {
      	    		fractionsModifiedObjects
         	 );
         	 
-        	 //xxxx this is next!!!
         	 constructStructuresForInferEnsuresForallParam(
       	    		methodName, 
-      	    		paramModifiedObjects
+      	    		paramsModifiedObjects
          	 );
         	 
         	////////////////////////////////////////
@@ -2250,6 +2277,7 @@ public class BoogieVisitor extends NullVisitor {
 	    					forallParameter,
 	    		    		packedModifiedObjects,
 	    		    		fractionsModifiedObjects,
+	    		    		paramsModifiedObjects,
 	    		    		predicateIsMentioned,
 	    		    		unpackedInPostcondition		
 	    			).getEnsuresForallPacked());
@@ -2262,6 +2290,7 @@ public class BoogieVisitor extends NullVisitor {
 	    					forallParameter,
 	    		    		packedModifiedObjects,
 	    		    		fractionsModifiedObjects,
+	    		    		paramsModifiedObjects,
 	    		    		predicateIsMentioned,
 	    		    		unpackedInPostcondition		
 	    			).getEnsuresForallFractions());
@@ -2274,6 +2303,7 @@ public class BoogieVisitor extends NullVisitor {
 	    					forallParameter,
 	    		    		packedModifiedObjects,
 	    		    		fractionsModifiedObjects,
+	    		    		paramsModifiedObjects,
 	    		    		predicateIsMentioned,
 	    		    		unpackedInPostcondition		
 	    			).getEnsuresForallParam());
