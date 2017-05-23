@@ -147,6 +147,35 @@ public boolean equalsForFractions(Object obj) {
 	}
 	return false;
 }
+
+//TODO even these equalsFor functions can be made into 1
+//whether 2 objects are equal from the parameters point of view
+//even if their fractions or packing state are not equal
+public boolean equalsForParams(Object obj) {
+ if (obj == this) {
+     return true;
+ }
+ if (obj == null || obj.getClass() != this.getClass()) {
+     return false;
+ }
+
+ FractionManipulationStatement o1 = (FractionManipulationStatement) obj;
+ boolean result = true;
+	if ( ifCondition.equals(o1.getIfCondition()) &&
+		predName.equals(o1.getPredName()) &&
+		fractionObject.equals(o1.getFractionObject())
+		) 
+	{
+		LinkedList<BinExprString> paramso1 = o1.getParams();
+		for (int i=0;i<paramso1.size();i++){
+			if (!paramso1.get(i).equals(params.get(i))) {
+				result = false;
+				break;
+			}
+		}
+	}
+	return result;
+}
 	
 	@Override
 	public int hashCode(){

@@ -65,6 +65,18 @@ public class BoogieVisitor extends NullVisitor {
 		PARAM
 	}
 	
+	public enum SpecificationType {
+		PREDICATE,
+		PRECONDITION,
+		POSTCONDITION
+	}
+	
+	public enum WhichParam {
+		VARDECLS,
+		AFTERPACK,
+		ADDTOENSURESLIST	
+	}
+	
 	// For each "packed" in the current method, this map
 	// points to a set that holds all the objects
 	// that are modified through "packed" in the body of the method.
@@ -654,7 +666,7 @@ public class BoogieVisitor extends NullVisitor {
     // field, when option == 2.
     String modifyResultForParam(
     		String pred, 
-    		int option,
+    		WhichParam whichParam,
     		FieldTypePredbody paramsPred,
     		LinkedList<String> localArgumentsPredicate,
  	       	LinkedList<String> localExistentialArgumentsPredicate,
@@ -664,7 +676,7 @@ public class BoogieVisitor extends NullVisitor {
  	      ) {
     	String result = "";
     	int si=0;
-        if (option==2) {
+        if (whichParam==WhichParam.AFTERPACK) {
         	si = localArgumentsPredicate.size();
         }
     	LinkedList<ArgumentAndFieldPair> listArgsToFieldsThisPred =
@@ -678,14 +690,14 @@ public class BoogieVisitor extends NullVisitor {
 					if (field.equals("") || 
 						(field.contains(" ") && isArgOnlyUsedInRecPred(i,pred,field))) 
 					{
-						switch (option) {
-						case 1:
+						switch (whichParam) {
+						case VARDECLS:
 							result = result.concat(
 								"var param"+upperCaseFirstLetter(pred)+ 
 								upperCaseFirstLetter(arg) +
 								": [Ref]" +  paramsPred.getType(arg) + ";\n");
 							break;
-						case 2: 
+						case AFTERPACK: 
 							 result=result.concat(
 										"param"+upperCaseFirstLetter(pred)+ 
 										upperCaseFirstLetter(arg) +
@@ -699,7 +711,7 @@ public class BoogieVisitor extends NullVisitor {
 							}
 							
 							break;
-						case 3:
+						case ADDTOENSURESLIST:
 							BinExprString paramPredNameAndArg = new BinExprString(
 									"param"+upperCaseFirstLetter(pred)+ 
 									upperCaseFirstLetter(arg),
@@ -733,7 +745,7 @@ public class BoogieVisitor extends NullVisitor {
     		result = result.concat(
     				modifyResultForParam(
     						currentNamePred, 
-    						1,
+    						WhichParam.VARDECLS,
     						paramsPred,
     						null,
     						null,
@@ -940,7 +952,41 @@ public class BoogieVisitor extends NullVisitor {
     	    	
     	    	if (setPreCopy.isEmpty()) return true;
     	    	return false;
-    	    }
+    }
+    
+    // TODO need to write a single function where I pass 
+    // the function equalsForPacked or equalsForFractions as parameter
+    boolean areEqualSetsParams(
+    	    		Set<FractionManipulationStatement> setPre,
+    	    		Set<FractionManipulationStatement> setPost 		
+    	    ) {
+    	    	// copy constructor
+    	    	Set<FractionManipulationStatement> setPreCopy =
+    	    			new TreeSet<FractionManipulationStatement>(setPre);
+    	    	//1. check if setPre and setPost have the same number of elements
+    	    	//2. go through all the elements in setPre and for each look in setPost.
+    	    	//3. if you find it remove it from setPre
+    	    	//4. at the end, setPre should be empty and then the sets are equal
+    	    	if (setPre.size() == setPost.size()) {
+    	    		Iterator<FractionManipulationStatement> iterPre = setPre.iterator();
+    	    		 while (iterPre.hasNext()) {
+    	    			 FractionManipulationStatement elementPre = iterPre.next();
+    	    			 Iterator<FractionManipulationStatement> iterPost = setPost.iterator();
+    	    			 while (iterPost.hasNext()) {
+    	        			 FractionManipulationStatement elementPost = iterPost.next();
+    	        			 if (elementPre.equalsForParams(elementPost)) {
+    	        				 // remove the element from setPreCopy
+    	        				 setPreCopy.remove(elementPre);
+    	        				 // break out of the interior while
+    	        				 break;
+    	        			 }
+    	    		    }	
+    	    	}
+    	    	}
+    	    	
+    	    	if (setPreCopy.isEmpty()) return true;
+    	    	return false;
+    }
     
     // Check if fracMan exists in setPre. Comparison function is not straight equality
     // it only checks if a FractionManipulationStatement exists with the same predicate and object
@@ -989,6 +1035,19 @@ public class BoogieVisitor extends NullVisitor {
 		currentSetOfObjects.add(fractionObject);
 		fractionsModifiedObjects.put(predName, currentSetOfObjects);		
 	}
+	
+	void addToParamsModifiedObjects(
+			HashMap<String, Set<String>> paramsModifiedObjects,
+			String predName, 
+			String fractionObject
+	 ) {
+		Set<String> currentSetOfObjects = paramsModifiedObjects.get(predName);
+		if (currentSetOfObjects == null) {
+			currentSetOfObjects = new TreeSet<String>();
+		}
+		currentSetOfObjects.add(fractionObject);
+		paramsModifiedObjects.put(predName, currentSetOfObjects);		
+	}
     
     // First look at one obj prop, say objProp1, element in the precondition and what is its 
 	// disjunction number.
@@ -1027,7 +1086,6 @@ public class BoogieVisitor extends NullVisitor {
 	// for simple fractionManipulationStatements.
 	// This returns void because all these parameters are
 	// passed by value and thus modified by the end of this method.
-	// forPacked is true here
     void constructStructuresForInferEnsuresForallPacked(
     		String methodName_, 
     		HashMap<String, Set<String>> packedModifiedObjects,
@@ -1089,7 +1147,7 @@ public class BoogieVisitor extends NullVisitor {
     			 }
     			 
     			 // Now construct the set of object propositions from the postcondition
-    			 // that might be equal to the set setDisjunctionFracMan above.
+    			 // that might be equal to the set setPrecondDisjunctionFracMan above.
     			 // The following part is all about the postconditions.
     			 // I start the process, the same one as above, but for postconditions.
     			 // The set of object propositions in the postcondition
@@ -1205,7 +1263,7 @@ public class BoogieVisitor extends NullVisitor {
         				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
         				 fracMan.getFractionObject().equals(fracManPost.getFractionObject()) &&
         				 (fracMan.getIsPacked()!=fracManPost.getIsPacked())
-        				 //TODO should I compare ifConditions?
+        				 //TODO should I compare ifConditions? YES!!!
         		 ) {
         			 addToPackedModifiedObjects(
         					 packedModifiedObjects,
@@ -1220,7 +1278,6 @@ public class BoogieVisitor extends NullVisitor {
     }
     }
     
-    // forPacked is false here
     // I need to compute fractionsModifiedObjects separately from packedModifiedObjects
     // in this method because it can happen that the same object proposition is packed in
     // the pre- and postcondition but the fraction amount has changed.
@@ -1259,7 +1316,7 @@ public class BoogieVisitor extends NullVisitor {
     			 }
     			 
     			 // Now construct the set of object propositions from the postcondition
-    			 // that might be equal to the set setDisjunctionFracMan.
+    			 // that might be equal to the set setPrecondDisjunctionFracMan.
     			 // The following part is all about the postconditions.
     			 // I start the process, the same one as above, but for postconditions.
     			 // The set of object propositions in the postcondition
@@ -1364,8 +1421,8 @@ public class BoogieVisitor extends NullVisitor {
     		 // This is a FractionManipulationStatement that is not part of a disjunction.
     		 // If there is an ifCondition or not does not influence what I do.
     		 // I am comparing the current fracMan with all the fracMan's in the postcondition
-    		 // and if there is one that has the same object and predicate, and the "isPacked"
-    		 // changed, I add that object to packedModifiedObjects.
+    		 // and if there is one that has the same object and predicate, and the fraction
+    		 // changed, I add that object to fractionsModifiedObjects.
     		 
         	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
         		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
@@ -1377,7 +1434,7 @@ public class BoogieVisitor extends NullVisitor {
            				 // TODO need to see how to deal with constants k
            				 // they are the same but might have different names in the pre- and
            				 // postconditions. xxxx
-           				 //TODO should I compare ifConditions?
+           				 //TODO should I compare ifConditions? YES!!!
            		 ) {
            			 addToFractionsModifiedObjects(
            					 fractionsModifiedObjects,
@@ -1388,14 +1445,194 @@ public class BoogieVisitor extends NullVisitor {
            		 }        		
         	 }
     	 }
- 
     }
     }
     
+    // TODO all these construct methods should be put together in one 
+    // so that I don't have duplicated code!!!
     void constructStructuresForInferEnsuresForallParam(
     		String methodName_, 
-    		HashMap<String, Set<String>> paramModifiedObjects
+    		HashMap<String, Set<String>> paramsModifiedObjects
     ) {
+  		Set<Integer> setDisjunctionNumbersPrecond = new TreeSet<Integer>();
+       
+  		LinkedList<FractionManipulationStatement> fractionManipulationsListPre = 
+        		 fractionManipulationsListMethodPre.get(methodName_);
+         	 
+        LinkedList<FractionManipulationStatement> fractionManipulationsListPost = 
+             	 fractionManipulationsListMethodPost.get(methodName_);
+    	       	 
+    	 for (int i=0; i<fractionManipulationsListPre.size(); i++) {		 		 
+    		 FractionManipulationStatement fracMan = fractionManipulationsListPre.get(i);
+    		 
+    		 // I need to reconstruct the disjunction if fracMan has a disjunction number.
+    		 int disjNumber = fracMan.getDisjunctionNumber();
+    		 // disjNumber does not need to be specifically wrapped in an Integer
+    		 // because Java does it automatically if need be.
+    		 if ((disjNumber != -1) && (!setDisjunctionNumbersPrecond.contains(disjNumber))) {
+    			 setDisjunctionNumbersPrecond.add(disjNumber);
+    			 // The set of object propositions in the precondition
+    			 // that are in the same disjunction with the current object proposition.
+    			 Set<FractionManipulationStatement> setPrecondDisjunctionFracMan = 
+    					 new TreeSet<FractionManipulationStatement>();
+    			 // I added compareTo() for the line below to work.
+    			 setPrecondDisjunctionFracMan.add(fracMan);
+    			 for (int j=i+1; j<fractionManipulationsListPre.size(); j++) {
+    				 FractionManipulationStatement fracManAfter = fractionManipulationsListPre.get(j);
+    				 if (fracManAfter.getDisjunctionNumber() == disjNumber) {
+    					 setPrecondDisjunctionFracMan.add(fracManAfter);
+    				 }
+    			 }
+    			 
+    			 // Now construct the set of object propositions from the postcondition
+    			 // that might be equal to the set setPrecondDisjunctionFracMan.
+    			 // The following part is all about the postconditions.
+    			 // I start the process, the same one as above, but for postconditions.
+    			 // The set of object propositions in the postcondition
+    			 // that are in the same disjunction with fracMan.
+    			 int postDisjunctionNumber = -1;
+    			 int j;
+    			 Set<FractionManipulationStatement> setPostcondDisjunctionFracMan = 
+    					 new TreeSet<FractionManipulationStatement>();
+    			 for (j=0; j<fractionManipulationsListPost.size(); j++) {
+    				 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(j);
+    				 if (fracManPost.getFractionObject().equals(fracMan.getFractionObject())
+    						&&
+    					(fracManPost.getPredName().equals(fracMan.getPredName()))
+    						&&
+    					(fracManPost.getIfCondition().equals(fracMan.getIfCondition()))
+    						 ) {
+    					 setPostcondDisjunctionFracMan.add(fracManPost); 					 
+    					 postDisjunctionNumber = fracManPost.getDisjunctionNumber();
+    					 break;
+    				 } 				
+    			 }
+    			 
+    			 // Add all the fractionManipulations that have the same disjunctionNumber as 
+    			 // fracManAfter above.
+    			 if (postDisjunctionNumber!=-1) {
+    				 for (int k=j+1; k<fractionManipulationsListPost.size(); k++) {
+    					 FractionManipulationStatement fracManPost1 = 
+    							 fractionManipulationsListPost.get(k);
+    					 if (fracManPost1.getDisjunctionNumber() == postDisjunctionNumber) {
+    						 setPostcondDisjunctionFracMan.add(fracManPost1);
+    					 }
+    				 }
+    			 }
+    			 
+    			 // Compare setPostcondDisjunctionFracMan and setPrecondDisjunctionFracMan.
+    			 // If they are the same then I don't need to do anything.
+    			 // If they are not the same, if there is an ifCondition,
+    			 // I need to look at all the individual object propositions in the disjunction
+    			 // for the precondition
+    			 // and see how each changed in the postcondition.
+    			 // If there is no ifCondition, I still need to look at all the 
+    			 // object propositions in the postcondition and see if there is 
+    			 // one that is like this one from the precondition.
+    			 
+    			 // For the composite example, we don't go inside the if branch below.
+    			 boolean areSetsEqual;
+    			
+    			 areSetsEqual = areEqualSetsParams(
+    					 setPrecondDisjunctionFracMan, 
+    					 setPostcondDisjunctionFracMan
+    			 ); 
+    			 		 
+    			 if (!areSetsEqual) {
+    				 // Any of the objects in this disjunction of the precondition
+    				 // that is not equal to one in the postcondition
+    				 // means that they could change and cannot be included in the
+    				 // ensures forall. Only if it was the exact same as the disjunction 
+    				 // in the postcondition
+    				 // it could have been included in the ensures forall.
+    				 // The objects of the object propositions in the pre set could
+    				 // be put straight in packedModifiedObjects, but it could be that
+    				 // they are not even mentioned in the postcondition and in that case
+    				 // packedIsMentioned needs to be modified for that predicate.
+    				 // So we do need to find at least one object proposition in the postcondition
+    				 // that has the same object and predicate as the current one 
+    				 // taken from setPrecondDisjunctionFracMan.
+    				Iterator<FractionManipulationStatement> iterPrecond = 
+    						setPrecondDisjunctionFracMan.iterator();
+    				while (iterPrecond.hasNext()) {
+    						 FractionManipulationStatement elementPrecond = iterPrecond.next();
+    						 
+    						 if (!doesFractionManipulationExist(
+    								 fractionManipulationsListPost, 
+    								 elementPrecond)) 
+    						 {
+    							 modifyPredObjNotMentionedPostcond(
+    									 methodName_, 
+    									 new FieldAndTypePair(
+    											 elementPrecond.getPredName(), 
+    											 elementPrecond.getFractionObject())
+    							 );
+    							 
+    						 } else {
+    							 //TODO am I sure that they are modified?
+    							 // Future work: an if needs to be added here.
+    							 //Currently it is added if elementPrecond appears at 
+    							 // all, but there should be a check before adding this!!!
+    							 addToParamsModifiedObjects(
+    									 paramsModifiedObjects,
+    									 elementPrecond.getPredName(), 
+    									 elementPrecond.getFractionObject()
+    							 ); 							 
+    						 }	 
+    					 }
+    			 
+    			 // This is for the object propositions that are not part of a disjunction.
+				 // Compare all the object propositions in the precondition set above
+				 // one by one, with *all* the object propositions in the postcondition
+				 // and retain for each the name of the predicate and the object if they are
+				 // different.
+    			 
+    			 // Future work.
+    			 // If I do need to write fraction statements about a disjunction
+    			 // I'll have to write for both disjunction elements 
+    			 // because Boogie does not know which one will hold.	 
+    		 }	 
+    	 } else if (disjNumber == -1) {
+    		 // This is a FractionManipulationStatement that is not part of a disjunction.
+    		 // If there is an ifCondition or not does not influence what I do.
+    		 // I am comparing the current fracMan with all the fracMan's in the postcondition
+    		 // and if there is one that has the same object and predicate, and the "isPacked"
+    		 // changed, I add that object to paramsModifiedObjects.
+        	 for (int k=0; k<fractionManipulationsListPost.size(); k++) {
+        		 FractionManipulationStatement fracManPost = fractionManipulationsListPost.get(k);
+        			// this is same as the body of the if above, but for params
+        			if (
+           				 fracMan.getPredName().equals(fracManPost.getPredName()) &&
+           				 fracMan.getFractionObject().equals(fracManPost.getFractionObject())
+           				 // TODO need to see how to deal with constants k
+           				 // they are the same but might have different names in the pre- and
+           				 // postconditions. xxxx
+           				 //TODO should I compare ifConditions?
+           		 ) {
+        				LinkedList<BinExprString> paramsFracMan = fracMan.getParams();
+        				LinkedList<BinExprString> paramsFracManPost = fracManPost.getParams();
+        				for (int p=0; p<paramsFracMan.size(); p++){
+        					BinExprString currentParamFracMan = paramsFracMan.get(p);
+        					BinExprString currentParamFracManPost = paramsFracManPost.get(p);
+        					if (!currentParamFracMan.getObject().equals(
+        							currentParamFracManPost.getObject())) {
+        						// Note: class BinExprString is misused here!
+        						// It is used only because it is a pair of strings
+        						// that has the equals() function implemented.
+        						 addToParamsModifiedObjects(
+        	           					 paramsModifiedObjects,
+        	           					 currentParamFracMan.getBinaryExpression(),
+        	           					 fracManPost.getFractionObject()
+        	           			);
+        	           			 //paramsModifiedObjects passed by value and thus 
+        						 //I don't need to do anything else
+        					}
+        				}
+           			 }        		
+        	 }
+    	 }
+ 
+    }
     }
     
     TupleOfEnsures inferEnsuresForall(
@@ -1765,6 +2002,7 @@ public class BoogieVisitor extends NullVisitor {
      	    		fractionsModifiedObjects
         	 );
         	 
+        	 //xxxx this is next!!!
         	 constructStructuresForInferEnsuresForallParam(
       	    		methodName, 
       	    		paramModifiedObjects
@@ -2653,7 +2891,7 @@ public class BoogieVisitor extends NullVisitor {
     	LinkedList<BinExprString> paramsOfPred = new LinkedList<BinExprString>();
     	modifyResultForParam(
     			predName, 
-        		3,
+    			WhichParam.ADDTOENSURESLIST,
         		null,
         		null,
      	        null,
@@ -2759,9 +2997,8 @@ public class BoogieVisitor extends NullVisitor {
     			modifyMethodPreconditions(objProp);
     			modifyRequiresFrac(fracString); 
      			
-    			// TODO replace random option numbers with enums
     		    addToFractionManipulationsList(
-    		    		1, // 1 for method precondition
+    		    		SpecificationType.PRECONDITION, 
     		    		currentMethod, 
     		    		ifConditionFractionManipulation,
     		    		predName,
@@ -2781,7 +3018,7 @@ public class BoogieVisitor extends NullVisitor {
     			modifyMethodPostconditions(objProp);
     			modifyEnsuresFrac(fracString);
     		    addToFractionManipulationsList(
- 		    			2, // 2 for method postcondition
+    		    		SpecificationType.POSTCONDITION, 
  		    			currentMethod, 
  		    			ifConditionFractionManipulation,
     		    		predName,
@@ -2815,7 +3052,7 @@ public class BoogieVisitor extends NullVisitor {
     		modifyPredicateObjProp(objProp);
     		
 		    addToFractionManipulationsList(
-		    		0, // this is 0 for predicate 
+		    		SpecificationType.PREDICATE,  
 		    		namePredicate, 
 		    		ifConditionFractionManipulation,
 		    		predName,
@@ -2823,8 +3060,7 @@ public class BoogieVisitor extends NullVisitor {
 		    		fracInObjProp,
 		    		isPacked,
 		    		paramsOfPred
-		    );
-    		
+		    );	
     	}
     	insideObjectProposition = false;
     	}
@@ -3026,7 +3262,7 @@ public class BoogieVisitor extends NullVisitor {
         modifyMethodBody(
         		modifyResultForParam(
         				predicateOfConstruct, 
-						2,
+        				WhichParam.AFTERPACK,
 						null,
 						localArgumentsPredicate,
 						localArgumentsPredicate,
@@ -3256,7 +3492,7 @@ public class BoogieVisitor extends NullVisitor {
        	toWrite = toWrite.concat(
        			modifyResultForParam(
        					predicateNameObjProp, 
-						2,
+       					WhichParam.AFTERPACK,
 						null,
 						argumentsObjProp,
 						existentialArgsObjProp,
@@ -3931,9 +4167,10 @@ public class BoogieVisitor extends NullVisitor {
     
     
     void addToFractionManipulationsList(
-    		int flag, // this is 0 for predicate 
+    		SpecificationType specType, // this is 0 for predicate 
     			      // 1 for method precondition
     				 // 2 for method postcondition
+    		//SpecificationType
     		String predOrMethod, 
     		String ifCondition,
     		String predName,
@@ -3944,16 +4181,19 @@ public class BoogieVisitor extends NullVisitor {
     ) {
     	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
 				
-    	switch (flag) {
-         	case 0: currentPredOrMethodFracManipulation = 
-         				fractionManipulationsListPredicate.get(predOrMethod);
-                  	 break;
-         	case 1: currentPredOrMethodFracManipulation = 
-     					fractionManipulationsListMethodPre.get(predOrMethod);
-         	 		break;
-         	case 2: currentPredOrMethodFracManipulation = 
- 					    fractionManipulationsListMethodPost.get(predOrMethod);
- 	 				break;        
+    	switch (specType) {
+         	case PREDICATE: 
+         		currentPredOrMethodFracManipulation = 
+         		fractionManipulationsListPredicate.get(predOrMethod);
+                break;
+         	case PRECONDITION: 
+         		currentPredOrMethodFracManipulation = 
+     			fractionManipulationsListMethodPre.get(predOrMethod);
+         	 	break;
+         	case POSTCONDITION: 
+         		currentPredOrMethodFracManipulation = 
+ 				fractionManipulationsListMethodPost.get(predOrMethod);
+ 	 			break;        
     	}
     	FractionManipulationStatement newFracMani =
     			new FractionManipulationStatement(
@@ -3971,16 +4211,19 @@ public class BoogieVisitor extends NullVisitor {
     	}
     	currentPredOrMethodFracManipulation.add(newFracMani);
     	
-    	switch (flag) {
-     		case 0: fractionManipulationsListPredicate.put(predOrMethod, 
-     					currentPredOrMethodFracManipulation);	 
-              	 	break;
-     		case 1: fractionManipulationsListMethodPre.put(predOrMethod, 
- 						currentPredOrMethodFracManipulation);	 
-      	 			break;
-     		case 2: fractionManipulationsListMethodPost.put(predOrMethod, 
-						currentPredOrMethodFracManipulation);	 
-	 				break;       
+    	switch (specType) {
+     		case PREDICATE: 
+     			fractionManipulationsListPredicate.put(predOrMethod, 
+     			currentPredOrMethodFracManipulation);	 
+              	break;
+     		case PRECONDITION: 
+     			fractionManipulationsListMethodPre.put(predOrMethod, 
+ 				currentPredOrMethodFracManipulation);	 
+      	 		break;
+     		case POSTCONDITION: 
+     			fractionManipulationsListMethodPost.put(predOrMethod, 
+				currentPredOrMethodFracManipulation);	 
+	 			break;       
 	    } 
     }
     
@@ -4219,6 +4462,10 @@ public class BoogieVisitor extends NullVisitor {
     
     
 }
-
+//TODO don't do frac[null]
+//TODO see why call Pack does not write all parameters out
+//TODO finish ensures forall for the params
+//TODO make DoubleCount+Share work
+// TODO pass equalsForFractions using Callable
 
 
