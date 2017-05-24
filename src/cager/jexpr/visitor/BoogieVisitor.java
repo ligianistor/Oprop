@@ -1045,7 +1045,9 @@ public class BoogieVisitor extends NullVisitor {
 		if (currentSetOfObjects == null) {
 			currentSetOfObjects = new TreeSet<String>();
 		}
-		currentSetOfObjects.add(fractionObject);
+		if (!fractionObject.equals("")) {
+			currentSetOfObjects.add(fractionObject);
+		}
 		paramsModifiedObjects.put(predName, currentSetOfObjects);		
 	}
     
@@ -1614,6 +1616,13 @@ public class BoogieVisitor extends NullVisitor {
         				for (int p=0; p<paramsFracMan.size(); p++){
         					BinExprString currentParamFracMan = paramsFracMan.get(p);
         					BinExprString currentParamFracManPost = paramsFracManPost.get(p);
+        					// xxxx first add to paramsModifiedObjects only the name 
+        					// paramPredVal even if the second part is empty
+        					 addToParamsModifiedObjects(
+    	           					 paramsModifiedObjects,
+    	           					 currentParamFracMan.getBinaryExpression(),
+    	           					 ""
+    	           			);
         					if (!currentParamFracMan.getObject().equals(
         							currentParamFracManPost.getObject())) {
         						// Note: class BinExprString is intentionally misused here!
@@ -1747,15 +1756,15 @@ public class BoogieVisitor extends NullVisitor {
             		break;
             	case PARAM:
             		// This is the generation of the "ensures forall" string for params.
-            		// HashMap<String, Set<String>> paramsModifiedObjects,
             		Iterator<Entry<String, Set<String>>> paramsIter = 
             				paramsModifiedObjects.entrySet().iterator(); 
-            
             		while(paramsIter.hasNext()) {
-            			String currentNameParam = paramsIter.next().getKey();
-            			Set<String> currentModifiedObjects = paramsIter.next().getValue();
+            			Entry<String, Set<String>> paramPair = 
+            					(Entry<String, Set<String>>)paramsIter.next();
+            			String currentNameParam = paramPair.getKey();
+            			Set<String> currentModifiedObjects = paramPair.getValue();
 
-            			if (currentModifiedObjects!=null) {
+            			if (currentModifiedObjects.size() > 0) {
             				tupleOfEnsures.concatParams("\t ensures (forall ");
             				tupleOfEnsures.concatParams(forallParameter);
             				tupleOfEnsures.concatParams(":Ref :: (");
@@ -4500,8 +4509,9 @@ public class BoogieVisitor extends NullVisitor {
 }
 //TODO don't do frac[null]
 //TODO see why call Pack does not write all parameters out
-//TODO finish ensures forall for the params
+//TODO finish ensures forall for the params. See why it doesn't currently
+//write the ensures forall for Link.java.
 //TODO make DoubleCount+Share work
-// TODO pass equalsForFractions using Callable
+// TODO pass equalsForFractions using java.lang.reflection.Method
 
 
