@@ -3687,35 +3687,37 @@ public class BoogieVisitor extends NullVisitor {
         		        	formalParams,
         		        	actualParams,
         		        	fracMan.getFractionObject());
-        		 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + 
-        				 "[" + actualObject
-        				 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
-        				 actualObject
-        				 +"]"); 
-        		 String fractionString = fracMan.getFraction();
         		 modifyFieldsInMethod("frac" + upperCaseFirstLetter(fracMan.getPredName()));
-        		 if (isNumeric(fractionString)) {
-        			 if (isPredicate) {
-        				 if (isPack) {
-        					 result = result.concat(" - ");
-        				 } else {
-        					 result = result.concat(" + ");
-        				 }
-        			 } 
-        			 result = result.concat(fractionString);
-        		 } else {
-        			 // If we are in this branch
-        			 // it means that the fraction is "k" or similar
-        			 if (isPredicate) {
-        				 if (isPack) {
-        					 result = result.concat(" / 2.0");
-        				 } else {
-        					 result = result.concat(" + 0.001");
-        				 }
-        			 } 
+        		 if (!actualObject.equals("null")) {
+        			 result = result.concat("frac" + upperCaseFirstLetter(fracMan.getPredName()) + 
+        					 "[" + actualObject
+        					 +"] := frac" + upperCaseFirstLetter(fracMan.getPredName()) + "[" + 
+        					 actualObject
+        					 +"]"); 
+        			 String fractionString = fracMan.getFraction();
+        			 if (isNumeric(fractionString)) {
+        				 if (isPredicate) {
+        					 if (isPack) {
+        						 result = result.concat(" - ");
+        					 } else {
+        						 result = result.concat(" + ");
+        					 }
+        				 } 
+        				 result = result.concat(fractionString);
+        			 } else {
+        				 // If we are in this branch
+        				 // it means that the fraction is "k" or similar
+        				 if (isPredicate) {
+        					 if (isPack) {
+        						 result = result.concat(" / 2.0");
+        					 } else {
+        						 result = result.concat(" + 0.001");
+        					 }
+        				 } 
         			 
+        			 }
+        			 result = result.concat(";\n");
         		 }
-        		 result = result.concat(";\n");
         		 if (!fracMan.getIfCondition().equals("")) {
         			 result = result.concat("}\n");
         		 }
@@ -3913,14 +3915,15 @@ public class BoogieVisitor extends NullVisitor {
     	
     	methodVariables.accept(this);
     	
+    	modifyMethodSpec("\t requires (this != null)");
     	if (precondition != null) {
-    		modifyMethodSpec("\t requires (this != null) && ");
+    		modifyMethodSpec("\t && ");
     		insidePrecondition = true;
     		disjunctionNumber = 0;
     		precondition.accept(this);
-    		insidePrecondition = false;
-    		modifyMethodSpec(";\n");
+    		insidePrecondition = false;	
     	}
+    	modifyMethodSpec(";\n");
 
     	if (postcondition != null) {
     		modifyMethodSpec("\t ensures ");
@@ -4503,15 +4506,12 @@ public class BoogieVisitor extends NullVisitor {
     	    }
     	    System.out.println("-----------------");
     }
-  
-    
     
 }
-//TODO don't do frac[null]
-//TODO see why call Pack does not write all parameters out
-//TODO finish ensures forall for the params. See why it doesn't currently
-//write the ensures forall for Link.java.
-//TODO make DoubleCount+Share work
-// TODO pass equalsForFractions using java.lang.reflection.Method
+
+//TODO see why not all parameters are written for Link.
+//TODO pass equalsForFractions using java.lang.reflection.Method
+//TODO in Share, why (forall x:Ref :: packedOK[x]); is not put after touch()
+//TODO remove this!=null or put it everywhere in DoubleCount and Share.
 
 
