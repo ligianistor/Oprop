@@ -795,7 +795,8 @@ public class BoogieVisitor extends NullVisitor {
     					listArgsToFields, 
     					objProp.getParams(), 
     					objProp.getObject(),
-    					objProp.getName()
+    					objProp.getName(),
+    					false
     					);
     		
     			int location = objProp.getLocation();
@@ -2800,11 +2801,15 @@ public class BoogieVisitor extends NullVisitor {
     // Write the fields corresponding to each argument
     // for one object proposition, which has the arguments args
     // and has the object objectString.
+    // The last parameter which is a flag says that for 
+	// this particular case, the objectString is actually "this", not
+	// the one that we get from localFieldParts
     String writePredArgWhichField(
     		LinkedList<ArgumentAndFieldPair> listArgsToFields, 
     		LinkedList<String> args, 
     		String objectString,
-    		String predName
+    		String predName,
+    		boolean flag
     ) {
     	String result = "";
       try {
@@ -2840,12 +2845,17 @@ public class BoogieVisitor extends NullVisitor {
         				// Here I check if the first word in compact object proposition
         				// is same as current predicate. Yes, that is only one case 
         				// that isArgOnlyUsedInRecPred looks at, but first I implemented this one.
-    						
+
 							result = result.concat(" && (param"+ 
 									upperCaseFirstLetter(predName)+ 
 									upperCaseFirstLetter(formalArg) +
-	    							"["+localObject+"]=="+args.get(i)+")"
-	    							);		
+	    							"[");
+							if (flag) {
+								result = result.concat("this]=="+args.get(i)+")");
+							} else {
+								result = result.concat(localObject+"]=="+args.get(i)+")");
+							}
+	    									
     					} else {
     						// localObject is of the form field[this], but I need to 
         		        	// transform it to field[objectString]
@@ -2930,9 +2940,6 @@ public class BoogieVisitor extends NullVisitor {
     	ObjPropString objProp =
     			new ObjPropString(objectString, fracInObjProp, 
     	    			predName, args);
-    	//xxxx this is where I calculate the linkedlist<pairsofstrings>
-    	// for params. First declare it here, then pass it and populate it in 
-    	//modifyResultForParam and then pass it to addToFractionManipulationsList.
     	LinkedList<BinExprString> paramsOfPred = new LinkedList<BinExprString>();
     	modifyResultForParam(
     			predName, 
@@ -3032,7 +3039,8 @@ public class BoogieVisitor extends NullVisitor {
     					listArgsToFields,
     					args,
     					objectString,
-    					predName
+    					predName,
+    					true
     			);
     			modifyMethodSpec(oneObjProp+")");
     		}
@@ -3352,9 +3360,10 @@ public class BoogieVisitor extends NullVisitor {
     			stringOfVarDecls = stringOfVarDecls.concat("\t var " + localVariableName +":Ref;\n");
     			listOfVarDecls.add(localVariableName);
     		}
-    		else 
+    		else {
     			stringOfVarDecls = stringOfVarDecls.concat("\t var " +
     						localVariableName +":"+ fieldType+";\n");
+    		}
     	
     	visitChildren(ast);
       }
@@ -4200,6 +4209,7 @@ public class BoogieVisitor extends NullVisitor {
     
     String writeListOfVarDecls() {
     	String result = "";
+    	String resultAssumeNotNull = "";
     	if (listOfVarDecls.size() > 1) {
     		result = "assume ";
     		int numVars = listOfVarDecls.size();
@@ -4207,12 +4217,18 @@ public class BoogieVisitor extends NullVisitor {
     		for (int i=0 ; i<numVars-1; i++) {
     			for (int j=i+1; j<numVars; j++) {
     				result = result + "(" + listOfVarDecls.get(i) + "!=" + listOfVarDecls.get(j) + ") && ";
-    			} 		
+    			} 
+    			resultAssumeNotNull = resultAssumeNotNull + "assume " + 
+    					listOfVarDecls.get(i) + "!=null; \n";
     		}
+    		
+    		resultAssumeNotNull = resultAssumeNotNull + "assume " + 
+					listOfVarDecls.get(numVars-1) + "!=null; \n";
     	
     		result = result.substring(0, result.length()-3);
     		result += ";\n";
     	}
+    	result += resultAssumeNotNull;
     	return result;
     }
     
@@ -4230,10 +4246,7 @@ public class BoogieVisitor extends NullVisitor {
     
     
     void addToFractionManipulationsList(
-    		SpecificationType specType, // this is 0 for predicate 
-    			      // 1 for method precondition
-    				 // 2 for method postcondition
-    		//SpecificationType
+    		SpecificationType specType, 
     		String predOrMethod, 
     		String ifCondition,
     		String predName,
@@ -4242,7 +4255,8 @@ public class BoogieVisitor extends NullVisitor {
     		boolean isPacked,
     		LinkedList<BinExprString> params
     ) {
-    	LinkedList<FractionManipulationStatement> currentPredOrMethodFracManipulation = null;
+    	LinkedList<FractionManipulationStatement> 
+    		currentPredOrMethodFracManipulation = null;
 				
     	switch (specType) {
          	case PREDICATE: 
