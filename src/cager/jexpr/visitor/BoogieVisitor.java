@@ -3289,6 +3289,11 @@ public class BoogieVisitor extends NullVisitor {
         modifyMethodBody(localVariableName + "] := false;\n");
         
         String callPack = "\tcall Pack" + upperCaseFirstLetter(predicateOfConstruct)+"(";
+        if (localArgumentsPredicate.size()>0) {
+        	for (int i=0;i<localArgumentsPredicate.size();i++) {
+        		callPack = callPack.concat(localArgumentsPredicate.get(i) + ",");
+        	}
+        }
         if (localExistentialArgumentsPredicate.size()>0) {
         	for (int i=0;i<localExistentialArgumentsPredicate.size();i++) {
         		callPack = callPack.concat(localExistentialArgumentsPredicate.get(i) + ",");
@@ -3915,15 +3920,25 @@ public class BoogieVisitor extends NullVisitor {
     	
     	methodVariables.accept(this);
     	
-    	modifyMethodSpec("\t requires (this != null)");
+    	if (!isConstructor) {
+    		modifyMethodSpec("\t requires (this != null)");
+    	}
+    		
     	if (precondition != null) {
-    		modifyMethodSpec("\t && ");
+    		if (!isConstructor) {
+    			modifyMethodSpec(" && ");
+        	}  else {
+        		modifyMethodSpec("\t requires");
+        	}
     		insidePrecondition = true;
     		disjunctionNumber = 0;
     		precondition.accept(this);
     		insidePrecondition = false;	
+    		modifyMethodSpec(";\n");
+    	} else if (!isConstructor) {
+    		modifyMethodSpec(";\n");
     	}
-    	modifyMethodSpec(";\n");
+    	
 
     	if (postcondition != null) {
     		modifyMethodSpec("\t ensures ");
@@ -4509,9 +4524,7 @@ public class BoogieVisitor extends NullVisitor {
     
 }
 
-//TODO see why not all parameters are written for Link.
 //TODO pass equalsForFractions using java.lang.reflection.Method
 //TODO in Share, why (forall x:Ref :: packedOK[x]); is not put after touch()
-//TODO remove this!=null or put it everywhere in DoubleCount and Share.
-
-
+//TODO see why the translation of Link does not currently work
+//TODO put "assume (l1!=null);" for all newly created objects
