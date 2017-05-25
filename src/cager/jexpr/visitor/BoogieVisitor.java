@@ -4540,5 +4540,3 @@ public class BoogieVisitor extends NullVisitor {
 
 //TODO pass equalsForFractions using java.lang.reflection.Method
 //TODO in Share, why (forall x:Ref :: packedOK[x]); is not put after touch()
-//TODO see why the translation of Link does not currently work
-//TODO put "assume (l1!=null);" for all newly created objects
