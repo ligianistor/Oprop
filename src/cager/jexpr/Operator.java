@@ -232,12 +232,13 @@ class AddTypeResolver extends NumericTypeResolver
 {
     public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
-    	try {
+    	/*try {
         out.write("AddTypeResolver: " + t1 + " + " + t2+"\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
     	}
+    	*/
 
         if (t1.equals(Type.STRING) || t2.equals(Type.STRING))
         {
@@ -256,12 +257,12 @@ class BooleanTypeResolver extends TypeResolver
 {
     public OperatorTypeInfo binaryOperatorType(Operator op, Type t1, Type t2, BufferedWriter out) throws ParseException
     {
-    	try {
+    	/*try {
     	out.write(t1 + " " + op.getName() + " " + t2+ "\n");
     	}
     	catch (Exception e) {
     		System.err.println("Error: " + e.getMessage());
-    	}
+    	}*/
         if (t1.getType() != Constants.T_BOOLEAN || t2.getType() != Constants.T_BOOLEAN)
             throw new ParseException("Non-boolean Types: " + t1 + ", " + t2 + " for op " + op.getName());
 
