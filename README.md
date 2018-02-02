@@ -1,7 +1,5 @@
-Oprop
-=====
-
 Oprop verification tool
+=====
 
 My tool Oprop is the implementation of object propositions, a formal verification system for object oriented code that I created during my Ph.D. at Carnegie Mellon University.
 
